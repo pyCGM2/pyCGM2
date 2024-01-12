@@ -215,53 +215,103 @@ class GaitEventAnomalyProcedure(AnomalyDetectionProcedure):
 
             if events_L != [] and events_R != []:
                 labels = [it.GetLabel() for it in btk.Iterate(
-                    events) if it.GetLabel() in ["Foot Strike", "Foot Off"]]
+                    events) if it.GetLabel() in ["Foot Strike", "Foot Off"] and it.GetContext() in ["Left","Right"]]
                 frames = [it.GetFrame() for it in btk.Iterate(
-                    events) if it.GetLabel() in ["Foot Strike", "Foot Off"]]
-
-                init = labels[0]
-                for i in range(1, len(labels)):
-                    label = labels[i]
-                    frame = frames[i]
+                    events) if it.GetLabel() in ["Foot Strike", "Foot Off"] and it.GetContext() in ["Left","Right"]]
+                                
+                # sort
+                asso = sorted(zip(frames, labels))
+                frames_sorted, labels_sorted = zip(*asso)
+                frames_sorted = list(frames_sorted)
+                labels_sorted = list(labels_sorted)
+                
+                init = labels_sorted[0]
+                for i in range(1, len(labels_sorted)):
+                    label = labels_sorted[i]
+                    frame = frames_sorted[i]
                     if label == init:
                         LOGGER.logger.warning(
                             "[pyCGM2-Anomaly] file (%s) - two consecutive (%s) detected at frame (%i)" % (filename, (label), frame))
                         errorState = True
 
                     init = label
+            
 
             if events_L != []:
-                init = events_L[0].GetLabel()
+
                 if len(events_L) > 1:
-                    for i in range(1, len(events_L)):
-                        label = events_L[i].GetLabel()
+                    labels = [it.GetLabel() for it in btk.Iterate(
+                        events) if it.GetLabel() in ["Foot Strike", "Foot Off"] and it.GetContext() in ["Left"]]
+                    frames = [it.GetFrame() for it in btk.Iterate(
+                        events) if it.GetLabel() in ["Foot Strike", "Foot Off"] and it.GetContext() in ["Left"]]
+                                    
+                    # sort
+                    asso = sorted(zip(frames, labels))
+                    frames_sorted, labels_sorted = zip(*asso)
+                    frames_sorted = list(frames_sorted)
+                    labels_sorted = list(labels_sorted)
+
+                    init = labels_sorted[0]
+                    for i in range(1, len(labels_sorted)):
+                        label = labels_sorted[i]
+                        frame = frames_sorted[i]
                         if label == init:
-                            LOGGER.logger.warning("[pyCGM2-Anomaly] file (%s) - Wrong Left Event - two consecutive (%s) detected at frane (%i)" % (
-                                filename, (label), events_L[i].GetFrame()))
+                            LOGGER.logger.warning(
+                                "[pyCGM2-Anomaly] file (%s) - Wrong Left Event - two consecutive (%s) detected at frame (%i)" % (filename, (label), frame))
                             errorState = True
+
                         init = label
                 else:
                     LOGGER.logger.warning(
                         "[pyCGM2-Anomaly] Only one left events")
 
+
+
+                # init = events_L[0].GetLabel()
+                # if len(events_L) > 1:
+                #     for i in range(1, len(events_L)):
+                #         label = events_L[i].GetLabel()
+
+                #         if label == init:
+                #             LOGGER.logger.warning("[pyCGM2-Anomaly] file (%s) - Wrong Left Event - two consecutive (%s) detected at frane (%i)" % (
+                #                 filename, (label), events_L[i].GetFrame()))
+                #             errorState = True
+                #         init = label
+                # else:
+                #     LOGGER.logger.warning(
+                #         "[pyCGM2-Anomaly] Only one left events")
+
             if events_R != []:
-                init = events_R[0].GetLabel()
                 if len(events_R) > 1:
-                    for i in range(1, len(events_R)):
-                        label = events_R[i].GetLabel()
+                    labels = [it.GetLabel() for it in btk.Iterate(
+                        events) if it.GetLabel() in ["Foot Strike", "Foot Off"] and it.GetContext() in ["Right"]]
+                    frames = [it.GetFrame() for it in btk.Iterate(
+                        events) if it.GetLabel() in ["Foot Strike", "Foot Off"] and it.GetContext() in ["Right"]]
+                                    
+                    # sort
+                    asso = sorted(zip(frames, labels))
+                    frames_sorted, labels_sorted = zip(*asso)
+                    frames_sorted = list(frames_sorted)
+                    labels_sorted = list(labels_sorted)
+
+                    init = labels_sorted[0]
+                    for i in range(1, len(labels_sorted)):
+                        label = labels_sorted[i]
+                        frame = frames_sorted[i]
                         if label == init:
-                            LOGGER.logger.warning("[pyCGM2-Anomaly] file (%s) - Wrong Right Event - two consecutive (%s) detected at frane (%i)" % (
-                                filename, (label), events_R[i].GetFrame()))
+                            LOGGER.logger.warning(
+                                "[pyCGM2-Anomaly] file (%s) - Wrong Right Event - two consecutive (%s) detected at frame (%i)" % (filename, (label), frame))
                             errorState = True
+
                         init = label
                 else:
                     LOGGER.logger.warning(
                         "[pyCGM2-Anomaly] Only one right events ")
 
         else:
-            LOGGER.logger.info(
-                "[pyCGM2-Anomaly] No events are in trial (%s)" % (filename))
-            self.anomaly["Output"] = "No events"
+            LOGGER.logger.warning(
+                "[pyCGM2-Anomaly] No gait events are in the trial (%s)" % (filename))
+            self.anomaly["Output"] = "No gait events"
 
         self.anomaly["ErrorState"] = errorState
         return errorState
