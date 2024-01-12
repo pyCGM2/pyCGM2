@@ -1356,6 +1356,7 @@ def renameEvent(acq:btk.btkAcquisition, label:str, context:str, newlabel:str, ne
         if it.GetContext() == context and it.GetLabel() == label:
             it.SetLabel(newlabel)
             it.SetContext(newcontext)
+            it.SetSubject("")
     
 
 def cleanAcq(acq:btk.btkAcquisition):
@@ -1372,6 +1373,17 @@ def cleanAcq(acq:btk.btkAcquisition):
 
     nframes = acq.GetPointFrameNumber()
 
+    combinaisons = [
+        np.zeros(3),
+        np.array([0, 0, 180]),
+        np.array([0, 180, 0]),
+        np.array([180, 0, 0]),
+        np.array([180, 180, 0]),
+        np.array([0, 180, 180]),
+        np.array([180, 0, 180]),
+        np.array([180, 180, 180])]
+        
+                            
     for it in btk.Iterate(acq.GetPoints()):
         if it.GetType() in [btk.btkPoint.Marker,  
                             btk.btkPoint.Angle, 
@@ -1380,13 +1392,15 @@ def cleanAcq(acq:btk.btkAcquisition):
                             btk.btkPoint.Power]:
             values = it.GetValues()
 
-            if np.all(values == np.zeros(3)) or np.all(values == np.array([180, 0, 180])):
+            if any(np.all(values == combo) for combo in combinaisons):
+ 
+                #if np.all(values == np.zeros(3)) or np.all(values == np.array([0, 0, 180])) or np.all(values == np.array([0, 180, 0])) or np.all(values == np.array([180, 0, 0]))  or np.all(values == np.array([180, 180, 0])) or np.all(values == np.array([0, 180, 180])) or np.all(values == np.array([180, 0, 180])) or np.all(values == np.array([180, 180, 180])):
                 LOGGER.logger.debug(
                     "point %s remove from acquisition" % (it.GetLabel()))
                 acq.RemovePoint(it.GetLabel())
 
 
-def smartCreateEvent(acq:btk.btkAcquisition, label:str, context:str, frame:int, type:str="Automatic", subject:str="", desc:str=""):
+def smartCreateEvent(acq:btk.btkAcquisition, label:str, context:str, frame:int, type:str="Automatic", subject:str="", desc:str="",id:int=0):
     """
     Creates a new event in the BTK acquisition.
 
@@ -1398,6 +1412,7 @@ def smartCreateEvent(acq:btk.btkAcquisition, label:str, context:str, frame:int, 
         type (str, optional): Type of the event (e.g., 'Automatic', 'Manual'). Defaults to 'Automatic'.
         subject (str, optional): Name of the subject associated with the event. Defaults to an empty string.
         desc (str, optional): Description of the event. Defaults to an empty string.
+        id (int, optional): id integer (0,1 or 2 for general, Foot Strike and Foot off respectively). Defaults to 0.
 
     Returns:
         None: The event is added directly to the acquisition object.
@@ -1416,6 +1431,7 @@ def smartCreateEvent(acq:btk.btkAcquisition, label:str, context:str, frame:int, 
     time = frame / acq.GetPointFrequency()
     ev = btk.btkEvent(label, time, context, type, subject, desc)
     ev.SetFrame(int(frame))
+    ev.SetId(int(id))
     acq.AppendEvent(ev)
 
 
