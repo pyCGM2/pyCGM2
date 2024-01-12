@@ -7,7 +7,9 @@ from pyCGM2.QTM import qtmTools
 from pyCGM2.Utils import utils
 from pyCGM2.Utils import files
 from pyCGM2.Lib.CGM import cgm1, cgm1_1
-from pyCGM2.Lib.CGM import cgm2_1, cgm2_2, cgm2_3, cgm2_4, cgm2_5
+from pyCGM2.Lib.CGM import cgm2_1
+from pyCGM2.Lib.CGM.musculoskeletal import cgm2_2,cgm2_3 
+from pyCGM2.Lib.CGM import  cgm2_4, cgm2_5
 import shutil
 import os
 
@@ -150,16 +152,19 @@ def main(args=None):
     # Calibration operation
     # --------------------
     if CGM2_Model == "CGM1.0":
+    
         model, acqStatic, detectAnomaly = cgm1.calibrate(DATA_PATH, calibrateFilenameLabelled, translators,
                                                         required_mp, optional_mp,
                                                         leftFlatFoot, rightFlatFoot, headFlat, markerDiameter,
                                                         pointSuffix,
                                                         anomalyException=anomalyException)
     elif CGM2_Model == "CGM1.1":
+    
         model,acqStatic,detectAnomaly = cgm1_1.calibrate(DATA_PATH,calibrateFilenameLabelled,translators,
                   required_mp,optional_mp,
                   leftFlatFoot,rightFlatFoot,headFlat,markerDiameter,
                   pointSuffix,anomalyException=anomalyException)
+    
     elif CGM2_Model == "CGM2.1-HJC":
         hjcMethod = settings["Calibration"]["HJC"]
 
@@ -175,8 +180,7 @@ def main(args=None):
     elif CGM2_Model == "CGM2.2-IK":
         hjcMethod = settings["Calibration"]["HJC"]
 
-        if musculoSkeletalModel:
-            model,acqStatic,detectAnomaly = cgm2_2exp.calibrate(DATA_PATH,
+        model,acqStatic,detectAnomaly = cgm2_2.calibrate(DATA_PATH,
                 calibrateFilenameLabelled,
                 translators,settings,
                 required_mp,optional_mp,
@@ -185,22 +189,12 @@ def main(args=None):
                 hjcMethod,
                 pointSuffix,
                 anomalyException=anomalyException)
-        else:
-            model,acqStatic,detectAnomaly = cgm2_2.calibrate(DATA_PATH,
-                calibrateFilenameLabelled,
-                translators,settings,
-                required_mp,optional_mp,
-                False,
-                leftFlatFoot,rightFlatFoot,headFlat,markerDiameter,
-                hjcMethod,
-                pointSuffix,
-                anomalyException=anomalyException)
+        
 
     elif CGM2_Model == "CGM2.3-skinClusters":
         hjcMethod = settings["Calibration"]["HJC"]
-    
-        if musculoSkeletalModel:
-            model,acqStatic,detectAnomaly = cgm2_3exp.calibrate(DATA_PATH,
+
+        model,acqStatic,detectAnomaly = cgm2_3.calibrate(DATA_PATH,
             calibrateFilenameLabelled,
             translators,settings,
             required_mp,optional_mp,
@@ -209,55 +203,46 @@ def main(args=None):
             hjcMethod,
             pointSuffix,
             anomalyException=anomalyException)
-        else:
-            model,acqStatic,detectAnomaly = cgm2_3.calibrate(DATA_PATH,
-                calibrateFilenameLabelled,
-                translators,settings,
-                required_mp,optional_mp,
-                False,
-                leftFlatFoot,rightFlatFoot,headFlat,markerDiameter,
-                hjcMethod,
-                pointSuffix,
-                anomalyException=anomalyException)
+
 
     elif CGM2_Model == "CGM2.4-ForeFoot":
         hjcMethod = settings["Calibration"]["HJC"]
 
         model,acqStatic,detectAnomaly = cgm2_4.calibrate(DATA_PATH,
-        calibrateFilenameLabelled,
-        translators,settings,
-        required_mp,optional_mp,
-        False,
-        leftFlatFoot,rightFlatFoot,headFlat,markerDiameter,
-        hjcMethod,
-        pointSuffix,
-        anomalyException=anomalyException)
+            calibrateFilenameLabelled,
+            translators,settings,
+            required_mp,optional_mp,
+            False,
+            leftFlatFoot,rightFlatFoot,headFlat,markerDiameter,
+            hjcMethod,
+            pointSuffix,
+            anomalyException=anomalyException)
 
     elif CGM2_Model == "CGM2.5-UpperLimb":
         hjcMethod = settings["Calibration"]["HJC"]
 
         model,acqStatic,detectAnomaly = cgm2_5.calibrate(DATA_PATH,
-        calibrateFilenameLabelled,
-        translators,settings,
-        required_mp,optional_mp,
-        False,
-        leftFlatFoot,rightFlatFoot,headFlat,markerDiameter,
-        hjcMethod,
-        pointSuffix,
-        anomalyException=anomalyException)
+            calibrateFilenameLabelled,
+            translators,settings,
+            required_mp,optional_mp,
+            False,
+            leftFlatFoot,rightFlatFoot,headFlat,markerDiameter,
+            hjcMethod,
+            pointSuffix,
+            anomalyException=anomalyException)
     
     elif CGM2_Model == "CGM2.6-Knee Calibration":
         hjcMethod = settings["Calibration"]["HJC"]
 
         model,acqStatic,detectAnomaly = cgm2_5.calibrate(DATA_PATH,
-        calibrateFilenameLabelled,
-        translators,settings,
-        required_mp,optional_mp,
-        False,
-        leftFlatFoot,rightFlatFoot,headFlat,markerDiameter,
-        hjcMethod,
-        pointSuffix,
-        anomalyException=anomalyException)
+            calibrateFilenameLabelled,
+            translators,settings,
+            required_mp,optional_mp,
+            False,
+            leftFlatFoot,rightFlatFoot,headFlat,markerDiameter,
+            hjcMethod,
+            pointSuffix,
+            anomalyException=anomalyException)
 
     btkTools.cleanAcq(acqStatic)    
     
@@ -428,41 +413,27 @@ def main(args=None):
         elif CGM2_Model == "CGM2.2-IK":
             ik_flag = True
             ikAccuracy = float(dynamicMeasurement.IkAccuracy.text)
-            if musculoSkeletalModel:
-                acqGait,detectAnomaly = cgm2_2exp.fitting(model,DATA_PATH, reconstructFilenameLabelled,
-                            translators,settings,
-                            ik_flag,
-                            markerDiameter,
-                            pointSuffix,
-                            mfpa,momentProjection,
-                            fc_lowPass_marker=fc_marker,
-                            order_lowPass_marker=order_marker,
-                            fc_lowPass_forcePlate = fc_fp,
-                            order_lowPass_forcePlate = order_fp,
-                            anomalyException=anomalyException,
-                            ikAccuracy =ikAccuracy,
-                            frameInit= vff, frameEnd= vlf )         
-            else:
-
-                acqGait,detectAnomaly = cgm2_2.fitting(model,DATA_PATH, reconstructFilenameLabelled,
-                    translators,settings,
-                    ik_flag,
-                    markerDiameter,
-                    pointSuffix,
-                    mfpa,momentProjection,
-                    fc_lowPass_marker=fc_marker,
-                    order_lowPass_marker=order_marker,
-                    fc_lowPass_forcePlate = fc_fp,
-                    order_lowPass_forcePlate = order_fp,
-                    anomalyException=anomalyException,
-                    ikAccuracy =ikAccuracy,
-                    frameInit= vff, frameEnd= vlf )
+            
+            acqGait,detectAnomaly = cgm2_2.fitting(model,DATA_PATH, reconstructFilenameLabelled,
+                        translators,settings,
+                        ik_flag,
+                        markerDiameter,
+                        pointSuffix,
+                        mfpa,momentProjection,
+                        fc_lowPass_marker=fc_marker,
+                        order_lowPass_marker=order_marker,
+                        fc_lowPass_forcePlate = fc_fp,
+                        order_lowPass_forcePlate = order_fp,
+                        anomalyException=anomalyException,
+                        ikAccuracy =ikAccuracy,
+                        frameInit= vff, frameEnd= vlf )         
+            
         elif CGM2_Model == "CGM2.3-skinClusters":
             ikAccuracy = float(dynamicMeasurement.IkAccuracy.text)
             ik_flag = True
 
-            if musculoSkeletalModel:
-                acqGait,detectAnomaly = cgm2_3exp.fitting(model,DATA_PATH, reconstructFilenameLabelled,
+
+            acqGait,detectAnomaly = cgm2_3.fitting(model,DATA_PATH, reconstructFilenameLabelled,
                 translators,settings,
                 ik_flag,markerDiameter,
                 pointSuffix,
@@ -477,21 +448,6 @@ def main(args=None):
                 frameInit= vff, frameEnd= vlf,
                 muscleLength=True)
             
-            else:
-                acqGait,detectAnomaly = cgm2_3.fitting(model,DATA_PATH, reconstructFilenameLabelled,
-                    translators,settings,
-                    ik_flag,markerDiameter,
-                    pointSuffix,
-                    mfpa,
-                    momentProjection,
-                    fc_lowPass_marker=fc_marker,
-                    order_lowPass_marker=order_marker,
-                    fc_lowPass_forcePlate = fc_fp,
-                    order_lowPass_forcePlate = order_fp,
-                    anomalyException=anomalyException,
-                    ikAccuracy = ikAccuracy,
-                    frameInit= vff, frameEnd= vlf )
-
         elif CGM2_Model == "CGM2.4-ForeFoot":
             ikAccuracy = float(dynamicMeasurement.IkAccuracy.text)
             ik_flag = True
