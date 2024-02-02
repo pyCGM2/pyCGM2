@@ -56,8 +56,11 @@ def main(args=None):
 
     dynamicMeasurements = qtmTools.findDynamic(sessionXML)
     for dynamicMeasurement in dynamicMeasurements:
+        
         reconstructFilenameLabelled = qtmTools.getFilename(dynamicMeasurement)
         filenameNoExt = reconstructFilenameLabelled[:-4]
+        
+        LOGGER.logger.info(f"---File : {reconstructFilenameLabelled}----")
 
         # marker
         order_marker = int(
@@ -71,7 +74,14 @@ def main(args=None):
 
         eventNumber = acq.GetEvents().GetItemNumber()
 
-        if eventNumber == 0:
+        qlfs =  btkTools.smartGetEvents (acq,"Left Foot Strike","")
+        qlfo =  btkTools.smartGetEvents (acq,"Left Foot Off","")
+        qrfs =  btkTools.smartGetEvents (acq,"Right Foot Strike","")
+        qrfo =  btkTools.smartGetEvents (acq,"Right Foot Off","")
+
+
+
+        if not all([qlfs, qlfo, qrfs, qrfo]):
             detectAnomaly = True
 
             LOGGER.logger.error (f"file [{filenameNoExt}] has no events. Zeni kinematic-based gait event runs")
@@ -91,23 +101,18 @@ def main(args=None):
                 acq, reconstructFilenameLabelled, geap)
             anomaly_events = adf.run() #anomaly_events["ErrorState"]
             
-
             out = {"Events":{}}
-            out["Events"] = {"LeftFootStrike":lfs,
-                   "LeftFootOff":lfo,
-                   "RightFootStrike":rfs,
-                   "RightFootOff":rfo}
+            out["Events"] = {"LeftFootStrike":  [x / acq.GetPointFrequency() for x in lfs],
+                   "LeftFootOff":[x / acq.GetPointFrequency() for x in lfo],
+                   "RightFootStrike":[x / acq.GetPointFrequency() for x in rfs],
+                   "RightFootOff":[x / acq.GetPointFrequency() for x in rfo]}
 
             files.saveJson( DATA_PATH, reconstructFilenameLabelled[:-4]+"-events.json", out)
             
             LOGGER.logger.warning (f"file [{filenameNoExt}]- Update your gait events in QTM and check them")     
 
         else:
-
-            qlfs =  btkTools.smartGetEvents (acq,"Left Foot Strike","")
-            qlfo =  btkTools.smartGetEvents (acq,"Left Foot Off","")
-            qrfs =  btkTools.smartGetEvents (acq,"Right Foot Strike","")
-            qrfo =  btkTools.smartGetEvents (acq,"Right Foot Off","")
+            LOGGER.logger.error (f"file [{filenameNoExt}] already contains events")
 
             if qlfs !=[]:
                 for it in qlfs:
@@ -127,11 +132,13 @@ def main(args=None):
             adf = anomalyFilters.AnomalyDetectionFilter(
                 acq, reconstructFilenameLabelled, geap)
             anomaly_events = adf.run()
+
+
             if anomaly_events["ErrorState"]:
                 detectAnomaly = True
                 LOGGER.logger.error(f"file [{filenameNoExt}] bad gait event detected -  check you QTM events")
-            
-            
+        LOGGER.logger.info("----------------------------------------------")
+
     if detectAnomaly:
         LOGGER.logger.error("QTM Gait Events need to be updated or checked. see content of the log file")
         LOGGER.logger.error("Then regenerate c3d")

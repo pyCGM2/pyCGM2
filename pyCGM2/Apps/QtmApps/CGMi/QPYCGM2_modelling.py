@@ -28,6 +28,7 @@ def main(args=None):
     LOGFILE = "pyCGM2-QTM-CGM2-Modelling.log"
     LOGGER.set_file_handler(LOGFILE)
 
+
     if args is None:
         parser = argparse.ArgumentParser(description='QTM CGM Modelling')
         parser.add_argument('--sessionFile', type=str,
@@ -37,6 +38,9 @@ def main(args=None):
     else:
         sessionFilename="session.xml"
     
+    if args.debug:
+        LOGGER.setLevel("debug")
+
     detectAnomaly = False
 
     

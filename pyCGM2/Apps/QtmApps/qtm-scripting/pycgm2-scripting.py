@@ -35,22 +35,22 @@ def _updateEvent():
     
     for it in events["Events"]["LeftFootStrike"]:
         color = qtm.utilities.color.rgb(1, 0, 0)
-        event = {"label": "Left Foot Strike", "time": it/100, "color": color}
+        event = {"label": "Left Foot Strike", "time": it, "color": color}
         qtm.data.object.event.add_event(event)
 
     for it in events["Events"]["LeftFootOff"]:
         color = qtm.utilities.color.rgb(1, 0.6, 0.6)
-        event = {"label": "Left Foot Off", "time": it/100, "color": color}
+        event = {"label": "Left Foot Off", "time": it, "color": color}
         qtm.data.object.event.add_event(event)
 
     for it in events["Events"]["RightFootStrike"]:
         color = qtm.utilities.color.rgb(0, 0, 1)
-        event = {"label": "Right Foot Strike", "time": it/100, "color": color}
+        event = {"label": "Right Foot Strike", "time": it, "color": color}
         qtm.data.object.event.add_event(event)
 
     for it in events["Events"]["RightFootOff"]:
         color = qtm.utilities.color.rgb(0.6, 0.6, 1)
-        event = {"label": "Right Foot Off", "time": it/100, "color": color}
+        event = {"label": "Right Foot Off", "time": it, "color": color}
         qtm.data.object.event.add_event(event)
 
 
