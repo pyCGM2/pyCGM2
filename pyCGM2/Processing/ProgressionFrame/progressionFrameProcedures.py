@@ -222,7 +222,7 @@ class PelvisProgressionFrameProcedure(ProgressionFrameProcedure):
 
         LOGGER.logger.info("Progression axis : %s"%(progressionAxis))
         LOGGER.logger.info("forwardProgression : %s"%((forwardProgression)))
-        LOGGER.logger.info("globalFrame : %s"%((globalFrame)))
+        LOGGER.logger.debug("globalFrame : %s"%((globalFrame)))
 
 
         return   progressionAxis,forwardProgression,globalFrame
@@ -362,7 +362,7 @@ class ThoraxProgressionFrameProcedure(ProgressionFrameProcedure):
 
         LOGGER.logger.info("Progression axis : %s"%(progressionAxis))
         LOGGER.logger.info("forwardProgression : %s"%((forwardProgression)))
-        LOGGER.logger.info("globalFrame : %s"%((globalFrame)))
+        LOGGER.logger.debug("globalFrame : %s"%((globalFrame)))
 
 
         return   progressionAxis,forwardProgression,globalFrame

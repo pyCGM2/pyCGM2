@@ -167,7 +167,7 @@ def matchingFootSideOnForceplate (btkAcq:btk.btkAcquisition,
             for i in range(0,pfc.GetItemNumber()):
                 pfIDS.append( re.findall( "\[(.*?)\]" ,pfc.GetItem(i).GetChannel(0).GetDescription())[0])
         except Exception:
-            LOGGER.logger.info("[pyCGM2]: Id of Force plate not detected")
+            LOGGER.logger.debug("[pyCGM2]: Id of Force plate not detected")
             pass
 
     for i in range(0,grwc.GetItemNumber()):
@@ -283,7 +283,7 @@ def matchingFootSideOnForceplate (btkAcq:btk.btkAcquisition,
         if mfpa is not None:
             correctedSuffix=""
             if type(mfpa) == dict:
-                LOGGER.logger.info("[pyCGM2] : automatic force plate assigment corrected with context associated with the device Id  ")
+                LOGGER.logger.debug("[pyCGM2] : automatic force plate assigment corrected with context associated with the device Id  ")
                 i=0
                 for id in pfIDS:
                     fpa = mfpa[id]
@@ -293,12 +293,12 @@ def matchingFootSideOnForceplate (btkAcq:btk.btkAcquisition,
                         correctedSuffix = correctedSuffix + suffix[i]
                     i+=1
             else:
-                LOGGER.logger.info("[pyCGM2] : automatic force plate assigment corrected  ")
+                LOGGER.logger.debug("[pyCGM2] : automatic force plate assigment corrected  ")
                 if len(mfpa) < len(suffix):
                     raise Exception("[pyCGM2] number of assigned force plate inferior to the number of force plate number. Your assignment should have  %s letters at least" %(str(len(suffix))))
                 else:
                     if len(mfpa) > len(suffix):
-                        LOGGER.logger.info("[pyCGM2]: Your manual force plate assignement mentions more force plates than the number of force plates stored in the c3d")
+                        LOGGER.logger.debug("[pyCGM2]: Your manual force plate assignement mentions more force plates than the number of force plates stored in the c3d")
                     for i in range(0, len(suffix)):
                         if mfpa[i] != "A":
                             correctedSuffix = correctedSuffix + mfpa[i]
@@ -611,11 +611,11 @@ def detectGaitConsecutiveForcePlates(acq:btk.btkAcquisition,
             if sum(forces>threshold) >1 :
                 raise Exception ("[pyCGM2] - more than 2 Force plates are detected ( check your force plate assignement)  ")
             elif sum(forces>threshold) == 0:
-                LOGGER.logger.info("no simultaneous contact")
+                LOGGER.logger.debug("no simultaneous contact")
             else:
                 otherFPindex = np.where(forces>threshold)[0][0]
                 if mappedForcePlate[otherFPindex] == "R":
-                    LOGGER.logger.info(f" FP#{index}:Left- opposite contact ( right) on force plate {otherFPindex}")
+                    LOGGER.logger.debug(f" FP#{index}:Left- opposite contact ( right) on force plate {otherFPindex}")
                     leading = index
                     trailing = otherFPindex
                     consecutive["Left"].append([leading, trailing])
@@ -632,10 +632,10 @@ def detectGaitConsecutiveForcePlates(acq:btk.btkAcquisition,
             if sum(forces>threshold) >1 :
                 raise Exception ("[pyCGM2] - more than 2 Force plates are detected ( check your force plate assignement)  ")
             elif sum(forces>threshold) == 0:
-                LOGGER.logger.info("no simultaneous contact")
+                LOGGER.logger.debug("no simultaneous contact")
             else:
                 otherFPindex = np.where(forces>threshold)[0][0]
-                LOGGER.logger.info(f" FP#{index}:Right- opposite contact ( Left) on force plate {otherFPindex}")
+                LOGGER.logger.debug(f" FP#{index}:Right- opposite contact ( Left) on force plate {otherFPindex}")
                 if mappedForcePlate[otherFPindex] == "L":
                     leading = index
                     trailing = otherFPindex

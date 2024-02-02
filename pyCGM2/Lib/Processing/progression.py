@@ -28,7 +28,7 @@ def detectProgressionFrame(acq:btk.btkAcquisition, staticFlag:bool=False):
 
     if staticFlag:
         if btkTools.isPointsExist(acq, ['LASI', 'RASI', 'RPSI', 'LPSI'], ignorePhantom=False) and not progressionFlag:
-            LOGGER.logger.info(
+            LOGGER.logger.debug(
                 "[pyCGM2] - progression axis detected from Pelvic markers ")
             pfp = progressionFrameProcedures.PelvisProgressionFrameProcedure()
             pff = progressionFrameFilters.ProgressionFrameFilter(acq, pfp)
@@ -39,7 +39,7 @@ def detectProgressionFrame(acq:btk.btkAcquisition, staticFlag:bool=False):
 
             progressionFlag = True
         elif btkTools.isPointsExist(acq, ['C7', 'T10', 'CLAV', 'STRN'], ignorePhantom=False) and not progressionFlag:
-            LOGGER.logger.info(
+            LOGGER.logger.debug(
                 "[pyCGM2] - progression axis detected from Thoracic markers ")
             pfp = progressionFrameProcedures.ThoraxProgressionFrameProcedure()
             pff = progressionFrameFilters.ProgressionFrameFilter(acq, pfp)
@@ -56,7 +56,7 @@ def detectProgressionFrame(acq:btk.btkAcquisition, staticFlag:bool=False):
                 "[pyCGM2] - impossible to detect progression axis - neither pelvic nor thoracic markers are present. Progression set to +X by default ")
     else:
         if btkTools.isPointsExist(acq, ['LASI', 'RASI', 'RPSI', 'LPSI'], ignorePhantom=False) and not progressionFlag:
-            LOGGER.logger.info(
+            LOGGER.logger.debug(
                 "[pyCGM2] - progression axis detected from Pelvic markers ")
             pfp = progressionFrameProcedures.PelvisProgressionFrameProcedure()
             pff = progressionFrameFilters.ProgressionFrameFilter(acq, pfp)
@@ -67,7 +67,7 @@ def detectProgressionFrame(acq:btk.btkAcquisition, staticFlag:bool=False):
 
             progressionFlag = True
         elif btkTools.isPointsExist(acq, ['C7', 'T10', 'CLAV', 'STRN'], ignorePhantom=False) and not progressionFlag:
-            LOGGER.logger.info(
+            LOGGER.logger.debug(
                 "[pyCGM2] - progression axis detected from Thoracic markers ")
             pfp = progressionFrameProcedures.ThoraxProgressionFrameProcedure()
             pff = progressionFrameFilters.ProgressionFrameFilter(acq, pfp)
