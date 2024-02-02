@@ -74,7 +74,7 @@ def calibrate(DATA_PATH:str,calibrateFilenameLabelled:str,translators:Dict,
         acqStatic = btkTools.smartReader((DATA_PATH+calibrateFilenameLabelled))
 
     btkTools.checkMultipleSubject(acqStatic)
-    if btkTools.isPointExist(acqStatic,"SACR"):
+    if btkTools.isPointExist(acqStatic,"SACR") and not btkTools.isPointExist(acqStatic,"LPSI") and not btkTools.isPointExist(acqStatic,"RPSI"):
         translators["LPSI"] = "SACR"
         translators["RPSI"] = "SACR"
         LOGGER.logger.info("[pyCGM2] Sacrum marker detected")
@@ -290,7 +290,7 @@ def fitting(model:Model,DATA_PATH:str, reconstructFilenameLabelled:str,
         acqGait = btkTools.smartReader((DATA_PATH + reconstructFilenameLabelled))
 
     btkTools.checkMultipleSubject(acqGait)
-    if btkTools.isPointExist(acqGait,"SACR"):
+    if btkTools.isPointExist(acqGait,"SACR") and not btkTools.isPointExist(acqGait,"LPSI") and not btkTools.isPointExist(acqGait,"RPSI"):
         translators["LPSI"] = "SACR"
         translators["RPSI"] = "SACR"
         LOGGER.logger.info("[pyCGM2] Sacrum marker detected")
@@ -312,7 +312,7 @@ def fitting(model:Model,DATA_PATH:str, reconstructFilenameLabelled:str,
     # --------------------ANOMALY------------------------------
     for marker in actual_trackingMarkers:
         if marker not in model.getStaticTrackingMarkers():
-            LOGGER.logger.warning("[pyCGM2-Anomaly]  marker [%s] - not used during static calibration - wrong kinematic for the segment attached to this marker. "%(marker))
+            LOGGER.logger.debug("[pyCGM2-Anomaly]  marker [%s] - not used during static calibration - wrong kinematic for the segment attached to this marker. "%(marker))
 
     # --marker presence
     markersets = [cgm.CGM1.LOWERLIMB_TRACKING_MARKERS, cgm.CGM1.THORAX_TRACKING_MARKERS, cgm.CGM1.UPPERLIMB_TRACKING_MARKERS]
