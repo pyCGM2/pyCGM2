@@ -35,8 +35,8 @@ from pyCGM2.Apps.ViconApps.Plot import kinetics
 from pyCGM2.Apps.ViconApps.Plot import emg
 
 from pyCGM2.Apps.QtmApps.CGMi import QPYCGM2_events
-from pyCGM2.Apps.QtmApps.CGMi import QCGM_modelling
-from pyCGM2.Apps.QtmApps.CGMi import QCGM_processing
+from pyCGM2.Apps.QtmApps.CGMi import QPYCGM2_modelling
+from pyCGM2.Apps.QtmApps.CGMi import QPYCGM2_processing
 
 
 
@@ -541,7 +541,11 @@ class MainParser:
         qtm_cgm_subparser = qtm_cgm_parser.add_subparsers(help='', dest='CGM')
 
         cgmModelling_parser = qtm_cgm_subparser.add_parser("Modelling", help= "CGM Modelling command")
+        cgmModelling_parser.add_argument('--debug', action='store_true',
+                            help='set logger as debug mode')
         cgmProcessing_parser = qtm_cgm_subparser.add_parser("Processing", help= "CGM processing command")
+        cgmProcessing_parser.add_argument('--debug', action='store_true',
+                            help='set logger as debug mode')
 
 
     def get_parser(self):
@@ -621,6 +625,7 @@ class MainParser:
 
 
             elif "NEXUS" in args:
+
                 if args.NEXUS == "CGM1.0":
                     if args.CGM10 == "Calibration":
                         CGM1_Calibration.main(args)
@@ -684,7 +689,6 @@ class MainParser:
                         GloersenGapFilling.main(args)
                 
                 #--Plots---
-
                 elif args.NEXUS == "Plots":
                     if args.Plots == "STP":
                         spatioTemporalParameters.horizontalHistogram(args)
@@ -698,12 +702,13 @@ class MainParser:
                         elif args.Kinematics == "MAP":
                             scores.map(args)
 
+                        
                     elif args.Plots == "Kinetics":
-                        if args.kinetics == "Temporal":
+                        if args.Kinetics == "Temporal":
                             kinetics.temporal(args)
-                        elif args.kinetics == "Normalized":
+                        elif args.Kinetics == "Normalized":
                             kinetics.normalized(args)
-                        elif args.kinetics == "Comparison":
+                        elif args.Kinetics == "Comparison":
                             kinetics.normalizedComparison(args)
 
                     elif args.Plots == "EMG":
@@ -720,9 +725,9 @@ class MainParser:
 
             elif "QTM" in args:
                 if args.QTM == "CGM" and args.CGM == "Modelling":
-                    QCGM_modelling.main(args)
+                    QPYCGM2_modelling.main(args)
                 elif args.QTM == "CGM" and args.CGM == "Processing":
-                    QCGM_processing.main(args)
+                    QPYCGM2_processing.main(args)
                 elif args.QTM == "GaitEvents":
                     QPYCGM2_events.main(args)    
 

@@ -124,7 +124,7 @@ def normalized(args):
 
         analysisInstance = analysis.makeAnalysis(DATA_PATH,
                             [modelledFilename],
-                            type="Gait",
+                            eventType="Gait",
                             kinematicLabelsDict = None,
                             emgChannels = None,
                             pointLabelSuffix=pointSuffix,
@@ -136,7 +136,7 @@ def normalized(args):
 
         analysisInstance = analysis.makeAnalysis(DATA_PATH,
                             modelledFilenames,
-                            type="Gait",
+                            eventType="Gait",
                             kinematicLabelsDict = None,
                             emgChannels = None,
                             pointLabelSuffix=pointSuffix,
@@ -212,16 +212,16 @@ def normalizedComparison(args):
 
             analysisInstance1 = analysis.makeAnalysis(path0,
                                 [modelledFilenames[0]],
-                                type="Gait",
+                                eventType="Gait",
                                 kinematicLabelsDict=None,
                                 emgChannels = None,
                                 pointLabelSuffix=pointSuffix,
                                 subjectInfo=None, experimentalInfo=None,modelInfo=None,
                                 )
 
-            analysisInstance2 = analysisInstance1 = analysis.makeAnalysis(path1,
+            analysisInstance2  = analysis.makeAnalysis(path1,
                                 [modelledFilenames[1]],
-                                type="Gait",
+                                eventType="Gait",
                                 kinematicLabelsDict=None,
                                 emgChannels = None,
                                 pointLabelSuffix=pointSuffix,
@@ -234,10 +234,12 @@ def normalizedComparison(args):
         comparisonDetails =  modelledFilenames[0] + " Vs " + modelledFilenames[1]
         legends =[modelledFilenames[0],modelledFilenames[1]]
 
-        plot.compareKinetic(DATA_PATH,analysesToCompare,legends,"Left","LowerLimb",nds,plotType=plotType,type="Gait",pointSuffixes=None,
+        import ipdb; ipdb.set_trace()
+
+        plot.compareKinetic(DATA_PATH,analysesToCompare,legends,"Left","LowerLimb",nds,plotType=plotType,eventType="Gait",pointSuffixes=None,
                 show=False, outputName=comparisonDetails,exportPdf=True)
 
-        plot.compareKinetic(DATA_PATH,analysesToCompare,legends,"Right","LowerLimb",nds,plotType=plotType,type="Gait",pointSuffixes=None,
+        plot.compareKinetic(DATA_PATH,analysesToCompare,legends,"Right","LowerLimb",nds,plotType=plotType,eventType="Gait",pointSuffixes=None,
                 show=False, outputName=comparisonDetails,exportPdf=True)
 
         plt.show()

@@ -134,7 +134,7 @@ def normalized(args):
         # --------------------------PROCESSING --------------------------------
         analysisInstance = analysis.makeAnalysis(DATA_PATH,
                             [modelledFilename],
-                            type="Gait",
+                            eventType="Gait",
                             kineticLabelsDict = None,
                             emgChannels = None,
                             pointLabelSuffix=pointSuffix,
@@ -148,7 +148,7 @@ def normalized(args):
 
         analysisInstance = analysis.makeAnalysis(DATA_PATH,
                             modelledFilenames,
-                            type="Gait",
+                            eventType="Gait",
                             kineticLabelsDict = None,
                             emgChannels = None,
                             pointLabelSuffix=pointSuffix,
@@ -229,7 +229,7 @@ def normalizedComparison(args):
         if len(modelledFilenames) == 2:
             analysisInstance1 = analysis.makeAnalysis(path0,
                                 [modelledFilenames[0]],
-                                type="Gait",
+                                eventType="Gait",
                                 kineticLabelsDict=None,
                                 emgChannels = None,
                                 pointLabelSuffix=pointSuffix,
@@ -238,7 +238,7 @@ def normalizedComparison(args):
 
             analysisInstance2 =  analysis.makeAnalysis(path1,
                                 [modelledFilenames[1]],
-                                type="Gait",
+                                eventType="Gait",
                                 kineticLabelsDict=None,
                                 emgChannels = None,
                                 pointLabelSuffix=pointSuffix,
@@ -251,19 +251,19 @@ def normalizedComparison(args):
         comparisonDetails =  modelledFilenames[0] + " Vs " + modelledFilenames[1]
         legends =[modelledFilenames[0],modelledFilenames[1]]
 
-        plot.compareKinematic(DATA_PATH,analysesToCompare,legends,"Left","LowerLimb",nds,plotType=plotType,type="Gait",pointSuffixes=None,
+        plot.compareKinematic(DATA_PATH,analysesToCompare,legends,"Left","LowerLimb",nds,plotType=plotType,eventType="Gait",pointSuffixes=None,
                 show=False, outputName=comparisonDetails,exportPdf=True)
-        plot.compareKinematic(DATA_PATH,analysesToCompare,legends,"Left","Trunk",nds,plotType=plotType,type="Gait",pointSuffixes=None,
+        plot.compareKinematic(DATA_PATH,analysesToCompare,legends,"Left","Trunk",nds,plotType=plotType,eventType="Gait",pointSuffixes=None,
                 show=False, outputName=comparisonDetails,exportPdf=True)
-        plot.compareKinematic(DATA_PATH,analysesToCompare,legends,"Left","UpperLimb",nds,plotType=plotType,type="Gait",pointSuffixes=None,
+        plot.compareKinematic(DATA_PATH,analysesToCompare,legends,"Left","UpperLimb",nds,plotType=plotType,eventType="Gait",pointSuffixes=None,
                 show=False, outputName=comparisonDetails,exportPdf=True)
 
 
-        plot.compareKinematic(DATA_PATH,analysesToCompare,legends,"Right","LowerLimb",nds,plotType=plotType,type="Gait",pointSuffixes=None,
+        plot.compareKinematic(DATA_PATH,analysesToCompare,legends,"Right","LowerLimb",nds,plotType=plotType,eventType="Gait",pointSuffixes=None,
                 show=False, outputName=comparisonDetails,exportPdf=True)
-        plot.compareKinematic(DATA_PATH,analysesToCompare,legends,"Right","Trunk",nds,plotType=plotType,type="Gait",pointSuffixes=None,
+        plot.compareKinematic(DATA_PATH,analysesToCompare,legends,"Right","Trunk",nds,plotType=plotType,eventType="Gait",pointSuffixes=None,
                 show=False, outputName=comparisonDetails,exportPdf=True)
-        plot.compareKinematic(DATA_PATH,analysesToCompare,legends,"Right","UpperLimb",nds,plotType=plotType,type="Gait",pointSuffixes=None,
+        plot.compareKinematic(DATA_PATH,analysesToCompare,legends,"Right","UpperLimb",nds,plotType=plotType,eventType="Gait",pointSuffixes=None,
                 show=False, outputName=comparisonDetails,exportPdf=True)
 
         plt.show()
