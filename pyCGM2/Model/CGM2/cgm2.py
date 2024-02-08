@@ -2231,8 +2231,7 @@ class CGM2_4(CGM2_3):
                     k+=1
 
             if motionMethod == enums.motionMethod.Sodervisk :
-                Ropt, Lopt, RMSE, Am, Bm= motion.segmentalLeastSquare(staticPos,
-                                                              dynPos)
+                Ropt, Lopt, RMSE, Am, Bm= motion.segmentalLeastSquare(staticPos,dynPos)
                 R=np.dot(Ropt,seg.getReferential("TF").static.getRotation())
                 tOri=np.dot(Ropt,seg.getReferential("TF").static.getTranslation())+Lopt
 
@@ -2350,13 +2349,6 @@ class CGM2_4(CGM2_3):
 
         return out
 
-    def opensimGeometry(self) -> Dict:
-        """
-        Returns a dictionary used to configure the osim file for OpenSim models.
-
-        Returns:
-            Dict: Configuration for osim file defining joints and segments relationships.
-        """
 
     def opensimIkTask(self) -> Dict:
         """
