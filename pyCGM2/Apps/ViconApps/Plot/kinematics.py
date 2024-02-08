@@ -55,7 +55,7 @@ def temporal(args):
         LOGGER.logger.info("Subject name : " + subject)
 
         # btkAcq builder
-        nacf = nexusFilters.NexusConstructAcquisitionFilter(
+        nacf = nexusFilters.NexusConstructAcquisitionFilter(NEXUS,
             DATA_PATH, modelledFilenameNoExt, subject)
         acq = nacf.build()
 
