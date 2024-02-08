@@ -48,7 +48,7 @@ def temporal(args):
         LOGGER.logger.info("Subject name : " + subject)
 
         # btkAcq builder
-        nacf = nexusFilters.NexusConstructAcquisitionFilter(
+        nacf = nexusFilters.NexusConstructAcquisitionFilter(NEXUS,
             DATA_PATH, modelledFilenameNoExt, subject)
         acq = nacf.build()
 
@@ -234,7 +234,6 @@ def normalizedComparison(args):
         comparisonDetails =  modelledFilenames[0] + " Vs " + modelledFilenames[1]
         legends =[modelledFilenames[0],modelledFilenames[1]]
 
-        import ipdb; ipdb.set_trace()
 
         plot.compareKinetic(DATA_PATH,analysesToCompare,legends,"Left","LowerLimb",nds,plotType=plotType,eventType="Gait",pointSuffixes=None,
                 show=False, outputName=comparisonDetails,exportPdf=True)
