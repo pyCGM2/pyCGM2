@@ -200,6 +200,79 @@ def quaternion_TO_rotationMatrix(quaternion: np.ndarray) -> np.ndarray:
     return rotMat
 
 
+# def setFrameData(a1: np.ndarray, a2: np.ndarray, sequence: str) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+#     """
+#     Sets the axes and rotation matrix of a coordinate system from two vectors and a sequence.
+
+#     Args:
+#         a1 (np.ndarray): First vector of shape (3,).
+#         a2 (np.ndarray): Second vector of shape (3,).
+#         sequence (str): Construction sequence (e.g., 'XYZ', 'XYiZ').
+
+#     Returns:
+#         Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]: The x-axis, y-axis, z-axis, and rotation matrix.
+#     """
+
+
+#     if sequence == "XYZ" or sequence == "XYiZ":
+#         if sequence == "XYiZ":
+#             a2 = a2*-1.0
+#         axisX = a1
+#         axisY = a2
+#         axisZ = np.cross(a1, a2)
+#         rot = np.array([axisX, axisY, axisZ]).T
+
+#     if sequence == "XZY" or sequence == "XZiY":
+#         if sequence == "XZiY":
+#             a2 = a2*-1.0
+#         axisX = a1
+#         axisZ = a2
+#         axisY = np.cross(a2, a1)
+#         rot = np.array([axisX, axisY, axisZ]).T
+
+#     if sequence == "YZX" or sequence == "YZiX":
+#         if sequence == "YZiX":
+#             a2 = a2*-1.0
+#         axisY = a1
+#         axisZ = a2
+#         axisX = np.cross(a1, a2)
+#         rot = np.array([axisX, axisY, axisZ]).T
+
+#     if sequence == "YXZ" or sequence == "YXiZ":
+#         if sequence == "YXiZ":
+#             a2 = a2*-1.0
+#         axisY = a1
+#         axisX = a2
+#         axisZ = np.cross(a2, a1)
+#         rot = np.array([axisX, axisY, axisZ]).T
+
+#     if sequence == "YXZ" or sequence == "YXiZ":
+#         if sequence == "YXiZ":
+#             a2 = a2*-1.0
+#         axisY = a1
+#         axisX = a2
+#         axisZ = np.cross(a2, a1)
+#         rot = np.array([axisX, axisY, axisZ]).T
+
+#     if sequence == "ZXY" or sequence == "ZXiY":
+#         if sequence == "ZXiY":
+#             a2 = a2*-1.0
+#         axisZ = a1
+#         axisX = a2
+#         axisY = np.cross(a1, a2)
+#         rot = np.array([axisX, axisY, axisZ]).T
+
+#     if sequence == "ZYX" or sequence == "ZYiX":
+#         if sequence == "ZYiX":
+#             a2 = a2*-1.0
+#         axisZ = a1
+#         axisY = a2
+#         axisX = np.cross(a2, a1)
+#         rot = np.array([axisX, axisY, axisZ]).T
+
+#     return axisX, axisY, axisZ, rot
+
+
 def setFrameData(a1: np.ndarray, a2: np.ndarray, sequence: str) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     """
     Sets the axes and rotation matrix of a coordinate system from two vectors and a sequence.
@@ -213,6 +286,7 @@ def setFrameData(a1: np.ndarray, a2: np.ndarray, sequence: str) -> Tuple[np.ndar
         Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]: The x-axis, y-axis, z-axis, and rotation matrix.
     """
 
+    rotations = []
 
     if sequence == "XYZ" or sequence == "XYiZ":
         if sequence == "XYiZ":
@@ -220,7 +294,7 @@ def setFrameData(a1: np.ndarray, a2: np.ndarray, sequence: str) -> Tuple[np.ndar
         axisX = a1
         axisY = a2
         axisZ = np.cross(a1, a2)
-        rot = np.array([axisX, axisY, axisZ]).T
+
 
     if sequence == "XZY" or sequence == "XZiY":
         if sequence == "XZiY":
@@ -228,7 +302,7 @@ def setFrameData(a1: np.ndarray, a2: np.ndarray, sequence: str) -> Tuple[np.ndar
         axisX = a1
         axisZ = a2
         axisY = np.cross(a2, a1)
-        rot = np.array([axisX, axisY, axisZ]).T
+
 
     if sequence == "YZX" or sequence == "YZiX":
         if sequence == "YZiX":
@@ -236,7 +310,15 @@ def setFrameData(a1: np.ndarray, a2: np.ndarray, sequence: str) -> Tuple[np.ndar
         axisY = a1
         axisZ = a2
         axisX = np.cross(a1, a2)
-        rot = np.array([axisX, axisY, axisZ]).T
+
+
+    if sequence == "YXZ" or sequence == "YXiZ":
+        if sequence == "YXiZ":
+            a2 = a2*-1.0
+        axisY = a1
+        axisX = a2
+
+
 
     if sequence == "YXZ" or sequence == "YXiZ":
         if sequence == "YXiZ":
@@ -244,15 +326,8 @@ def setFrameData(a1: np.ndarray, a2: np.ndarray, sequence: str) -> Tuple[np.ndar
         axisY = a1
         axisX = a2
         axisZ = np.cross(a2, a1)
-        rot = np.array([axisX, axisY, axisZ]).T
+        count = 0 
 
-    if sequence == "YXZ" or sequence == "YXiZ":
-        if sequence == "YXiZ":
-            a2 = a2*-1.0
-        axisY = a1
-        axisX = a2
-        axisZ = np.cross(a2, a1)
-        rot = np.array([axisX, axisY, axisZ]).T
 
     if sequence == "ZXY" or sequence == "ZXiY":
         if sequence == "ZXiY":
@@ -260,7 +335,8 @@ def setFrameData(a1: np.ndarray, a2: np.ndarray, sequence: str) -> Tuple[np.ndar
         axisZ = a1
         axisX = a2
         axisY = np.cross(a1, a2)
-        rot = np.array([axisX, axisY, axisZ]).T
+
+
 
     if sequence == "ZYX" or sequence == "ZYiX":
         if sequence == "ZYiX":
@@ -268,9 +344,20 @@ def setFrameData(a1: np.ndarray, a2: np.ndarray, sequence: str) -> Tuple[np.ndar
         axisZ = a1
         axisY = a2
         axisX = np.cross(a2, a1)
-        rot = np.array([axisX, axisY, axisZ]).T
 
-    return axisX, axisY, axisZ, rot
+
+    count = 0 
+    for x, y, z in zip(axisX, axisY, axisZ):
+        rotations.append(np.array([x, y, z]).T)
+        count+=1
+
+    if count ==3:
+        return axisX, axisY, axisZ, np.array([axisX, axisY, axisZ]).T
+    else: 
+        return axisX, axisY, axisZ, rotations
+
+
+
 
 
 class Node(object):

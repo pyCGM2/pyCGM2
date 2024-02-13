@@ -453,10 +453,11 @@ def fitting(model:Model,DATA_PATH:str, reconstructFilenameLabelled:str,
     # --- initial motion Filter ---
     scp=modelFilters.StaticCalibrationProcedure(model)
     # section to remove : - copy motion of ProximalShank from Shank with Sodervisk
-    modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,enums.motionMethod.Sodervisk)
-    modMotion.compute()
+    
     # /section to remove
     if "noKinematicsCalculation" in kwargs.keys() and kwargs["noKinematicsCalculation"]:
+        modMotion=modelFilters.ModelMotionFilter(scp,acqGait,model,enums.motionMethod.Sodervisk)
+        modMotion.compute()
         LOGGER.logger.warning("[pyCGM2] No Kinematic calculation done for the dynamic file")
         return  acqGait,detectAnomaly
     else:

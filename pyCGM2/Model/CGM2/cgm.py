@@ -12,6 +12,8 @@ from pyCGM2.Math import euler
 from pyCGM2.Tools import btkTools
 from pyCGM2.Nexus import nexusTools
 
+from pyCGM2.decorators.tracker import time_tracker
+
 
 class CGM(model.Model):
     """
@@ -158,6 +160,26 @@ class CGM(model.Model):
 
 
         return [useLeftKJCmarkerLabel,useLeftAJCmarkerLabel,useRightKJCmarkerLabel,useRightAJCmarkerLabel]
+    
+    def _frameByFrameAxesConstruction(self, pt1,pt2,pt3,v=None):
+
+
+        differences_21 = pt2 - pt1  
+        if pt3 is not None: differences_31 = pt3 - pt1
+        norms_21 = np.linalg.norm(differences_21, axis=1)
+        if pt3 is not None:norms_31 = np.linalg.norm(differences_31, axis=1)
+
+        a1 = np.nan_to_num(differences_21 / norms_21[:, np.newaxis])
+        if pt3 is not None:
+            v1 = np.nan_to_num(differences_31 / norms_31[:, np.newaxis])
+        else:
+            v1=v
+
+        a2 = np.cross(a1, v1)
+        a2 = np.nan_to_num(a2 / np.linalg.norm(a2, axis=1)[:, np.newaxis])
+        
+
+        return a1,a2
 
 
 class CGM1(CGM):
@@ -674,17 +696,17 @@ class CGM1(CGM):
         #-------------------------------------
         self._pelvis_calibrate(aquiStatic,dictRef,frameInit,frameEnd,options=options)
 
-        self._left_thigh_calibrate(aquiStatic, dictRef,frameInit,frameEnd,options=options)
-        self._right_thigh_calibrate(aquiStatic, dictRef,frameInit,frameEnd,options=options)
+        self._thigh_calibrate("Left",aquiStatic, dictRef,frameInit,frameEnd,options=options)
+        self._thigh_calibrate("Right",aquiStatic, dictRef,frameInit,frameEnd,options=options)
 
-        self._left_shank_calibrate(aquiStatic, dictRef,frameInit,frameEnd,options=options)
-        self._right_shank_calibrate(aquiStatic, dictRef,frameInit,frameEnd,options=options)
+        self._shank_calibrate("Left",aquiStatic, dictRef,frameInit,frameEnd,options=options)
+        self._shank_calibrate("Right",aquiStatic, dictRef,frameInit,frameEnd,options=options)
 
         # calibration of anatomical Referentials
         self._pelvis_Anatomicalcalibrate(aquiStatic, dictAnatomic,frameInit,frameEnd)
 
-        self._left_thigh_Anatomicalcalibrate(aquiStatic, dictAnatomic,frameInit,frameEnd)
-        self._right_thigh_Anatomicalcalibrate(aquiStatic, dictAnatomic,frameInit,frameEnd)
+        self._thigh_Anatomicalcalibrate("Left",aquiStatic, dictAnatomic,frameInit,frameEnd)
+        self._thigh_Anatomicalcalibrate("Right",aquiStatic, dictAnatomic,frameInit,frameEnd)
 
 
         if "LeftThighRotation" in self.mp and self.mp["LeftThighRotation"] != 0:
@@ -726,8 +748,8 @@ class CGM1(CGM):
 
 
 
-        self._left_shank_Anatomicalcalibrate(aquiStatic, dictAnatomic,frameInit,frameEnd)
-        self._right_shank_Anatomicalcalibrate(aquiStatic, dictAnatomic,frameInit,frameEnd)
+        self._shank_Anatomicalcalibrate("Left",aquiStatic, dictAnatomic,frameInit,frameEnd)
+        self._shank_Anatomicalcalibrate("Right",aquiStatic, dictAnatomic,frameInit,frameEnd)
 
         # shakRotation
         if "LeftShankRotation" in self.mp and self.mp["LeftShankRotation"] != 0:
@@ -767,22 +789,22 @@ class CGM1(CGM):
 
         #   shank Prox ( copy )
         self.updateSegmentFromCopy("Left Shank Proximal", self.getSegment("Left Shank")) # look out . I copied the shank instance and rename it
-        self._left_shankProximal_AnatomicalCalibrate(aquiStatic,dictAnatomic,frameInit,frameEnd,options=options) # alter static Frame
+        self._shankProximal_AnatomicalCalibrate("Left",aquiStatic,dictAnatomic,frameInit,frameEnd,options=options) # alter static Frame
 
 
         self.updateSegmentFromCopy("Right Shank Proximal", self.getSegment("Right Shank"))
-        self._right_shankProximal_AnatomicalCalibrate(aquiStatic,dictAnatomic,frameInit,frameEnd,options=options) # alter static Frame
+        self._shankProximal_AnatomicalCalibrate("Right",aquiStatic,dictAnatomic,frameInit,frameEnd,options=options) # alter static Frame
 
         # ---- FOOT CALIBRATION
         #-------------------------------------
         # foot ( need  Y-axis of the shank anatomic Frame)
-        self._left_unCorrectedFoot_calibrate(aquiStatic, dictRef,frameInit,frameEnd,options=options)
+        self._unCorrectedFoot_calibrate("Left",aquiStatic, dictRef,frameInit,frameEnd,options=options)
 
-        self._left_foot_corrected_calibrate(aquiStatic, dictAnatomic,frameInit,frameEnd,options=options)
+        self._foot_corrected_calibrate("Left",aquiStatic, dictAnatomic,frameInit,frameEnd,options=options)
 
-        self._right_unCorrectedFoot_calibrate(aquiStatic, dictRef,frameInit,frameEnd,options=options)
+        self._unCorrectedFoot_calibrate("Right",aquiStatic, dictRef,frameInit,frameEnd,options=options)
 
-        self._right_foot_corrected_calibrate(aquiStatic, dictAnatomic,frameInit,frameEnd,options=options)
+        self._foot_corrected_calibrate("Right",aquiStatic, dictAnatomic,frameInit,frameEnd,options=options)
 
         self.getFootOffset(side = "both")
 
@@ -994,12 +1016,13 @@ class CGM1(CGM):
 
 
 
-    def _left_thigh_calibrate(self, aquiStatic: btk.btkAcquisition, dictRef: Dict[str, Any], frameInit: int, frameEnd: int, options: Optional[Dict[str, Any]] = None) -> None:
+    def _thigh_calibrate(self,side:str, aquiStatic: btk.btkAcquisition, dictRef: Dict[str, Any], frameInit: int, frameEnd: int, options: Optional[Dict[str, Any]] = None) -> None:
         """Calibrate the left thigh segment.
 
         Constructs the technical referential for the left thigh segment and calculates the knee joint center based on static acquisition data.
 
         Args:
+            side (str): bodyside
             aquiStatic (btk.btkAcquisition): Static acquisition data for calibration.
             dictRef (Dict[str, Any]): Dictionary for reference markers used in technical coordinate system calibration.
             frameInit (int): The initial frame for calibration.
@@ -1007,6 +1030,8 @@ class CGM1(CGM):
             options (Optional[Dict[str, Any]]): Additional options for calibration, if any.
         """
 
+        prefix = "L" if side == "Left" else "R" if side == "Right" else ""
+        
 
         pfn = aquiStatic.GetPointFrameNumber()
 
@@ -1022,17 +1047,17 @@ class CGM1(CGM):
         else:
             basePlate=2.0
 
-        seg = self.getSegment("Left Thigh")
+        seg = self.getSegment(f"{side} Thigh")
         seg.resetMarkerLabels()
 
         # --- Construction of the technical referential
         tf=seg.getReferential("TF")
 
-        pt1=aquiStatic.GetPoint(str(dictRef["Left Thigh"]["TF"]['labels'][0])).GetValues()[frameInit:frameEnd,:].mean(axis=0)#KNE
-        pt2=aquiStatic.GetPoint(str(dictRef["Left Thigh"]["TF"]['labels'][1])).GetValues()[frameInit:frameEnd,:].mean(axis=0)#HJC
-        pt3=aquiStatic.GetPoint(str(dictRef["Left Thigh"]["TF"]['labels'][2])).GetValues()[frameInit:frameEnd,:].mean(axis=0)#THI
+        pt1=aquiStatic.GetPoint(str(dictRef[f"{side} Thigh"]["TF"]['labels'][0])).GetValues()[frameInit:frameEnd,:].mean(axis=0)#KNE
+        pt2=aquiStatic.GetPoint(str(dictRef[f"{side} Thigh"]["TF"]['labels'][1])).GetValues()[frameInit:frameEnd,:].mean(axis=0)#HJC
+        pt3=aquiStatic.GetPoint(str(dictRef[f"{side} Thigh"]["TF"]['labels'][2])).GetValues()[frameInit:frameEnd,:].mean(axis=0)#THI
 
-        ptOrigin=aquiStatic.GetPoint(str(dictRef["Left Thigh"]["TF"]['labels'][3])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+        ptOrigin=aquiStatic.GetPoint(str(dictRef[f"{side} Thigh"]["TF"]['labels'][3])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
 
         a1=(pt2-pt1)
         a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
@@ -1043,7 +1068,7 @@ class CGM1(CGM):
         a2=np.cross(a1,v)
         a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
 
-        x,y,z,R=frame.setFrameData(a1,a2,dictRef["Left Thigh"]["TF"]['sequence'])
+        x,y,z,R=frame.setFrameData(a1,a2,dictRef[f"{side} Thigh"]["TF"]['sequence'])
 
         tf.static.m_axisX=x
         tf.static.m_axisY=y
@@ -1052,24 +1077,27 @@ class CGM1(CGM):
         tf.static.setTranslation(ptOrigin)
 
         # --- knee Joint centers location from chord method
-        if "LeftThighRotation" in self.mp and self.mp["LeftThighRotation"] != 0:
-            LOGGER.logger.debug("LeftThighRotation defined from your vsk file")
-            self.mp_computed["LeftThighRotationOffset"] = self.mp["LeftThighRotation"]
+        if f"{side}ThighRotation" in self.mp and self.mp[f"{side}ThighRotation"] != 0:
+            LOGGER.logger.debug(f"{side}ThighRotation defined from your vsk file")
+            self.mp_computed[f"{side}ThighRotationOffset"] = self.mp[f"{side}ThighRotation"]
         else:
-            self.mp_computed["LeftThighRotationOffset"] = 0.0
+            self.mp_computed[f"{side}ThighRotationOffset"] = 0.0
 
-        LKJC = modelDecorator.VCMJointCentre( (self.mp["LeftKneeWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3, beta=-self.mp_computed["LeftThighRotationOffset"] )
+        if side == "Left": offset = -self.mp_computed[f"LeftThighRotationOffset"]
+        if side == "Right": offset = self.mp_computed[f"RightThighRotationOffset"]
 
-        if tf.static.isNodeExist("LKJC"):
-            nodeLKJC = tf.static.getNode_byLabel("LKJC")
+        KJC = modelDecorator.VCMJointCentre( (self.mp[f"{side}KneeWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3, beta= offset)
+
+        if tf.static.isNodeExist(f"{prefix}KJC"):
+            nodeKJC = tf.static.getNode_byLabel(f"{prefix}KJC")
         else:
-            tf.static.addNode("LKJC_chord",LKJC,positionType="Global",desc = "Chord")
-            tf.static.addNode("LKJC",LKJC,positionType="Global",desc = "Chord")
-            nodeLKJC = tf.static.getNode_byLabel("LKJC")
+            tf.static.addNode(f"{prefix}KJC_chord",KJC,positionType="Global",desc = "Chord")
+            tf.static.addNode(f"{prefix}KJC",KJC,positionType="Global",desc = "Chord")
+            nodeKJC = tf.static.getNode_byLabel(f"{prefix}KJC")
 
-        btkTools.smartAppendPoint(aquiStatic,"LKJC",
-                    nodeLKJC.m_global* np.ones((pfn,3)),
-                    desc=nodeLKJC.m_desc)
+        btkTools.smartAppendPoint(aquiStatic,f"{prefix}KJC",
+                    nodeKJC.m_global* np.ones((pfn,3)),
+                    desc=nodeKJC.m_desc)
 
         # node for all markers
         for label in seg.m_tracking_markers:
@@ -1080,119 +1108,120 @@ class CGM1(CGM):
         #     globalPosition=aquiStatic.GetPoint(str(label)).GetValues()[frameInit:frameEnd,:].mean(axis=0)
         #     tf.static.addNode(label,globalPosition,positionType="Global")
 
-        node_prox = self.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("LHJC")
-        tf.static.addNode("LHJC",node_prox.m_global,positionType="Global",desc = node_prox.m_desc)
+        node_prox = self.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel(f"{prefix}HJC")
+        tf.static.addNode(f"{prefix}HJC",node_prox.m_global,positionType="Global",desc = node_prox.m_desc)
 
         #seg.addTrackingMarkerLabel("LHJC")
         #seg.addCalibrationMarkerLabel("LKJC")
 
 
-    def _right_thigh_calibrate(self, aquiStatic: btk.btkAcquisition, dictRef: Dict[str, Any], frameInit: int, frameEnd: int, options: Optional[Dict[str, Any]] = None) -> None:
-        """Calibrate the right thigh segment.
+    # def _right_thigh_calibrate(self, aquiStatic: btk.btkAcquisition, dictRef: Dict[str, Any], frameInit: int, frameEnd: int, options: Optional[Dict[str, Any]] = None) -> None:
+    #     """Calibrate the right thigh segment.
 
-        Constructs the technical referential for the right thigh segment and calculates the knee joint center based on static acquisition data.
+    #     Constructs the technical referential for the right thigh segment and calculates the knee joint center based on static acquisition data.
 
-        Args:
-            aquiStatic (btk.btkAcquisition): Static acquisition data for calibration.
-            dictRef (Dict[str, Any]): Dictionary for reference markers used in technical coordinate system calibration.
-            frameInit (int): The initial frame for calibration.
-            frameEnd (int): The final frame for calibration.
-            options (Optional[Dict[str, Any]]): Additional options for calibration, if any.
-        """
-
-
-        pfn = aquiStatic.GetPointFrameNumber()
-
-        if "markerDiameter" in options.keys():
-            LOGGER.logger.debug(" option (markerDiameter) found ")
-            markerDiameter = options["markerDiameter"]
-        else:
-            markerDiameter=14.0
-
-        if "basePlate" in options.keys():
-            LOGGER.logger.debug(" option (basePlate) found ")
-            basePlate = options["basePlate"]
-        else:
-            basePlate=2.0
-
-        seg = self.getSegment("Right Thigh")
-        seg.resetMarkerLabels()
-
-        # --- Construction of the technical referential
-        tf=seg.getReferential("TF")
-
-        pt1=aquiStatic.GetPoint(str(dictRef["Right Thigh"]["TF"]['labels'][0])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-        pt2=aquiStatic.GetPoint(str(dictRef["Right Thigh"]["TF"]['labels'][1])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-        pt3=aquiStatic.GetPoint(str(dictRef["Right Thigh"]["TF"]['labels'][2])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-
-        ptOrigin=aquiStatic.GetPoint(str(dictRef["Right Thigh"]["TF"]['labels'][3])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-
-        a1=(pt2-pt1)
-        a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
-
-        v=(pt3-pt1)
-        v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
-
-        a2=np.cross(a1,v)
-        a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
-
-        x,y,z,R=frame.setFrameData(a1,a2,dictRef["Right Thigh"]["TF"]['sequence'])
-
-        tf.static.m_axisX=x
-        tf.static.m_axisY=y
-        tf.static.m_axisZ=z
-        tf.static.setRotation(R)
-        tf.static.setTranslation(ptOrigin)
+    #     Args:
+    #         aquiStatic (btk.btkAcquisition): Static acquisition data for calibration.
+    #         dictRef (Dict[str, Any]): Dictionary for reference markers used in technical coordinate system calibration.
+    #         frameInit (int): The initial frame for calibration.
+    #         frameEnd (int): The final frame for calibration.
+    #         options (Optional[Dict[str, Any]]): Additional options for calibration, if any.
+    #     """
 
 
-        # --- knee Joint centers location
-        if "RightThighRotation" in self.mp and self.mp["RightThighRotation"] != 0:
-            LOGGER.logger.debug("RightThighRotation defined from your vsk file")
-            self.mp_computed["RightThighRotationOffset"] = self.mp["RightThighRotation"]
-        else:
-            self.mp_computed["RightThighRotationOffset"] = 0.0
+    #     pfn = aquiStatic.GetPointFrameNumber()
 
-        RKJC = modelDecorator.VCMJointCentre( (self.mp["RightKneeWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3,beta=self.mp_computed["RightThighRotationOffset"] ) # could consider a previous offset
+    #     if "markerDiameter" in options.keys():
+    #         LOGGER.logger.debug(" option (markerDiameter) found ")
+    #         markerDiameter = options["markerDiameter"]
+    #     else:
+    #         markerDiameter=14.0
 
-        if tf.static.isNodeExist("RKJC"):
-            nodeRKJC = tf.static.getNode_byLabel("RKJC")
-        else:
-            tf.static.addNode("RKJC_chord",RKJC,positionType="Global",desc = "Chord")
-            tf.static.addNode("RKJC",RKJC,positionType="Global",desc = "Chord")
-            nodeRKJC = tf.static.getNode_byLabel("RKJC")
+    #     if "basePlate" in options.keys():
+    #         LOGGER.logger.debug(" option (basePlate) found ")
+    #         basePlate = options["basePlate"]
+    #     else:
+    #         basePlate=2.0
 
-        btkTools.smartAppendPoint(aquiStatic,"RKJC",
-                    nodeRKJC.m_global* np.ones((pfn,3)),
-                    desc=nodeRKJC.m_desc)
+    #     seg = self.getSegment("Right Thigh")
+    #     seg.resetMarkerLabels()
+
+    #     # --- Construction of the technical referential
+    #     tf=seg.getReferential("TF")
+
+    #     pt1=aquiStatic.GetPoint(str(dictRef["Right Thigh"]["TF"]['labels'][0])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+    #     pt2=aquiStatic.GetPoint(str(dictRef["Right Thigh"]["TF"]['labels'][1])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+    #     pt3=aquiStatic.GetPoint(str(dictRef["Right Thigh"]["TF"]['labels'][2])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+
+    #     ptOrigin=aquiStatic.GetPoint(str(dictRef["Right Thigh"]["TF"]['labels'][3])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+
+    #     a1=(pt2-pt1)
+    #     a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
+
+    #     v=(pt3-pt1)
+    #     v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
+
+    #     a2=np.cross(a1,v)
+    #     a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
+
+    #     x,y,z,R=frame.setFrameData(a1,a2,dictRef["Right Thigh"]["TF"]['sequence'])
+
+    #     tf.static.m_axisX=x
+    #     tf.static.m_axisY=y
+    #     tf.static.m_axisZ=z
+    #     tf.static.setRotation(R)
+    #     tf.static.setTranslation(ptOrigin)
 
 
-        for label in seg.m_tracking_markers:
-            globalPosition=aquiStatic.GetPoint(str(label)).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-            tf.static.addNode(label,globalPosition,positionType="Global")
+    #     # --- knee Joint centers location
+    #     if "RightThighRotation" in self.mp and self.mp["RightThighRotation"] != 0:
+    #         LOGGER.logger.debug("RightThighRotation defined from your vsk file")
+    #         self.mp_computed["RightThighRotationOffset"] = self.mp["RightThighRotation"]
+    #     else:
+    #         self.mp_computed["RightThighRotationOffset"] = 0.0
 
-        # for label in seg.m_calibration_markers:
-        #     globalPosition=aquiStatic.GetPoint(str(label)).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-        #     tf.static.addNode(label,globalPosition,positionType="Global")
+    #     RKJC = modelDecorator.VCMJointCentre( (self.mp["RightKneeWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3,beta=self.mp_computed["RightThighRotationOffset"] ) # could consider a previous offset
 
-        node_prox = self.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("RHJC")
-        tf.static.addNode("RHJC",node_prox.m_global,positionType="Global",desc = node_prox.m_desc)
+    #     if tf.static.isNodeExist("RKJC"):
+    #         nodeRKJC = tf.static.getNode_byLabel("RKJC")
+    #     else:
+    #         tf.static.addNode("RKJC_chord",RKJC,positionType="Global",desc = "Chord")
+    #         tf.static.addNode("RKJC",RKJC,positionType="Global",desc = "Chord")
+    #         nodeRKJC = tf.static.getNode_byLabel("RKJC")
 
-        # seg.addTrackingMarkerLabel("RHJC")
-        # seg.addCalibrationMarkerLabel("RKJC")
+    #     btkTools.smartAppendPoint(aquiStatic,"RKJC",
+    #                 nodeRKJC.m_global* np.ones((pfn,3)),
+    #                 desc=nodeRKJC.m_desc)
 
-    def _left_shank_calibrate(self, aquiStatic: btk.btkAcquisition, dictRef: Dict[str, Any], frameInit: int, frameEnd: int, options: Optional[Dict[str, Any]] = None) -> None:
+
+    #     for label in seg.m_tracking_markers:
+    #         globalPosition=aquiStatic.GetPoint(str(label)).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+    #         tf.static.addNode(label,globalPosition,positionType="Global")
+
+    #     # for label in seg.m_calibration_markers:
+    #     #     globalPosition=aquiStatic.GetPoint(str(label)).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+    #     #     tf.static.addNode(label,globalPosition,positionType="Global")
+
+    #     node_prox = self.getSegment("Pelvis").getReferential("TF").static.getNode_byLabel("RHJC")
+    #     tf.static.addNode("RHJC",node_prox.m_global,positionType="Global",desc = node_prox.m_desc)
+
+    #     # seg.addTrackingMarkerLabel("RHJC")
+    #     # seg.addCalibrationMarkerLabel("RKJC")
+
+    def _shank_calibrate(self,side:str, aquiStatic: btk.btkAcquisition, dictRef: Dict[str, Any], frameInit: int, frameEnd: int, options: Optional[Dict[str, Any]] = None) -> None:
         """Calibrate the left shank segment.
 
         Constructs the technical referential for the left shank segment and calculates the ankle joint center based on static acquisition data.
 
         Args:
+            side (str): body side
             aquiStatic (btk.btkAcquisition): Static acquisition data for calibration.
             dictRef (Dict[str, Any]): Dictionary for reference markers used in technical coordinate system calibration.
             frameInit (int): The initial frame for calibration.
             frameEnd (int): The final frame for calibration.
             options (Optional[Dict[str, Any]]): Additional options for calibration, if any.
         """
-
+        prefix = "L" if side == "Left" else "R" if side == "Right" else ""
 
         pfn = aquiStatic.GetPointFrameNumber()
 
@@ -1209,7 +1238,7 @@ class CGM1(CGM):
             basePlate=2.0
 
 
-        seg = self.getSegment("Left Shank")
+        seg = self.getSegment(f"{side} Shank")
         seg.resetMarkerLabels()
 
         # ---  additional markers and Update of the marker segment list
@@ -1218,108 +1247,11 @@ class CGM1(CGM):
         # --- Construction of the technical referential
         tf=seg.getReferential("TF")
 
-        pt1=aquiStatic.GetPoint(str(dictRef["Left Shank"]["TF"]['labels'][0])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-        pt2=aquiStatic.GetPoint(str(dictRef["Left Shank"]["TF"]['labels'][1])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-        pt3=aquiStatic.GetPoint(str(dictRef["Left Shank"]["TF"]['labels'][2])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+        pt1=aquiStatic.GetPoint(str(dictRef[f"{side} Shank"]["TF"]['labels'][0])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+        pt2=aquiStatic.GetPoint(str(dictRef[f"{side} Shank"]["TF"]['labels'][1])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+        pt3=aquiStatic.GetPoint(str(dictRef[f"{side} Shank"]["TF"]['labels'][2])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
 
-        ptOrigin=aquiStatic.GetPoint(str(dictRef["Left Shank"]["TF"]['labels'][3])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-
-        a1=(pt2-pt1)
-        a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
-
-        v=(pt3-pt1)
-        v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
-
-        a2=np.cross(a1,v)
-        a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
-
-        x,y,z,R=frame.setFrameData(a1,a2,dictRef["Left Shank"]["TF"]['sequence'])
-
-        tf.static.m_axisX=x
-        tf.static.m_axisY=y
-        tf.static.m_axisZ=z
-        tf.static.setRotation(R)
-        tf.static.setTranslation(ptOrigin)
-
-
-        # --- ankle Joint centers location
-        if "LeftShankRotation" in self.mp and self.mp["LeftShankRotation"] != 0:
-            LOGGER.logger.debug("LeftShankRotation defined from your vsk file")
-            self.mp_computed["LeftShankRotationOffset"] = self.mp["LeftShankRotation"]
-        else:
-            self.mp_computed["LeftShankRotationOffset"]=0.0
-
-        LAJC = modelDecorator.VCMJointCentre( (self.mp["LeftAnkleWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3, beta=-self.mp_computed["LeftShankRotationOffset"] )
-
-        # --- node manager
-        if tf.static.isNodeExist("LAJC"):
-            nodeLAJC = tf.static.getNode_byLabel("LAJC")
-        else:
-            tf.static.addNode("LAJC_chord",LAJC,positionType="Global",desc = "Chord")
-            tf.static.addNode("LAJC",LAJC,positionType="Global",desc = "Chord")
-            nodeLAJC = tf.static.getNode_byLabel("LAJC")
-
-        btkTools.smartAppendPoint(aquiStatic,"LAJC",
-                    nodeLAJC.m_global* np.ones((pfn,3)),
-                    desc=nodeLAJC.m_desc)
-
-
-        for label in seg.m_tracking_markers:
-            globalPosition=aquiStatic.GetPoint(str(label)).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-            tf.static.addNode(label,globalPosition,positionType="Global")
-
-        # for label in seg.m_calibration_markers:
-        #     globalPosition=aquiStatic.GetPoint(str(label)).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-        #     tf.static.addNode(label,globalPosition,positionType="Global")
-
-        node_prox = self.getSegment("Left Thigh").getReferential("TF").static.getNode_byLabel("LKJC")
-        tf.static.addNode("LKJC",node_prox.m_global,positionType="Global",desc = node_prox.m_desc)
-
-        # seg.addTrackingMarkerLabel("LKJC")
-        # seg.addCalibrationMarkerLabel("LAJC")
-
-    def _right_shank_calibrate(self, aquiStatic: btk.btkAcquisition, dictRef: Dict[str, Any], frameInit: int, frameEnd: int, options: Optional[Dict[str, Any]] = None) -> None:
-        """Calibrate the right shank segment.
-
-        Constructs the technical referential for the right shank segment and calculates the ankle joint center based on static acquisition data.
-
-        Args:
-            aquiStatic (btk.btkAcquisition): Static acquisition data for calibration.
-            dictRef (Dict[str, Any]): Dictionary for reference markers used in technical coordinate system calibration.
-            frameInit (int): The initial frame for calibration.
-            frameEnd (int): The final frame for calibration.
-            options (Optional[Dict[str, Any]]): Additional options for calibration, if any.
-        """
-
-
-        pfn = aquiStatic.GetPointFrameNumber()
-
-        if "markerDiameter" in options.keys():
-            LOGGER.logger.debug(" option (markerDiameter) found ")
-            markerDiameter = options["markerDiameter"]
-        else:
-            markerDiameter=14.0
-
-        if "basePlate" in options.keys():
-            LOGGER.logger.debug(" option (basePlate) found ")
-            basePlate = options["basePlate"]
-        else:
-            basePlate=2.0
-
-
-
-        seg = self.getSegment("Right Shank")
-        seg.resetMarkerLabels()
-
-
-        # --- Construction of the technical Referential
-        tf=seg.getReferential("TF")
-
-        pt1=aquiStatic.GetPoint(str(dictRef["Right Shank"]["TF"]['labels'][0])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-        pt2=aquiStatic.GetPoint(str(dictRef["Right Shank"]["TF"]['labels'][1])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-        pt3=aquiStatic.GetPoint(str(dictRef["Right Shank"]["TF"]['labels'][2])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-
-        ptOrigin=aquiStatic.GetPoint(str(dictRef["Right Shank"]["TF"]['labels'][3])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+        ptOrigin=aquiStatic.GetPoint(str(dictRef[f"{side} Shank"]["TF"]['labels'][3])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
 
         a1=(pt2-pt1)
         a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
@@ -1330,7 +1262,7 @@ class CGM1(CGM):
         a2=np.cross(a1,v)
         a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
 
-        x,y,z,R=frame.setFrameData(a1,a2,dictRef["Right Shank"]["TF"]['sequence'])
+        x,y,z,R=frame.setFrameData(a1,a2,dictRef[f"{side} Shank"]["TF"]['sequence'])
 
         tf.static.m_axisX=x
         tf.static.m_axisY=y
@@ -1338,48 +1270,144 @@ class CGM1(CGM):
         tf.static.setRotation(R)
         tf.static.setTranslation(ptOrigin)
 
-        # --- ankle Joint centers location
-        if "RightShankRotation" in self.mp and self.mp["RightShankRotation"] != 0:
-            LOGGER.logger.debug("RightShankRotation defined from your vsk file")
-            self.mp_computed["RightShankRotationOffset"] = self.mp["RightShankRotation"]
-        else:
-            self.mp_computed["RightShankRotationOffset"]=0.0
 
-        RAJC = modelDecorator.VCMJointCentre( (self.mp["RightAnkleWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3, beta=self.mp_computed["RightShankRotationOffset"] )
+        # --- ankle Joint centers location
+        if f"{side}ShankRotation" in self.mp and self.mp[f"{side}ShankRotation"] != 0:
+            LOGGER.logger.debug(f"{side}ShankRotation defined from your vsk file")
+            self.mp_computed[f"{side}ShankRotationOffset"] = self.mp[f"{side}ShankRotation"]
+        else:
+            self.mp_computed[f"{side}ShankRotationOffset"]=0.0
+
+        if side == "Left": offset = -self.mp_computed["LeftShankRotationOffset"]
+        if side == "Right": offset = self.mp_computed["RightShankRotationOffset"]
+
+
+        AJC = modelDecorator.VCMJointCentre( (self.mp[f"{side}AnkleWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3, beta= offset)
 
         # --- node manager
-        if tf.static.isNodeExist("RAJC"):
-            nodeRAJC = tf.static.getNode_byLabel("RAJC")
+        if tf.static.isNodeExist(f"{prefix}AJC"):
+            nodeAJC = tf.static.getNode_byLabel(f"{prefix}AJC")
         else:
-            tf.static.addNode("RAJC_chord",RAJC,positionType="Global",desc = "Chord")
-            tf.static.addNode("RAJC",RAJC,positionType="Global",desc = "Chord")
-            nodeRAJC = tf.static.getNode_byLabel("RAJC")
+            tf.static.addNode(f"{prefix}AJC_chord",AJC,positionType="Global",desc = "Chord")
+            tf.static.addNode(f"{prefix}AJC",AJC,positionType="Global",desc = "Chord")
+            nodeAJC = tf.static.getNode_byLabel(f"{prefix}AJC")
 
-        btkTools.smartAppendPoint(aquiStatic,"RAJC",
-                    nodeRAJC.m_global* np.ones((pfn,3)),
-                    desc=nodeRAJC.m_desc)
+        btkTools.smartAppendPoint(aquiStatic,f"{prefix}AJC",
+                    nodeAJC.m_global* np.ones((pfn,3)),
+                    desc=nodeAJC.m_desc)
 
 
         for label in seg.m_tracking_markers:
             globalPosition=aquiStatic.GetPoint(str(label)).GetValues()[frameInit:frameEnd,:].mean(axis=0)
             tf.static.addNode(label,globalPosition,positionType="Global")
 
-        # for label in seg.m_calibration_markers:
-        #     globalPosition=aquiStatic.GetPoint(str(label)).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-        #     tf.static.addNode(label,globalPosition,positionType="Global")
+        node_prox = self.getSegment(f"{side} Thigh").getReferential("TF").static.getNode_byLabel(f"{prefix}KJC")
+        tf.static.addNode(f"{prefix}KJC",node_prox.m_global,positionType="Global",desc = node_prox.m_desc)
 
-        node_prox = self.getSegment("Right Thigh").getReferential("TF").static.getNode_byLabel("RKJC")
-        tf.static.addNode("RKJC",node_prox.m_global,positionType="Global",desc = node_prox.m_desc)
 
-        # seg.addTrackingMarkerLabel("RKJC")
-        # seg.addCalibrationMarkerLabel("RAJC")
+    # def _right_shank_calibrate(self, aquiStatic: btk.btkAcquisition, dictRef: Dict[str, Any], frameInit: int, frameEnd: int, options: Optional[Dict[str, Any]] = None) -> None:
+    #     """Calibrate the right shank segment.
 
-    def _left_unCorrectedFoot_calibrate(self, aquiStatic: btk.btkAcquisition, dictRef: Dict[str, Any], frameInit: int, frameEnd: int, options: Optional[Dict[str, Any]] = None) -> None:
+    #     Constructs the technical referential for the right shank segment and calculates the ankle joint center based on static acquisition data.
+
+    #     Args:
+    #         aquiStatic (btk.btkAcquisition): Static acquisition data for calibration.
+    #         dictRef (Dict[str, Any]): Dictionary for reference markers used in technical coordinate system calibration.
+    #         frameInit (int): The initial frame for calibration.
+    #         frameEnd (int): The final frame for calibration.
+    #         options (Optional[Dict[str, Any]]): Additional options for calibration, if any.
+    #     """
+
+
+    #     pfn = aquiStatic.GetPointFrameNumber()
+
+    #     if "markerDiameter" in options.keys():
+    #         LOGGER.logger.debug(" option (markerDiameter) found ")
+    #         markerDiameter = options["markerDiameter"]
+    #     else:
+    #         markerDiameter=14.0
+
+    #     if "basePlate" in options.keys():
+    #         LOGGER.logger.debug(" option (basePlate) found ")
+    #         basePlate = options["basePlate"]
+    #     else:
+    #         basePlate=2.0
+
+
+
+    #     seg = self.getSegment("Right Shank")
+    #     seg.resetMarkerLabels()
+
+
+    #     # --- Construction of the technical Referential
+    #     tf=seg.getReferential("TF")
+
+    #     pt1=aquiStatic.GetPoint(str(dictRef["Right Shank"]["TF"]['labels'][0])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+    #     pt2=aquiStatic.GetPoint(str(dictRef["Right Shank"]["TF"]['labels'][1])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+    #     pt3=aquiStatic.GetPoint(str(dictRef["Right Shank"]["TF"]['labels'][2])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+
+    #     ptOrigin=aquiStatic.GetPoint(str(dictRef["Right Shank"]["TF"]['labels'][3])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+
+    #     a1=(pt2-pt1)
+    #     a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
+
+    #     v=(pt3-pt1)
+    #     v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
+
+    #     a2=np.cross(a1,v)
+    #     a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
+
+    #     x,y,z,R=frame.setFrameData(a1,a2,dictRef["Right Shank"]["TF"]['sequence'])
+
+    #     tf.static.m_axisX=x
+    #     tf.static.m_axisY=y
+    #     tf.static.m_axisZ=z
+    #     tf.static.setRotation(R)
+    #     tf.static.setTranslation(ptOrigin)
+
+    #     # --- ankle Joint centers location
+    #     if "RightShankRotation" in self.mp and self.mp["RightShankRotation"] != 0:
+    #         LOGGER.logger.debug("RightShankRotation defined from your vsk file")
+    #         self.mp_computed["RightShankRotationOffset"] = self.mp["RightShankRotation"]
+    #     else:
+    #         self.mp_computed["RightShankRotationOffset"]=0.0
+
+    #     RAJC = modelDecorator.VCMJointCentre( (self.mp["RightAnkleWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3, beta=self.mp_computed["RightShankRotationOffset"] )
+
+    #     # --- node manager
+    #     if tf.static.isNodeExist("RAJC"):
+    #         nodeRAJC = tf.static.getNode_byLabel("RAJC")
+    #     else:
+    #         tf.static.addNode("RAJC_chord",RAJC,positionType="Global",desc = "Chord")
+    #         tf.static.addNode("RAJC",RAJC,positionType="Global",desc = "Chord")
+    #         nodeRAJC = tf.static.getNode_byLabel("RAJC")
+
+    #     btkTools.smartAppendPoint(aquiStatic,"RAJC",
+    #                 nodeRAJC.m_global* np.ones((pfn,3)),
+    #                 desc=nodeRAJC.m_desc)
+
+
+    #     for label in seg.m_tracking_markers:
+    #         globalPosition=aquiStatic.GetPoint(str(label)).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+    #         tf.static.addNode(label,globalPosition,positionType="Global")
+
+    #     # for label in seg.m_calibration_markers:
+    #     #     globalPosition=aquiStatic.GetPoint(str(label)).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+    #     #     tf.static.addNode(label,globalPosition,positionType="Global")
+
+    #     node_prox = self.getSegment("Right Thigh").getReferential("TF").static.getNode_byLabel("RKJC")
+    #     tf.static.addNode("RKJC",node_prox.m_global,positionType="Global",desc = node_prox.m_desc)
+
+    #     # seg.addTrackingMarkerLabel("RKJC")
+    #     # seg.addCalibrationMarkerLabel("RAJC")
+
+    def _unCorrectedFoot_calibrate(self,side: str, aquiStatic: btk.btkAcquisition, dictRef: Dict[str, Any], frameInit: int, frameEnd: int, options: Optional[Dict[str, Any]] = None) -> None:
         """Calibrate the left uncorrected foot segment.
 
         Constructs the technical referential for the left uncorrected foot segment based on static acquisition data.
 
         Args:
+            side (str): body side
             aquiStatic (btk.btkAcquisition): Static acquisition data for calibration.
             dictRef (Dict[str, Any]): Dictionary for reference markers used in technical coordinate system calibration.
             frameInit (int): The initial frame for calibration.
@@ -1387,8 +1415,9 @@ class CGM1(CGM):
             options (Optional[Dict[str, Any]]): Additional options for calibration, if any.
         """
 
+        prefix = "L" if side == "Left" else "R" if side == "Right" else ""
 
-        seg = self.getSegment("Left Foot")
+        seg = self.getSegment(f"{side} Foot")
         #seg.resetMarkerLabels()
 
         # ---  additional markers and Update of the marker segment list
@@ -1396,56 +1425,58 @@ class CGM1(CGM):
 
         if "useBodyBuilderFoot" in options.keys() and options["useBodyBuilderFoot"]:
             LOGGER.logger.debug("You use a Left uncorrected foot sequence different than native CGM1")
-            dictRef["Left Foot"]={"TF" : {'sequence':"ZYX", 'labels':   ["LTOE","LAJC","LKJC","LAJC"]} } # uncorrected Foot - use shank flexion axis (Y) as second axis
+            dictRef[f"{side} Foot"]={"TF" : {'sequence':"ZYX", 'labels':   [f"{prefix}TOE",f"{prefix}AJC",f"{prefix}KJC",f"{prefix}AJC"]} } # uncorrected Foot - use shank flexion axis (Y) as second axis
 
 
         # --- Construction of the technical Referential
         tf=seg.getReferential("TF")
 
-        pt1=aquiStatic.GetPoint(str(dictRef["Left Foot"]["TF"]['labels'][0])).GetValues()[frameInit:frameEnd,:].mean(axis=0)#LTOE
-        pt2=aquiStatic.GetPoint(str(dictRef["Left Foot"]["TF"]['labels'][1])).GetValues()[frameInit:frameEnd,:].mean(axis=0)#AJC
+        pt1=aquiStatic.GetPoint(str(dictRef[f"{side} Foot"]["TF"]['labels'][0])).GetValues()[frameInit:frameEnd,:].mean(axis=0)#LTOE
+        pt2=aquiStatic.GetPoint(str(dictRef[f"{side} Foot"]["TF"]['labels'][1])).GetValues()[frameInit:frameEnd,:].mean(axis=0)#AJC
 
         a1=(pt2-pt1)
         a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
 
-        if dictRef["Left Foot"]["TF"]['labels'][2] is not None:
-            pt3=aquiStatic.GetPoint(str(dictRef["Left Foot"]["TF"]['labels'][2])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+        if dictRef[f"{side} Foot"]["TF"]['labels'][2] is not None:
+            pt3=aquiStatic.GetPoint(str(dictRef[f"{side} Foot"]["TF"]['labels'][2])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
             v=(pt3-pt1)
 
             v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
             a2=np.cross(a1,v)
             a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
-            x,y,z,R=frame.setFrameData(a1,a2,dictRef["Left Foot"]["TF"]['sequence'])
+            x,y,z,R=frame.setFrameData(a1,a2,dictRef[f"{side} Foot"]["TF"]['sequence'])
 
         else:
-            distalShank = self.getSegment("Left Shank")
-            proximalShank = self.getSegment("Left Shank Proximal")
+            distalShank = self.getSegment(f"{side} Shank")
+            proximalShank = self.getSegment(f"{side} Shank Proximal")
 
             # uncorrected Refrence with dist shank
             v=distalShank.anatomicalFrame.static.m_axisY #(pt3-pt1)
             v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
             a2=np.cross(a1,v)
             a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
-            x_dist,y_dist,z_dist,R_dist=frame.setFrameData(a1,a2,dictRef["Left Foot"]["TF"]['sequence'])
+            x_dist,y_dist,z_dist,R_dist=frame.setFrameData(a1,a2,dictRef[f"{side} Foot"]["TF"]['sequence'])
 
             # uncorrected Refrence with prox shank
             v=proximalShank.anatomicalFrame.static.m_axisY #(pt3-pt1)
             v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
             a2=np.cross(a1,v)
             a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
-            x_prox,y_prox,z_prox,R_prox=frame.setFrameData(a1,a2,dictRef["Left Foot"]["TF"]['sequence'])
+            x_prox,y_prox,z_prox,R_prox=frame.setFrameData(a1,a2,dictRef[f"{side} Foot"]["TF"]['sequence'])
 
-            self._R_leftUnCorrfoot_dist_prox = np.dot(R_prox.T,R_dist) # will be used for placing the foot uncorrected RF
+
+            if side == "Left": self._R_leftUnCorrfoot_dist_prox = np.dot(R_prox.T,R_dist) # will be used for placing the foot uncorrected RF
+            if side == "Right": self._R_rightUnCorrfoot_dist_prox = np.dot(R_prox.T,R_dist)
 
             if "viconCGM1compatible" in options.keys() and options["viconCGM1compatible"]:
-                if distalShank.getReferential("TF").static.getNode_byLabel("LAJC").m_desc != "mid":
+                if distalShank.getReferential("TF").static.getNode_byLabel(f"{prefix}AJC").m_desc != "mid":
                     x,y,z,R = x_prox,y_prox,z_prox,R_prox
                 else:
                     x,y,z,R = x_dist,y_dist,z_dist,R_dist
             else:
                 x,y,z,R = x_dist,y_dist,z_dist,R_dist
 
-        ptOrigin=aquiStatic.GetPoint(str(dictRef["Left Foot"]["TF"]['labels'][3])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+        ptOrigin=aquiStatic.GetPoint(str(dictRef[f"{side} Foot"]["TF"]['labels'][3])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
 
         tf.static.m_axisX=x
         tf.static.m_axisY=y
@@ -1462,105 +1493,105 @@ class CGM1(CGM):
         #     globalPosition=aquiStatic.GetPoint(str(label)).GetValues()[frameInit:frameEnd,:].mean(axis=0)
         #     tf.static.addNode(label,globalPosition,positionType="Global")
 
-        node_prox = self.getSegment("Left Shank").getReferential("TF").static.getNode_byLabel("LAJC")
-        tf.static.addNode("LAJC",node_prox.m_global,positionType="Global",desc = node_prox.m_desc)
+        node_prox = self.getSegment(f"{side} Shank").getReferential("TF").static.getNode_byLabel(f"{prefix}AJC")
+        tf.static.addNode(f"{prefix}AJC",node_prox.m_global,positionType="Global",desc = node_prox.m_desc)
 
         # seg.addTrackingMarkerLabel("LAJC") # for LS fitting
 
 
 
 
-    def _right_unCorrectedFoot_calibrate(self, aquiStatic: btk.btkAcquisition, dictRef: Dict[str, Any], frameInit: int, frameEnd: int, options: Optional[Dict[str, Any]] = None) -> None:
-        """Calibrate the left uncorrected foot segment.
+    # def _right_unCorrectedFoot_calibrate(self, aquiStatic: btk.btkAcquisition, dictRef: Dict[str, Any], frameInit: int, frameEnd: int, options: Optional[Dict[str, Any]] = None) -> None:
+    #     """Calibrate the left uncorrected foot segment.
 
-        Constructs the technical referential for the left uncorrected foot segment based on static acquisition data.
+    #     Constructs the technical referential for the left uncorrected foot segment based on static acquisition data.
 
-        Args:
-            aquiStatic (btk.btkAcquisition): Static acquisition data for calibration.
-            dictRef (Dict[str, Any]): Dictionary for reference markers used in technical coordinate system calibration.
-            frameInit (int): The initial frame for calibration.
-            frameEnd (int): The final frame for calibration.
-            options (Optional[Dict[str, Any]]): Additional options for calibration, if any.
-        """
-        seg = self.getSegment("Right Foot")
-        seg.resetMarkerLabels()
+    #     Args:
+    #         aquiStatic (btk.btkAcquisition): Static acquisition data for calibration.
+    #         dictRef (Dict[str, Any]): Dictionary for reference markers used in technical coordinate system calibration.
+    #         frameInit (int): The initial frame for calibration.
+    #         frameEnd (int): The final frame for calibration.
+    #         options (Optional[Dict[str, Any]]): Additional options for calibration, if any.
+    #     """
+    #     seg = self.getSegment("Right Foot")
+    #     seg.resetMarkerLabels()
 
-        # ---  additional markers and Update of the marker segment list
-        #seg.addMarkerLabel("RKJC")
-
-
-        if "useBodyBuilderFoot" in options.keys() and options["useBodyBuilderFoot"]:
-            LOGGER.logger.debug("You use a right uncorrected foot sequence different than native CGM1")
-            dictRef["Right Foot"]={"TF" : {'sequence':"ZYX", 'labels':   ["RTOE","RAJC","RKJC","RAJC"]} } # uncorrected Foot - use shank flexion axis (Y) as second axis
+    #     # ---  additional markers and Update of the marker segment list
+    #     #seg.addMarkerLabel("RKJC")
 
 
+    #     if "useBodyBuilderFoot" in options.keys() and options["useBodyBuilderFoot"]:
+    #         LOGGER.logger.debug("You use a right uncorrected foot sequence different than native CGM1")
+    #         dictRef["Right Foot"]={"TF" : {'sequence':"ZYX", 'labels':   ["RTOE","RAJC","RKJC","RAJC"]} } # uncorrected Foot - use shank flexion axis (Y) as second axis
 
-        # --- Construction of the anatomical Referential
-        tf=seg.getReferential("TF")
 
-        pt1=aquiStatic.GetPoint(str(dictRef["Right Foot"]["TF"]['labels'][0])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-        pt2=aquiStatic.GetPoint(str(dictRef["Right Foot"]["TF"]['labels'][1])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
 
-        a1=(pt2-pt1)
-        a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
+    #     # --- Construction of the anatomical Referential
+    #     tf=seg.getReferential("TF")
 
-        if dictRef["Right Foot"]["TF"]['labels'][2] is not None:
-            pt3=aquiStatic.GetPoint(str(dictRef["Right Foot"]["TF"]['labels'][2])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-            v=(pt3-pt1)
+    #     pt1=aquiStatic.GetPoint(str(dictRef["Right Foot"]["TF"]['labels'][0])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+    #     pt2=aquiStatic.GetPoint(str(dictRef["Right Foot"]["TF"]['labels'][1])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
 
-            v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
-            a2=np.cross(a1,v)
-            a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
-            x,y,z,R=frame.setFrameData(a1,a2,dictRef["Right Foot"]["TF"]['sequence'])
+    #     a1=(pt2-pt1)
+    #     a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
 
-        else:
-            distalShank = self.getSegment("Right Shank")
-            proximalShank = self.getSegment("Right Shank Proximal")
+    #     if dictRef["Right Foot"]["TF"]['labels'][2] is not None:
+    #         pt3=aquiStatic.GetPoint(str(dictRef["Right Foot"]["TF"]['labels'][2])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+    #         v=(pt3-pt1)
 
-            # uncorrected Refrence with dist shank
-            v=distalShank.anatomicalFrame.static.m_axisY #(pt3-pt1)
-            v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
-            a2=np.cross(a1,v)
-            a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
-            x_dist,y_dist,z_dist,R_dist=frame.setFrameData(a1,a2,dictRef["Right Foot"]["TF"]['sequence'])
+    #         v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
+    #         a2=np.cross(a1,v)
+    #         a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
+    #         x,y,z,R=frame.setFrameData(a1,a2,dictRef["Right Foot"]["TF"]['sequence'])
 
-            # uncorrected Refrence with prox shank
-            v=proximalShank.anatomicalFrame.static.m_axisY #(pt3-pt1)
-            v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
-            a2=np.cross(a1,v)
-            a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
-            x_prox,y_prox,z_prox,R_prox=frame.setFrameData(a1,a2,dictRef["Right Foot"]["TF"]['sequence'])
+    #     else:
+    #         distalShank = self.getSegment("Right Shank")
+    #         proximalShank = self.getSegment("Right Shank Proximal")
 
-            self._R_rightUnCorrfoot_dist_prox = np.dot(R_prox.T,R_dist)
+    #         # uncorrected Refrence with dist shank
+    #         v=distalShank.anatomicalFrame.static.m_axisY #(pt3-pt1)
+    #         v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
+    #         a2=np.cross(a1,v)
+    #         a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
+    #         x_dist,y_dist,z_dist,R_dist=frame.setFrameData(a1,a2,dictRef["Right Foot"]["TF"]['sequence'])
 
-            if "viconCGM1compatible" in options.keys() and options["viconCGM1compatible"]:
-                if distalShank.getReferential("TF").static.getNode_byLabel("RAJC").m_desc != "mid":
-                    x,y,z,R = x_prox,y_prox,z_prox,R_prox
-                else:
-                    x,y,z,R = x_dist,y_dist,z_dist,R_dist
-            else:
-                x,y,z,R = x_dist,y_dist,z_dist,R_dist
+    #         # uncorrected Refrence with prox shank
+    #         v=proximalShank.anatomicalFrame.static.m_axisY #(pt3-pt1)
+    #         v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
+    #         a2=np.cross(a1,v)
+    #         a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
+    #         x_prox,y_prox,z_prox,R_prox=frame.setFrameData(a1,a2,dictRef["Right Foot"]["TF"]['sequence'])
 
-        ptOrigin=aquiStatic.GetPoint(str(dictRef["Right Foot"]["TF"]['labels'][3])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+    #         self._R_rightUnCorrfoot_dist_prox = np.dot(R_prox.T,R_dist)
 
-        tf.static.m_axisX=x
-        tf.static.m_axisY=y
-        tf.static.m_axisZ=z
-        tf.static.setRotation(R)
-        tf.static.setTranslation(ptOrigin)
+    #         if "viconCGM1compatible" in options.keys() and options["viconCGM1compatible"]:
+    #             if distalShank.getReferential("TF").static.getNode_byLabel("RAJC").m_desc != "mid":
+    #                 x,y,z,R = x_prox,y_prox,z_prox,R_prox
+    #             else:
+    #                 x,y,z,R = x_dist,y_dist,z_dist,R_dist
+    #         else:
+    #             x,y,z,R = x_dist,y_dist,z_dist,R_dist
 
-        # --- node manager
-        for label in seg.m_tracking_markers:
-            globalPosition=aquiStatic.GetPoint(str(label)).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-            tf.static.addNode(label,globalPosition,positionType="Global")
+    #     ptOrigin=aquiStatic.GetPoint(str(dictRef["Right Foot"]["TF"]['labels'][3])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
 
-        # for label in seg.m_calibration_markers:
-        #     globalPosition=aquiStatic.GetPoint(str(label)).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-        #     tf.static.addNode(label,globalPosition,positionType="Global")
+    #     tf.static.m_axisX=x
+    #     tf.static.m_axisY=y
+    #     tf.static.m_axisZ=z
+    #     tf.static.setRotation(R)
+    #     tf.static.setTranslation(ptOrigin)
 
-        node_prox = self.getSegment("Right Shank").getReferential("TF").static.getNode_byLabel("RAJC")
-        tf.static.addNode("RAJC",node_prox.m_global,positionType="Global",desc = node_prox.m_desc)
-        # seg.addTrackingMarkerLabel("RAJC")
+    #     # --- node manager
+    #     for label in seg.m_tracking_markers:
+    #         globalPosition=aquiStatic.GetPoint(str(label)).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+    #         tf.static.addNode(label,globalPosition,positionType="Global")
+
+    #     # for label in seg.m_calibration_markers:
+    #     #     globalPosition=aquiStatic.GetPoint(str(label)).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+    #     #     tf.static.addNode(label,globalPosition,positionType="Global")
+
+    #     node_prox = self.getSegment("Right Shank").getReferential("TF").static.getNode_byLabel("RAJC")
+    #     tf.static.addNode("RAJC",node_prox.m_global,positionType="Global",desc = node_prox.m_desc)
+    #     # seg.addTrackingMarkerLabel("RAJC")
 
 
     def _pelvis_Anatomicalcalibrate(self, aquiStatic: btk.btkAcquisition, dictAnatomic: Dict[str, Any], frameInit: int, frameEnd: int) -> None:
@@ -1625,27 +1656,28 @@ class CGM1(CGM):
         com = offset + (TopLumbar5-offset)*0.895
         seg.anatomicalFrame.static.addNode("com",com,positionType="Local")
 
-    def _left_thigh_Anatomicalcalibrate(self, aquiStatic: btk.btkAcquisition, dictAnatomic: Dict[str, Any], frameInit: int, frameEnd: int) -> None:
+    def _thigh_Anatomicalcalibrate(self,side:str, aquiStatic: btk.btkAcquisition, dictAnatomic: Dict[str, Any], frameInit: int, frameEnd: int) -> None:
         """Calibrate the anatomical referential of the left thigh segment.
 
         Constructs the anatomical referential for the left thigh segment based on static acquisition data and anatomical dictionary definitions.
 
         Args:
+            side (str): body side
             aquiStatic (btk.btkAcquisition): Static acquisition data for calibration.
             dictAnatomic (Dict[str, Any]): Dictionary for reference markers used in anatomical coordinate system calibration.
             frameInit (int): The initial frame for calibration.
             frameEnd (int): The final frame for calibration.
         """
+        prefix = "L" if side == "Left" else "R" if side == "Right" else ""
 
-
-        seg=self.getSegment("Left Thigh")
+        seg=self.getSegment(f"{side} Thigh")
 
         # --- Construction of the anatomical Referential
-        pt1=aquiStatic.GetPoint(str(dictAnatomic["Left Thigh"]['labels'][0])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-        pt2=aquiStatic.GetPoint(str(dictAnatomic["Left Thigh"]['labels'][1])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-        pt3=aquiStatic.GetPoint(str(dictAnatomic["Left Thigh"]['labels'][2])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+        pt1=aquiStatic.GetPoint(str(dictAnatomic[f"{side} Thigh"]['labels'][0])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+        pt2=aquiStatic.GetPoint(str(dictAnatomic[f"{side} Thigh"]['labels'][1])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+        pt3=aquiStatic.GetPoint(str(dictAnatomic[f"{side} Thigh"]['labels'][2])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
 
-        ptOrigin=aquiStatic.GetPoint(str(dictAnatomic["Left Thigh"]['labels'][3])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+        ptOrigin=aquiStatic.GetPoint(str(dictAnatomic[f"{side} Thigh"]['labels'][3])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
 
         a1=(pt2-pt1)
         a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
@@ -1656,7 +1688,7 @@ class CGM1(CGM):
         a2=np.cross(a1,v)
         a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
 
-        x,y,z,R=frame.setFrameData(a1,a2,dictAnatomic["Left Thigh"]['sequence'])
+        x,y,z,R=frame.setFrameData(a1,a2,dictAnatomic[f"{side} Thigh"]['sequence'])
 
         seg.anatomicalFrame.static.m_axisX=x
         seg.anatomicalFrame.static.m_axisY=y
@@ -1675,86 +1707,88 @@ class CGM1(CGM):
             seg.anatomicalFrame.static.addNode(node.getLabel(),node.getGlobal(),positionType="Global", desc = node.getDescription())
 
         # --- compute length
-        hjc = seg.anatomicalFrame.static.getNode_byLabel("LHJC").m_local
-        kjc = seg.anatomicalFrame.static.getNode_byLabel("LKJC").m_local
+        hjc = seg.anatomicalFrame.static.getNode_byLabel(f"{prefix}HJC").m_local
+        kjc = seg.anatomicalFrame.static.getNode_byLabel(f"{prefix}KJC").m_local
 
         seg.setLength(np.linalg.norm(kjc-hjc))
 
 
-    def _right_thigh_Anatomicalcalibrate(self, aquiStatic: btk.btkAcquisition, dictAnatomic: Dict[str, Any], frameInit: int, frameEnd: int) -> None:
-        """Calibrate the anatomical referential of the right thigh segment.
+    # def _right_thigh_Anatomicalcalibrate(self, aquiStatic: btk.btkAcquisition, dictAnatomic: Dict[str, Any], frameInit: int, frameEnd: int) -> None:
+    #     """Calibrate the anatomical referential of the right thigh segment.
 
-        Constructs the anatomical referential for the right thigh segment based on static acquisition data and anatomical dictionary definitions.
+    #     Constructs the anatomical referential for the right thigh segment based on static acquisition data and anatomical dictionary definitions.
 
-        Args:
-            aquiStatic (btk.btkAcquisition): Static acquisition data for calibration.
-            dictAnatomic (Dict[str, Any]): Dictionary for reference markers used in anatomical coordinate system calibration.
-            frameInit (int): The initial frame for calibration.
-            frameEnd (int): The final frame for calibration.
-        """
+    #     Args:
+    #         aquiStatic (btk.btkAcquisition): Static acquisition data for calibration.
+    #         dictAnatomic (Dict[str, Any]): Dictionary for reference markers used in anatomical coordinate system calibration.
+    #         frameInit (int): The initial frame for calibration.
+    #         frameEnd (int): The final frame for calibration.
+    #     """
 
 
-        seg=self.getSegment("Right Thigh")
+    #     seg=self.getSegment("Right Thigh")
 
-        # --- Construction of the anatomical Referential
-        pt1=aquiStatic.GetPoint(str(dictAnatomic["Right Thigh"]['labels'][0])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-        pt2=aquiStatic.GetPoint(str(dictAnatomic["Right Thigh"]['labels'][1])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-        pt3=aquiStatic.GetPoint(str(dictAnatomic["Right Thigh"]['labels'][2])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+    #     # --- Construction of the anatomical Referential
+    #     pt1=aquiStatic.GetPoint(str(dictAnatomic["Right Thigh"]['labels'][0])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+    #     pt2=aquiStatic.GetPoint(str(dictAnatomic["Right Thigh"]['labels'][1])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+    #     pt3=aquiStatic.GetPoint(str(dictAnatomic["Right Thigh"]['labels'][2])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
 
-        ptOrigin=aquiStatic.GetPoint(str(dictAnatomic["Right Thigh"]['labels'][3])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+    #     ptOrigin=aquiStatic.GetPoint(str(dictAnatomic["Right Thigh"]['labels'][3])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
 
-        a1=(pt2-pt1)
-        a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
+    #     a1=(pt2-pt1)
+    #     a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
 
-        v=(pt3-pt1)
-        v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
+    #     v=(pt3-pt1)
+    #     v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
 
-        a2=np.cross(a1,v)
-        a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
+    #     a2=np.cross(a1,v)
+    #     a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
 
-        x,y,z,R=frame.setFrameData(a1,a2,dictAnatomic["Right Thigh"]['sequence'])
+    #     x,y,z,R=frame.setFrameData(a1,a2,dictAnatomic["Right Thigh"]['sequence'])
 
-        seg.anatomicalFrame.static.m_axisX=x
-        seg.anatomicalFrame.static.m_axisY=y
-        seg.anatomicalFrame.static.m_axisZ=z
-        seg.anatomicalFrame.static.setRotation(R)
-        seg.anatomicalFrame.static.setTranslation(ptOrigin)
+    #     seg.anatomicalFrame.static.m_axisX=x
+    #     seg.anatomicalFrame.static.m_axisY=y
+    #     seg.anatomicalFrame.static.m_axisZ=z
+    #     seg.anatomicalFrame.static.setRotation(R)
+    #     seg.anatomicalFrame.static.setTranslation(ptOrigin)
 
-        # --- relative rotation Technical Anatomical
-        tf=seg.getReferential("TF")
-        tf.setRelativeMatrixAnatomic( np.dot(tf.static.getRotation().T,seg.anatomicalFrame.static.getRotation()))
+    #     # --- relative rotation Technical Anatomical
+    #     tf=seg.getReferential("TF")
+    #     tf.setRelativeMatrixAnatomic( np.dot(tf.static.getRotation().T,seg.anatomicalFrame.static.getRotation()))
 
-        # --- node manager
-        for node in seg.getReferential("TF").static.getNodes():
-            seg.anatomicalFrame.static.addNode(node.getLabel(),node.getGlobal(),positionType="Global", desc = node.getDescription())
+    #     # --- node manager
+    #     for node in seg.getReferential("TF").static.getNodes():
+    #         seg.anatomicalFrame.static.addNode(node.getLabel(),node.getGlobal(),positionType="Global", desc = node.getDescription())
 
-        # --- compute lenght
-        hjc = seg.anatomicalFrame.static.getNode_byLabel("RHJC").m_local
-        kjc = seg.anatomicalFrame.static.getNode_byLabel("RKJC").m_local
+    #     # --- compute lenght
+    #     hjc = seg.anatomicalFrame.static.getNode_byLabel("RHJC").m_local
+    #     kjc = seg.anatomicalFrame.static.getNode_byLabel("RKJC").m_local
 
-        seg.setLength(np.linalg.norm(kjc-hjc))
+    #     seg.setLength(np.linalg.norm(kjc-hjc))
 
-    def _left_shank_Anatomicalcalibrate(self, aquiStatic: btk.btkAcquisition, dictAnatomic: Dict[str, Any], frameInit: int, frameEnd: int) -> None:
+    def _shank_Anatomicalcalibrate(self, side:str, aquiStatic: btk.btkAcquisition, dictAnatomic: Dict[str, Any], frameInit: int, frameEnd: int) -> None:
         """Calibrate the anatomical referential of the left shank segment.
 
         Constructs the anatomical referential for the left shank segment based on static acquisition data and anatomical dictionary definitions.
 
         Args:
+            side (str): body side
             aquiStatic (btk.btkAcquisition): Static acquisition data for calibration.
             dictAnatomic (Dict[str, Any]): Dictionary for reference markers used in anatomical coordinate system calibration.
             frameInit (int): The initial frame for calibration.
             frameEnd (int): The final frame for calibration.
         """
 
+        prefix = "L" if side == "Left" else "R" if side == "Right" else ""
 
-        seg=self.getSegment("Left Shank")
+        seg=self.getSegment(f"{side} Shank")
 
         # --- Construction of the anatomical Referential
-        pt1=aquiStatic.GetPoint(str(dictAnatomic["Left Shank"]['labels'][0])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-        pt2=aquiStatic.GetPoint(str(dictAnatomic["Left Shank"]['labels'][1])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-        pt3=aquiStatic.GetPoint(str(dictAnatomic["Left Shank"]['labels'][2])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+        pt1=aquiStatic.GetPoint(str(dictAnatomic[f"{side} Shank"]['labels'][0])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+        pt2=aquiStatic.GetPoint(str(dictAnatomic[f"{side} Shank"]['labels'][1])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+        pt3=aquiStatic.GetPoint(str(dictAnatomic[f"{side} Shank"]['labels'][2])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
 
-        ptOrigin=aquiStatic.GetPoint(str(dictAnatomic["Left Shank"]['labels'][3])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+        ptOrigin=aquiStatic.GetPoint(str(dictAnatomic[f"{side} Shank"]['labels'][3])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
 
         a1=(pt2-pt1)
         a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
@@ -1765,7 +1799,7 @@ class CGM1(CGM):
         a2=np.cross(a1,v)
         a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
 
-        x,y,z,R=frame.setFrameData(a1,a2,dictAnatomic["Left Shank"]['sequence'])
+        x,y,z,R=frame.setFrameData(a1,a2,dictAnatomic[f"{side} Shank"]['sequence'])
 
         seg.anatomicalFrame.static.m_axisX=x
         seg.anatomicalFrame.static.m_axisY=y
@@ -1782,32 +1816,38 @@ class CGM1(CGM):
             seg.anatomicalFrame.static.addNode(node.getLabel(),node.getGlobal(),positionType="Global", desc = node.getDescription())
 
         # --- compute length
-        kjc = seg.anatomicalFrame.static.getNode_byLabel("LKJC").m_local
-        ajc = seg.anatomicalFrame.static.getNode_byLabel("LAJC").m_local
+        kjc = seg.anatomicalFrame.static.getNode_byLabel(f"{prefix}KJC").m_local
+        ajc = seg.anatomicalFrame.static.getNode_byLabel(f"{prefix}AJC").m_local
 
         seg.setLength(np.linalg.norm(ajc-kjc))
 
-    def _left_shankProximal_AnatomicalCalibrate(self, aquiStatic: btk.btkAcquisition, dictAnat: Dict[str, Any], frameInit: int, frameEnd: int, options: Optional[Dict[str, Any]] = None) -> None:
+    def _shankProximal_AnatomicalCalibrate(self,side:str, aquiStatic: btk.btkAcquisition, dictAnat: Dict[str, Any], frameInit: int, frameEnd: int, options: Optional[Dict[str, Any]] = None) -> None:
         """Calibrate the anatomical referential of the left shank proximal segment.
 
         Constructs and adjusts the anatomical referential for the left shank proximal segment based on static acquisition data, anatomical dictionary definitions, and optional parameters.
 
         Args:
+            side (str): body side
             aquiStatic (btk.btkAcquisition): Static acquisition data for calibration.
             dictAnat (Dict[str, Any]): Dictionary for reference markers used in anatomical coordinate system calibration.
             frameInit (int): The initial frame for calibration.
             frameEnd (int): The final frame for calibration.
             options (Optional[Dict[str, Any]]): Additional options for calibration, if any.
         """
+        prefix = "L" if side == "Left" else "R" if side == "Right" else ""
+
+        tibialTorsion = 0.0
+        if side == "Left":
+            if self.m_useLeftTibialTorsion:
+                tibialTorsion = -1.0*np.deg2rad(self.mp_computed["LeftTibialTorsionOffset"])
+        elif side == "Right": 
+            if self.m_useRightTibialTorsion:
+                tibialTorsion = np.deg2rad(self.mp_computed["RightTibialTorsionOffset"])
+  
 
 
-        if self.m_useLeftTibialTorsion:
-            tibialTorsion = -1.0*np.deg2rad(self.mp_computed["LeftTibialTorsionOffset"])
-        else:
-            tibialTorsion = 0.0
 
-
-        seg=self.getSegment("Left Shank Proximal")
+        seg=self.getSegment(f"{side} Shank Proximal")
 
 
         # --- set static anatomical Referential
@@ -1834,113 +1874,114 @@ class CGM1(CGM):
             seg.anatomicalFrame.static.addNode(node.getLabel(),node.getGlobal(),positionType="Global", desc = node.getDescription())
 
 
-    def _right_shank_Anatomicalcalibrate(self, aquiStatic: btk.btkAcquisition, dictAnatomic: Dict[str, Any], frameInit: int, frameEnd: int) -> None:
-        """Calibrate the anatomical referential of the right shank segment.
+    # def _right_shank_Anatomicalcalibrate(self, aquiStatic: btk.btkAcquisition, dictAnatomic: Dict[str, Any], frameInit: int, frameEnd: int) -> None:
+    #     """Calibrate the anatomical referential of the right shank segment.
 
-        Constructs the anatomical referential for the right shank segment based on static acquisition data and anatomical dictionary definitions.
+    #     Constructs the anatomical referential for the right shank segment based on static acquisition data and anatomical dictionary definitions.
 
-        Args:
-            aquiStatic (btk.btkAcquisition): Static acquisition data for calibration.
-            dictAnatomic (Dict[str, Any]): Dictionary for reference markers used in anatomical coordinate system calibration.
-            frameInit (int): The initial frame for calibration.
-            frameEnd (int): The final frame for calibration.
-        """
-
-
-
-        seg=self.getSegment("Right Shank")
-
-        # --- Construction of the anatomical Referential
-        pt1=aquiStatic.GetPoint(str(dictAnatomic["Right Shank"]['labels'][0])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-        pt2=aquiStatic.GetPoint(str(dictAnatomic["Right Shank"]['labels'][1])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-        pt3=aquiStatic.GetPoint(str(dictAnatomic["Right Shank"]['labels'][2])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-
-        ptOrigin=aquiStatic.GetPoint(str(dictAnatomic["Right Shank"]['labels'][3])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-
-        a1=(pt2-pt1)
-        a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
-
-        v=(pt3-pt1)
-        v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
-
-        a2=np.cross(a1,v)
-        a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
-
-        x,y,z,R=frame.setFrameData(a1,a2,dictAnatomic["Right Shank"]['sequence'])
-
-        seg.anatomicalFrame.static.m_axisX=x
-        seg.anatomicalFrame.static.m_axisY=y
-        seg.anatomicalFrame.static.m_axisZ=z
-        seg.anatomicalFrame.static.setRotation(R)
-        seg.anatomicalFrame.static.setTranslation(ptOrigin)
-
-        # --- relative rotation Technical Anatomical
-        tf=seg.getReferential("TF")
-        tf.setRelativeMatrixAnatomic( np.dot(tf.static.getRotation().T,seg.anatomicalFrame.static.getRotation()))
-
-        # --- node manager
-        for node in tf.static.getNodes():
-            seg.anatomicalFrame.static.addNode(node.getLabel(),node.getGlobal(),positionType="Global", desc = node.getDescription())
+    #     Args:
+    #         aquiStatic (btk.btkAcquisition): Static acquisition data for calibration.
+    #         dictAnatomic (Dict[str, Any]): Dictionary for reference markers used in anatomical coordinate system calibration.
+    #         frameInit (int): The initial frame for calibration.
+    #         frameEnd (int): The final frame for calibration.
+    #     """
 
 
-        # --- compute length
-        kjc = seg.anatomicalFrame.static.getNode_byLabel("RKJC").m_local
-        ajc = seg.anatomicalFrame.static.getNode_byLabel("RAJC").m_local
-        seg.setLength(np.linalg.norm(ajc-kjc))
+
+    #     seg=self.getSegment("Right Shank")
+
+    #     # --- Construction of the anatomical Referential
+    #     pt1=aquiStatic.GetPoint(str(dictAnatomic["Right Shank"]['labels'][0])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+    #     pt2=aquiStatic.GetPoint(str(dictAnatomic["Right Shank"]['labels'][1])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+    #     pt3=aquiStatic.GetPoint(str(dictAnatomic["Right Shank"]['labels'][2])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+
+    #     ptOrigin=aquiStatic.GetPoint(str(dictAnatomic["Right Shank"]['labels'][3])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+
+    #     a1=(pt2-pt1)
+    #     a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
+
+    #     v=(pt3-pt1)
+    #     v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
+
+    #     a2=np.cross(a1,v)
+    #     a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
+
+    #     x,y,z,R=frame.setFrameData(a1,a2,dictAnatomic["Right Shank"]['sequence'])
+
+    #     seg.anatomicalFrame.static.m_axisX=x
+    #     seg.anatomicalFrame.static.m_axisY=y
+    #     seg.anatomicalFrame.static.m_axisZ=z
+    #     seg.anatomicalFrame.static.setRotation(R)
+    #     seg.anatomicalFrame.static.setTranslation(ptOrigin)
+
+    #     # --- relative rotation Technical Anatomical
+    #     tf=seg.getReferential("TF")
+    #     tf.setRelativeMatrixAnatomic( np.dot(tf.static.getRotation().T,seg.anatomicalFrame.static.getRotation()))
+
+    #     # --- node manager
+    #     for node in tf.static.getNodes():
+    #         seg.anatomicalFrame.static.addNode(node.getLabel(),node.getGlobal(),positionType="Global", desc = node.getDescription())
 
 
-    def _right_shankProximal_AnatomicalCalibrate(self, aquiStatic: btk.btkAcquisition, dictAnat: Dict[str, Any], frameInit: int, frameEnd: int, options: Optional[Dict[str, Any]] = None) -> None:
-        """Calibrate the anatomical referential of the right shank proximal segment.
-
-        Constructs and adjusts the anatomical referential for the right shank proximal segment based on static acquisition data, anatomical dictionary definitions, and optional parameters.
-
-        Args:
-            aquiStatic (btk.btkAcquisition): Static acquisition data for calibration.
-            dictAnat (Dict[str, Any]): Dictionary for reference markers used in anatomical coordinate system calibration.
-            frameInit (int): The initial frame for calibration.
-            frameEnd (int): The final frame for calibration.
-            options (Optional[Dict[str, Any]]): Additional options for calibration, if any.
-        """
+    #     # --- compute length
+    #     kjc = seg.anatomicalFrame.static.getNode_byLabel("RKJC").m_local
+    #     ajc = seg.anatomicalFrame.static.getNode_byLabel("RAJC").m_local
+    #     seg.setLength(np.linalg.norm(ajc-kjc))
 
 
-        if self.m_useRightTibialTorsion:
-            tibialTorsion = np.deg2rad(self.mp_computed["RightTibialTorsionOffset"])
-        else:
-            tibialTorsion = 0.0
+    # def _right_shankProximal_AnatomicalCalibrate(self, aquiStatic: btk.btkAcquisition, dictAnat: Dict[str, Any], frameInit: int, frameEnd: int, options: Optional[Dict[str, Any]] = None) -> None:
+    #     """Calibrate the anatomical referential of the right shank proximal segment.
+
+    #     Constructs and adjusts the anatomical referential for the right shank proximal segment based on static acquisition data, anatomical dictionary definitions, and optional parameters.
+
+    #     Args:
+    #         aquiStatic (btk.btkAcquisition): Static acquisition data for calibration.
+    #         dictAnat (Dict[str, Any]): Dictionary for reference markers used in anatomical coordinate system calibration.
+    #         frameInit (int): The initial frame for calibration.
+    #         frameEnd (int): The final frame for calibration.
+    #         options (Optional[Dict[str, Any]]): Additional options for calibration, if any.
+    #     """
 
 
-        seg=self.getSegment("Right Shank Proximal")
-
-        # --- set static anatomical Referential
-        # Rotation of the static anatomical Referential by the tibial Torsion angle
-        rotZ_tibRot = np.eye(3,3)
-        rotZ_tibRot[0,0] = np.cos(tibialTorsion)
-        rotZ_tibRot[0,1] = np.sin(tibialTorsion)
-        rotZ_tibRot[1,0] = - np.sin(tibialTorsion)
-        rotZ_tibRot[1,1] = np.cos(tibialTorsion)
-
-        R = np.dot(seg.anatomicalFrame.static.getRotation(),rotZ_tibRot)
-
-        csFrame=frame.Frame()
-        csFrame.update(R,seg.anatomicalFrame.static.getTranslation() )
-        seg.anatomicalFrame.setStaticFrame(csFrame)
-
-        # --- relative rotation Technical Anatomical
-        tf=seg.getReferential("TF")
-        tf.setRelativeMatrixAnatomic( np.dot(tf.static.getRotation().T,seg.anatomicalFrame.static.getRotation()))
-
-        # node manager
-        # --- node manager
-        for node in tf.static.getNodes():
-            seg.anatomicalFrame.static.addNode(node.getLabel(),node.getGlobal(),positionType="Global", desc = node.getDescription())
+    #     if self.m_useRightTibialTorsion:
+    #         tibialTorsion = np.deg2rad(self.mp_computed["RightTibialTorsionOffset"])
+    #     else:
+    #         tibialTorsion = 0.0
 
 
-    def _left_foot_corrected_calibrate(self, aquiStatic: btk.btkAcquisition, dictAnatomic: Dict[str, Any], frameInit: int, frameEnd: int, options: Optional[Dict[str, Any]] = None) -> None:
+    #     seg=self.getSegment("Right Shank Proximal")
+
+    #     # --- set static anatomical Referential
+    #     # Rotation of the static anatomical Referential by the tibial Torsion angle
+    #     rotZ_tibRot = np.eye(3,3)
+    #     rotZ_tibRot[0,0] = np.cos(tibialTorsion)
+    #     rotZ_tibRot[0,1] = np.sin(tibialTorsion)
+    #     rotZ_tibRot[1,0] = - np.sin(tibialTorsion)
+    #     rotZ_tibRot[1,1] = np.cos(tibialTorsion)
+
+    #     R = np.dot(seg.anatomicalFrame.static.getRotation(),rotZ_tibRot)
+
+    #     csFrame=frame.Frame()
+    #     csFrame.update(R,seg.anatomicalFrame.static.getTranslation() )
+    #     seg.anatomicalFrame.setStaticFrame(csFrame)
+
+    #     # --- relative rotation Technical Anatomical
+    #     tf=seg.getReferential("TF")
+    #     tf.setRelativeMatrixAnatomic( np.dot(tf.static.getRotation().T,seg.anatomicalFrame.static.getRotation()))
+
+    #     # node manager
+    #     # --- node manager
+    #     for node in tf.static.getNodes():
+    #         seg.anatomicalFrame.static.addNode(node.getLabel(),node.getGlobal(),positionType="Global", desc = node.getDescription())
+
+
+    def _foot_corrected_calibrate(self, side: str, aquiStatic: btk.btkAcquisition, dictAnatomic: Dict[str, Any], frameInit: int, frameEnd: int, options: Optional[Dict[str, Any]] = None) -> None:
         """Calibrate the anatomical referential of the left corrected foot segment.
 
         Constructs the anatomical referential for the left corrected foot segment based on static acquisition data, anatomical dictionary definitions, and optional parameters.
 
         Args:
+            side (str): body side
             aquiStatic (btk.btkAcquisition): Static acquisition data for calibration.
             dictAnatomic (Dict[str, Any]): Dictionary for reference markers used in anatomical coordinate system calibration.
             frameInit (int): The initial frame for calibration.
@@ -1948,6 +1989,7 @@ class CGM1(CGM):
             options (Optional[Dict[str, Any]]): Additional options for calibration, if any.
         """
 
+        prefix = "L" if side == "Left" else "R" if side == "Right" else ""
 
         if "markerDiameter" in options.keys():
             LOGGER.logger.debug(" option (markerDiameter) found ")
@@ -1962,40 +2004,50 @@ class CGM1(CGM):
             basePlate=2.0
 
 
-        seg=self.getSegment("Left Foot")
+        seg=self.getSegment(f"{side} Foot")
 
         if "useBodyBuilderFoot" in options.keys() and options["useBodyBuilderFoot"]:
-            LOGGER.logger.debug("You use a Left corrected foot sequence different than native CGM1")
-            dictAnatomic["Left Foot"]={'sequence':"ZYX", 'labels':  ["LTOE","LHEE","LKJC","LAJC"]}    # corrected foot
+            LOGGER.logger.debug(f"You use a {side} corrected foot sequence different than native CGM1")
+            dictAnatomic[f"{side} Foot"]={'sequence':"ZYX", 'labels':  [f"{prefix}TOE",f"{prefix}HEE",f"{prefix}KJC",f"{prefix}AJC"]}    # corrected foot
 
 
         # --- Construction of the anatomical Referential
-        pt1=aquiStatic.GetPoint(str(dictAnatomic["Left Foot"]['labels'][0])).GetValues()[frameInit:frameEnd,:].mean(axis=0) # LTOE
-        pt2=aquiStatic.GetPoint(str(dictAnatomic["Left Foot"]['labels'][1])).GetValues()[frameInit:frameEnd,:].mean(axis=0) # LHEE
+        pt1=aquiStatic.GetPoint(str(dictAnatomic[f"{side} Foot"]['labels'][0])).GetValues()[frameInit:frameEnd,:].mean(axis=0) # LTOE
+        pt2=aquiStatic.GetPoint(str(dictAnatomic[f"{side} Foot"]['labels'][1])).GetValues()[frameInit:frameEnd,:].mean(axis=0) # LHEE
 
-        if ("leftFlatFoot" in options.keys() and options["leftFlatFoot"]):
-            LOGGER.logger.debug ("option (leftFlatFoot) enable")
-            if ("LeftSoleDelta" in self.mp.keys() and self.mp["LeftSoleDelta"]!=0):
-                LOGGER.logger.debug ("option (LeftSoleDelta) compensation")
+        if side == "Left":
+            if ("leftFlatFoot" in options.keys() and options["leftFlatFoot"]):
+                LOGGER.logger.debug ("option (leftFlatFoot) enable")
+                if ("LeftSoleDelta" in self.mp.keys() and self.mp["LeftSoleDelta"]!=0):
+                    LOGGER.logger.debug ("option (LeftSoleDelta) compensation")
 
-            pt2[2] = pt1[2]+self.mp['LeftSoleDelta']
+                pt2[2] = pt1[2]+self.mp['LeftSoleDelta']
+
+        if side == "Right":
+            if ("rightFlatFoot" in options.keys() and options["rightFlatFoot"]):
+                LOGGER.logger.debug ("option (rightFlatFoot) enable")
+
+                if ("RightSoleDelta" in self.mp.keys() and self.mp["RightSoleDelta"]!=0):
+                    LOGGER.logger.debug ("option (RightSoleDelta) compensation")
+
+                pt2[2] = pt1[2]+self.mp['RightSoleDelta']
 
 
-        if dictAnatomic["Left Foot"]['labels'][2] is not None:
-            pt3=aquiStatic.GetPoint(str(dictAnatomic["Left Foot"]['labels'][2])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+        if dictAnatomic[f"{side} Foot"]['labels'][2] is not None:
+            pt3=aquiStatic.GetPoint(str(dictAnatomic[f"{side} Foot"]['labels'][2])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
             v=(pt3-pt1)
         else:
-            distalShank = self.getSegment("Left Shank")
-            proximalShank = self.getSegment("Left Shank Proximal")
+            distalShank = self.getSegment(f"{side} Shank")
+            proximalShank = self.getSegment(f"{side} Shank Proximal")
             if "viconCGM1compatible" in options.keys() and options["viconCGM1compatible"]:
-                if distalShank.getReferential("TF").static.getNode_byLabel("LAJC").m_desc != "mid":
+                if distalShank.getReferential("TF").static.getNode_byLabel(f"{prefix}AJC").m_desc != "mid":
                     v=proximalShank.anatomicalFrame.static.m_axisY #(pt3-pt1)
                 else:
                     v=distalShank.anatomicalFrame.static.m_axisY #(pt3-pt1)
             else:
                 v=distalShank.anatomicalFrame.static.m_axisY #(pt3-pt1)
 
-        ptOrigin=aquiStatic.GetPoint(str(dictAnatomic["Left Foot"]['labels'][3])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+        ptOrigin=aquiStatic.GetPoint(str(dictAnatomic[f"{side} Foot"]['labels'][3])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
 
         a1=(pt2-pt1)
         a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
@@ -2005,7 +2057,7 @@ class CGM1(CGM):
         a2=np.cross(a1,v)
         a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
 
-        x,y,z,R=frame.setFrameData(a1,a2,dictAnatomic["Left Foot"]['sequence'])
+        x,y,z,R=frame.setFrameData(a1,a2,dictAnatomic[f"{side} Foot"]['sequence'])
 
         seg.anatomicalFrame.static.m_axisX=x
         seg.anatomicalFrame.static.m_axisY=y
@@ -2027,6 +2079,7 @@ class CGM1(CGM):
                         [0,1,0],
                          [-np.sin(y),0,np.cos(y)]])
 
+
         relativeMatrixAnatomic = np.dot(rotY,rotX)
 
         tf.setRelativeMatrixAnatomic( relativeMatrixAnatomic)
@@ -2039,13 +2092,13 @@ class CGM1(CGM):
 
         # --- compute amthropo
         # length
-        toe = seg.anatomicalFrame.static.getNode_byLabel("LTOE").m_local
-        hee = seg.anatomicalFrame.static.getNode_byLabel("LHEE").m_local
+        toe = seg.anatomicalFrame.static.getNode_byLabel(f"{prefix}TOE").m_local
+        hee = seg.anatomicalFrame.static.getNode_byLabel(f"{prefix}HEE").m_local
         seg.setLength(np.linalg.norm(toe-hee)- markerDiameter/2.0)
 
         # com
-        toe = seg.anatomicalFrame.static.getNode_byLabel("LTOE").m_global
-        hee = seg.anatomicalFrame.static.getNode_byLabel("LHEE").m_global
+        toe = seg.anatomicalFrame.static.getNode_byLabel(f"{prefix}TOE").m_global
+        hee = seg.anatomicalFrame.static.getNode_byLabel(f"{prefix}HEE").m_global
         footLongAxis = (toe-hee)/np.linalg.norm(toe-hee)
 
         com = hee + 0.5 * seg.m_bsp["length"] * footLongAxis
@@ -2060,129 +2113,129 @@ class CGM1(CGM):
         seg.anatomicalFrame.static.addNode("FootOriginOffset",local_oo,positionType="Local")
         seg.anatomicalFrame.static.addNode("ToeOrigin",local_to,positionType="Local")
 
-    def _right_foot_corrected_calibrate(self, aquiStatic: btk.btkAcquisition, dictAnatomic: Dict[str, Any], frameInit: int, frameEnd: int, options: Optional[Dict[str, Any]] = None) -> None:
-        """Calibrate the anatomical referential of the right corrected foot segment.
+    # def _right_foot_corrected_calibrate(self, aquiStatic: btk.btkAcquisition, dictAnatomic: Dict[str, Any], frameInit: int, frameEnd: int, options: Optional[Dict[str, Any]] = None) -> None:
+    #     """Calibrate the anatomical referential of the right corrected foot segment.
 
-        Constructs the anatomical referential for the right corrected foot segment based on static acquisition data, anatomical dictionary definitions, and optional parameters.
+    #     Constructs the anatomical referential for the right corrected foot segment based on static acquisition data, anatomical dictionary definitions, and optional parameters.
 
-        Args:
-            aquiStatic (btk.btkAcquisition): Static acquisition data for calibration.
-            dictAnatomic (Dict[str, Any]): Dictionary for reference markers used in anatomical coordinate system calibration.
-            frameInit (int): The initial frame for calibration.
-            frameEnd (int): The final frame for calibration.
-            options (Optional[Dict[str, Any]]): Additional options for calibration, if any.
-        """
-
-
-
-        if "markerDiameter" in options.keys():
-            LOGGER.logger.debug(" option (markerDiameter) found ")
-            markerDiameter = options["markerDiameter"]
-        else:
-            markerDiameter=14.0
-
-        if "basePlate" in options.keys():
-            LOGGER.logger.debug(" option (basePlate) found ")
-            basePlate = options["basePlate"]
-        else:
-            basePlate=2.0
-
-        seg=self.getSegment("Right Foot")
-
-        if "useBodyBuilderFoot" in options.keys() and options["useBodyBuilderFoot"]:
-            LOGGER.logger.debug("You use a Right corrected foot sequence different than native CGM1")
-            dictAnatomic["Right Foot"]={'sequence':"ZYX", 'labels':  ["RTOE","RHEE","RKJC","RAJC"]}    # corrected foot
-
-        # --- Construction of the anatomical Referential
-        pt1=aquiStatic.GetPoint(str(dictAnatomic["Right Foot"]['labels'][0])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-        pt2=aquiStatic.GetPoint(str(dictAnatomic["Right Foot"]['labels'][1])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-        #pt3=aquiStatic.GetPoint(str(dictAnatomic["Right Foot"]['labels'][2])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-
-        if ("rightFlatFoot" in options.keys() and options["rightFlatFoot"]):
-            LOGGER.logger.debug ("option (rightFlatFoot) enable")
-
-            if ("RightSoleDelta" in self.mp.keys() and self.mp["RightSoleDelta"]!=0):
-                LOGGER.logger.debug ("option (RightSoleDelta) compensation")
-
-            pt2[2] = pt1[2]+self.mp['RightSoleDelta']
+    #     Args:
+    #         aquiStatic (btk.btkAcquisition): Static acquisition data for calibration.
+    #         dictAnatomic (Dict[str, Any]): Dictionary for reference markers used in anatomical coordinate system calibration.
+    #         frameInit (int): The initial frame for calibration.
+    #         frameEnd (int): The final frame for calibration.
+    #         options (Optional[Dict[str, Any]]): Additional options for calibration, if any.
+    #     """
 
 
-        if dictAnatomic["Right Foot"]['labels'][2] is not None:
-            pt3=aquiStatic.GetPoint(str(dictAnatomic["Right Foot"]['labels'][2])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-            v=(pt3-pt1)
-        else:
-            distalShank = self.getSegment("Right Shank")
-            proximalShank = self.getSegment("Right Shank Proximal")
-            if "viconCGM1compatible" in options.keys() and options["viconCGM1compatible"]:
-                if distalShank.getReferential("TF").static.getNode_byLabel("RAJC").m_desc != "mid":
-                    v=proximalShank.anatomicalFrame.static.m_axisY #(pt3-pt1)
-                else:
-                    v=distalShank.anatomicalFrame.static.m_axisY #(pt3-pt1)
-            else:
-                v=distalShank.anatomicalFrame.static.m_axisY #(pt3-pt1)
+
+    #     if "markerDiameter" in options.keys():
+    #         LOGGER.logger.debug(" option (markerDiameter) found ")
+    #         markerDiameter = options["markerDiameter"]
+    #     else:
+    #         markerDiameter=14.0
+
+    #     if "basePlate" in options.keys():
+    #         LOGGER.logger.debug(" option (basePlate) found ")
+    #         basePlate = options["basePlate"]
+    #     else:
+    #         basePlate=2.0
+
+    #     seg=self.getSegment("Right Foot")
+
+    #     if "useBodyBuilderFoot" in options.keys() and options["useBodyBuilderFoot"]:
+    #         LOGGER.logger.debug("You use a Right corrected foot sequence different than native CGM1")
+    #         dictAnatomic["Right Foot"]={'sequence':"ZYX", 'labels':  ["RTOE","RHEE","RKJC","RAJC"]}    # corrected foot
+
+    #     # --- Construction of the anatomical Referential
+    #     pt1=aquiStatic.GetPoint(str(dictAnatomic["Right Foot"]['labels'][0])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+    #     pt2=aquiStatic.GetPoint(str(dictAnatomic["Right Foot"]['labels'][1])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+    #     #pt3=aquiStatic.GetPoint(str(dictAnatomic["Right Foot"]['labels'][2])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+
+    #     if ("rightFlatFoot" in options.keys() and options["rightFlatFoot"]):
+    #         LOGGER.logger.debug ("option (rightFlatFoot) enable")
+
+    #         if ("RightSoleDelta" in self.mp.keys() and self.mp["RightSoleDelta"]!=0):
+    #             LOGGER.logger.debug ("option (RightSoleDelta) compensation")
+
+    #         pt2[2] = pt1[2]+self.mp['RightSoleDelta']
 
 
-        ptOrigin=aquiStatic.GetPoint(str(dictAnatomic["Right Foot"]['labels'][3])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-
-        a1=(pt2-pt1)
-        a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
-
-        v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
-
-        a2=np.cross(a1,v)
-        a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
-
-        x,y,z,R=frame.setFrameData(a1,a2,dictAnatomic["Right Foot"]['sequence'])
-
-        seg.anatomicalFrame.static.m_axisX=x
-        seg.anatomicalFrame.static.m_axisY=y
-        seg.anatomicalFrame.static.m_axisZ=z
-        seg.anatomicalFrame.static.setRotation(R)
-        seg.anatomicalFrame.static.setTranslation(ptOrigin)
-
-        # --- relative rotation Technical Anatomical
-        tf=seg.getReferential("TF")
-        # actual Relative Rotation
-        trueRelativeMatrixAnatomic = np.dot(tf.static.getRotation().T,seg.anatomicalFrame.static.getRotation())
-        y,x,z = euler.euler_yxz(trueRelativeMatrixAnatomic)
-
-        # native CGM relative rotation
-        rotX =np.array([[1,0,0],
-                        [0,np.cos(x),-np.sin(x)],
-                         [0,np.sin(x),np.cos(x)]])
-
-        rotY =np.array([[np.cos(y),0,np.sin(y)],
-                        [0,1,0],
-                         [-np.sin(y),0,np.cos(y)]])
-
-        relativeMatrixAnatomic = np.dot(rotY,rotX)
-
-        tf.setRelativeMatrixAnatomic(relativeMatrixAnatomic)
-
-        # --- node manager
-        for node in seg.getReferential("TF").static.getNodes():
-            seg.anatomicalFrame.static.addNode(node.getLabel(),node.getGlobal(),positionType="Global", desc = node.getDescription())
-
-        # --- anthropo
-        # length
-        toe = seg.anatomicalFrame.static.getNode_byLabel("RTOE").m_local
-        hee = seg.anatomicalFrame.static.getNode_byLabel("RHEE").m_local
-        seg.setLength(np.linalg.norm(toe-hee)- markerDiameter/2.0)
-
-        # com
-        toe = seg.anatomicalFrame.static.getNode_byLabel("RTOE").m_global
-        hee = seg.anatomicalFrame.static.getNode_byLabel("RHEE").m_global
-        com = (toe+hee)/2.0
-
-        seg.anatomicalFrame.static.addNode("com",com,positionType="Global")
+    #     if dictAnatomic["Right Foot"]['labels'][2] is not None:
+    #         pt3=aquiStatic.GetPoint(str(dictAnatomic["Right Foot"]['labels'][2])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
+    #         v=(pt3-pt1)
+    #     else:
+    #         distalShank = self.getSegment("Right Shank")
+    #         proximalShank = self.getSegment("Right Shank Proximal")
+    #         if "viconCGM1compatible" in options.keys() and options["viconCGM1compatible"]:
+    #             if distalShank.getReferential("TF").static.getNode_byLabel("RAJC").m_desc != "mid":
+    #                 v=proximalShank.anatomicalFrame.static.m_axisY #(pt3-pt1)
+    #             else:
+    #                 v=distalShank.anatomicalFrame.static.m_axisY #(pt3-pt1)
+    #         else:
+    #             v=distalShank.anatomicalFrame.static.m_axisY #(pt3-pt1)
 
 
-        # foot origin offset and Toe origin
-        local_oo = np.array([-11, 11, -120])/169.0*seg.m_bsp["length"]
-        local_to =local_oo + np.array([0, 0, -seg.m_bsp["length"]/3.0])
+    #     ptOrigin=aquiStatic.GetPoint(str(dictAnatomic["Right Foot"]['labels'][3])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
 
-        seg.anatomicalFrame.static.addNode("FootOriginOffset",local_oo,positionType="Local")
-        seg.anatomicalFrame.static.addNode("ToeOrigin",local_to,positionType="Local")
+    #     a1=(pt2-pt1)
+    #     a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
+
+    #     v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
+
+    #     a2=np.cross(a1,v)
+    #     a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
+
+    #     x,y,z,R=frame.setFrameData(a1,a2,dictAnatomic["Right Foot"]['sequence'])
+
+    #     seg.anatomicalFrame.static.m_axisX=x
+    #     seg.anatomicalFrame.static.m_axisY=y
+    #     seg.anatomicalFrame.static.m_axisZ=z
+    #     seg.anatomicalFrame.static.setRotation(R)
+    #     seg.anatomicalFrame.static.setTranslation(ptOrigin)
+
+    #     # --- relative rotation Technical Anatomical
+    #     tf=seg.getReferential("TF")
+    #     # actual Relative Rotation
+    #     trueRelativeMatrixAnatomic = np.dot(tf.static.getRotation().T,seg.anatomicalFrame.static.getRotation())
+    #     y,x,z = euler.euler_yxz(trueRelativeMatrixAnatomic)
+
+    #     # native CGM relative rotation
+    #     rotX =np.array([[1,0,0],
+    #                     [0,np.cos(x),-np.sin(x)],
+    #                      [0,np.sin(x),np.cos(x)]])
+
+    #     rotY =np.array([[np.cos(y),0,np.sin(y)],
+    #                     [0,1,0],
+    #                      [-np.sin(y),0,np.cos(y)]])
+
+    #     relativeMatrixAnatomic = np.dot(rotY,rotX)
+
+    #     tf.setRelativeMatrixAnatomic(relativeMatrixAnatomic)
+
+    #     # --- node manager
+    #     for node in seg.getReferential("TF").static.getNodes():
+    #         seg.anatomicalFrame.static.addNode(node.getLabel(),node.getGlobal(),positionType="Global", desc = node.getDescription())
+
+    #     # --- anthropo
+    #     # length
+    #     toe = seg.anatomicalFrame.static.getNode_byLabel("RTOE").m_local
+    #     hee = seg.anatomicalFrame.static.getNode_byLabel("RHEE").m_local
+    #     seg.setLength(np.linalg.norm(toe-hee)- markerDiameter/2.0)
+
+    #     # com
+    #     toe = seg.anatomicalFrame.static.getNode_byLabel("RTOE").m_global
+    #     hee = seg.anatomicalFrame.static.getNode_byLabel("RHEE").m_global
+    #     com = (toe+hee)/2.0
+
+    #     seg.anatomicalFrame.static.addNode("com",com,positionType="Global")
+
+
+    #     # foot origin offset and Toe origin
+    #     local_oo = np.array([-11, 11, -120])/169.0*seg.m_bsp["length"]
+    #     local_to =local_oo + np.array([0, 0, -seg.m_bsp["length"]/3.0])
+
+    #     seg.anatomicalFrame.static.addNode("FootOriginOffset",local_oo,positionType="Local")
+    #     seg.anatomicalFrame.static.addNode("ToeOrigin",local_to,positionType="Local")
 
 
     def _rotateAnatomicalFrame(self, segmentLabel: str, angle: float, aquiStatic: btk.btkAcquisition, dictAnatomic: Dict[str, Any], frameInit: int, frameEnd: int) -> None:
@@ -2401,1924 +2454,7 @@ class CGM1(CGM):
             self.mp_computed["RightStaticRotOffset"] = np.rad2deg(x)
             LOGGER.logger.debug(" RightStaticRotOffset => %s " % str(self.mp_computed["RightStaticRotOffset"]))
 
-    # ----- Motion --------------
-    def computeOptimizedSegmentMotion(self, aqui: btk.btkAcquisition, segments: List[str], dictRef: Dict[str, Any], dictAnat: Dict[str, Any], motionMethod: enums.motionMethod, options: Dict[str, Any]) -> None:
-        """Compute poses of both Technical and Anatomical coordinate systems for specific segments of the model.
-
-        Args:
-            aqui (btk.btkAcquisition): Motion acquisition data.
-            segments (List[str]): Segments of the model.
-            dictRef (Dict[str, Any]): Technical referential definitions.
-            dictAnat (Dict[str, Any]): Anatomical referential definitions.
-            motionMethod (enums.motionMethod): Segmental motion method to apply.
-            options (Dict[str, Any]): Passed known-arguments.
-        """
-
-
-
-        # ---remove all  direction marker from tracking markers.
-        if self.staExpert:
-            for seg in self.m_segmentCollection:
-                selectedTrackingMarkers=[]
-                for marker in seg.m_tracking_markers:
-                    if marker in self.__class__.TRACKING_MARKERS : # get class variable MARKER even from child
-                        selectedTrackingMarkers.append(marker)
-                seg.m_tracking_markers= selectedTrackingMarkers
-
-
-        LOGGER.logger.debug("--- Segmental Least-square motion process ---")
-        if "Pelvis" in segments:
-            self._pelvis_motion_optimize(aqui, dictRef, motionMethod)
-            self._anatomical_motion(aqui,"Pelvis",originLabel = str(dictAnat["Pelvis"]['labels'][3]))
-
-        if "Left Thigh" in segments:
-            self._left_thigh_motion_optimize(aqui, dictRef,motionMethod)
-            self._anatomical_motion(aqui,"Left Thigh",originLabel = "LKJC")
-
-
-        if "Right Thigh" in segments:
-            self._right_thigh_motion_optimize(aqui, dictRef,motionMethod)
-            self._anatomical_motion(aqui,"Right Thigh",originLabel = "RKJC")
-
-
-        if "Left Shank" in segments:
-            self._left_shank_motion_optimize(aqui, dictRef,motionMethod)
-            self._anatomical_motion(aqui,"Left Shank",originLabel = "LAJC")
-
-        if "Right Shank" in segments:
-            self._right_shank_motion_optimize(aqui, dictRef,motionMethod)
-            self._anatomical_motion(aqui,"Right Shank",originLabel = "RAJC")
-
-        if "Left Foot" in segments:
-            self._left_foot_motion_optimize(aqui, dictRef,motionMethod)
-            self._anatomical_motion(aqui,"Left Foot",originLabel = "LHEE")
-
-        if "Right Foot" in segments:
-            self._right_foot_motion_optimize(aqui, dictRef,motionMethod)
-            self._anatomical_motion(aqui,"Right Foot",originLabel = "RHEE")
-
-
-
-
-
-    def computeMotion(self, aqui: btk.btkAcquisition, dictRef: Dict[str, Any], dictAnat: Dict[str, Any], motionMethod: enums.motionMethod, options: Optional[Dict[str, Any]] = None) -> None:
-        """Compute poses of both Technical and Anatomical coordinate systems.
-
-        Args:
-            aqui (btk.btkAcquisition): Acquisition data.
-            dictRef (Dict[str, Any]): Technical referential definitions.
-            dictAnat (Dict[str, Any]): Anatomical referential definitions.
-            motionMethod (enums.motionMethod): Segmental motion method.
-            options (Optional[Dict[str, Any]], optional): Passed arguments to embedded functions. Defaults to None.
-
-        Options:
-            pigStatic (bool): Compute foot coordinate system according to the Vicon Plugin-gait.
-            forceFoot6DoF (bool): Apply 6DOF pose optimization on the foot.
-        """
-
-
-        LOGGER.logger.debug("=====================================================")
-        LOGGER.logger.debug("===================  CGM MOTION   ===================")
-        LOGGER.logger.debug("=====================================================")
-
-        pigStaticProcessing= True if "pigStatic" in options.keys() and options["pigStatic"] else False
-        forceFoot6DoF= True if "forceFoot6DoF" in options.keys() and options["forceFoot6DoF"] else False
-
-
-        if motionMethod == enums.motionMethod.Determinist: #cmf.motionMethod.Native:
-
-            #if not pigStaticProcessing:
-            LOGGER.logger.debug(" - Pelvis - motion -")
-            LOGGER.logger.debug(" -------------------")
-            self._pelvis_motion(aqui, dictRef, dictAnat)
-
-            LOGGER.logger.debug(" - Left Thigh - motion -")
-            LOGGER.logger.debug(" -----------------------")
-            self._left_thigh_motion(aqui, dictRef, dictAnat,options=options)
-
-
-            # if rotation offset from knee functional calibration methods
-            if self.mp_computed["LeftKneeFuncCalibrationOffset"]:
-                offset = self.mp_computed["LeftKneeFuncCalibrationOffset"]
-                self._rotate_anatomical_motion("Left Thigh",offset,
-                                        aqui,options=options)
-
-            LOGGER.logger.debug(" - Right Thigh - motion -")
-            LOGGER.logger.debug(" ------------------------")
-            self._right_thigh_motion(aqui, dictRef, dictAnat,options=options)
-
-
-            if  self.mp_computed["RightKneeFuncCalibrationOffset"]:
-                offset = self.mp_computed["RightKneeFuncCalibrationOffset"]
-                self._rotate_anatomical_motion("Right Thigh",offset,
-                                        aqui,options=options)
-
-
-            LOGGER.logger.debug(" - Left Shank - motion -")
-            LOGGER.logger.debug(" -----------------------")
-            self._left_shank_motion(aqui, dictRef, dictAnat,options=options)
-
-
-            LOGGER.logger.debug(" - Left Shank-proximal - motion -")
-            LOGGER.logger.debug(" --------------------------------")
-            self._left_shankProximal_motion(aqui,dictAnat,options=options)
-
-            LOGGER.logger.debug(" - Right Shank - motion -")
-            LOGGER.logger.debug(" ------------------------")
-            self._right_shank_motion(aqui, dictRef, dictAnat,options=options)
-
-            LOGGER.logger.debug(" - Right Shank-proximal - motion -")
-            LOGGER.logger.debug(" ---------------------------------")
-            self._right_shankProximal_motion(aqui,dictAnat,options=options)
-
-            LOGGER.logger.debug(" - Left foot - motion -")
-            LOGGER.logger.debug(" ----------------------")
-
-            if pigStaticProcessing:
-                self._left_foot_motion_static(aqui, dictAnat,options=options)
-            else:
-                self._left_foot_motion(aqui, dictRef, dictAnat,options=options)
-
-            LOGGER.logger.debug(" - Right foot - motion -")
-            LOGGER.logger.debug(" ----------------------")
-
-
-            if pigStaticProcessing:
-                self._right_foot_motion_static(aqui, dictAnat,options=options)
-            else:
-                self._right_foot_motion(aqui, dictRef, dictAnat,options=options)
-
-
-            self._thorax_motion(aqui, dictRef,dictAnat,options=options)
-            self._head_motion(aqui, dictRef,dictAnat,options=options)
-
-            self._clavicle_motion("Left",aqui, dictRef,dictAnat,options=options)
-            self._constructArmVirtualMarkers("Left", aqui)
-            self._upperArm_motion("Left",aqui, dictRef,dictAnat,options=options,   frameReconstruction="Technical")
-            self._foreArm_motion("Left",aqui, dictRef,dictAnat,options=options, frameReconstruction="Technical")
-            self._upperArm_motion("Left",aqui, dictRef,dictAnat,options=options,   frameReconstruction="Anatomical")
-            self._foreArm_motion("Left",aqui, dictRef,dictAnat,options=options, frameReconstruction="Anatomical")
-            self._hand_motion("Left",aqui, dictRef,dictAnat,options=options)
-
-            self._clavicle_motion("Right",aqui, dictRef,dictAnat,options=options)
-            self._constructArmVirtualMarkers("Right", aqui)
-            self._upperArm_motion("Right",aqui, dictRef,dictAnat,options=options,   frameReconstruction="Technical")
-            self._foreArm_motion("Right",aqui, dictRef,dictAnat,options=options, frameReconstruction="Technical")
-            self._upperArm_motion("Right",aqui, dictRef,dictAnat,options=options,   frameReconstruction="Anatomical")
-            self._foreArm_motion("Right",aqui, dictRef,dictAnat,options=options, frameReconstruction="Anatomical")
-            self._hand_motion("Right",aqui, dictRef,dictAnat,options=options)
-
-
-        if motionMethod == enums.motionMethod.Sodervisk:
-
-            # ---remove all  direction marker from tracking markers.
-            if self.staExpert:
-                for seg in self.m_segmentCollection:
-                    selectedTrackingMarkers=[]
-                    for marker in seg.m_tracking_markers:
-                        if marker in self.__class__.TRACKING_MARKERS :
-                            selectedTrackingMarkers.append(marker)
-                    seg.m_tracking_markers= selectedTrackingMarkers
-
-
-            LOGGER.logger.debug("--- Segmental Least-square motion process ---")
-            self._pelvis_motion_optimize(aqui, dictRef, motionMethod)
-            self._anatomical_motion(aqui,"Pelvis",originLabel = str(dictAnat["Pelvis"]['labels'][3]))
-
-
-            TopLumbar5=np.zeros((aqui.GetPointFrameNumber(),3))
-
-            for i in range(0,aqui.GetPointFrameNumber()):
-                lhjc = aqui.GetPoint("LHJC").GetValues()[i,:]
-                rhjc =  aqui.GetPoint("RHJC").GetValues()[i,:]
-                pelvisScale = np.linalg.norm(lhjc-rhjc)
-                offset = (lhjc+rhjc)/2.0
-                R = self.getSegment("Pelvis").anatomicalFrame.motion[i].getRotation()
-                TopLumbar5[i,:] = offset +  np.dot(R,(np.array([ 0, 0, 0.925]))* pelvisScale)
-
-
-            self._TopLumbar5 = TopLumbar5
-
-            self._left_thigh_motion_optimize(aqui, dictRef,motionMethod)
-            self._anatomical_motion(aqui,"Left Thigh",originLabel = str(dictAnat["Left Thigh"]['labels'][3]))
-
-            self._right_thigh_motion_optimize(aqui, dictRef,motionMethod)
-            self._anatomical_motion(aqui,"Right Thigh",originLabel = str(dictAnat["Right Thigh"]['labels'][3]))
-
-
-            self._left_shank_motion_optimize(aqui, dictRef,motionMethod)
-            self._anatomical_motion(aqui,"Left Shank",originLabel = str(dictAnat["Left Shank"]['labels'][3]))
-            self._left_shankProximal_motion(aqui,dictAnat,options=options)
-
-            self._right_shank_motion_optimize(aqui, dictRef,motionMethod)
-            self._anatomical_motion(aqui,"Right Shank",originLabel = str(dictAnat["Right Shank"]['labels'][3]))
-            self._right_shankProximal_motion(aqui,dictAnat,options=options)
-
-            if forceFoot6DoF:
-            # foot
-            # issue with least-square optimization :  AJC - HEE and TOE may be inline -> singularities !!
-                self._leftFoot_motion_optimize(aqui, dictRef,dictAnat, motionMethod)
-                self._anatomical_motion(aqui,"Left Foot",originLabel = str(dictAnat["Left Foot"]['labels'][3]))
-                self._rightFoot_motion_optimize(aqui, dictRef,dictAnat, motionMethod)
-                self._anatomical_motion(aqui,"Right Foot",originLabel = str(dictAnat["Right Foot"]['labels'][3]))
-            else:
-                self._left_foot_motion(aqui, dictRef, dictAnat,options=options)
-                self._right_foot_motion(aqui, dictRef, dictAnat,options=options)
-
-            self._thorax_motion(aqui, dictRef,dictAnat,options=options)
-            self._head_motion(aqui, dictRef,dictAnat,options=options)
-
-            self._clavicle_motion("Left",aqui, dictRef,dictAnat,options=options)
-            self._constructArmVirtualMarkers("Left", aqui)
-            self._upperArm_motion("Left",aqui, dictRef,dictAnat,options=options,   frameReconstruction="Technical")
-            self._foreArm_motion("Left",aqui, dictRef,dictAnat,options=options, frameReconstruction="Technical")
-            self._upperArm_motion("Left",aqui, dictRef,dictAnat,options=options,   frameReconstruction="Anatomical")
-            self._foreArm_motion("Left",aqui, dictRef,dictAnat,options=options, frameReconstruction="Anatomical")
-            self._hand_motion("Left",aqui, dictRef,dictAnat,options=options)
-
-            self._clavicle_motion("Right",aqui, dictRef,dictAnat,options=options)
-            self._constructArmVirtualMarkers("Right", aqui)
-            self._upperArm_motion("Right",aqui, dictRef,dictAnat,options=options,   frameReconstruction="Technical")
-            self._foreArm_motion("Right",aqui, dictRef,dictAnat,options=options, frameReconstruction="Technical")
-            self._upperArm_motion("Right",aqui, dictRef,dictAnat,options=options,   frameReconstruction="Anatomical")
-            self._foreArm_motion("Right",aqui, dictRef,dictAnat,options=options, frameReconstruction="Anatomical")
-            self._hand_motion("Right",aqui, dictRef,dictAnat,options=options)
-
-    def _pelvis_motion(self, aqui: btk.btkAcquisition, dictRef: Dict[str, Any], dictAnat: Dict[str, Any]) -> None:
-        """Process the motion of the pelvis segment.
-
-        Args:
-            aqui (btk.btkAcquisition): Motion acquisition data.
-            dictRef (Dict[str, Any]): Technical referential definitions for the pelvis.
-            dictAnat (Dict[str, Any]): Anatomical referential definitions for the pelvis.
-        """
-
-
-        seg=self.getSegment("Pelvis")
-
-        # --- motion of the technical referential
-        seg.getReferential("TF").motion =[]        # reinit Technical Frame Motion (USEFUL if you work with several aquisitions)
-
-        #  additional markers
-        val=(aqui.GetPoint("LPSI").GetValues() + aqui.GetPoint("RPSI").GetValues()) / 2.0
-        btkTools.smartAppendPoint(aqui,"SACR",val, desc="")
-
-        val=(aqui.GetPoint("LASI").GetValues() + aqui.GetPoint("RASI").GetValues()) / 2.0
-        btkTools.smartAppendPoint(aqui,"midASIS",val, desc="")
-
-        validFrames = btkTools.getValidFrames(aqui,seg.m_tracking_markers)
-        seg.setExistFrames(validFrames)
-
-        csFrame=frame.Frame()
-        for i in range(0,aqui.GetPointFrameNumber()):
-
-            pt1=aqui.GetPoint(str(dictRef["Pelvis"]["TF"]['labels'][0])).GetValues()[i,:]
-            pt2=aqui.GetPoint(str(dictRef["Pelvis"]["TF"]['labels'][1])).GetValues()[i,:]
-            pt3=aqui.GetPoint(str(dictRef["Pelvis"]["TF"]['labels'][2])).GetValues()[i,:]
-            ptOrigin=aqui.GetPoint(str(dictRef["Pelvis"]["TF"]['labels'][3])).GetValues()[i,:]
-
-            a1=(pt2-pt1)
-            a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
-
-
-            v=(pt3-pt1)
-            v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
-
-            a2=np.cross(a1,v)
-            a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
-
-            x,y,z,R=frame.setFrameData(a1,a2,dictRef["Pelvis"]["TF"]['sequence'])
-
-            csFrame.m_axisX=x
-            csFrame.m_axisY=y
-            csFrame.m_axisZ=z
-            csFrame.setRotation(R)
-            csFrame.setTranslation(ptOrigin)
-
-            seg.getReferential("TF").addMotionFrame(copy.deepcopy(csFrame))
-
-
-        # --- HJCs
-        desc_L = seg.getReferential('TF').static.getNode_byLabel("LHJC").m_desc
-        desc_R = seg.getReferential('TF').static.getNode_byLabel("RHJC").m_desc
-
-        values_LHJCnode=seg.getReferential('TF').getNodeTrajectory("LHJC")
-        values_RHJCnode=seg.getReferential('TF').getNodeTrajectory("RHJC")
-
-        for i in range(0,aqui.GetPointFrameNumber()):
-            if not validFrames[i]:
-                values_LHJCnode[i,:] = np.zeros(3)
-                values_RHJCnode[i,:] = np.zeros(3)
-
-
-        btkTools.smartAppendPoint(aqui,"LHJC",values_LHJCnode, desc=desc_L)
-        btkTools.smartAppendPoint(aqui,"RHJC",values_RHJCnode, desc=desc_R)
-
-
-        # --- motion of the anatomical referential
-
-        seg.anatomicalFrame.motion=[]
-        TopLumbar5=np.zeros((aqui.GetPointFrameNumber(),3))
-
-        # additional markers
-        val=(aqui.GetPoint("LHJC").GetValues() + aqui.GetPoint("RHJC").GetValues()) / 2.0
-        btkTools.smartAppendPoint(aqui,"midHJC",val,desc="")
-
-        csFrame=frame.Frame()
-        for i in range(0,aqui.GetPointFrameNumber()):
-
-            pt1=aqui.GetPoint(str(dictAnat["Pelvis"]['labels'][0])).GetValues()[i,:]
-            pt2=aqui.GetPoint(str(dictAnat["Pelvis"]['labels'][1])).GetValues()[i,:]
-            pt3=aqui.GetPoint(str(dictAnat["Pelvis"]['labels'][2])).GetValues()[i,:]
-            ptOrigin=aqui.GetPoint(str(dictAnat["Pelvis"]['labels'][3])).GetValues()[i,:]
-
-
-            a1=(pt2-pt1)
-            a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
-
-            v=(pt3-pt1)
-            v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
-
-            a2=np.cross(a1,v)
-            a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
-
-            x,y,z,R=frame.setFrameData(a1,a2,dictAnat["Pelvis"]['sequence'])
-
-            csFrame.m_axisX=x
-            csFrame.m_axisY=y
-            csFrame.m_axisZ=z
-            csFrame.setRotation(R)
-            csFrame.setTranslation(ptOrigin)
-
-            seg.anatomicalFrame.addMotionFrame(copy.deepcopy(csFrame))
-
-            # length
-            lhjc = aqui.GetPoint("LHJC").GetValues()[i,:]
-            rhjc =  aqui.GetPoint("RHJC").GetValues()[i,:]
-            pelvisScale = np.linalg.norm(lhjc-rhjc)
-            offset = (lhjc+rhjc)/2.0
-
-            TopLumbar5[i,:] = offset +  np.dot(R,(np.array([ 0, 0, 0.925]))* pelvisScale)
-            #seg.anatomicalFrame.static.addNode("TL5",TopLumbar5,positionType="Local")
-
-        self._TopLumbar5 = TopLumbar5
-
-    def _left_thigh_motion(self, aqui: btk.btkAcquisition, dictRef: Dict[str, Any], dictAnat: Dict[str, Any], options: Optional[Dict[str, Any]] = None) -> None:
-        """Process the motion of the left thigh segment.
-
-        Args:
-            aqui (btk.btkAcquisition): Motion acquisition data.
-            dictRef (Dict[str, Any]): Technical referential definitions for the left thigh.
-            dictAnat (Dict[str, Any]): Anatomical referential definitions for the left thigh.
-            options (Optional[Dict[str, Any]], optional): Additional options. Defaults to None.
-        """
-
-
-        if "markerDiameter" in options.keys():
-            LOGGER.logger.debug(" option (markerDiameter) found ")
-            markerDiameter = options["markerDiameter"]
-        else:
-            markerDiameter=14.0
-
-        if "basePlate" in options.keys():
-            LOGGER.logger.debug(" option (basePlate) found ")
-            basePlate = options["basePlate"]
-        else:
-            basePlate=2.0
-
-        seg=self.getSegment("Left Thigh")
-
-        validFrames = btkTools.getValidFrames(aqui,seg.m_tracking_markers)
-        seg.setExistFrames(validFrames)
-
-        # --- motion of the technical referential
-        seg.getReferential("TF").motion =[]   # reinit Technical Frame Motion ()
-
-        # additional markers
-        # NA
-
-        # computation
-                # --- LKJC
-        LKJCvalues=np.zeros((aqui.GetPointFrameNumber(),3))
-        csFrame=frame.Frame()
-        for i in range(0,aqui.GetPointFrameNumber()):
-
-            pt1=aqui.GetPoint(str(dictRef["Left Thigh"]["TF"]['labels'][0])).GetValues()[i,:]
-            pt2=aqui.GetPoint(str(dictRef["Left Thigh"]["TF"]['labels'][1])).GetValues()[i,:]
-            pt3=aqui.GetPoint(str(dictRef["Left Thigh"]["TF"]['labels'][2])).GetValues()[i,:]
-            ptOrigin=aqui.GetPoint(str(dictRef["Left Thigh"]["TF"]['labels'][3])).GetValues()[i,:]
-
-
-            a1=(pt2-pt1)
-            a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
-
-            v=(pt3-pt1)
-            v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
-
-            a2=np.cross(a1,v)
-            a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
-
-            x,y,z,R=frame.setFrameData(a1,a2,dictRef["Left Thigh"]["TF"]['sequence'])
-
-            csFrame.m_axisX=x
-            csFrame.m_axisY=y
-            csFrame.m_axisZ=z
-            csFrame.setRotation(R)
-            csFrame.setTranslation(ptOrigin)
-
-            seg.getReferential("TF").addMotionFrame(copy.deepcopy(csFrame))
-
-            if validFrames[i]:
-                LKJCvalues[i,:] = modelDecorator.VCMJointCentre( (self.mp["LeftKneeWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3, beta=-self.mp_computed["LeftThighRotationOffset"] )
-
-        if  "useLeftKJCmarker" in options.keys() and options["useLeftKJCmarker"] != "LKJC":
-            LOGGER.logger.info("[pyCGM2] - LKJC marker forced to use %s"%(options["useLeftKJCmarker"]))
-            LKJCvalues = aqui.GetPoint(options["useLeftKJCmarker"]).GetValues()
-            desc = aqui.GetPoint(options["useLeftKJCmarker"]).GetDescription()
-            btkTools.smartAppendPoint(aqui,"LKJC",LKJCvalues,desc=str(desc))
-        else:
-            desc = seg.getReferential('TF').static.getNode_byLabel("LKJC").m_desc
-            btkTools.smartAppendPoint(aqui,"LKJC",LKJCvalues,desc=str("Chord-"+desc))
-
-        # --- motion of the anatomical referential
-        seg.anatomicalFrame.motion=[]
-
-
-        # additional markers
-        # NA
-        # computation
-        csFrame=frame.Frame()
-        for i in range(0,aqui.GetPointFrameNumber()):
-
-            pt1=aqui.GetPoint(str(dictAnat["Left Thigh"]['labels'][0])).GetValues()[i,:]
-            pt2=aqui.GetPoint(str(dictAnat["Left Thigh"]['labels'][1])).GetValues()[i,:]
-            pt3=aqui.GetPoint(str(dictAnat["Left Thigh"]['labels'][2])).GetValues()[i,:]
-            ptOrigin=aqui.GetPoint(str(dictAnat["Left Thigh"]['labels'][3])).GetValues()[i,:]
-
-
-            a1=(pt2-pt1)
-            a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
-
-            v=(pt3-pt1)
-            v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
-
-            a2=np.cross(a1,v)
-            a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
-
-            x,y,z,R=frame.setFrameData(a1,a2,dictAnat["Left Thigh"]['sequence'])
-
-
-            csFrame.m_axisX=x
-            csFrame.m_axisY=y
-            csFrame.m_axisZ=z
-            csFrame.setRotation(R)
-            csFrame.setTranslation(ptOrigin)
-
-            seg.anatomicalFrame.addMotionFrame(copy.deepcopy(csFrame))
-
-    def _right_thigh_motion(self, aqui: btk.btkAcquisition, dictRef: Dict[str, Any], dictAnat: Dict[str, Any], options: Optional[Dict[str, Any]] = None) -> None:
-        """Process the motion of the right thigh segment.
-
-        Args:
-            aqui (btk.btkAcquisition): Motion acquisition data.
-            dictRef (Dict[str, Any]): Technical referential definitions for the right thigh.
-            dictAnat (Dict[str, Any]): Anatomical referential definitions for the right thigh.
-            options (Optional[Dict[str, Any]], optional): Additional options. Defaults to None.
-        """
-
-
-        if "markerDiameter" in options.keys():
-            LOGGER.logger.debug(" option (markerDiameter) found ")
-            markerDiameter = options["markerDiameter"]
-        else:
-            markerDiameter=14.0
-
-        if "basePlate" in options.keys():
-            LOGGER.logger.debug(" option (basePlate) found ")
-            basePlate = options["basePlate"]
-        else:
-            basePlate=2.0
-
-        seg=self.getSegment("Right Thigh")
-
-        validFrames = btkTools.getValidFrames(aqui,seg.m_tracking_markers)
-        seg.setExistFrames(validFrames)
-
-        # --- motion of the technical referential
-        seg.getReferential("TF").motion =[]
-
-        # additional markers
-
-
-        RKJCvalues=np.zeros((aqui.GetPointFrameNumber(),3))
-
-        csFrame=frame.Frame()
-        for i in range(0,aqui.GetPointFrameNumber()):
-
-            pt1=aqui.GetPoint(str(dictRef["Right Thigh"]["TF"]['labels'][0])).GetValues()[i,:]
-            pt2=aqui.GetPoint(str(dictRef["Right Thigh"]["TF"]['labels'][1])).GetValues()[i,:]
-            pt3=aqui.GetPoint(str(dictRef["Right Thigh"]["TF"]['labels'][2])).GetValues()[i,:]
-            ptOrigin=aqui.GetPoint(str(dictRef["Right Thigh"]["TF"]['labels'][3])).GetValues()[i,:]
-
-
-            a1=(pt2-pt1)
-            a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
-
-            v=(pt3-pt1)
-            v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
-
-            a2=np.cross(a1,v)
-            a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
-
-            x,y,z,R=frame.setFrameData(a1,a2,dictRef["Right Thigh"]["TF"]['sequence'])
-
-            csFrame.m_axisX=x
-            csFrame.m_axisY=y
-            csFrame.m_axisZ=z
-            csFrame.setRotation(R)
-            csFrame.setTranslation(ptOrigin)
-
-            seg.getReferential("TF").addMotionFrame(copy.deepcopy(csFrame))
-
-            if validFrames[i]:
-                RKJCvalues[i,:] = modelDecorator.VCMJointCentre( (self.mp["RightKneeWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3, beta=self.mp_computed["RightThighRotationOffset"] )
-
-
-        if  "useRightKJCmarker" in options.keys() and options["useRightKJCmarker"] != "RKJC":
-            LOGGER.logger.info("[pyCGM2] - RKJC marker forced to use %s"%(options["useRightKJCmarker"]))
-            RKJCvalues = aqui.GetPoint(options["useRightKJCmarker"]).GetValues()
-            desc = aqui.GetPoint(options["useRightKJCmarker"]).GetDescription()
-            btkTools.smartAppendPoint(aqui,"RKJC",RKJCvalues,desc=desc)
-        else:
-            desc = seg.getReferential('TF').static.getNode_byLabel("RKJC").m_desc
-            #RKJCvalues = aqui.GetPoint("RKJC_Chord").GetValues()
-            btkTools.smartAppendPoint(aqui,"RKJC",RKJCvalues,desc=str("Chord-"+desc))
-
-        #btkTools.smartAppendPoint(aqui,"RKJC_Chord",RKJCvalues,desc="chord")
-
-        # --- RKJC
-
-
-        # --- motion of the anatomical referential
-
-        # additional markers
-        # NA
-
-        # computation
-        seg.anatomicalFrame.motion=[]
-
-        csFrame=frame.Frame()
-        for i in range(0,aqui.GetPointFrameNumber()):
-
-            pt1=aqui.GetPoint(str(dictAnat["Right Thigh"]['labels'][0])).GetValues()[i,:]
-            pt2=aqui.GetPoint(str(dictAnat["Right Thigh"]['labels'][1])).GetValues()[i,:]
-            pt3=aqui.GetPoint(str(dictAnat["Right Thigh"]['labels'][2])).GetValues()[i,:]
-            ptOrigin=aqui.GetPoint(str(dictAnat["Right Thigh"]['labels'][3])).GetValues()[i,:]
-
-
-            a1=(pt2-pt1)
-            a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
-
-            v=(pt3-pt1)
-            v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
-
-            a2=np.cross(a1,v)
-            a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
-
-            x,y,z,R=frame.setFrameData(a1,a2,dictAnat["Right Thigh"]['sequence'])
-
-            csFrame.m_axisX=x
-            csFrame.m_axisY=y
-            csFrame.m_axisZ=z
-            csFrame.setRotation(R)
-            csFrame.setTranslation(ptOrigin)
-
-            seg.anatomicalFrame.addMotionFrame(copy.deepcopy(csFrame))
-
-
-    def _left_shank_motion(self, aqui: btk.btkAcquisition, dictRef: Dict[str, Any], dictAnat: Dict[str, Any], options: Optional[Dict[str, Any]] = None) -> None:
-        """Process the motion of the left shank segment.
-
-        Args:
-            aqui (btk.btkAcquisition): Motion acquisition data.
-            dictRef (Dict[str, Any]): Technical referential definitions for the left shank.
-            dictAnat (Dict[str, Any]): Anatomical referential definitions for the left shank.
-            options (Optional[Dict[str, Any]], optional): Additional options. Defaults to None.
-        """
-
-
-        if "markerDiameter" in options.keys():
-            LOGGER.logger.debug(" option (markerDiameter) found ")
-            markerDiameter = options["markerDiameter"]
-        else:
-            markerDiameter=14.0
-
-        if "basePlate" in options.keys():
-            LOGGER.logger.debug(" option (basePlate) found ")
-            basePlate = options["basePlate"]
-        else:
-            basePlate=2.0
-
-        seg=self.getSegment("Left Shank")
-
-        validFrames = btkTools.getValidFrames(aqui,seg.m_tracking_markers)
-        seg.setExistFrames(validFrames)
-
-        # --- motion of the technical referential
-        seg.getReferential("TF").motion =[]
-
-        # additional markers
-        # NA
-
-
-        # --- LAJC
-        # computation
-        LAJCvalues=np.zeros((aqui.GetPointFrameNumber(),3))
-
-
-        csFrame=frame.Frame()
-        for i in range(0,aqui.GetPointFrameNumber()):
-
-            pt1=aqui.GetPoint(str(dictRef["Left Shank"]["TF"]['labels'][0])).GetValues()[i,:] #ANK
-            pt2=aqui.GetPoint(str(dictRef["Left Shank"]["TF"]['labels'][1])).GetValues()[i,:] #KJC
-            pt3=aqui.GetPoint(str(dictRef["Left Shank"]["TF"]['labels'][2])).GetValues()[i,:] #TIB
-            ptOrigin=aqui.GetPoint(str(dictRef["Left Shank"]["TF"]['labels'][3])).GetValues()[i,:]
-
-
-            a1=(pt2-pt1)
-            a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
-
-            v=(pt3-pt1)
-            v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
-
-            a2=np.cross(a1,v)
-            a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
-
-            x,y,z,R=frame.setFrameData(a1,a2,dictRef["Left Shank"]["TF"]['sequence'])
-
-
-            csFrame.m_axisX=x
-            csFrame.m_axisY=y
-            csFrame.m_axisZ=z
-            csFrame.setRotation(R)
-            csFrame.setTranslation(ptOrigin)
-
-            seg.getReferential("TF").addMotionFrame(copy.deepcopy(csFrame))
-
-            if validFrames[i]:
-                LAJCvalues[i,:] = modelDecorator.VCMJointCentre( (self.mp["LeftAnkleWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3, beta=-self.mp_computed["LeftShankRotationOffset"] )
-
-                # update of the AJC location with rotation around abdAddAxis
-                LAJCvalues[i,:] = self._rotateAjc(LAJCvalues[i,:],pt2,pt1,self.mp_computed["LeftAnkleAbAddOffset"])
-
-
-        if  "useLeftAJCmarker" in options.keys() and options["useLeftAJCmarker"] != "LAJC":
-            LOGGER.logger.info("[pyCGM2] - LAJC marker forced to use %s"%(options["useLeftAJCmarker"]))
-            LAJCvalues = aqui.GetPoint(options["useLeftAJCmarker"]).GetValues()
-            desc = aqui.GetPoint(options["useLeftAJCmarker"]).GetDescription()
-            btkTools.smartAppendPoint(aqui,"LAJC",LAJCvalues,desc=desc)
-        else:
-            # --- LAJC
-            desc_node = seg.getReferential('TF').static.getNode_byLabel("LAJC").m_desc
-            if self.mp_computed["LeftAnkleAbAddOffset"] > 0.01:
-                desc="chord+AbAdRot-"+desc_node
-            else:
-                desc="chord "+desc_node
-            btkTools.smartAppendPoint(aqui,"LAJC",LAJCvalues,desc=desc)
-
-
-        # --- motion of the anatomical referential
-        seg.anatomicalFrame.motion=[]
-
-
-        # additional markers
-        # NA
-
-        # computation
-        csFrame=frame.Frame()
-        for i in range(0,aqui.GetPointFrameNumber()):
-
-            pt1=aqui.GetPoint(str(dictAnat["Left Shank"]['labels'][0])).GetValues()[i,:]
-            pt2=aqui.GetPoint(str(dictAnat["Left Shank"]['labels'][1])).GetValues()[i,:]
-            pt3=aqui.GetPoint(str(dictAnat["Left Shank"]['labels'][2])).GetValues()[i,:]
-            ptOrigin=aqui.GetPoint(str(dictAnat["Left Shank"]['labels'][3])).GetValues()[i,:]
-
-            a1=(pt2-pt1)
-            a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
-
-            v=(pt3-pt1)
-            v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
-
-            a2=np.cross(a1,v)
-            a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
-
-            x,y,z,R=frame.setFrameData(a1,a2,dictAnat["Left Shank"]['sequence'])
-            csFrame=frame.Frame()
-
-            csFrame.m_axisX=x
-            csFrame.m_axisY=y
-            csFrame.m_axisZ=z
-            csFrame.setRotation(R)
-            csFrame.setTranslation(ptOrigin)
-
-            seg.anatomicalFrame.addMotionFrame(copy.deepcopy(csFrame))
-
-    def _left_shankProximal_motion(self, aqui: btk.btkAcquisition, dictAnat: Dict[str, Any], options: Optional[Dict[str, Any]] = None) -> None:
-        """Process the motion of the left shank proximal segment.
-
-        Args:
-            aqui (btk.btkAcquisition): Motion acquisition data.
-            dictAnat (Dict[str, Any]): Anatomical referential definitions for the left shank proximal.
-            options (Optional[Dict[str, Any]], optional): Additional options. Defaults to None.
-        """
-
-
-        seg=self.getSegment("Left Shank")
-        segProx=self.getSegment("Left Shank Proximal")
-
-
-        validFrames = btkTools.getValidFrames(aqui,seg.m_tracking_markers)
-        segProx.setExistFrames(validFrames)
-
-
-        # --- managment of tibial torsion
-
-        if self.m_useLeftTibialTorsion:
-            tibialTorsion = -1.0*np.deg2rad(self.mp_computed["LeftTibialTorsionOffset"])
-        else:
-            tibialTorsion = 0.0
-
-        if "pigStatic" in options.keys() and options["pigStatic"]:
-            tibialTorsion = 0.0
-
-
-        # --- motion of both technical and anatomical referentials of the proximal shank
-        segProx.getReferential("TF").motion =[]
-        segProx.anatomicalFrame.motion=[]
-
-
-        # additional markers
-        # NA
-
-        # computation
-        rotZ_tibRot = np.eye(3,3)
-        rotZ_tibRot[0,0] = np.cos(tibialTorsion)
-        rotZ_tibRot[0,1] = np.sin(tibialTorsion)
-        rotZ_tibRot[1,0] = - np.sin(tibialTorsion)
-        rotZ_tibRot[1,1] = np.cos(tibialTorsion)
-        LKJC = aqui.GetPoint(str(dictAnat["Left Shank"]['labels'][3]))
-
-        csFrame=frame.Frame()
-        for i in range(0,aqui.GetPointFrameNumber()):
-            ptOrigin=LKJC.GetValues()[i,:]
-            segProx.getReferential("TF").addMotionFrame(seg.getReferential("TF").motion[i]) # copy technical shank
-
-            R = np.dot(seg.anatomicalFrame.motion[i].getRotation(),rotZ_tibRot) # affect Tibial torsion to anatomical shank
-
-            csFrame.update(R,ptOrigin)
-            segProx.anatomicalFrame.addMotionFrame(copy.deepcopy(csFrame))
-
-
-
-    def _right_shank_motion(self, aqui: btk.btkAcquisition, dictRef: Dict[str, Any], dictAnat: Dict[str, Any], options: Optional[Dict[str, Any]] = None) -> None:
-        """Process the motion of the right shank segment.
-
-        Args:
-            aqui (btk.btkAcquisition): Motion acquisition data.
-            dictRef (Dict[str, Any]): Technical referential definitions for the right shank.
-            dictAnat (Dict[str, Any]): Anatomical referential definitions for the right shank.
-            options (Optional[Dict[str, Any]], optional): Additional options. Defaults to None.
-        """
-
-
-
-        if "markerDiameter" in options.keys():
-            LOGGER.logger.debug(" option (markerDiameter) found ")
-            markerDiameter = options["markerDiameter"]
-        else:
-            markerDiameter=14.0
-
-        if "basePlate" in options.keys():
-            LOGGER.logger.debug(" option (basePlate) found ")
-            basePlate = options["basePlate"]
-        else:
-            basePlate=2.0
-
-        seg=self.getSegment("Right Shank")
-
-        validFrames = btkTools.getValidFrames(aqui,seg.m_tracking_markers)
-        seg.setExistFrames(validFrames)
-
-        # --- motion of the technical referential
-        seg.getReferential("TF").motion =[]
-
-        # additional markers
-        # NA
-
-
-        RAJCvalues=np.zeros((aqui.GetPointFrameNumber(),3))
-
-        csFrame=frame.Frame()
-        for i in range(0,aqui.GetPointFrameNumber()):
-
-            pt1=aqui.GetPoint(str(dictRef["Right Shank"]["TF"]['labels'][0])).GetValues()[i,:] #ank
-            pt2=aqui.GetPoint(str(dictRef["Right Shank"]["TF"]['labels'][1])).GetValues()[i,:] #kjc
-            pt3=aqui.GetPoint(str(dictRef["Right Shank"]["TF"]['labels'][2])).GetValues()[i,:] #tib
-            ptOrigin=aqui.GetPoint(str(dictRef["Right Shank"]["TF"]['labels'][3])).GetValues()[i,:]
-
-
-            a1=(pt2-pt1)
-            a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
-
-            v=(pt3-pt1)
-            v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
-
-            a2=np.cross(a1,v)
-            a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
-
-            x,y,z,R=frame.setFrameData(a1,a2,dictRef["Right Shank"]["TF"]['sequence'])
-
-
-            csFrame.m_axisX=x
-            csFrame.m_axisY=y
-            csFrame.m_axisZ=z
-            csFrame.setRotation(R)
-            csFrame.setTranslation(ptOrigin)
-
-            seg.getReferential("TF").addMotionFrame(copy.deepcopy(csFrame))
-
-            # ajc position from chord modified by shank offset
-            if validFrames[i]:
-                RAJCvalues[i,:] = modelDecorator.VCMJointCentre( (self.mp["RightAnkleWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3, beta=self.mp_computed["RightShankRotationOffset"] )
-            # update of the AJC location with rotation around abdAddAxis
-                RAJCvalues[i,:] = self._rotateAjc(RAJCvalues[i,:],pt2,pt1,   self.mp_computed["RightAnkleAbAddOffset"])
-
-        # --- LAJC
-
-        if  "useRightAJCmarker" in options.keys() and options["useRightAJCmarker"] != "RAJC":
-            LOGGER.logger.info("[pyCGM2] - RAJC marker forced to use %s"%(options["useRightAJCmarker"]))
-            RAJCvalues = aqui.GetPoint(options["useRightAJCmarker"]).GetValues()
-            desc = aqui.GetPoint(options["useRightAJCmarker"]).GetDescription()
-            btkTools.smartAppendPoint(aqui,"RAJC",RAJCvalues,desc=desc)
-        else:
-            # --- RAJC
-            desc_node = seg.getReferential('TF').static.getNode_byLabel("RAJC").m_desc
-            if self.mp_computed["RightAnkleAbAddOffset"] >0.01:
-                desc="chord+AbAdRot-"+desc_node
-            else:
-                desc="chord"+desc_node
-
-            btkTools.smartAppendPoint(aqui,"RAJC",RAJCvalues,desc=desc)
-
-        # --- motion of the anatomical referential
-        seg.anatomicalFrame.motion=[]
-
-        # additional markers
-        # NA
-
-        # computation
-        csFrame=frame.Frame()
-        for i in range(0,aqui.GetPointFrameNumber()):
-
-            pt1=aqui.GetPoint(str(dictAnat["Right Shank"]['labels'][0])).GetValues()[i,:]
-            pt2=aqui.GetPoint(str(dictAnat["Right Shank"]['labels'][1])).GetValues()[i,:]
-            pt3=aqui.GetPoint(str(dictAnat["Right Shank"]['labels'][2])).GetValues()[i,:]
-            ptOrigin=aqui.GetPoint(str(dictAnat["Right Shank"]['labels'][3])).GetValues()[i,:]
-
-
-            a1=(pt2-pt1)
-            a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
-
-            v=(pt3-pt1)
-            v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
-
-            a2=np.cross(a1,v)
-            a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
-
-            x,y,z,R=frame.setFrameData(a1,a2,dictAnat["Right Shank"]['sequence'])
-
-            csFrame.m_axisX=x
-            csFrame.m_axisY=y
-            csFrame.m_axisZ=z
-            csFrame.setRotation(R)
-            csFrame.setTranslation(ptOrigin)
-
-            seg.anatomicalFrame.addMotionFrame(copy.deepcopy(csFrame))
-
-    def _right_shankProximal_motion(self, aqui: btk.btkAcquisition, dictAnat: Dict[str, Any], options: Optional[Dict[str, Any]] = None) -> None:
-        """Process the motion of the right shank proximal segment.
-
-        Args:
-            aqui (btk.btkAcquisition): Motion acquisition data.
-            dictAnat (Dict[str, Any]): Anatomical referential definitions for the right shank proximal.
-            options (Optional[Dict[str, Any]], optional): Additional options. Defaults to None.
-        """
-
-
-        seg=self.getSegment("Right Shank")
-        segProx=self.getSegment("Right Shank Proximal")
-
-        validFrames = btkTools.getValidFrames(aqui,seg.m_tracking_markers)
-        segProx.setExistFrames(validFrames)
-
-        # --- management of the tibial torsion
-        if self.m_useRightTibialTorsion:
-            tibialTorsion = np.deg2rad(self.mp_computed["RightTibialTorsionOffset"])
-        else:
-            tibialTorsion = 0.0
-
-
-        # --- motion of both technical and anatomical referentials of the proximal shank
-        segProx.getReferential("TF").motion =[]
-        segProx.anatomicalFrame.motion=[]
-
-        # additional markers
-        # NA
-
-        # computation
-        rotZ_tibRot = np.eye(3,3)
-        rotZ_tibRot[0,0] = np.cos(tibialTorsion)
-        rotZ_tibRot[0,1] = np.sin(tibialTorsion)
-        rotZ_tibRot[1,0] = - np.sin(tibialTorsion)
-        rotZ_tibRot[1,1] = np.cos(tibialTorsion)
-
-        csFrame=frame.Frame()
-        for i in range(0,aqui.GetPointFrameNumber()):
-            ptOrigin=aqui.GetPoint(str(dictAnat["Right Shank"]['labels'][3])).GetValues()[i,:]
-
-            segProx.getReferential("TF").addMotionFrame(seg.getReferential("TF").motion[i]) # copy technical shank
-
-            R = np.dot(seg.anatomicalFrame.motion[i].getRotation(),rotZ_tibRot)
-
-            csFrame.update(R,ptOrigin)
-            segProx.anatomicalFrame.addMotionFrame(copy.deepcopy(csFrame))
-
-
-
-
-
-    def _left_foot_motion(self, aqui: btk.btkAcquisition, dictRef: Dict[str, Any], dictAnat: Dict[str, Any], options: Optional[Dict[str, Any]] = None) -> None:
-        """Process the motion of the left foot segment.
-
-        Args:
-            aqui (btk.btkAcquisition): Motion acquisition data.
-            dictRef (Dict[str, Any]): Technical referential definitions for the left foot.
-            dictAnat (Dict[str, Any]): Anatomical referential definitions for the left foot.
-            options (Optional[Dict[str, Any]], optional): Additional options. Defaults to None.
-        """
-
-
-        seg=self.getSegment("Left Foot")
-        validFrames = btkTools.getValidFrames(aqui,seg.m_tracking_markers)
-        seg.setExistFrames(validFrames)
-
-        # --- motion of the technical referential
-        seg.getReferential("TF").motion =[]
-
-        # additional markers
-        # NA
-
-        # computation
-        csFrame=frame.Frame()
-        for i in range(0,aqui.GetPointFrameNumber()):
-
-            pt1=aqui.GetPoint(str(dictRef["Left Foot"]["TF"]['labels'][0])).GetValues()[i,:] #toe
-            pt2=aqui.GetPoint(str(dictRef["Left Foot"]["TF"]['labels'][1])).GetValues()[i,:] #ajc
-
-            if dictRef["Left Foot"]["TF"]['labels'][2] is not None:
-                pt3=aqui.GetPoint(str(dictRef["Left Foot"]["TF"]['labels'][2])).GetValues()[i,:]
-                v=(pt3-pt1)
-            else:
-                v=self.getSegment("Left Shank Proximal").anatomicalFrame.motion[i].m_axisY
-
-            ptOrigin=aqui.GetPoint(str(dictRef["Left Foot"]["TF"]['labels'][3])).GetValues()[i,:]
-
-
-            a1=(pt2-pt1)
-            a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
-
-            v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
-
-            a2=np.cross(a1,v)
-            a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
-
-            x,y,z,R=frame.setFrameData(a1,a2,dictRef["Left Foot"]["TF"]['sequence'])
-
-
-            if "viconCGM1compatible" in options.keys() and options["viconCGM1compatible"]:
-                R2 = R
-            else:
-                R2 = np.dot(R,self._R_leftUnCorrfoot_dist_prox)
-
-
-            csFrame.m_axisX=R2[:,0]
-            csFrame.m_axisY=R2[:,1]
-            csFrame.m_axisZ=R2[:,2]
-            csFrame.setRotation(R2)
-            csFrame.setTranslation(ptOrigin)
-
-            seg.getReferential("TF").addMotionFrame(copy.deepcopy(csFrame))
-
-
-        # --- motion of the anatomical referential
-        seg.anatomicalFrame.motion=[]
-
-
-        # additional markers
-        # NA
-
-        # computation
-        csFrame=frame.Frame()
-        for i in range(0,aqui.GetPointFrameNumber()):
-            ptOrigin=aqui.GetPoint(str(dictAnat["Left Foot"]['labels'][3])).GetValues()[i,:]
-
-            R = np.dot(seg.getReferential("TF").motion[i].getRotation(), seg.getReferential("TF").relativeMatrixAnatomic)
-
-            csFrame.update(R,ptOrigin)
-            seg.anatomicalFrame.addMotionFrame(copy.deepcopy(csFrame))
-
-
-
-    def _right_foot_motion(self, aqui: btk.btkAcquisition, dictRef: Dict[str, Any], dictAnat: Dict[str, Any], options: Optional[Dict[str, Any]] = None) -> None:
-        """Process the motion of the right foot segment.
-
-        Args:
-            aqui (btk.btkAcquisition): Motion acquisition data.
-            dictRef (Dict[str, Any]): Technical referential definitions for the right foot.
-            dictAnat (Dict[str, Any]): Anatomical referential definitions for the right foot.
-            options (Optional[Dict[str, Any]], optional): Additional options. Defaults to None.
-        """
-
-
-
-        seg=self.getSegment("Right Foot")
-
-        validFrames = btkTools.getValidFrames(aqui,seg.m_tracking_markers)
-        seg.setExistFrames(validFrames)
-
-        # --- motion of the technical referential
-        seg.getReferential("TF").motion =[]
-
-        # additional markers
-        # NA
-
-        # computation
-        csFrame=frame.Frame()
-        for i in range(0,aqui.GetPointFrameNumber()):
-
-            pt1=aqui.GetPoint(str(dictRef["Right Foot"]["TF"]['labels'][0])).GetValues()[i,:] #toe
-            pt2=aqui.GetPoint(str(dictRef["Right Foot"]["TF"]['labels'][1])).GetValues()[i,:] #ajc
-
-            if dictRef["Right Foot"]["TF"]['labels'][2] is not None:
-                pt3=aqui.GetPoint(str(dictRef["Right Foot"]["TF"]['labels'][2])).GetValues()[i,:]
-                v=(pt3-pt1)
-            else:
-                v=self.getSegment("Right Shank Proximal").anatomicalFrame.motion[i].m_axisY
-
-            ptOrigin=aqui.GetPoint(str(dictRef["Right Foot"]["TF"]['labels'][3])).GetValues()[i,:]
-
-
-            a1=(pt2-pt1)
-            a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
-
-            v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
-
-            a2=np.cross(a1,v)
-            a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
-
-            x,y,z,R=frame.setFrameData(a1,a2,dictRef["Right Foot"]["TF"]['sequence'])
-
-            if "viconCGM1compatible" in options.keys() and options["viconCGM1compatible"]:
-                R2 = R # e.g from proximal shank
-            else:
-                R2 = np.dot(R,self._R_rightUnCorrfoot_dist_prox) # e.g from distal shank Y axis
-
-            csFrame.m_axisX=R2[:,0]
-            csFrame.m_axisY=R2[:,1]
-            csFrame.m_axisZ=R2[:,2]
-            csFrame.setRotation(R2)
-            csFrame.setTranslation(ptOrigin)
-
-            seg.getReferential("TF").addMotionFrame(copy.deepcopy(csFrame))
-
-
-        # --- motion of the anatomical referential
-
-        # additional markers
-        # NA
-
-        # computation
-        seg.anatomicalFrame.motion=[]
-
-        csFrame=frame.Frame()
-        for i in range(0,aqui.GetPointFrameNumber()):
-            ptOrigin=aqui.GetPoint(str(dictAnat["Right Foot"]['labels'][3])).GetValues()[i,:]
-
-            R = np.dot(seg.getReferential("TF").motion[i].getRotation(), seg.getReferential("TF").relativeMatrixAnatomic)
-
-            csFrame.update(R,ptOrigin)
-            seg.anatomicalFrame.addMotionFrame(copy.deepcopy(csFrame))
-
-    # ---- static PIG -----
-
-    def _left_foot_motion_static(self, aquiStatic: btk.btkAcquisition, dictAnat: Dict[str, Any], options: Optional[Dict[str, Any]] = None) -> None:
-        """Process the static motion of the left foot segment.
-
-        This method is used for static motion analysis of the left foot, taking into account options like flat foot condition.
-
-        Args:
-            aquiStatic (btk.btkAcquisition): Static motion acquisition data.
-            dictAnat (Dict[str, Any]): Anatomical referential definitions for the left foot.
-            options (Optional[Dict[str, Any]], optional): Additional options including flat foot settings. Defaults to None.
-        """
-
-
-
-        seg=self.getSegment("Left Foot")
-
-        validFrames = btkTools.getValidFrames(aquiStatic,seg.m_tracking_markers)
-        seg.setExistFrames(validFrames)
-
-        seg.anatomicalFrame.motion=[]
-
-
-        # additional markers
-        # NA
-
-
-        # computation
-        csFrame=frame.Frame()
-        for i in range(0,aquiStatic.GetPointFrameNumber()):
-            ptOrigin=aquiStatic.GetPoint(str(dictAnat["Left Foot"]['labels'][3])).GetValues()[i,:]
-
-
-            pt1=aquiStatic.GetPoint(str(dictAnat["Left Foot"]['labels'][0])).GetValues()[i,:] #toe
-            pt2=aquiStatic.GetPoint(str(dictAnat["Left Foot"]['labels'][1])).GetValues()[i,:] #hee
-
-            if ("leftFlatFoot" in options.keys() and options["leftFlatFoot"]):
-                pt2[2] = pt1[2]+self.mp['LeftSoleDelta']
-
-            if dictAnat["Left Foot"]['labels'][2] is not None:
-                pt3=aquiStatic.GetPoint(str(dictAnat["Left Foot"]['labels'][2])).GetValues()[i,:]
-                v=(pt3-pt1)
-            else:
-                v=self.getSegment("Left Shank").anatomicalFrame.motion[i].m_axisY # distal segment
-
-            a1=(pt2-pt1)
-            a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
-
-            v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
-
-            a2=np.cross(a1,v)
-            a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
-
-
-            x,y,z,R=frame.setFrameData(a1,a2,dictAnat["Left Foot"]['sequence'])
-
-            csFrame.update(R,ptOrigin)
-            seg.anatomicalFrame.addMotionFrame(copy.deepcopy(csFrame))
-
-
-    def _right_foot_motion_static(self, aquiStatic: btk.btkAcquisition, dictAnat: Dict[str, Any], options: Optional[Dict[str, Any]] = None) -> None:
-        """Process the static motion of the right foot segment.
-
-        This method is used for static motion analysis of the right foot, taking into account options like flat foot condition.
-
-        Args:
-            aquiStatic (btk.btkAcquisition): Static motion acquisition data.
-            dictAnat (Dict[str, Any]): Anatomical referential definitions for the right foot.
-            options (Optional[Dict[str, Any]], optional): Additional options including flat foot settings. Defaults to None.
-        """
-
-
-        seg=self.getSegment("Right Foot")
-
-
-        validFrames = btkTools.getValidFrames(aquiStatic,seg.m_tracking_markers)
-        seg.setExistFrames(validFrames)
-
-        seg.anatomicalFrame.motion=[]
-
-
-        # additional markers
-        # NA
-
-        # computation
-        csFrame=frame.Frame()
-        for i in range(0,aquiStatic.GetPointFrameNumber()):
-            ptOrigin=aquiStatic.GetPoint(str(dictAnat["Right Foot"]['labels'][3])).GetValues()[i,:]
-
-
-            pt1=aquiStatic.GetPoint(str(dictAnat["Right Foot"]['labels'][0])).GetValues()[i,:] #toe
-            pt2=aquiStatic.GetPoint(str(dictAnat["Right Foot"]['labels'][1])).GetValues()[i,:] #hee
-
-            if ("rightFlatFoot" in options.keys() and options["rightFlatFoot"]):
-                pt2[2] = pt1[2]+self.mp['RightSoleDelta']
-
-
-            if dictAnat["Right Foot"]['labels'][2] is not None:
-                pt3=aquiStatic.GetPoint(str(dictAnat["Right Foot"]['labels'][2])).GetValues()[i,:]
-                v=(pt3-pt1)
-            else:
-                v=self.getSegment("Right Shank").anatomicalFrame.motion[i].m_axisY # distal segment
-
-            a1=(pt2-pt1)
-            a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
-
-            v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
-
-            a2=np.cross(a1,v)
-            a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
-
-            x,y,z,R=frame.setFrameData(a1,a2,dictAnat["Right Foot"]['sequence'])
-
-
-            csFrame.update(R,ptOrigin)
-            seg.anatomicalFrame.addMotionFrame(copy.deepcopy(csFrame))
-
-    # ----- least-square Segmental motion ------
-    def _pelvis_motion_optimize(self, aqui: btk.btkAcquisition, dictRef: Dict[str, Any], motionMethod: enums.motionMethod,
-                                 anatomicalFrameMotionEnable: bool = True) -> None:
-        """Optimize the motion of the pelvis segment.
-
-        Args:
-            aqui (btk.btkAcquisition): Motion acquisition data.
-            dictRef (Dict[str, Any]): Technical referential definitions for the pelvis.
-            motionMethod (enums.motionMethod): Method for motion optimization.
-            anatomicalFrameMotionEnable (bool, optional): Enable motion for anatomical frame. Defaults to True.
-        """
-
-
-        seg=self.getSegment("Pelvis")
-        validFrames = btkTools.getValidFrames(aqui,seg.m_tracking_markers)
-        seg.setExistFrames(validFrames)
-
-        #  --- check presence of tracking markers in the acquisition
-        if seg.m_tracking_markers != []:
-            btkTools.isPointsExist(aqui,seg.m_tracking_markers)
-
-        # --- Motion of the Technical frame
-        seg.getReferential("TF").motion =[]
-
-        # part 1: get global location in Static
-        if seg.m_tracking_markers != []: # work with tracking markers
-            staticPos = np.zeros((len(seg.m_tracking_markers),3))
-            i=0
-            for label in seg.m_tracking_markers:
-                staticPos[i,:] = seg.getReferential("TF").static.getNode_byLabel(label).m_global
-                i+=1
-
-        # part 2 : get dynamic position ( look out i pick up value in the btkAcquisition)
-        csFrame=frame.Frame()
-        for i in range(0,aqui.GetPointFrameNumber()):
-
-            if seg.m_tracking_markers != []: # work with traking markers
-                dynPos = np.zeros((len(seg.m_tracking_markers),3)) # use
-                k=0
-                for label in seg.m_tracking_markers:
-                    dynPos[k,:] = aqui.GetPoint(label).GetValues()[i,:]
-                    k+=1
-
-            if motionMethod == enums.motionMethod.Sodervisk :
-                Ropt, Lopt, RMSE, Am, Bm=motion.segmentalLeastSquare(staticPos,
-                                                              dynPos)
-                R=np.dot(Ropt,seg.getReferential("TF").static.getRotation())
-                tOri=np.dot(Ropt,seg.getReferential("TF").static.getTranslation())+Lopt
-
-                csFrame.setRotation(R)
-                csFrame.setTranslation(tOri)
-                csFrame.m_axisX=R[:,0]
-                csFrame.m_axisY=R[:,1]
-                csFrame.m_axisZ=R[:,2]
-
-            seg.getReferential("TF").addMotionFrame(copy.deepcopy(csFrame))
-
-
-        # --- HJC
-        values_LHJCnode=seg.getReferential('TF').getNodeTrajectory("LHJC")
-        values_RHJCnode=seg.getReferential('TF').getNodeTrajectory("RHJC")
-
-        for i in range(0,aqui.GetPointFrameNumber()):
-            if not validFrames[i]:
-                values_LHJCnode[i,:] = np.zeros(3)
-                values_RHJCnode[i,:] = np.zeros(3)
-
-
-        desc_L = seg.getReferential('TF').static.getNode_byLabel("LHJC").m_desc
-        desc_R = seg.getReferential('TF').static.getNode_byLabel("RHJC").m_desc
-        btkTools.smartAppendPoint(aqui,"LHJC",values_LHJCnode, desc=str("opt-"+desc_L))
-        btkTools.smartAppendPoint(aqui,"RHJC",values_RHJCnode, desc=str("opt-"+desc_R))
-
-        # --- midASIS
-        values_midASISnode = seg.getReferential('TF').getNodeTrajectory("midASIS")
-        btkTools.smartAppendPoint(aqui,"midASIS",values_midASISnode, desc="opt")
-
-        # midHJC
-        val=(aqui.GetPoint("LHJC").GetValues() + aqui.GetPoint("RHJC").GetValues()) / 2.0
-        btkTools.smartAppendPoint(aqui,"midHJC",val,desc="opt")
-
-
-    def _left_thigh_motion_optimize(self, aqui: btk.btkAcquisition, dictRef: Dict[str, Any], motionMethod: enums.motionMethod) -> None:
-        """Optimizes the motion of the left thigh segment using a specific motion method.
-
-        This method adjusts the technical frame of the left thigh segment based on dynamic position data. It optionally adds LHJC to the tracking markers if needed.
-
-        Args:
-            aqui (btk.btkAcquisition): Motion acquisition data.
-            dictRef (Dict[str, Any]): Technical referential definitions for the left thigh.
-            motionMethod (enums.motionMethod): Segmental motion method to apply.
-        """
-
-
-        seg=self.getSegment("Left Thigh")
-
-        validFrames = btkTools.getValidFrames(aqui,seg.m_tracking_markers)
-        seg.setExistFrames(validFrames)
-
-        #  --- add LHJC if list <2 - check presence of tracking markers in the acquisition
-        if seg.m_tracking_markers != []:
-            if len(seg.m_tracking_markers)==2:
-                if "LHJC" not in seg.m_tracking_markers:
-                    seg.m_tracking_markers.append("LHJC")
-                    LOGGER.logger.debug("LHJC added to tracking marker list")
-
-            btkTools.isPointsExist(aqui,seg.m_tracking_markers)
-
-
-        # --- Motion of the Technical frame
-        seg.getReferential("TF").motion =[]
-
-        # part 1: get back static global position ( look out i use nodes)
-
-        if seg.m_tracking_markers != []: # work with tracking markers
-            staticPos = np.zeros((len(seg.m_tracking_markers),3))
-            i=0
-            for label in seg.m_tracking_markers: # recupere les tracki
-                staticPos[i,:] = seg.getReferential("TF").static.getNode_byLabel(label).m_global
-                i+=1
-
-
-        # part 2 : get dynamic position ( look out i pick up value in the btkAcquisition)
-        csFrame=frame.Frame()
-        for i in range(0,aqui.GetPointFrameNumber()):
-
-            if seg.m_tracking_markers != []: # work with traking markers
-                dynPos = np.zeros((len(seg.m_tracking_markers),3)) # use
-                k=0
-                for label in seg.m_tracking_markers:
-                    dynPos[k,:] = aqui.GetPoint(label).GetValues()[i,:]
-                    k+=1
-
-
-            if motionMethod == enums.motionMethod.Sodervisk :
-                Ropt, Lopt, RMSE, Am, Bm=motion.segmentalLeastSquare(staticPos,
-                                                              dynPos)
-                R=np.dot(Ropt,seg.getReferential("TF").static.getRotation())
-                tOri=np.dot(Ropt,seg.getReferential("TF").static.getTranslation())+Lopt
-
-
-                csFrame.setRotation(R)
-                csFrame.setTranslation(tOri)
-                csFrame.m_axisX=R[:,0]
-                csFrame.m_axisY=R[:,1]
-                csFrame.m_axisZ=R[:,2]
-
-                seg.getReferential("TF").addMotionFrame(copy.deepcopy(csFrame))
-
-        # --- LKJC
-        desc = seg.getReferential('TF').static.getNode_byLabel("LKJC").m_desc
-        values_LKJCnode=seg.getReferential('TF').getNodeTrajectory("LKJC")
-
-        for i in range(0,aqui.GetPointFrameNumber()):
-            if not validFrames[i]:
-                values_LKJCnode[i,:] = np.zeros(3)
-
-        btkTools.smartAppendPoint(aqui,"LKJC",values_LKJCnode, desc=str("opt-"+desc))
-
-
-        # --- LHJC from Thigh
-        # values_HJCnode=seg.getReferential('TF').getNodeTrajectory("LHJC")
-        # btkTools.smartAppendPoint(aqui,"LHJC-Thigh",values_HJCnode, desc="opt from Thigh")
-
-        # remove LHC from list of tracking markers
-        if "LHJC" in seg.m_tracking_markers: seg.m_tracking_markers.remove("LHJC")
-
-
-
-
-    def _right_thigh_motion_optimize(self, aqui: btk.btkAcquisition, dictRef: Dict[str, Any], motionMethod: enums.motionMethod) -> None:
-        """Optimizes the motion of the right thigh segment using a specific motion method.
-
-        This method adjusts the technical frame of the right thigh segment based on dynamic position data. It optionally adds RHJC to the tracking markers if needed.
-
-        Args:
-            aqui (btk.btkAcquisition): Motion acquisition data.
-            dictRef (Dict[str, Any]): Technical referential definitions for the right thigh.
-            motionMethod (enums.motionMethod): Segmental motion method to apply.
-        """
-
-
-        seg=self.getSegment("Right Thigh")
-
-        validFrames = btkTools.getValidFrames(aqui,seg.m_tracking_markers)
-        seg.setExistFrames(validFrames)
-
-        #  --- add RHJC if list <2 - check presence of tracking markers in the acquisition
-        if seg.m_tracking_markers != []:
-            if len(seg.m_tracking_markers)==2:
-                if "RHJC" not in seg.m_tracking_markers:
-                    seg.m_tracking_markers.append("RHJC")
-                    LOGGER.logger.debug("RHJC added to tracking marker list")
-
-        # --- Motion of the Technical frame
-        seg.getReferential("TF").motion =[]
-
-        # part 1: get back static global position ( look ou i use nodes)
-
-        if seg.m_tracking_markers != []: # work with tracking markers
-            staticPos = np.zeros((len(seg.m_tracking_markers),3))
-            i=0
-            for label in seg.m_tracking_markers:
-                staticPos[i,:] = seg.getReferential("TF").static.getNode_byLabel(label).m_global
-                i+=1
-
-        # part 2 : get dynamic position ( look out i pick up value in the btkAcquisition)
-        csFrame=frame.Frame()
-        for i in range(0,aqui.GetPointFrameNumber()):
-
-            if seg.m_tracking_markers != []: # work with traking markers
-                dynPos = np.zeros((len(seg.m_tracking_markers),3)) # use
-                k=0
-                for label in seg.m_tracking_markers:
-                    dynPos[k,:] = aqui.GetPoint(label).GetValues()[i,:]
-                    k+=1
-
-
-            if motionMethod == enums.motionMethod.Sodervisk :
-                Ropt, Lopt, RMSE, Am, Bm=motion.segmentalLeastSquare(staticPos,
-                                                              dynPos)
-                R=np.dot(Ropt,seg.getReferential("TF").static.getRotation())
-                tOri=np.dot(Ropt,seg.getReferential("TF").static.getTranslation())+Lopt
-
-
-                csFrame.setRotation(R)
-                csFrame.setTranslation(tOri)
-                csFrame.m_axisX=R[:,0]
-                csFrame.m_axisY=R[:,1]
-                csFrame.m_axisZ=R[:,2]
-
-                seg.getReferential("TF").addMotionFrame(copy.deepcopy(csFrame))
-
-        # --- RKJC
-        desc = seg.getReferential('TF').static.getNode_byLabel("RKJC").m_desc
-        values_RKJCnode=seg.getReferential('TF').getNodeTrajectory("RKJC")
-
-        for i in range(0,aqui.GetPointFrameNumber()):
-            if not validFrames[i]:
-                values_RKJCnode[i,:] = np.zeros(3)
-
-        btkTools.smartAppendPoint(aqui,"RKJC",values_RKJCnode, desc=str("opt-"+desc))
-
-        # --- RHJC from Thigh
-        #values_HJCnode=seg.getReferential('TF').getNodeTrajectory("RHJC")
-        #btkTools.smartAppendPoint(aqui,"RHJC-Thigh",values_HJCnode, desc="opt from Thigh")
-
-        # remove HJC from list of tracking markers
-        if "RHJC" in seg.m_tracking_markers: seg.m_tracking_markers.remove("RHJC")
-
-
-    def _left_shank_motion_optimize(self, aqui: btk.btkAcquisition, dictRef: Dict[str, Any], motionMethod: enums.motionMethod) -> None:
-        """Optimizes the motion of the left shank segment using a specific motion method.
-
-        This method adjusts the technical frame of the left shank segment based on dynamic position data. It optionally adds LKJC to the tracking markers if needed.
-
-        Args:
-            aqui (btk.btkAcquisition): Motion acquisition data.
-            dictRef (Dict[str, Any]): Technical referential definitions for the left shank.
-            motionMethod (enums.motionMethod): Segmental motion method to apply.
-        """
-
-
-        seg=self.getSegment("Left Shank")
-
-        validFrames = btkTools.getValidFrames(aqui,seg.m_tracking_markers)
-        seg.setExistFrames(validFrames)
-
-        #  --- add LKJC if list <2 - check presence of tracking markers in the acquisition
-        if seg.m_tracking_markers != []:
-            if len(seg.m_tracking_markers)==2:
-                if "LKJC" not in seg.m_tracking_markers:
-                    seg.m_tracking_markers.append("LKJC")
-                    LOGGER.logger.debug("LKJC added to tracking marker list")
-
-        # --- Motion of the Technical frame
-        seg.getReferential("TF").motion =[]
-
-       # part 1: get back static global position ( look ou i use nodes)
-        if seg.m_tracking_markers != []: # work with tracking markers
-            staticPos = np.zeros((len(seg.m_tracking_markers),3))
-            i=0
-            for label in seg.m_tracking_markers:
-                staticPos[i,:] = seg.getReferential("TF").static.getNode_byLabel(label).m_global
-                i+=1
-
-        # part 2 : get dynamic position ( look out i pick up value in the btkAcquisition)
-        csFrame=frame.Frame()
-        for i in range(0,aqui.GetPointFrameNumber()):
-
-            if seg.m_tracking_markers != []: # work with traking markers
-                dynPos = np.zeros((len(seg.m_tracking_markers),3)) # use
-                k=0
-                for label in seg.m_tracking_markers:
-                    dynPos[k,:] = aqui.GetPoint(label).GetValues()[i,:]
-                    k+=1
-
-
-            if motionMethod == enums.motionMethod.Sodervisk :
-                Ropt, Lopt, RMSE, Am, Bm=motion.segmentalLeastSquare(staticPos,
-                                                              dynPos)
-                R=np.dot(Ropt,seg.getReferential("TF").static.getRotation())
-                tOri=np.dot(Ropt,seg.getReferential("TF").static.getTranslation())+Lopt
-
-                csFrame.setRotation(R)
-                csFrame.setTranslation(tOri)
-                csFrame.m_axisX=R[:,0]
-                csFrame.m_axisY=R[:,1]
-                csFrame.m_axisZ=R[:,2]
-
-                seg.getReferential("TF").addMotionFrame(copy.deepcopy(csFrame))
-
-
-        # --- LAJC
-        desc = seg.getReferential('TF').static.getNode_byLabel("LAJC").m_desc
-        values_LAJCnode=seg.getReferential('TF').getNodeTrajectory("LAJC")
-
-        for i in range(0,aqui.GetPointFrameNumber()):
-            if not validFrames[i]:
-                values_LAJCnode[i,:] = np.zeros(3)
-
-        btkTools.smartAppendPoint(aqui,"LAJC",values_LAJCnode, desc=str("opt"+desc))
-
-        # --- KJC from Shank
-        #values_KJCnode=seg.getReferential('TF').getNodeTrajectory("LKJC")
-        #btkTools.smartAppendPoint(aqui,"LKJC-Shank",values_KJCnode, desc="opt from Shank")
-
-
-        # remove KJC from list of tracking markers
-        if "LKJC" in seg.m_tracking_markers: seg.m_tracking_markers.remove("LKJC")
-
-
-
-    def _right_shank_motion_optimize(self, aqui: btk.btkAcquisition, dictRef: Dict[str, Any], motionMethod: enums.motionMethod) -> None:
-        """Optimizes the motion of the right shank segment using a specific motion method.
-
-        This method adjusts the technical frame of the right shank segment based on dynamic position data. It optionally adds RKJC to the tracking markers if needed.
-
-        Args:
-            aqui (btk.btkAcquisition): Motion acquisition data.
-            dictRef (Dict[str, Any]): Technical referential definitions for the right shank.
-            motionMethod (enums.motionMethod): Segmental motion method to apply.
-        """
-
-
-        seg=self.getSegment("Right Shank")
-
-        validFrames = btkTools.getValidFrames(aqui,seg.m_tracking_markers)
-        seg.setExistFrames(validFrames)
-
-        #  --- add RKJC if list <2 - check presence of tracking markers in the acquisition
-        if seg.m_tracking_markers != []:
-            if len(seg.m_tracking_markers)==2:
-                if "RKJC" not in seg.m_tracking_markers:
-                    seg.m_tracking_markers.append("RKJC")
-                    LOGGER.logger.debug("RKJC added to tracking marker list")
-
-        # --- Motion of the Technical frame
-
-        seg.getReferential("TF").motion =[]
-
-        # part 1: get back static global position ( look ou i use nodes)
-
-        if seg.m_tracking_markers != []: # work with tracking markers
-            staticPos = np.zeros((len(seg.m_tracking_markers),3))
-            i=0
-            for label in seg.m_tracking_markers:
-                staticPos[i,:] = seg.getReferential("TF").static.getNode_byLabel(label).m_global
-                i+=1
-
-        # part 2 : get dynamic position ( look out i pick up value in the btkAcquisition)
-        csFrame=frame.Frame()
-        for i in range(0,aqui.GetPointFrameNumber()):
-
-            if seg.m_tracking_markers != []: # work with traking markers
-                dynPos = np.zeros((len(seg.m_tracking_markers),3)) # use
-                k=0
-                for label in seg.m_tracking_markers:
-                    dynPos[k,:] = aqui.GetPoint(label).GetValues()[i,:]
-                    k+=1
-
-
-            if motionMethod == enums.motionMethod.Sodervisk :
-                Ropt, Lopt, RMSE, Am, Bm=motion.segmentalLeastSquare(staticPos,
-                                                              dynPos)
-                R=np.dot(Ropt,seg.getReferential("TF").static.getRotation())
-                tOri=np.dot(Ropt,seg.getReferential("TF").static.getTranslation())+Lopt
-
-
-                csFrame.setRotation(R)
-                csFrame.setTranslation(tOri)
-                csFrame.m_axisX=R[:,0]
-                csFrame.m_axisY=R[:,1]
-                csFrame.m_axisZ=R[:,2]
-
-                seg.getReferential("TF").addMotionFrame(copy.deepcopy(csFrame))
-
-        # RAJC
-        desc = seg.getReferential('TF').static.getNode_byLabel("RAJC").m_desc
-        values_RAJCnode=seg.getReferential('TF').getNodeTrajectory("RAJC")
-
-        for i in range(0,aqui.GetPointFrameNumber()):
-            if not validFrames[i]:
-                values_RAJCnode[i,:] = np.zeros(3)
-
-        btkTools.smartAppendPoint(aqui,"RAJC",values_RAJCnode, desc=str("opt-"+desc))
-
-
-
-        # --- KJC from Shank
-        #values_KJCnode=seg.getReferential('TF').getNodeTrajectory("RKJC")
-        #btkTools.smartAppendPoint(aqui,"RKJC-Shank",values_KJCnode, desc="opt from Shank")
-
-        # remove KJC from list of tracking markers
-        if "RKJC" in seg.m_tracking_markers: seg.m_tracking_markers.remove("RKJC")
-
-    def _leftFoot_motion_optimize(self, aqui: btk.btkAcquisition, dictRef: Dict[str, Any], motionMethod: enums.motionMethod) -> None:
-        """Optimizes the motion of the left foot segment using a specified motion method.
-
-        This method adjusts the technical frame of the left foot segment based on dynamic position data. It may add LAJC to the tracking markers if the marker list is less than 2 and checks the presence of tracking markers in the acquisition.
-
-        Args:
-            aqui (btk.btkAcquisition): Motion acquisition data.
-            dictRef (Dict[str, Any]): Technical referential definitions for the left foot.
-            motionMethod (enums.motionMethod): Segmental motion method to apply.
-        """
-
-
-        seg=self.getSegment("Left Foot")
-
-        validFrames = btkTools.getValidFrames(aqui,seg.m_tracking_markers)
-        seg.setExistFrames(validFrames)
-
-        #  --- add LAJC if marker list < 2  - check presence of tracking markers in the acquisition
-        if seg.m_tracking_markers != []:
-            if len(seg.m_tracking_markers)==2:
-                if "LAJC" not in seg.m_tracking_markers:
-                    seg.m_tracking_markers.append("LAJC")
-                    LOGGER.logger.debug("LAJC added to tracking marker list")
-
-        # --- Motion of the Technical frame
-        seg.getReferential("TF").motion =[]
-
-        # part 1: get global location in Static
-        if seg.m_tracking_markers != []: # work with tracking markers
-            staticPos = np.zeros((len(seg.m_tracking_markers),3))
-            i=0
-            for label in seg.m_tracking_markers:
-                staticPos[i,:] = seg.getReferential("TF").static.getNode_byLabel(label).m_global
-                i+=1
-
-        # part 2 : get dynamic position ( look out i pick up value in the btkAcquisition)
-        csFrame=frame.Frame()
-        for i in range(0,aqui.GetPointFrameNumber()):
-
-            if seg.m_tracking_markers != []: # work with traking markers
-                dynPos = np.zeros((len(seg.m_tracking_markers),3)) # use
-                k=0
-                for label in seg.m_tracking_markers:
-                    dynPos[k,:] = aqui.GetPoint(label).GetValues()[i,:]
-                    k+=1
-
-            if motionMethod == enums.motionMethod.Sodervisk :
-                Ropt, Lopt, RMSE, Am, Bm= motion.segmentalLeastSquare(staticPos,
-                                                              dynPos)
-                R=np.dot(Ropt,seg.getReferential("TF").static.getRotation())
-                tOri=np.dot(Ropt,seg.getReferential("TF").static.getTranslation())+Lopt
-
-
-                csFrame.setRotation(R)
-                csFrame.setTranslation(tOri)
-                csFrame.m_axisX=R[:,0]
-                csFrame.m_axisY=R[:,1]
-                csFrame.m_axisZ=R[:,2]
-
-            seg.getReferential("TF").addMotionFrame(copy.deepcopy(csFrame))
-
-
-        # --- AJC from Foot
-        values_AJCnode=seg.getReferential('TF').getNodeTrajectory("LAJC")
-        for i in range(0,aqui.GetPointFrameNumber()):
-            if not validFrames[i]:
-                values_AJCnode[i,:] = np.zeros(3)
-        #btkTools.smartAppendPoint(aqui,"LAJC-Foot",values_AJCnode, desc="opt from Foot")
-
-
-        # remove AJC from list of tracking markers
-        if "LAJC" in seg.m_tracking_markers: seg.m_tracking_markers.remove("LAJC")
-
-
-    def _rightFoot_motion_optimize(self, aqui: btk.btkAcquisition, dictRef: Dict[str, Any], motionMethod: enums.motionMethod) -> None:
-        """Optimizes the motion of the right foot segment using a specified motion method.
-
-        This method adjusts the technical frame of the right foot segment based on dynamic position data. It may add RAJC to the tracking markers if the marker list is less than 2 and checks the presence of tracking markers in the acquisition.
-
-        Args:
-            aqui (btk.btkAcquisition): Motion acquisition data.
-            dictRef (Dict[str, Any]): Technical referential definitions for the right foot.
-            motionMethod (enums.motionMethod): Segmental motion method to apply.
-        """
-
-
-        seg=self.getSegment("Right Foot")
-
-        validFrames = btkTools.getValidFrames(aqui,seg.m_tracking_markers)
-        seg.setExistFrames(validFrames)
-
-        #  --- add RAJC if marker list < 2  - check presence of tracking markers in the acquisition
-        if seg.m_tracking_markers != []:
-            if len(seg.m_tracking_markers)==2:
-                if "RAJC" not in seg.m_tracking_markers:
-                    seg.m_tracking_markers.append("RAJC")
-                    LOGGER.logger.debug("RAJC added to tracking marker list")
-
-        # --- Motion of the Technical frame
-        seg.getReferential("TF").motion =[]
-
-        # part 1: get global location in Static
-        if seg.m_tracking_markers != []: # work with tracking markers
-            staticPos = np.zeros((len(seg.m_tracking_markers),3))
-            i=0
-            for label in seg.m_tracking_markers:
-                staticPos[i,:] = seg.getReferential("TF").static.getNode_byLabel(label).m_global
-                i+=1
-
-        # part 2 : get dynamic position ( look out i pick up value in the btkAcquisition)
-        csFrame=frame.Frame()
-        for i in range(0,aqui.GetPointFrameNumber()):
-
-            if seg.m_tracking_markers != []: # work with traking markers
-                dynPos = np.zeros((len(seg.m_tracking_markers),3)) # use
-                k=0
-                for label in seg.m_tracking_markers:
-                    dynPos[k,:] = aqui.GetPoint(label).GetValues()[i,:]
-                    k+=1
-
-            if motionMethod == enums.motionMethod.Sodervisk :
-                Ropt, Lopt, RMSE, Am, Bm= motion.segmentalLeastSquare(staticPos,
-                                                              dynPos)
-                R=np.dot(Ropt,seg.getReferential("TF").static.getRotation())
-                tOri=np.dot(Ropt,seg.getReferential("TF").static.getTranslation())+Lopt
-
-
-                csFrame.setRotation(R)
-                csFrame.setTranslation(tOri)
-                csFrame.m_axisX=R[:,0]
-                csFrame.m_axisY=R[:,1]
-                csFrame.m_axisZ=R[:,2]
-
-            seg.getReferential("TF").addMotionFrame(copy.deepcopy(csFrame))
-
-
-        # --- AJC from Foot
-        values_AJCnode=seg.getReferential('TF').getNodeTrajectory("RAJC")
-        for i in range(0,aqui.GetPointFrameNumber()):
-            if not validFrames[i]:
-                values_AJCnode[i,:] = np.zeros(3)
-        #btkTools.smartAppendPoint(aqui,"RAJC-Foot",values_AJCnode, desc="opt from Foot")
-
-
-        # remove AJC from list of tracking markers
-        if "RAJC" in seg.m_tracking_markers: seg.m_tracking_markers.remove("RAJC")
-
-
-    def _anatomical_motion(self, aqui: btk.btkAcquisition, segmentLabel: str, originLabel: str = "") -> None:
-        """Computes the motion of an anatomical segment.
-
-        This method adjusts the anatomical frame of a given segment based on the technical frame and relative anatomical matrix.
-
-        Args:
-            aqui (btk.btkAcquisition): Motion acquisition data.
-            segmentLabel (str): Label of the segment for which the anatomical motion is being computed.
-            originLabel (str, optional): Label of the origin point. Defaults to an empty string if not provided.
-        """
-
-
-        seg=self.getSegment(segmentLabel)
-
-        # --- Motion of the Anatomical frame
-        seg.anatomicalFrame.motion=[]
-
-
-        # computation
-        csFrame=frame.Frame()
-        for i in range(0,aqui.GetPointFrameNumber()):
-            ptOrigin=aqui.GetPoint(originLabel).GetValues()[i,:]
-            R = np.dot(seg.getReferential("TF").motion[i].getRotation(), seg.getReferential("TF").relativeMatrixAnatomic)
-            csFrame.update(R,ptOrigin)
-            seg.anatomicalFrame.addMotionFrame(copy.deepcopy(csFrame))
-
-
-    def _rotate_anatomical_motion(self, segmentLabel: str, angle: float, aqui: btk.btkAcquisition, options: Optional[Dict[str, Any]] = None) -> None:
-        """Rotates the anatomical referential of a segment by a specified angle.
-
-        This method applies a rotation to the anatomical frame of a specified segment. The rotation is defined by the given angle around the Z-axis of the anatomical frame.
-
-        Args:
-            segmentLabel (str): The label of the segment to be rotated.
-            angle (float): The angle in degrees to rotate the anatomical frame.
-            aqui (btk.btkAcquisition): Motion acquisition data.
-            options (Optional[Dict[str, Any]]): Additional options (not used in this method).
-        """
-
-
-        seg=self.getSegment(segmentLabel)
-
-
-        angle = np.deg2rad(angle)
-
-        # --- motion of both technical and anatomical referentials of the proximal shank
-
-        #seg.anatomicalFrame.motion=[]
-
-        # additional markers
-        # NA
-
-        # computation
-        rotZ = np.eye(3,3)
-        rotZ[0,0] = np.cos(angle)
-        rotZ[0,1] = -np.sin(angle)
-        rotZ[1,0] =  np.sin(angle)
-        rotZ[1,1] = np.cos(angle)
-
-        for i in range(0,aqui.GetPointFrameNumber()):
-
-            ptOrigin=seg.anatomicalFrame.motion[i].getTranslation()
-
-            R = np.dot(seg.anatomicalFrame.motion[i].getRotation(),rotZ)
-
-            seg.anatomicalFrame.motion[i].update(R,ptOrigin)
-
-
-
-
-    # ---- tools ----
-    def _rotateAjc(self, ajc: np.ndarray, kjc: np.ndarray, ank: np.ndarray, offset: float) -> np.ndarray:
-        """Rotates the ankle joint center based on a specified offset.
-
-        The method computes the rotation of the ankle joint center (AJC) around the abduction-adduction axis based on the provided offset. This rotation is applied to adjust the position of the AJC.
-
-        Args:
-            ajc (np.ndarray): The current position of the ankle joint center.
-            kjc (np.ndarray): The knee joint center position.
-            ank (np.ndarray): The ankle marker position.
-            offset (float): The angle in degrees for the rotation.
-
-        Returns:
-            np.ndarray: The new position of the ankle joint center after rotation.
-        """
-
-
-
-
-        a1=(kjc-ajc)
-        a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
-
-        v=(ank-ajc)
-        v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
-
-        a2=np.cross(a1,v)
-        a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
-
-        x,y,z,R=frame.setFrameData(a1,a2,"ZXY")
-        csFrame=frame.Frame()
-
-        csFrame.m_axisX=x
-        csFrame.m_axisY=y
-        csFrame.m_axisZ=z
-        csFrame.setRotation(R)
-        csFrame.setTranslation(ank)
-
-        loc=np.dot(R.T,ajc-ank)
-
-        abAdangle = np.deg2rad(offset)
-
-        rotAbdAdd = np.array([[1, 0, 0],[0, np.cos(abAdangle), -1.0*np.sin(abAdangle)], [0, np.sin(abAdangle), np.cos(abAdangle) ]])
-
-        finalRot= np.dot(R,rotAbdAdd)
-
-        return  np.dot(finalRot,loc)+ank
-
-
-# ---- Technical Referential Calibration
+    # ---- Technical Referential Calibration
     def _head_calibrate(self, aquiStatic: btk.btkAcquisition, dictRef: Dict[str, Any], frameInit: int, frameEnd: int, options: Optional[Dict[str, Any]] = None) -> None:
         """Calibrates the technical referential of the head segment.
 
@@ -5324,6 +3460,1163 @@ class CGM1(CGM):
         bottom = seg.anatomicalFrame.static.getNode_byLabel(prefix+"HO").m_local
         seg.setLength(2.0 * np.linalg.norm(top-bottom))
 
+    # ----- Motion --------------
+    def computeOptimizedSegmentMotion(self, aqui: btk.btkAcquisition, segments: List[str], dictRef: Dict[str, Any], dictAnat: Dict[str, Any], motionMethod: enums.motionMethod, options: Dict[str, Any]) -> None:
+        """Compute poses of both Technical and Anatomical coordinate systems for specific segments of the model.
+
+        Args:
+            aqui (btk.btkAcquisition): Motion acquisition data.
+            segments (List[str]): Segments of the model.
+            dictRef (Dict[str, Any]): Technical referential definitions.
+            dictAnat (Dict[str, Any]): Anatomical referential definitions.
+            motionMethod (enums.motionMethod): Segmental motion method to apply.
+            options (Dict[str, Any]): Passed known-arguments.
+        """
+
+
+
+        # ---remove all  direction marker from tracking markers.
+        if self.staExpert:
+            for seg in self.m_segmentCollection:
+                selectedTrackingMarkers=[]
+                for marker in seg.m_tracking_markers:
+                    if marker in self.__class__.TRACKING_MARKERS : # get class variable MARKER even from child
+                        selectedTrackingMarkers.append(marker)
+                seg.m_tracking_markers= selectedTrackingMarkers
+
+
+        LOGGER.logger.debug("--- Segmental Least-square motion process ---")
+        if "Pelvis" in segments:
+            self._pelvis_motion_optimize(aqui, dictRef, motionMethod)
+            self._anatomical_motion(aqui,"Pelvis",originLabel = str(dictAnat["Pelvis"]['labels'][3]))
+
+        if "Left Thigh" in segments:
+            self._thigh_motion_optimize("Left",aqui, dictRef,motionMethod)
+            self._anatomical_motion(aqui,"Left Thigh",originLabel = "LKJC")
+
+
+        if "Right Thigh" in segments:
+            self._thigh_motion_optimize("Right",aqui, dictRef,motionMethod)
+            self._anatomical_motion(aqui,"Right Thigh",originLabel = "RKJC")
+
+
+        if "Left Shank" in segments:
+            self._shank_motion_optimize("Left",aqui, dictRef,motionMethod)
+            self._anatomical_motion(aqui,"Left Shank",originLabel = "LAJC")
+
+        if "Right Shank" in segments:
+            self._shank_motion_optimize("Right",aqui, dictRef,motionMethod)
+            self._anatomical_motion(aqui,"Right Shank",originLabel = "RAJC")
+
+        if "Left Foot" in segments:
+            self._foot_motion_optimize("Left",aqui, dictRef,motionMethod)
+            self._anatomical_motion(aqui,"Left Foot",originLabel = "LHEE")
+
+        if "Right Foot" in segments:
+            self._foot_motion_optimize("Right",aqui, dictRef,motionMethod)
+            self._anatomical_motion(aqui,"Right Foot",originLabel = "RHEE")
+
+
+
+
+
+    def computeMotion(self, aqui: btk.btkAcquisition, dictRef: Dict[str, Any], dictAnat: Dict[str, Any], motionMethod: enums.motionMethod, options: Optional[Dict[str, Any]] = None) -> None:
+        """Compute poses of both Technical and Anatomical coordinate systems.
+
+        Args:
+            aqui (btk.btkAcquisition): Acquisition data.
+            dictRef (Dict[str, Any]): Technical referential definitions.
+            dictAnat (Dict[str, Any]): Anatomical referential definitions.
+            motionMethod (enums.motionMethod): Segmental motion method.
+            options (Optional[Dict[str, Any]], optional): Passed arguments to embedded functions. Defaults to None.
+
+        Options:
+            pigStatic (bool): Compute foot coordinate system according to the Vicon Plugin-gait.
+            forceFoot6DoF (bool): Apply 6DOF pose optimization on the foot.
+        """
+
+
+        LOGGER.logger.debug("=====================================================")
+        LOGGER.logger.debug("===================  CGM MOTION   ===================")
+        LOGGER.logger.debug("=====================================================")
+
+        pigStaticProcessing= True if "pigStatic" in options.keys() and options["pigStatic"] else False
+        forceFoot6DoF= True if "forceFoot6DoF" in options.keys() and options["forceFoot6DoF"] else False
+
+
+        if motionMethod == enums.motionMethod.Determinist: #cmf.motionMethod.Native:
+
+            #if not pigStaticProcessing:
+            LOGGER.logger.debug(" - Pelvis - motion -")
+            LOGGER.logger.debug(" -------------------")
+            self._pelvis_motion(aqui, dictRef, dictAnat)
+
+            LOGGER.logger.debug(" - Left Thigh - motion -")
+            LOGGER.logger.debug(" -----------------------")
+            self._thigh_motion("Left",aqui, dictRef, dictAnat,options=options)
+
+
+            # if rotation offset from knee functional calibration methods
+            if self.mp_computed["LeftKneeFuncCalibrationOffset"]:
+                offset = self.mp_computed["LeftKneeFuncCalibrationOffset"]
+                self._rotate_anatomical_motion("Left Thigh",offset,
+                                        aqui,options=options)
+
+            LOGGER.logger.debug(" - Right Thigh - motion -")
+            LOGGER.logger.debug(" ------------------------")
+            self._thigh_motion("Right",aqui, dictRef, dictAnat,options=options)
+
+
+            if  self.mp_computed["RightKneeFuncCalibrationOffset"]:
+                offset = self.mp_computed["RightKneeFuncCalibrationOffset"]
+                self._rotate_anatomical_motion("Right Thigh",offset,
+                                        aqui,options=options)
+
+
+            LOGGER.logger.debug(" - Left Shank - motion -")
+            LOGGER.logger.debug(" -----------------------")
+            self._shank_motion("Left",aqui, dictRef, dictAnat,options=options)
+
+
+            LOGGER.logger.debug(" - Left Shank-proximal - motion -")
+            LOGGER.logger.debug(" --------------------------------")
+            self._shankProximal_motion("Left",aqui,dictAnat,options=options)
+
+            LOGGER.logger.debug(" - Right Shank - motion -")
+            LOGGER.logger.debug(" ------------------------")
+            self._shank_motion("Right",aqui, dictRef, dictAnat,options=options)
+
+            LOGGER.logger.debug(" - Right Shank-proximal - motion -")
+            LOGGER.logger.debug(" ---------------------------------")
+            self._shankProximal_motion("Right",aqui,dictAnat,options=options)
+
+            LOGGER.logger.debug(" - Left foot - motion -")
+            LOGGER.logger.debug(" ----------------------")
+
+            if pigStaticProcessing:
+                self._foot_motion_static("Left",aqui, dictAnat,options=options)
+            else:
+                self._foot_motion("Left",aqui, dictRef, dictAnat,options=options)
+
+            LOGGER.logger.debug(" - Right foot - motion -")
+            LOGGER.logger.debug(" ----------------------")
+
+
+            if pigStaticProcessing:
+                self._foot_motion_static("Right",aqui, dictAnat,options=options)
+            else:
+                self._foot_motion("Right",aqui, dictRef, dictAnat,options=options)
+
+
+
+            self._thorax_motion(aqui, dictRef,dictAnat,options=options)
+            self._head_motion(aqui, dictRef,dictAnat,options=options)
+
+            self._clavicle_motion("Left",aqui, dictRef,dictAnat,options=options)
+            self._constructArmVirtualMarkers("Left", aqui)
+            self._upperArm_motion("Left",aqui, dictRef,dictAnat,options=options,   frameReconstruction="Technical")
+            self._foreArm_motion("Left",aqui, dictRef,dictAnat,options=options, frameReconstruction="Technical")
+            self._upperArm_motion("Left",aqui, dictRef,dictAnat,options=options,   frameReconstruction="Anatomical")
+            self._foreArm_motion("Left",aqui, dictRef,dictAnat,options=options, frameReconstruction="Anatomical")
+            self._hand_motion("Left",aqui, dictRef,dictAnat,options=options)
+
+            self._clavicle_motion("Right",aqui, dictRef,dictAnat,options=options)
+            self._constructArmVirtualMarkers("Right", aqui)
+            self._upperArm_motion("Right",aqui, dictRef,dictAnat,options=options,   frameReconstruction="Technical")
+            self._foreArm_motion("Right",aqui, dictRef,dictAnat,options=options, frameReconstruction="Technical")
+            self._upperArm_motion("Right",aqui, dictRef,dictAnat,options=options,   frameReconstruction="Anatomical")
+            self._foreArm_motion("Right",aqui, dictRef,dictAnat,options=options, frameReconstruction="Anatomical")
+            self._hand_motion("Right",aqui, dictRef,dictAnat,options=options)
+
+
+        if motionMethod == enums.motionMethod.Sodervisk:
+
+            # ---remove all  direction marker from tracking markers.
+            if self.staExpert:
+                for seg in self.m_segmentCollection:
+                    selectedTrackingMarkers=[]
+                    for marker in seg.m_tracking_markers:
+                        if marker in self.__class__.TRACKING_MARKERS :
+                            selectedTrackingMarkers.append(marker)
+                    seg.m_tracking_markers= selectedTrackingMarkers
+
+
+            LOGGER.logger.debug("--- Segmental Least-square motion process ---")
+            self._pelvis_motion_optimize(aqui, dictRef, motionMethod)
+            self._anatomical_motion(aqui,"Pelvis",originLabel = str(dictAnat["Pelvis"]['labels'][3]))
+
+
+            TopLumbar5=np.zeros((aqui.GetPointFrameNumber(),3))
+
+            for i in range(0,aqui.GetPointFrameNumber()):
+                lhjc = aqui.GetPoint("LHJC").GetValues()[i,:]
+                rhjc =  aqui.GetPoint("RHJC").GetValues()[i,:]
+                pelvisScale = np.linalg.norm(lhjc-rhjc)
+                offset = (lhjc+rhjc)/2.0
+                R = self.getSegment("Pelvis").anatomicalFrame.motion[i].getRotation()
+                TopLumbar5[i,:] = offset +  np.dot(R,(np.array([ 0, 0, 0.925]))* pelvisScale)
+
+
+            self._TopLumbar5 = TopLumbar5
+
+            self._thigh_motion_optimize("Left",aqui, dictRef,motionMethod)
+            self._anatomical_motion(aqui,"Left Thigh",originLabel = str(dictAnat["Left Thigh"]['labels'][3]))
+
+            self._thigh_motion_optimize("Right",aqui,  dictRef,motionMethod)
+            self._anatomical_motion(aqui,"Right Thigh",originLabel = str(dictAnat["Right Thigh"]['labels'][3]))
+
+
+            self._shank_motion_optimize("Left",aqui, dictRef,motionMethod)
+            self._anatomical_motion(aqui,"Left Shank",originLabel = str(dictAnat["Left Shank"]['labels'][3]))
+            self._shankProximal_motion("Left",aqui,dictAnat,options=options)
+
+            self._shank_motion_optimize("Right",aqui, dictRef,motionMethod)
+            self._anatomical_motion(aqui,"Right Shank",originLabel = str(dictAnat["Right Shank"]['labels'][3]))
+            self._shankProximal_motion("Right",aqui,dictAnat,options=options)
+
+            if forceFoot6DoF:
+            # foot
+            # issue with least-square optimization :  AJC - HEE and TOE may be inline -> singularities !!
+                self._foot_motion_optimize("Left",aqui, dictRef,dictAnat, motionMethod)
+                self._anatomical_motion(aqui,"Left Foot",originLabel = str(dictAnat["Left Foot"]['labels'][3]))
+                self._foot_motion_optimize("Right",aqui, dictRef,dictAnat, motionMethod)
+                self._anatomical_motion(aqui,"Right Foot",originLabel = str(dictAnat["Right Foot"]['labels'][3]))
+            else:
+                self._foot_motion("Left",aqui, dictRef, dictAnat,options=options)
+                self._foot_motion("Right",aqui, dictRef, dictAnat,options=options)
+
+            
+            # # from line_profiler import LineProfiler
+            # # profiler = LineProfiler()
+            # # profiler.add_function(self._thorax_motion)
+            # # # Exécution de la fonction
+            # # profiler.enable()  # Démarre le profilage
+            # self._thorax_motion(aqui, dictRef,dictAnat,options=options)
+            # # profiler.disable()  # Arrête le profilage
+            # # # Affichage des résultats
+            # # profiler.print_stats()
+
+            self._thorax_motion(aqui, dictRef,dictAnat,options=options)
+            self._head_motion(aqui, dictRef,dictAnat,options=options)
+
+            self._clavicle_motion("Left",aqui, dictRef,dictAnat,options=options)
+            self._constructArmVirtualMarkers("Left", aqui)
+            self._upperArm_motion("Left",aqui, dictRef,dictAnat,options=options,   frameReconstruction="Technical")
+            self._foreArm_motion("Left",aqui, dictRef,dictAnat,options=options, frameReconstruction="Technical")
+            self._upperArm_motion("Left",aqui, dictRef,dictAnat,options=options,   frameReconstruction="Anatomical")
+            self._foreArm_motion("Left",aqui, dictRef,dictAnat,options=options, frameReconstruction="Anatomical")
+            self._hand_motion("Left",aqui, dictRef,dictAnat,options=options)
+
+            self._clavicle_motion("Right",aqui, dictRef,dictAnat,options=options)
+            self._constructArmVirtualMarkers("Right", aqui)
+            self._upperArm_motion("Right",aqui, dictRef,dictAnat,options=options,   frameReconstruction="Technical")
+            self._foreArm_motion("Right",aqui, dictRef,dictAnat,options=options, frameReconstruction="Technical")
+            self._upperArm_motion("Right",aqui, dictRef,dictAnat,options=options,   frameReconstruction="Anatomical")
+            self._foreArm_motion("Right",aqui, dictRef,dictAnat,options=options, frameReconstruction="Anatomical")
+            self._hand_motion("Right",aqui, dictRef,dictAnat,options=options)
+
+    @time_tracker()
+    def _pelvis_motion(self, aqui: btk.btkAcquisition, dictRef: Dict[str, Any], dictAnat: Dict[str, Any]) -> None:
+        """Process the motion of the pelvis segment.
+
+        Args:
+            aqui (btk.btkAcquisition): Motion acquisition data.
+            dictRef (Dict[str, Any]): Technical referential definitions for the pelvis.
+            dictAnat (Dict[str, Any]): Anatomical referential definitions for the pelvis.
+        """
+
+
+        seg=self.getSegment("Pelvis")
+
+        # --- motion of the technical referential
+        seg.getReferential("TF").motion =[]        # reinit Technical Frame Motion (USEFUL if you work with several aquisitions)
+
+
+
+        #  additional markers
+        val=(aqui.GetPoint("LPSI").GetValues() + aqui.GetPoint("RPSI").GetValues()) / 2.0
+        btkTools.smartAppendPoint(aqui,"SACR",val, desc="")
+
+        val=(aqui.GetPoint("LASI").GetValues() + aqui.GetPoint("RASI").GetValues()) / 2.0
+        btkTools.smartAppendPoint(aqui,"midASIS",val, desc="")
+
+        validFrames = btkTools.getValidFrames(aqui,seg.m_tracking_markers)
+        seg.setExistFrames(validFrames)
+
+        pt1=aqui.GetPoint(str(dictRef["Pelvis"]["TF"]['labels'][0])).GetValues()
+        pt2=aqui.GetPoint(str(dictRef["Pelvis"]["TF"]['labels'][1])).GetValues()
+        pt3=aqui.GetPoint(str(dictRef["Pelvis"]["TF"]['labels'][2])).GetValues()
+        ptOrigin=aqui.GetPoint(str(dictRef["Pelvis"]["TF"]['labels'][3])).GetValues()
+
+        a1,a2 = self._frameByFrameAxesConstruction(pt1,pt2,pt3)
+        x,y,z,R=frame.setFrameData(a1,a2,dictRef["Pelvis"]["TF"]['sequence'])
+
+        for i in range(0,aqui.GetPointFrameNumber()):
+            csFrame=frame.Frame()
+            csFrame.setRotation(R[i])
+            csFrame.setTranslation(ptOrigin[i,:])
+            seg.getReferential("TF").addMotionFrame(csFrame)
+
+        # --- HJCs
+        desc_L = seg.getReferential('TF').static.getNode_byLabel("LHJC").m_desc
+        desc_R = seg.getReferential('TF').static.getNode_byLabel("RHJC").m_desc
+
+        values_LHJCnode=seg.getReferential('TF').getNodeTrajectory("LHJC")
+        values_RHJCnode=seg.getReferential('TF').getNodeTrajectory("RHJC")
+
+        for i in range(0,aqui.GetPointFrameNumber()):
+            if not validFrames[i]:
+                values_LHJCnode[i,:] = np.zeros(3)
+                values_RHJCnode[i,:] = np.zeros(3)
+
+
+        btkTools.smartAppendPoint(aqui,"LHJC",values_LHJCnode, desc=desc_L)
+        btkTools.smartAppendPoint(aqui,"RHJC",values_RHJCnode, desc=desc_R)
+
+
+        # --- motion of the anatomical referential
+
+        seg.anatomicalFrame.motion=[]
+        TopLumbar5=np.zeros((aqui.GetPointFrameNumber(),3))
+
+        lhjc = aqui.GetPoint("LHJC").GetValues()
+        rhjc =  aqui.GetPoint("RHJC").GetValues()
+
+        # additional markers
+        val=(aqui.GetPoint("LHJC").GetValues() + aqui.GetPoint("RHJC").GetValues()) / 2.0
+        btkTools.smartAppendPoint(aqui,"midHJC",val,desc="")
+
+        pt1=aqui.GetPoint(str(dictAnat["Pelvis"]['labels'][0])).GetValues()
+        pt2=aqui.GetPoint(str(dictAnat["Pelvis"]['labels'][1])).GetValues()
+        pt3=aqui.GetPoint(str(dictAnat["Pelvis"]['labels'][2])).GetValues()
+        ptOrigin=aqui.GetPoint(str(dictAnat["Pelvis"]['labels'][3])).GetValues()
+
+        a1,a2 = self._frameByFrameAxesConstruction(pt1,pt2,pt3)
+        x,y,z,R=frame.setFrameData(a1,a2,dictAnat["Pelvis"]['sequence'])
+
+        for i in range(0,aqui.GetPointFrameNumber()):
+            csFrame=frame.Frame()
+            csFrame.setRotation(R[i])
+            csFrame.setTranslation(ptOrigin[i,:])
+            seg.anatomicalFrame.addMotionFrame(csFrame)
+
+            # length
+            pelvisScale = np.linalg.norm(lhjc[i,:]-rhjc[i,:])
+            offset = (lhjc[i,:]+rhjc[i,:])/2.0
+
+            TopLumbar5[i,:] = offset +  np.dot(R[i],(np.array([ 0, 0, 0.925]))* pelvisScale)
+
+
+        self._TopLumbar5 = TopLumbar5
+
+
+
+    @time_tracker()
+    def _thigh_motion(self,side:str, aqui: btk.btkAcquisition, dictRef: Dict[str, Any], dictAnat: Dict[str, Any], options: Optional[Dict[str, Any]] = None) -> None:
+        """Process the motion of the left thigh segment.
+
+        Args:
+            side (str): body side (Left or Right)
+            aqui (btk.btkAcquisition): Motion acquisition data.
+            dictRef (Dict[str, Any]): Technical referential definitions for the left thigh.
+            dictAnat (Dict[str, Any]): Anatomical referential definitions for the left thigh.
+            options (Optional[Dict[str, Any]], optional): Additional options. Defaults to None.
+        """
+        prefix = "L" if side == "Left" else "R" if side == "Right" else ""
+        sign = -1 if side == "Left" else 1 if side == "Right" else 0
+
+        if "markerDiameter" in options.keys():
+            LOGGER.logger.debug(" option (markerDiameter) found ")
+            markerDiameter = options["markerDiameter"]
+        else:
+            markerDiameter=14.0
+
+        if "basePlate" in options.keys():
+            LOGGER.logger.debug(" option (basePlate) found ")
+            basePlate = options["basePlate"]
+        else:
+            basePlate=2.0
+
+        seg=self.getSegment(f"{side} Thigh")
+
+        validFrames = btkTools.getValidFrames(aqui,seg.m_tracking_markers)
+        seg.setExistFrames(validFrames)
+
+        # --- motion of the technical referential
+        seg.getReferential("TF").motion =[]   # reinit Technical Frame Motion ()
+
+        # additional markers
+        # NA
+
+        # computation
+                # --- LKJC
+        KJCvalues=np.zeros((aqui.GetPointFrameNumber(),3))
+        
+
+        pt1=aqui.GetPoint(str(dictRef[f"{side} Thigh"]["TF"]['labels'][0])).GetValues()
+        pt2=aqui.GetPoint(str(dictRef[f"{side} Thigh"]["TF"]['labels'][1])).GetValues()
+        pt3=aqui.GetPoint(str(dictRef[f"{side} Thigh"]["TF"]['labels'][2])).GetValues()
+        ptOrigin=aqui.GetPoint(str(dictRef[f"{side} Thigh"]["TF"]['labels'][3])).GetValues()
+        
+        a1,a2 = self._frameByFrameAxesConstruction(pt1,pt2,pt3)
+        x,y,z,R=frame.setFrameData(a1,a2,dictRef[f"{side} Thigh"]["TF"]['sequence'])
+
+
+        for i in range(0,aqui.GetPointFrameNumber()):
+            csFrame=frame.Frame()
+            csFrame.setRotation(R[i])
+            csFrame.setTranslation(ptOrigin[i,:])
+            seg.getReferential("TF").addMotionFrame(csFrame)
+
+            if validFrames[i]:
+                KJCvalues[i,:] = modelDecorator.VCMJointCentre( (self.mp[f"{side}KneeWidth"]+ markerDiameter)/2.0 ,pt1[i,:],pt2[i,:],pt3[i,:], beta=sign*self.mp_computed[f"{side}ThighRotationOffset"] )
+
+        if  f"use{side}KJCmarker" in options.keys() and options[f"use{side}KJCmarker"] != f"{prefix}KJC":
+            LOGGER.logger.info(f"[pyCGM2] - {prefix}KJC marker forced to use %s"%(options[f"use{side}KJCmarker"]))
+            KJCvalues = aqui.GetPoint(options[f"use{side}KJCmarker"]).GetValues()
+            desc = aqui.GetPoint(options[f"use{side}KJCmarker"]).GetDescription()
+            btkTools.smartAppendPoint(aqui,f"{prefix}KJC",KJCvalues,desc=str(desc))
+        else:
+            desc = seg.getReferential('TF').static.getNode_byLabel(f"{prefix}KJC").m_desc
+            btkTools.smartAppendPoint(aqui,f"{prefix}KJC",KJCvalues,desc=str("Chord-"+desc))
+
+        # --- motion of the anatomical referential
+        seg.anatomicalFrame.motion=[]
+
+
+        # additional markers
+        # NA
+        # computation
+        pt1=aqui.GetPoint(str(dictAnat[f"{side} Thigh"]['labels'][0])).GetValues()
+        pt2=aqui.GetPoint(str(dictAnat[f"{side} Thigh"]['labels'][1])).GetValues()
+        pt3=aqui.GetPoint(str(dictAnat[f"{side} Thigh"]['labels'][2])).GetValues()
+        ptOrigin=aqui.GetPoint(str(dictAnat[f"{side} Thigh"]['labels'][3])).GetValues()
+
+        a1,a2 = self._frameByFrameAxesConstruction(pt1,pt2,pt3)
+        x,y,z,R=frame.setFrameData(a1,a2,dictAnat[f"{side} Thigh"]['sequence'])
+
+        for i in range(0,aqui.GetPointFrameNumber()):
+            csFrame=frame.Frame()
+            csFrame.setRotation(R[i])
+            csFrame.setTranslation(ptOrigin[i,:])
+            seg.anatomicalFrame.addMotionFrame(csFrame)
+
+    
+
+    @time_tracker()
+    def _shank_motion(self,side:str, aqui: btk.btkAcquisition, dictRef: Dict[str, Any], dictAnat: Dict[str, Any], options: Optional[Dict[str, Any]] = None) -> None:
+        """Process the motion of the left shank segment.
+
+        Args:
+            side (str): body side (Left or Right)
+            aqui (btk.btkAcquisition): Motion acquisition data.
+            dictRef (Dict[str, Any]): Technical referential definitions for the left shank.
+            dictAnat (Dict[str, Any]): Anatomical referential definitions for the left shank.
+            options (Optional[Dict[str, Any]], optional): Additional options. Defaults to None.
+        """
+        prefix = "L" if side == "Left" else "R" if side == "Right" else ""
+        sign = -1 if side == "Left" else 1 if side == "Right" else 0
+
+        if "markerDiameter" in options.keys():
+            LOGGER.logger.debug(" option (markerDiameter) found ")
+            markerDiameter = options["markerDiameter"]
+        else:
+            markerDiameter=14.0
+
+        if "basePlate" in options.keys():
+            LOGGER.logger.debug(" option (basePlate) found ")
+            basePlate = options["basePlate"]
+        else:
+            basePlate=2.0
+
+        seg=self.getSegment(f"{side} Shank")
+
+        validFrames = btkTools.getValidFrames(aqui,seg.m_tracking_markers)
+        seg.setExistFrames(validFrames)
+
+        # --- motion of the technical referential
+        seg.getReferential("TF").motion =[]
+
+        # additional markers
+        # NA
+
+
+        # --- LAJC
+        # computation
+        AJCvalues=np.zeros((aqui.GetPointFrameNumber(),3))
+
+        pt1=aqui.GetPoint(str(dictRef[f"{side} Shank"]["TF"]['labels'][0])).GetValues() #ANK
+        pt2=aqui.GetPoint(str(dictRef[f"{side} Shank"]["TF"]['labels'][1])).GetValues() #KJC
+        pt3=aqui.GetPoint(str(dictRef[f"{side} Shank"]["TF"]['labels'][2])).GetValues() #TIB
+        ptOrigin=aqui.GetPoint(str(dictRef[f"{side} Shank"]["TF"]['labels'][3])).GetValues()
+
+        a1,a2 = self._frameByFrameAxesConstruction(pt1,pt2,pt3)
+        x,y,z,R=frame.setFrameData(a1,a2,dictRef[f"{side} Shank"]["TF"]['sequence'])
+
+        for i in range(0,aqui.GetPointFrameNumber()):
+            csFrame=frame.Frame()
+            csFrame.setRotation(R[i])
+            csFrame.setTranslation(ptOrigin[i,:])
+            seg.getReferential("TF").addMotionFrame(csFrame)
+
+            if validFrames[i]:
+                AJCvalues[i,:] = modelDecorator.VCMJointCentre( (self.mp[f"{side}AnkleWidth"]+ markerDiameter)/2.0 ,pt1[i,:],pt2[i,:],pt3[i,:], beta=sign*self.mp_computed[f"{side}ShankRotationOffset"] )
+                # update of the AJC location with rotation around abdAddAxis
+                AJCvalues[i,:] = self._rotateAjc(AJCvalues[i,:],pt2[i,:],pt1[i,:],self.mp_computed[f"{side}AnkleAbAddOffset"])
+
+
+        if  f"use{side}AJCmarker" in options.keys() and options[f"use{side}AJCmarker"] != f"{prefix}AJC":
+            LOGGER.logger.info(f"[pyCGM2] - {prefix}AJC marker forced to use %s"%(options[f"use{side}AJCmarker"]))
+            AJCvalues = aqui.GetPoint(options[f"use{side}AJCmarker"]).GetValues()
+            desc = aqui.GetPoint(options[f"use{side}AJCmarker"]).GetDescription()
+            btkTools.smartAppendPoint(aqui,f"{prefix}AJC",AJCvalues,desc=desc)
+        else:
+            # --- LAJC
+            desc_node = seg.getReferential('TF').static.getNode_byLabel(f"{prefix}AJC").m_desc
+            if self.mp_computed[f"{side}AnkleAbAddOffset"] > 0.01:
+                desc="chord+AbAdRot-"+desc_node
+            else:
+                desc="chord "+desc_node
+            btkTools.smartAppendPoint(aqui,f"{prefix}AJC",AJCvalues,desc=desc)
+
+
+        # --- motion of the anatomical referential
+        seg.anatomicalFrame.motion=[]
+
+
+        # additional markers
+        # NA
+        pt1=aqui.GetPoint(str(dictAnat[f"{side} Shank"]['labels'][0])).GetValues()
+        pt2=aqui.GetPoint(str(dictAnat[f"{side} Shank"]['labels'][1])).GetValues()
+        pt3=aqui.GetPoint(str(dictAnat[f"{side} Shank"]['labels'][2])).GetValues()
+        ptOrigin=aqui.GetPoint(str(dictAnat[f"{side} Shank"]['labels'][3])).GetValues()
+
+        a1,a2 = self._frameByFrameAxesConstruction(pt1,pt2,pt3)
+        x,y,z,R=frame.setFrameData(a1,a2,dictAnat[f"{side} Shank"]['sequence'])
+        # computation
+        for i in range(0,aqui.GetPointFrameNumber()):
+            csFrame=frame.Frame()
+            csFrame.setRotation(R[i])
+            csFrame.setTranslation(ptOrigin[i,:])
+            seg.anatomicalFrame.addMotionFrame(csFrame)
+
+    @time_tracker()
+    def _shankProximal_motion(self, side:str, aqui: btk.btkAcquisition, dictAnat: Dict[str, Any], options: Optional[Dict[str, Any]] = None) -> None:
+        """Process the motion of the left shank proximal segment.
+
+        Args:
+            side (str): body side (Left or Right)
+            aqui (btk.btkAcquisition): Motion acquisition data.
+            dictAnat (Dict[str, Any]): Anatomical referential definitions for the left shank proximal.
+            options (Optional[Dict[str, Any]], optional): Additional options. Defaults to None.
+        """
+        prefix = "L" if side == "Left" else "R" if side == "Right" else ""
+        sign = -1 if side == "Left" else 1 if side == "Right" else 0
+
+        seg=self.getSegment(f"{side} Shank")
+        segProx=self.getSegment(f"{side} Shank Proximal")
+
+
+        validFrames = btkTools.getValidFrames(aqui,seg.m_tracking_markers)
+        segProx.setExistFrames(validFrames)
+
+
+        # --- managment of tibial torsion
+        if side == "Left":
+            if self.m_useLeftTibialTorsion:
+                tibialTorsion = sign*np.deg2rad(self.mp_computed[f"{side}TibialTorsionOffset"])
+            else:
+                tibialTorsion = 0.0
+
+        if side == "Right":
+            if self.m_useRightTibialTorsion:
+                tibialTorsion = sign*np.deg2rad(self.mp_computed[f"{side}TibialTorsionOffset"])
+            else:
+                tibialTorsion = 0.0
+
+        if "pigStatic" in options.keys() and options["pigStatic"]:
+            tibialTorsion = 0.0
+
+        # --- motion of both technical and anatomical referentials of the proximal shank
+        segProx.getReferential("TF").motion =[]
+        segProx.anatomicalFrame.motion=[]
+
+
+        # additional markers
+        # NA
+
+        # computation
+        rotZ_tibRot = np.eye(3,3)
+        rotZ_tibRot[0,0] = np.cos(tibialTorsion)
+        rotZ_tibRot[0,1] = np.sin(tibialTorsion)
+        rotZ_tibRot[1,0] = - np.sin(tibialTorsion)
+        rotZ_tibRot[1,1] = np.cos(tibialTorsion)
+        KJC = aqui.GetPoint(str(dictAnat[f"{side} Shank"]['labels'][3]))
+
+        for i in range(0,aqui.GetPointFrameNumber()):
+            csFrame=frame.Frame()
+            ptOrigin=KJC.GetValues()[i,:]
+            segProx.getReferential("TF").addMotionFrame(seg.getReferential("TF").motion[i]) # copy technical shank
+
+            R = np.dot(seg.anatomicalFrame.motion[i].getRotation(),rotZ_tibRot) # affect Tibial torsion to anatomical shank
+
+            csFrame.update(R,ptOrigin)
+            segProx.anatomicalFrame.addMotionFrame(csFrame)
+
+
+    @time_tracker()
+    def _foot_motion(self, side:str, aqui: btk.btkAcquisition, dictRef: Dict[str, Any], dictAnat: Dict[str, Any], options: Optional[Dict[str, Any]] = None) -> None:
+        """Process the motion of the left foot segment.
+
+        Args:
+            side (str): body side (Left or Right)
+            aqui (btk.btkAcquisition): Motion acquisition data.
+            dictRef (Dict[str, Any]): Technical referential definitions for the left foot.
+            dictAnat (Dict[str, Any]): Anatomical referential definitions for the left foot.
+            options (Optional[Dict[str, Any]], optional): Additional options. Defaults to None.
+        """
+
+        prefix = "L" if side == "Left" else "R" if side == "Right" else ""
+        sign = -1 if side == "Left" else 1 if side == "Right" else 0
+
+        seg=self.getSegment(f"{side} Foot")
+        validFrames = btkTools.getValidFrames(aqui,seg.m_tracking_markers)
+        seg.setExistFrames(validFrames)
+
+        # --- motion of the technical referential
+        seg.getReferential("TF").motion =[]
+
+        # additional markers
+        # NA
+
+        # computation
+        pt1=aqui.GetPoint(str(dictRef[f"{side} Foot"]["TF"]['labels'][0])).GetValues() #toe
+        pt2=aqui.GetPoint(str(dictRef[f"{side} Foot"]["TF"]['labels'][1])).GetValues() #ajc
+
+        if dictRef[f"{side} Foot"]["TF"]['labels'][2] is not None:
+            pt3=aqui.GetPoint(str(dictRef[f"{side} Foot"]["TF"]['labels'][2])).GetValues()
+            v=(pt3-pt1)
+        else:
+            pt3 = None
+            v=np.vstack([obj.m_axisY for obj in self.getSegment(f"{side} Shank Proximal").anatomicalFrame.motion])
+                
+
+        ptOrigin=aqui.GetPoint(str(dictRef[f"{side} Foot"]["TF"]['labels'][3])).GetValues()
+
+        a1,a2 = self._frameByFrameAxesConstruction(pt1,pt2,pt3,v=v)
+        x,y,z,R=frame.setFrameData(a1,a2,dictRef[f"{side} Foot"]["TF"]['sequence'])
+
+
+        for i in range(0,aqui.GetPointFrameNumber()):
+            csFrame=frame.Frame()
+            if "viconCGM1compatible" in options.keys() and options["viconCGM1compatible"]:
+                R2 = R[i]
+            else:
+                R2 = np.dot(R[i],self._R_leftUnCorrfoot_dist_prox) if side == "Left" else np.dot(R[i],self._R_rightUnCorrfoot_dist_prox)
+
+
+            csFrame.m_axisX=R2[:,0]
+            csFrame.m_axisY=R2[:,1]
+            csFrame.m_axisZ=R2[:,2]
+            csFrame.setRotation(R2)
+            csFrame.setTranslation(ptOrigin[i])
+
+            seg.getReferential("TF").addMotionFrame(csFrame)
+
+
+        # --- motion of the anatomical referential
+        seg.anatomicalFrame.motion=[]
+
+
+        # additional markers
+        # NA
+
+        # computation
+        ptOrigin=aqui.GetPoint(str(dictAnat[f"{side} Foot"]['labels'][3])).GetValues()
+        for i in range(0,aqui.GetPointFrameNumber()):
+            csFrame=frame.Frame()
+            R = np.dot(seg.getReferential("TF").motion[i].getRotation(), seg.getReferential("TF").relativeMatrixAnatomic)
+            csFrame.update(R,ptOrigin[i,:])
+            seg.anatomicalFrame.addMotionFrame(csFrame)
+
+
+    @time_tracker()
+    def _foot_motion_static(self,side:str, aquiStatic: btk.btkAcquisition, dictAnat: Dict[str, Any], options: Optional[Dict[str, Any]] = None) -> None:
+        """Process the static motion of the left foot segment.
+
+        This method is used for static motion analysis of the left foot, taking into account options like flat foot condition.
+
+        Args:
+            side (str): body side (Left or Right)
+            aquiStatic (btk.btkAcquisition): Static motion acquisition data.
+            dictAnat (Dict[str, Any]): Anatomical referential definitions for the left foot.
+            options (Optional[Dict[str, Any]], optional): Additional options including flat foot settings. Defaults to None.
+        """
+
+        prefix = "L" if side == "Left" else "R" if side == "Right" else ""
+        sign = -1 if side == "Left" else 1 if side == "Right" else 0
+
+        seg=self.getSegment(f"{side} Foot")
+
+        validFrames = btkTools.getValidFrames(aquiStatic,seg.m_tracking_markers)
+        seg.setExistFrames(validFrames)
+
+        seg.anatomicalFrame.motion=[]
+
+
+        # additional markers
+        # NA
+
+
+        ptOrigin=aquiStatic.GetPoint(str(dictAnat[f"{side} Foot"]['labels'][3])).GetValues()
+        pt1=aquiStatic.GetPoint(str(dictAnat[f"{side} Foot"]['labels'][0])).GetValues() #toe
+        pt2=aquiStatic.GetPoint(str(dictAnat[f"{side} Foot"]['labels'][1])).GetValues() #hee
+
+
+        if side == "Left":
+            if ("leftFlatFoot" in options.keys() and options["leftFlatFoot"]):
+                pt2[:,2] = pt1[:,2]+self.mp["LeftSoleDelta"]
+        if side == "Right":
+            if ("rightFlatFoot" in options.keys() and options["rightFlatFoot"]):
+                pt2[:,2] = pt1[:,2]+self.mp['RightSoleDelta']
+
+        if dictAnat[f"{side} Foot"]['labels'][2] is not None:
+            pt3=aquiStatic.GetPoint(str(dictAnat[f"{side} Foot"]['labels'][2])).GetValues()
+            v=(pt3-pt1)
+        else:
+            pt3 = None
+            v=np.vstack([obj.m_axisY for obj in self.getSegment(f"{side} Shank").anatomicalFrame.motion])
+
+        a1,a2 = self._frameByFrameAxesConstruction(pt1,pt2,pt3,v=v)
+        x,y,z,R=frame.setFrameData(a1,a2,dictAnat[f"{side} Foot"]['sequence'])
+
+        # computation
+        for i in range(0,aquiStatic.GetPointFrameNumber()):
+            csFrame=frame.Frame()
+            csFrame.update(R[i],ptOrigin[i,:])
+            seg.anatomicalFrame.addMotionFrame(csFrame)
+
+
+    
+    # ----- least-square Segmental motion ------
+    @time_tracker()
+    def _pelvis_motion_optimize(self, aqui: btk.btkAcquisition, dictRef: Dict[str, Any], motionMethod: enums.motionMethod,
+                                 anatomicalFrameMotionEnable: bool = True) -> None:
+        """Optimize the motion of the pelvis segment.
+
+        Args:
+            aqui (btk.btkAcquisition): Motion acquisition data.
+            dictRef (Dict[str, Any]): Technical referential definitions for the pelvis.
+            motionMethod (enums.motionMethod): Method for motion optimization.
+            anatomicalFrameMotionEnable (bool, optional): Enable motion for anatomical frame. Defaults to True.
+        """
+
+
+        seg=self.getSegment("Pelvis")
+        validFrames = btkTools.getValidFrames(aqui,seg.m_tracking_markers)
+        seg.setExistFrames(validFrames)
+
+        validFrames = np.array(validFrames)
+        invalid_indices = ~validFrames
+
+        # --- Motion of the Technical frame
+        seg.getReferential("TF").motion =[]
+
+        # part 1: get global location in Static
+        if seg.m_tracking_markers != []: # work with tracking markers
+            staticPos = np.array([seg.getReferential("TF").static.getNode_byLabel(label).m_global 
+                                        for label in seg.m_tracking_markers])
+
+
+        # part 2 : get dynamic position ( look out i pick up value in the btkAcquisition)
+        point_values = {label: aqui.GetPoint(label).GetValues() for label in seg.m_tracking_markers}
+        n_frames = aqui.GetPointFrameNumber()
+
+        for i in range(0,n_frames):
+            csFrame=frame.Frame()
+            dynPos = np.array([point_values[label][i, :] for label in seg.m_tracking_markers])
+
+            if motionMethod == enums.motionMethod.Sodervisk :
+                Ropt, Lopt, RMSE, Am, Bm=motion.segmentalLeastSquare(staticPos,dynPos)
+                R=np.dot(Ropt,seg.getReferential("TF").static.getRotation())
+                tOri=np.dot(Ropt,seg.getReferential("TF").static.getTranslation())+Lopt
+
+                csFrame.setRotation(R)
+                csFrame.setTranslation(tOri)
+
+            seg.getReferential("TF").addMotionFrame(csFrame)
+
+
+        # --- HJC
+        values_LHJCnode=seg.getReferential('TF').getNodeTrajectory("LHJC")
+        values_RHJCnode=seg.getReferential('TF').getNodeTrajectory("RHJC")
+        
+        values_LHJCnode[invalid_indices] = np.zeros(3)
+        values_RHJCnode[invalid_indices] = np.zeros(3)
+
+        # import ipdb; ipdb.set_trace()
+        # for i in range(0,aqui.GetPointFrameNumber()):
+        #     if not validFrames[i]:
+        #         values_LHJCnode[i,:] = np.zeros(3)
+        #         values_RHJCnode[i,:] = np.zeros(3)
+
+
+        desc_L = seg.getReferential('TF').static.getNode_byLabel("LHJC").m_desc
+        desc_R = seg.getReferential('TF').static.getNode_byLabel("RHJC").m_desc
+        btkTools.smartAppendPoint(aqui,"LHJC",values_LHJCnode, desc=str("opt-"+desc_L))
+        btkTools.smartAppendPoint(aqui,"RHJC",values_RHJCnode, desc=str("opt-"+desc_R))
+
+        # --- midASIS
+        values_midASISnode = seg.getReferential('TF').getNodeTrajectory("midASIS")
+        btkTools.smartAppendPoint(aqui,"midASIS",values_midASISnode, desc="opt")
+
+        # midHJC
+        val=(aqui.GetPoint("LHJC").GetValues() + aqui.GetPoint("RHJC").GetValues()) / 2.0
+        btkTools.smartAppendPoint(aqui,"midHJC",val,desc="opt")
+    
+    
+
+    @time_tracker()
+    def _thigh_motion_optimize(self,side:str, aqui: btk.btkAcquisition, dictRef: Dict[str, Any], motionMethod: enums.motionMethod) -> None:
+        """Optimizes the motion of the left thigh segment using a specific motion method.
+
+        This method adjusts the technical frame of the left thigh segment based on dynamic position data. It optionally adds LHJC to the tracking markers if needed.
+
+        Args:
+            aqui (btk.btkAcquisition): Motion acquisition data.
+            side (str): body side ( Left or Right)
+            dictRef (Dict[str, Any]): Technical referential definitions for the left thigh.
+            motionMethod (enums.motionMethod): Segmental motion method to apply.
+        """
+        
+        prefix = "L" if side == "Left" else "R" if side == "Right" else ""
+
+        seg=self.getSegment(side+" Thigh")
+
+        validFrames = btkTools.getValidFrames(aqui,seg.m_tracking_markers)
+        seg.setExistFrames(validFrames)
+
+        validFrames = np.array(validFrames)
+        invalid_indices = ~validFrames
+
+        #  --- add LHJC if list <2 - check presence of tracking markers in the acquisition
+        if seg.m_tracking_markers != []:
+            if len(seg.m_tracking_markers)==2:
+                if f"{prefix}HJC" not in seg.m_tracking_markers:
+                    seg.m_tracking_markers.append(f"{prefix}HJC")
+                    LOGGER.logger.debug(f"{prefix}HJC added to tracking marker list")
+
+
+
+        # --- Motion of the Technical frame
+        seg.getReferential("TF").motion =[]
+
+        
+
+        # part 1: get global location in Static
+        if seg.m_tracking_markers != []: # work with tracking markers
+            staticPos = np.array([seg.getReferential("TF").static.getNode_byLabel(label).m_global 
+                                        for label in seg.m_tracking_markers])
+
+
+        # part 2 : get dynamic position ( look out i pick up value in the btkAcquisition)
+        point_values = {label: aqui.GetPoint(label).GetValues() for label in seg.m_tracking_markers}
+        n_frames = aqui.GetPointFrameNumber()
+
+        for i in range(0,n_frames):
+            csFrame=frame.Frame()
+            dynPos = np.array([point_values[label][i, :] for label in seg.m_tracking_markers])
+
+            if motionMethod == enums.motionMethod.Sodervisk :
+                Ropt, Lopt, RMSE, Am, Bm=motion.segmentalLeastSquare(staticPos,dynPos)
+                R=np.dot(Ropt,seg.getReferential("TF").static.getRotation())
+                tOri=np.dot(Ropt,seg.getReferential("TF").static.getTranslation())+Lopt
+                csFrame.setRotation(R)
+                csFrame.setTranslation(tOri)
+
+            seg.getReferential("TF").addMotionFrame(csFrame)
+
+        # --- LKJC
+        desc = seg.getReferential('TF').static.getNode_byLabel(f"{prefix}KJC").m_desc
+        values_KJCnode=seg.getReferential('TF').getNodeTrajectory(f"{prefix}KJC")
+
+        values_KJCnode[invalid_indices] = np.zeros(3)
+
+        btkTools.smartAppendPoint(aqui,f"{prefix}KJC",values_KJCnode, desc=str("opt-"+desc))
+
+
+        # --- LHJC from Thigh
+        # values_HJCnode=seg.getReferential('TF').getNodeTrajectory("LHJC")
+        # btkTools.smartAppendPoint(aqui,"LHJC-Thigh",values_HJCnode, desc="opt from Thigh")
+
+        # remove LHC from list of tracking markers
+        if f"{prefix}LHJC" in seg.m_tracking_markers: seg.m_tracking_markers.remove(f"{prefix}HJC")
+
+
+
+
+    
+    @time_tracker()
+    def _shank_motion_optimize(self,side:str, aqui: btk.btkAcquisition, dictRef: Dict[str, Any], motionMethod: enums.motionMethod) -> None:
+        """Optimizes the motion of the left shank segment using a specific motion method.
+
+        This method adjusts the technical frame of the left shank segment based on dynamic position data. It optionally adds LKJC to the tracking markers if needed.
+
+        Args:
+            aqui (btk.btkAcquisition): Motion acquisition data.
+            side (str): body side ( Left or Right)
+            dictRef (Dict[str, Any]): Technical referential definitions for the left shank.
+            motionMethod (enums.motionMethod): Segmental motion method to apply.
+        """
+        prefix = "L" if side == "Left" else "R" if side == "Right" else ""
+
+        seg=self.getSegment(f"{side} Shank")
+
+        validFrames = btkTools.getValidFrames(aqui,seg.m_tracking_markers)
+        seg.setExistFrames(validFrames)
+        validFrames = np.array(validFrames)
+        invalid_indices = ~validFrames
+
+        #  --- add LKJC if list <2 - check presence of tracking markers in the acquisition
+        if seg.m_tracking_markers != []:
+            if len(seg.m_tracking_markers)==2:
+                if f"{prefix}KJC" not in seg.m_tracking_markers:
+                    seg.m_tracking_markers.append(f"{prefix}KJC")
+                    LOGGER.logger.debug(f"{prefix}KJC added to tracking marker list")
+
+        # --- Motion of the Technical frame
+        seg.getReferential("TF").motion =[]
+
+       # part 1: get global location in Static
+        if seg.m_tracking_markers != []: # work with tracking markers
+            staticPos = np.array([seg.getReferential("TF").static.getNode_byLabel(label).m_global 
+                                        for label in seg.m_tracking_markers])
+
+
+        # part 2 : get dynamic position ( look out i pick up value in the btkAcquisition)
+        point_values = {label: aqui.GetPoint(label).GetValues() for label in seg.m_tracking_markers}
+        n_frames = aqui.GetPointFrameNumber()
+
+        for i in range(0,n_frames):
+            csFrame=frame.Frame()
+            dynPos = np.array([point_values[label][i, :] for label in seg.m_tracking_markers])
+
+            if motionMethod == enums.motionMethod.Sodervisk :
+                Ropt, Lopt, RMSE, Am, Bm=motion.segmentalLeastSquare(staticPos,dynPos)
+                R=np.dot(Ropt,seg.getReferential("TF").static.getRotation())
+                tOri=np.dot(Ropt,seg.getReferential("TF").static.getTranslation())+Lopt
+
+                csFrame.setRotation(R)
+                csFrame.setTranslation(tOri)
+
+            seg.getReferential("TF").addMotionFrame(csFrame)
+
+
+        # --- LAJC
+        desc = seg.getReferential('TF').static.getNode_byLabel(f"{prefix}AJC").m_desc
+        values_AJCnode=seg.getReferential('TF').getNodeTrajectory(f"{prefix}AJC")
+
+        values_AJCnode[invalid_indices] = np.zeros(3)
+
+        btkTools.smartAppendPoint(aqui,f"{prefix}AJC",values_AJCnode, desc=str("opt"+desc))
+
+        # --- KJC from Shank
+        #values_KJCnode=seg.getReferential('TF').getNodeTrajectory("LKJC")
+        #btkTools.smartAppendPoint(aqui,"LKJC-Shank",values_KJCnode, desc="opt from Shank")
+
+
+        # remove KJC from list of tracking markers
+        if f"{prefix}KJC" in seg.m_tracking_markers: seg.m_tracking_markers.remove(f"{prefix}KJC")
+
+
+
+    
+    @time_tracker()
+    def _foot_motion_optimize(self,side:str, aqui: btk.btkAcquisition, dictRef: Dict[str, Any], motionMethod: enums.motionMethod) -> None:
+        """Optimizes the motion of the left foot segment using a specified motion method.
+
+        This method adjusts the technical frame of the left foot segment based on dynamic position data. It may add LAJC to the tracking markers if the marker list is less than 2 and checks the presence of tracking markers in the acquisition.
+
+        Args:
+            side (str): body side ( Left or Right)
+            aqui (btk.btkAcquisition): Motion acquisition data.
+            dictRef (Dict[str, Any]): Technical referential definitions for the left foot.
+            motionMethod (enums.motionMethod): Segmental motion method to apply.
+        """
+        prefix = "L" if side == "Left" else "R" if side == "Right" else ""
+
+        seg=self.getSegment(f"{side} Foot")
+
+        validFrames = btkTools.getValidFrames(aqui,seg.m_tracking_markers)
+        seg.setExistFrames(validFrames)
+        validFrames = np.array(validFrames)
+        invalid_indices = ~validFrames
+
+        #  --- add LAJC if marker list < 2  - check presence of tracking markers in the acquisition
+        if seg.m_tracking_markers != []:
+            if len(seg.m_tracking_markers)==2:
+                if f"{prefix}AJC" not in seg.m_tracking_markers:
+                    seg.m_tracking_markers.append(f"{prefix}AJC")
+                    LOGGER.logger.debug(f"{prefix}AJC added to tracking marker list")
+
+        # --- Motion of the Technical frame
+        seg.getReferential("TF").motion =[]
+
+        # part 1: get global location in Static
+        if seg.m_tracking_markers != []: # work with tracking markers
+            staticPos = np.array([seg.getReferential("TF").static.getNode_byLabel(label).m_global 
+                                        for label in seg.m_tracking_markers])
+
+
+        # part 2 : get dynamic position ( look out i pick up value in the btkAcquisition)
+        point_values = {label: aqui.GetPoint(label).GetValues() for label in seg.m_tracking_markers}
+        n_frames = aqui.GetPointFrameNumber()
+
+        for i in range(0,n_frames):
+            csFrame=frame.Frame()
+            dynPos = np.array([point_values[label][i, :] for label in seg.m_tracking_markers])
+
+            if motionMethod == enums.motionMethod.Sodervisk :
+                Ropt, Lopt, RMSE, Am, Bm=motion.segmentalLeastSquare(staticPos,dynPos)
+                R=np.dot(Ropt,seg.getReferential("TF").static.getRotation())
+                tOri=np.dot(Ropt,seg.getReferential("TF").static.getTranslation())+Lopt
+
+                csFrame.setRotation(R)
+                csFrame.setTranslation(tOri)
+
+            seg.getReferential("TF").addMotionFrame(csFrame)
+
+
+        # --- AJC from Foot
+        values_AJCnode=seg.getReferential('TF').getNodeTrajectory(f"{prefix}AJC")
+        values_AJCnode[invalid_indices] = np.zeros(3)
+        
+        # remove AJC from list of tracking markers
+        if f"{prefix}AJC" in seg.m_tracking_markers: seg.m_tracking_markers.remove(f"{prefix}AJC")
+
+
+    
+
+
+    def _anatomical_motion(self, aqui: btk.btkAcquisition, segmentLabel: str, originLabel: str = "") -> None:
+        """Computes the motion of an anatomical segment.
+
+        This method adjusts the anatomical frame of a given segment based on the technical frame and relative anatomical matrix.
+
+        Args:
+            aqui (btk.btkAcquisition): Motion acquisition data.
+            segmentLabel (str): Label of the segment for which the anatomical motion is being computed.
+            originLabel (str, optional): Label of the origin point. Defaults to an empty string if not provided.
+        """
+
+
+        seg=self.getSegment(segmentLabel)
+
+        # --- Motion of the Anatomical frame
+        seg.anatomicalFrame.motion=[]
+
+        ptOrigin=aqui.GetPoint(originLabel).GetValues()
+        # computation
+        
+        for i in range(0,aqui.GetPointFrameNumber()):
+            csFrame=frame.Frame()
+            R = np.dot(seg.getReferential("TF").motion[i].getRotation(), seg.getReferential("TF").relativeMatrixAnatomic)
+            csFrame.update(R,ptOrigin[i,:])
+            seg.anatomicalFrame.addMotionFrame(csFrame)
+
+
+    def _rotate_anatomical_motion(self, segmentLabel: str, angle: float, aqui: btk.btkAcquisition, options: Optional[Dict[str, Any]] = None) -> None:
+        """Rotates the anatomical referential of a segment by a specified angle.
+
+        This method applies a rotation to the anatomical frame of a specified segment. The rotation is defined by the given angle around the Z-axis of the anatomical frame.
+
+        Args:
+            segmentLabel (str): The label of the segment to be rotated.
+            angle (float): The angle in degrees to rotate the anatomical frame.
+            aqui (btk.btkAcquisition): Motion acquisition data.
+            options (Optional[Dict[str, Any]]): Additional options (not used in this method).
+        """
+
+
+        seg=self.getSegment(segmentLabel)
+
+
+        angle = np.deg2rad(angle)
+
+        # --- motion of both technical and anatomical referentials of the proximal shank
+
+        #seg.anatomicalFrame.motion=[]
+
+        # additional markers
+        # NA
+
+        # computation
+        rotZ = np.eye(3,3)
+        rotZ[0,0] = np.cos(angle)
+        rotZ[0,1] = -np.sin(angle)
+        rotZ[1,0] =  np.sin(angle)
+        rotZ[1,1] = np.cos(angle)
+
+        for i in range(0,aqui.GetPointFrameNumber()):
+            ptOrigin=seg.anatomicalFrame.motion[i].getTranslation()
+            R = np.dot(seg.anatomicalFrame.motion[i].getRotation(),rotZ)
+            seg.anatomicalFrame.motion[i].update(R,ptOrigin)
+
+
+
+
+    # ---- tools ----
+    def _rotateAjc(self, ajc: np.ndarray, kjc: np.ndarray, ank: np.ndarray, offset: float) -> np.ndarray:
+        """Rotates the ankle joint center based on a specified offset.
+
+        The method computes the rotation of the ankle joint center (AJC) around the abduction-adduction axis based on the provided offset. This rotation is applied to adjust the position of the AJC.
+
+        Args:
+            ajc (np.ndarray): The current position of the ankle joint center.
+            kjc (np.ndarray): The knee joint center position.
+            ank (np.ndarray): The ankle marker position.
+            offset (float): The angle in degrees for the rotation.
+
+        Returns:
+            np.ndarray: The new position of the ankle joint center after rotation.
+        """
+
+
+
+
+        a1=(kjc-ajc)
+        a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
+
+        v=(ank-ajc)
+        v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
+
+        a2=np.cross(a1,v)
+        a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
+
+        x,y,z,R=frame.setFrameData(a1,a2,"ZXY")
+
+        csFrame=frame.Frame()
+
+        csFrame.m_axisX=x
+        csFrame.m_axisY=y
+        csFrame.m_axisZ=z
+        csFrame.setRotation(R)
+        csFrame.setTranslation(ank)
+
+        loc=np.dot(R.T,ajc-ank)
+
+        abAdangle = np.deg2rad(offset)
+
+        rotAbdAdd = np.array([[1, 0, 0],[0, np.cos(abAdangle), -1.0*np.sin(abAdangle)], [0, np.sin(abAdangle), np.cos(abAdangle) ]])
+
+        finalRot= np.dot(R,rotAbdAdd)
+
+        return  np.dot(finalRot,loc)+ank
+
+
+    
+
+
     def _thorax_motion(self, aqui: btk.btkAcquisition, dictRef: dict, dictAnat: dict, options: Optional[dict] = None) -> None:
         """
         Computes the motion of the thorax segment based on biomechanical markers.
@@ -5376,51 +4669,40 @@ class CGM1(CGM):
         RVWMvalues=np.zeros((aqui.GetPointFrameNumber(),3))
         OTvalues=np.zeros((aqui.GetPointFrameNumber(),3))
 
-        csFrame=frame.Frame()
+        pt1=aqui.GetPoint(str(dictRef["Thorax"]["TF"]['labels'][0])).GetValues()
+        pt2=aqui.GetPoint(str(dictRef["Thorax"]["TF"]['labels'][1])).GetValues()
+        pt3=aqui.GetPoint(str(dictRef["Thorax"]["TF"]['labels'][2])).GetValues()
+        ptOrigin=aqui.GetPoint(str(dictRef["Thorax"]["TF"]['labels'][3])).GetValues()
+
+        a1,a2 = self._frameByFrameAxesConstruction(pt1,pt2,pt3)
+
+        LSHO = aqui.GetPoint(str("LSHO")).GetValues()
+        RSHO = aqui.GetPoint(str("RSHO")).GetValues()
+        x,y,z,R=frame.setFrameData(a1,a2,dictRef["Thorax"]["TF"]['sequence'])
+
         for i in range(0,aqui.GetPointFrameNumber()):
+            csFrame=frame.Frame()
+            csFrame.setRotation(R[i])
+            csFrame.setTranslation(ptOrigin[i,:])
+            seg.getReferential("TF").addMotionFrame(csFrame)
 
-            pt1=aqui.GetPoint(str(dictRef["Thorax"]["TF"]['labels'][0])).GetValues()[i,:]
-            pt2=aqui.GetPoint(str(dictRef["Thorax"]["TF"]['labels'][1])).GetValues()[i,:]
-            pt3=aqui.GetPoint(str(dictRef["Thorax"]["TF"]['labels'][2])).GetValues()[i,:]
-            ptOrigin=aqui.GetPoint(str(dictRef["Thorax"]["TF"]['labels'][3])).GetValues()[i,:]
+        axisX = np.vstack([obj.m_axisX for obj in seg.getReferential("TF").motion])
+        OT = ptOrigin + -1.0*(markerDiameter/2.0)*axisX
+        LVWM = np.cross((LSHO - OT ), axisX ) + LSHO
+        RVWM = np.cross((RSHO - OT ), axisX ) + RSHO        
 
-
-            a1=(pt2-pt1)
-            a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
-
-            v=(pt3-pt1)
-            v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
-
-            a2=np.cross(a1,v)
-            a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
-
-            x,y,z,R=frame.setFrameData(a1,a2,dictRef["Thorax"]["TF"]['sequence'])
-
-            csFrame.m_axisX=x
-            csFrame.m_axisY=y
-            csFrame.m_axisZ=z
-            csFrame.setRotation(R)
-            csFrame.setTranslation(ptOrigin)
-
-            seg.getReferential("TF").addMotionFrame(copy.deepcopy(csFrame))
-
-            OT = ptOrigin + -1.0*(markerDiameter/2.0)*csFrame.m_axisX
-
-            LSHO = aqui.GetPoint(str("LSHO")).GetValues()[i,:]
-            LVWM = np.cross((LSHO - OT ), csFrame.m_axisX ) + LSHO
-            RSHO = aqui.GetPoint(str("RSHO")).GetValues()[i,:]
-            RVWM = np.cross((RSHO - OT ), csFrame.m_axisX ) + RSHO
-
+        for i in range(0,aqui.GetPointFrameNumber()):
             if validFrames[i]:
-                OTvalues[i,:] = OT
-                LSJCvalues[i,:] = modelDecorator.VCMJointCentre( -1.0*(self.mp["LeftShoulderOffset"]+ markerDiameter/2.0) ,LSHO,OT,LVWM, beta=0 )
-                LVWMvalues[i,:] = LVWM
-                RSJCvalues[i,:] = modelDecorator.VCMJointCentre( 1.0*(self.mp["RightShoulderOffset"]+ markerDiameter/2.0) ,RSHO,OT,RVWM, beta=0 )
-                RVWMvalues[i,:] = RVWM
+                OTvalues[i,:] = OT[i,:]
+                LSJCvalues[i,:] = modelDecorator.VCMJointCentre( -1.0*(self.mp["LeftShoulderOffset"]+ markerDiameter/2.0) ,LSHO[i,:],OT[i,:],LVWM[i,:], beta=0 )
+                LVWMvalues[i,:] = LVWM[i,:]
+                RSJCvalues[i,:] = modelDecorator.VCMJointCentre( 1.0*(self.mp["RightShoulderOffset"]+ markerDiameter/2.0) ,RSHO[i,:],OT[i,:],RVWM[i,:], beta=0 )
+                RVWMvalues[i,:] = RVWM[i,:]
 
         btkTools.smartAppendPoint(aqui,"OT",OTvalues,desc="")
         btkTools.smartAppendPoint(aqui,"LVWM",LVWMvalues,desc="")
         btkTools.smartAppendPoint(aqui,"RVWM",RVWMvalues,desc="")
+
 
         # --- LKJC
         if  "useLeftSJCmarker" in options.keys():
@@ -5451,46 +4733,34 @@ class CGM1(CGM):
         # computation
 
         #self._TopLumbar5
-        csFrame=frame.Frame()
+        pt1=aqui.GetPoint(str(dictAnat["Thorax"]['labels'][0])).GetValues() #midTop
+        pt2=aqui.GetPoint(str(dictAnat["Thorax"]['labels'][1])).GetValues() #midBottom
+        pt3=aqui.GetPoint(str(dictAnat["Thorax"]['labels'][2])).GetValues() #midFront
+        ptOrigin=aqui.GetPoint(str(dictAnat["Thorax"]['labels'][3])).GetValues() #OT
+
+        C7 = aqui.GetPoint(str("C7")).GetValues()
+        T10 = aqui.GetPoint(str("T10")).GetValues()
+
+        a1,a2 = self._frameByFrameAxesConstruction(pt1,pt2,pt3)
+        x,y,z,R=frame.setFrameData(a1,a2,dictAnat["Thorax"]['sequence'])
+
         for i in range(0,aqui.GetPointFrameNumber()):
-
-            pt1=aqui.GetPoint(str(dictAnat["Thorax"]['labels'][0])).GetValues()[i,:] #midTop
-            pt2=aqui.GetPoint(str(dictAnat["Thorax"]['labels'][1])).GetValues()[i,:] #midBottom
-            pt3=aqui.GetPoint(str(dictAnat["Thorax"]['labels'][2])).GetValues()[i,:] #midFront
-            ptOrigin=aqui.GetPoint(str(dictAnat["Thorax"]['labels'][3])).GetValues()[i,:] #OT
-
-
-            a1=(pt2-pt1)
-            a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
-
-            v=(pt3-pt1)
-            v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
-
-            a2=np.cross(a1,v)
-            a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
-
-            x,y,z,R=frame.setFrameData(a1,a2,dictAnat["Thorax"]['sequence'])
-
-
-            csFrame.m_axisX=x
-            csFrame.m_axisY=y
-            csFrame.m_axisZ=z
-            csFrame.setRotation(R)
-            csFrame.setTranslation(ptOrigin)
-
-            seg.anatomicalFrame.addMotionFrame(copy.deepcopy(csFrame))
+            csFrame=frame.Frame()
+            csFrame.setRotation(R[i])
+            csFrame.setTranslation(ptOrigin[i,:])
+            seg.anatomicalFrame.addMotionFrame(csFrame)
 
             if hasattr(self,"_TopLumbar5"):
-                T5inThorax[i,:] = np.dot(R.T,self._TopLumbar5[i,:]-ptOrigin)
+                T5inThorax[i,:] = np.dot(R[i].T,self._TopLumbar5[i,:]-ptOrigin[i,:])
 
 
-            offset =( ptOrigin + np.dot(R,np.array([-markerDiameter/2.0,0,0])) - ptOrigin)*1.05
+            offset =( ptOrigin[i,:] + np.dot(R[i],np.array([-markerDiameter/2.0,0,0])) - ptOrigin[i,:])*1.05
 
-            C7Global= aqui.GetPoint(str("C7")).GetValues()[i,:] + offset
-            C7inThorax[i,:] = np.dot(R.T,C7Global-ptOrigin)
+            C7Global= C7[i,:] + offset
+            C7inThorax[i,:] = np.dot(R[i].T,C7Global-ptOrigin[i,:])
 
-            T10Global= aqui.GetPoint(str("T10")).GetValues()[i,:] + offset
-            T10inThorax[i,:] = np.dot(R.T,T10Global-ptOrigin)
+            T10Global= T10[i,:] + offset
+            T10inThorax[i,:] = np.dot(R[i].T,T10Global-ptOrigin[i,:])
 
 
         if hasattr(self,"_TopLumbar5"):
@@ -5512,7 +4782,7 @@ class CGM1(CGM):
         seg.anatomicalFrame.static.addNode("com",com,positionType="Local")
 
 
-
+    @time_tracker()
     def _clavicle_motion(self, side: str, aqui: btk.btkAcquisition, dictRef: dict, dictAnat: dict, options: Optional[dict] = None) -> None:
         """
         Computes the motion of the clavicle segment for a specified side.
@@ -5545,34 +4815,19 @@ class CGM1(CGM):
 
         # additional markers
 
+        pt1=aqui.GetPoint(str(dictRef[side+" Clavicle"]["TF"]['labels'][0])).GetValues()
+        pt2=aqui.GetPoint(str(dictRef[side+" Clavicle"]["TF"]['labels'][1])).GetValues()
+        pt3=aqui.GetPoint(str(dictRef[side+" Clavicle"]["TF"]['labels'][2])).GetValues()
+        ptOrigin=aqui.GetPoint(str(dictRef[side+" Clavicle"]["TF"]['labels'][3])).GetValues()
 
-        csFrame=frame.Frame()
+        a1,a2 = self._frameByFrameAxesConstruction(pt1,pt2,pt3)      
+        x,y,z,R=frame.setFrameData(a1,a2,dictRef[side+" Clavicle"]["TF"]['sequence'])  
+
         for i in range(0,aqui.GetPointFrameNumber()):
-
-            pt1=aqui.GetPoint(str(dictRef[side+" Clavicle"]["TF"]['labels'][0])).GetValues()[i,:]
-            pt2=aqui.GetPoint(str(dictRef[side+" Clavicle"]["TF"]['labels'][1])).GetValues()[i,:]
-            pt3=aqui.GetPoint(str(dictRef[side+" Clavicle"]["TF"]['labels'][2])).GetValues()[i,:]
-            ptOrigin=aqui.GetPoint(str(dictRef[side+" Clavicle"]["TF"]['labels'][3])).GetValues()[i,:]
-
-
-            a1=(pt2-pt1)
-            a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
-
-            v=(pt3-pt1)
-            v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
-
-            a2=np.cross(a1,v)
-            a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
-
-            x,y,z,R=frame.setFrameData(a1,a2,dictRef[side+" Clavicle"]["TF"]['sequence'])
-
-            csFrame.m_axisX=x
-            csFrame.m_axisY=y
-            csFrame.m_axisZ=z
-            csFrame.setRotation(R)
-            csFrame.setTranslation(ptOrigin)
-
-            seg.getReferential("TF").addMotionFrame(copy.deepcopy(csFrame))
+            csFrame=frame.Frame()
+            csFrame.setRotation(R[i])
+            csFrame.setTranslation(ptOrigin[i,:])
+            seg.getReferential("TF").addMotionFrame(csFrame)
 
 
         # --- motion of the anatomical referential
@@ -5582,35 +4837,20 @@ class CGM1(CGM):
         # additional markers
         # NA
         # computation
-        csFrame=frame.Frame()
+        pt1=aqui.GetPoint(str(dictAnat[side+" Clavicle"]['labels'][0])).GetValues()
+        pt2=aqui.GetPoint(str(dictAnat[side+" Clavicle"]['labels'][1])).GetValues()
+        pt3=aqui.GetPoint(str(dictAnat[side+" Clavicle"]['labels'][2])).GetValues()
+        ptOrigin=aqui.GetPoint(str(dictAnat[side+" Clavicle"]['labels'][3])).GetValues()
+
+        a1,a2 = self._frameByFrameAxesConstruction(pt1,pt2,pt3)
+        x,y,z,R=frame.setFrameData(a1,a2,dictAnat[side+" Clavicle"]['sequence'])       
         for i in range(0,aqui.GetPointFrameNumber()):
+            csFrame=frame.Frame()
+            csFrame.setRotation(R[i])
+            csFrame.setTranslation(ptOrigin[i,:])
+            seg.anatomicalFrame.addMotionFrame(csFrame)
 
-            pt1=aqui.GetPoint(str(dictAnat[side+" Clavicle"]['labels'][0])).GetValues()[i,:]
-            pt2=aqui.GetPoint(str(dictAnat[side+" Clavicle"]['labels'][1])).GetValues()[i,:]
-            pt3=aqui.GetPoint(str(dictAnat[side+" Clavicle"]['labels'][2])).GetValues()[i,:]
-            ptOrigin=aqui.GetPoint(str(dictAnat[side+" Clavicle"]['labels'][3])).GetValues()[i,:]
-
-            a1=(pt2-pt1)
-            a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
-
-            v=(pt3-pt1)
-            v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
-
-            a2=np.cross(a1,v)
-            a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
-
-            x,y,z,R=frame.setFrameData(a1,a2,dictAnat[side+" Clavicle"]['sequence'])
-
-
-            csFrame.m_axisX=x
-            csFrame.m_axisY=y
-            csFrame.m_axisZ=z
-            csFrame.setRotation(R)
-            csFrame.setTranslation(ptOrigin)
-
-            seg.anatomicalFrame.addMotionFrame(copy.deepcopy(csFrame))
-
-
+    @time_tracker()
     def _upperArm_motion(self, side: str, aqui: btk.btkAcquisition, dictRef: dict, dictAnat: dict, options: Optional[dict] = None, frameReconstruction: str = "Both") -> None:
         """
         Computes the motion of the upper arm segment for a specified side.
@@ -5673,33 +4913,19 @@ class CGM1(CGM):
             # computation
             EJCvalues=np.zeros((aqui.GetPointFrameNumber(),3))
 
-            csFrame=frame.Frame()
+            pt1=aqui.GetPoint(str(dictRef[side+" UpperArm"]["TF"]['labels'][0])).GetValues()
+            pt2=aqui.GetPoint(str(dictRef[side+" UpperArm"]["TF"]['labels'][1])).GetValues()
+            pt3=aqui.GetPoint(str(dictRef[side+" UpperArm"]["TF"]['labels'][2])).GetValues()
+            ptOrigin=aqui.GetPoint(str(dictRef[side+" UpperArm"]["TF"]['labels'][3])).GetValues()
+
+            a1,a2 = self._frameByFrameAxesConstruction(pt1,pt2,pt3)
+            x,y,z,R=frame.setFrameData(a1,a2,dictRef[side+" UpperArm"]["TF"]['sequence'])
+
             for i in range(0,aqui.GetPointFrameNumber()):
-
-                pt1=aqui.GetPoint(str(dictRef[side+" UpperArm"]["TF"]['labels'][0])).GetValues()[i,:]
-                pt2=aqui.GetPoint(str(dictRef[side+" UpperArm"]["TF"]['labels'][1])).GetValues()[i,:]
-                pt3=aqui.GetPoint(str(dictRef[side+" UpperArm"]["TF"]['labels'][2])).GetValues()[i,:]
-                ptOrigin=aqui.GetPoint(str(dictRef[side+" UpperArm"]["TF"]['labels'][3])).GetValues()[i,:]
-
-
-                a1=(pt2-pt1)
-                a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
-
-                v=(pt3-pt1)
-                v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
-
-                a2=np.cross(a1,v)
-                a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
-
-                x,y,z,R=frame.setFrameData(a1,a2,dictRef[side+" UpperArm"]["TF"]['sequence'])
-
-                csFrame.m_axisX=x
-                csFrame.m_axisY=y
-                csFrame.m_axisZ=z
-                csFrame.setRotation(R)
-                csFrame.setTranslation(ptOrigin)
-
-                seg.getReferential("TF").addMotionFrame(copy.deepcopy(csFrame))
+                csFrame=frame.Frame()
+                csFrame.setRotation(R[i])
+                csFrame.setTranslation(ptOrigin[i,:])
+                seg.getReferential("TF").addMotionFrame(csFrame)
 
                 SJC = aqui.GetPoint(prefix+"SJC").GetValues()[i,:]
                 LHE=aqui.GetPoint(prefix+"ELB").GetValues()[i,:]
@@ -5707,7 +4933,7 @@ class CGM1(CGM):
 
                 #EJCvalues[i,:] =  modelDecorator.VCMJointCentre( (self.mp[side+"ElbowWidth"]+ markerDiameter)/2.0 ,LHE,SJC,CVM, beta=0 )
                 if validFrames[i]:
-                    EJCvalues[i,:] =  modelDecorator.VCMJointCentre( (self.mp[side+"ElbowWidth"]+ markerDiameter)/2.0 ,pt1,pt2,pt3, beta=0 )
+                    EJCvalues[i,:] =  modelDecorator.VCMJointCentre( (self.mp[side+"ElbowWidth"]+ markerDiameter)/2.0 ,pt1[i,:],pt2[i,:],pt3[i,:], beta=0 )
 
 
             #btkTools.smartAppendPoint(aqui,"LKJC_Chord",LKJCvalues,desc="chord")
@@ -5741,35 +4967,20 @@ class CGM1(CGM):
             # additional markers
             # NA
             # computation
-            csFrame=frame.Frame()
+            pt1=aqui.GetPoint(str(dictAnat[side+" UpperArm"]['labels'][0])).GetValues()
+            pt2=aqui.GetPoint(str(dictAnat[side+" UpperArm"]['labels'][1])).GetValues()
+            pt3=aqui.GetPoint(str(dictAnat[side+" UpperArm"]['labels'][2])).GetValues()
+            ptOrigin=aqui.GetPoint(str(dictAnat[side+" UpperArm"]['labels'][3])).GetValues()
+
+            a1,a2 = self._frameByFrameAxesConstruction(pt1,pt2,pt3)
+            x,y,z,R=frame.setFrameData(a1,a2,dictAnat[side+" UpperArm"]['sequence'])
             for i in range(0,aqui.GetPointFrameNumber()):
+                csFrame=frame.Frame()
+                csFrame.setRotation(R[i])
+                csFrame.setTranslation(ptOrigin[i,:])
+                seg.anatomicalFrame.addMotionFrame(csFrame)
 
-                pt1=aqui.GetPoint(str(dictAnat[side+" UpperArm"]['labels'][0])).GetValues()[i,:]
-                pt2=aqui.GetPoint(str(dictAnat[side+" UpperArm"]['labels'][1])).GetValues()[i,:]
-                pt3=aqui.GetPoint(str(dictAnat[side+" UpperArm"]['labels'][2])).GetValues()[i,:]
-                ptOrigin=aqui.GetPoint(str(dictAnat[side+" UpperArm"]['labels'][3])).GetValues()[i,:]
-
-
-                a1=(pt2-pt1)
-                a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
-
-                v=(pt3-pt1)
-                v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
-
-                a2=np.cross(a1,v)
-                a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
-
-                x,y,z,R=frame.setFrameData(a1,a2,dictAnat[side+" UpperArm"]['sequence'])
-
-
-                csFrame.m_axisX=x
-                csFrame.m_axisY=y
-                csFrame.m_axisZ=z
-                csFrame.setRotation(R)
-                csFrame.setTranslation(ptOrigin)
-
-                seg.anatomicalFrame.addMotionFrame(copy.deepcopy(csFrame))
-
+    @time_tracker()
     def _foreArm_motion(self, side: str, aqui: btk.btkAcquisition, dictRef: dict, dictAnat: dict, options: Optional[dict] = None, frameReconstruction: str = "both") -> None:
         """
         Computes the motion of the forearm segment for a specified side.
@@ -5819,37 +5030,23 @@ class CGM1(CGM):
             # computation
             WJCvalues=np.zeros((aqui.GetPointFrameNumber(),3))
 
-            csFrame=frame.Frame()
+            pt1=aqui.GetPoint(str(dictRef[side+" ForeArm"]["TF"]['labels'][0])).GetValues()
+            pt2=aqui.GetPoint(str(dictRef[side+" ForeArm"]["TF"]['labels'][1])).GetValues()
+            pt3=aqui.GetPoint(str(dictRef[side+" ForeArm"]["TF"]['labels'][2])).GetValues()
+            ptOrigin=aqui.GetPoint(str(dictRef[side+" ForeArm"]["TF"]['labels'][3])).GetValues()
+            
+            a1,a2 = self._frameByFrameAxesConstruction(pt1,pt2,pt3)
+            x,y,z,R=frame.setFrameData(a1,a2,dictRef[side+" ForeArm"]["TF"]['sequence'])
             for i in range(0,aqui.GetPointFrameNumber()):
+                csFrame=frame.Frame()
+                csFrame.setRotation(R[i])
+                csFrame.setTranslation(ptOrigin[i,:])
 
-                pt1=aqui.GetPoint(str(dictRef[side+" ForeArm"]["TF"]['labels'][0])).GetValues()[i,:]#
-                pt2=aqui.GetPoint(str(dictRef[side+" ForeArm"]["TF"]['labels'][1])).GetValues()[i,:]
-                pt3=aqui.GetPoint(str(dictRef[side+" ForeArm"]["TF"]['labels'][2])).GetValues()[i,:]
-                ptOrigin=aqui.GetPoint(str(dictRef[side+" ForeArm"]["TF"]['labels'][3])).GetValues()[i,:]
+                seg.getReferential("TF").addMotionFrame(csFrame)
 
-
-                a1=(pt2-pt1)
-                a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
-
-                v=(pt3-pt1)
-                v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
-
-                a2=np.cross(a1,v)
-                a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
-
-                x,y,z,R=frame.setFrameData(a1,a2,dictRef[side+" ForeArm"]["TF"]['sequence'])
-
-                csFrame.m_axisX=x
-                csFrame.m_axisY=y
-                csFrame.m_axisZ=z
-                csFrame.setRotation(R)
-                csFrame.setTranslation(ptOrigin)
-
-                seg.getReferential("TF").addMotionFrame(copy.deepcopy(csFrame))
-
-                EJC = pt2
-                US=pt3
-                RS=pt1
+                EJC = pt2[i,:]
+                US=pt3[i,:]
+                RS=pt1[i,:]
 
                 MWP=aqui.GetPoint(prefix+"MWP").GetValues()[i,:]
 
@@ -5890,41 +5087,27 @@ class CGM1(CGM):
             # --- motion of the anatomical referential
             seg.anatomicalFrame.motion=[]
 
+            pt1=aqui.GetPoint(str(dictAnat[side+" ForeArm"]['labels'][0])).GetValues()
+            pt2=aqui.GetPoint(str(dictAnat[side+" ForeArm"]['labels'][1])).GetValues()
+            if dictAnat[side+" ForeArm"]['labels'][2] is not None:
+                pt3=aqui.GetPoint(str(dictAnat[side+" ForeArm"]['labels'][2])).GetValues()
+            else:
+                pt3 = None
+                v = np.vstack([obj.m_axisY for obj in self.getSegment(side+" UpperArm").anatomicalFrame.motion])
 
+            ptOrigin=aqui.GetPoint(str(dictAnat[side+" ForeArm"]['labels'][3])).GetValues()
+
+            a1,a2 = self._frameByFrameAxesConstruction(pt1,pt2,pt3,v=v)
+            x,y,z,R=frame.setFrameData(a1,a2,dictAnat[side+" ForeArm"]['sequence'])
             # computation
-            csFrame=frame.Frame()
             for i in range(0,aqui.GetPointFrameNumber()):
+                csFrame=frame.Frame()
+                csFrame.setRotation(R[i])
+                csFrame.setTranslation(ptOrigin[i,:])
 
-                pt1=aqui.GetPoint(str(dictAnat[side+" ForeArm"]['labels'][0])).GetValues()[i,:]
-                pt2=aqui.GetPoint(str(dictAnat[side+" ForeArm"]['labels'][1])).GetValues()[i,:]
-                if dictAnat[side+" ForeArm"]['labels'][2] is not None:
-                    pt3=aqui.GetPoint(str(dictAnat[side+" ForeArm"]['labels'][2])).GetValues()[i,:]
+                seg.anatomicalFrame.addMotionFrame(csFrame)
 
-                ptOrigin=aqui.GetPoint(str(dictAnat[side+" ForeArm"]['labels'][3])).GetValues()[i,:]
-
-
-                a1=(pt2-pt1)
-                a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
-
-                if dictAnat[side+" ForeArm"]['labels'][2] is not None:
-                    v=(pt3-pt1)
-                    v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
-                else:
-                    v=self.getSegment(side+" UpperArm").anatomicalFrame.motion[i].m_axisY
-
-                a2=np.cross(a1,v)
-                a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
-
-                x,y,z,R=frame.setFrameData(a1,a2,dictAnat[side+" ForeArm"]['sequence'])
-
-                csFrame.m_axisX=x
-                csFrame.m_axisY=y
-                csFrame.m_axisZ=z
-                csFrame.setRotation(R)
-                csFrame.setTranslation(ptOrigin)
-
-                seg.anatomicalFrame.addMotionFrame(copy.deepcopy(csFrame))
-
+    @time_tracker()
     def _hand_motion(self, side: str, aqui: btk.btkAcquisition, dictRef: dict, dictAnat: dict, options: Optional[dict] = None) -> None:
         """
         Computes the motion of the hand segment for a specified side.
@@ -5974,32 +5157,18 @@ class CGM1(CGM):
         # computation
         HOvalues=np.zeros((aqui.GetPointFrameNumber(),3))
 
-        csFrame=frame.Frame()
+        pt1=aqui.GetPoint(str(dictRef[side+" Hand"]["TF"]['labels'][0])).GetValues()
+        pt2=aqui.GetPoint(str(dictRef[side+" Hand"]["TF"]['labels'][1])).GetValues()
+        pt3=aqui.GetPoint(str(dictRef[side+" Hand"]["TF"]['labels'][2])).GetValues()
+        ptOrigin=aqui.GetPoint(str(dictRef[side+" Hand"]["TF"]['labels'][3])).GetValues()
+
+        a1,a2 = self._frameByFrameAxesConstruction(pt1,pt2,pt3)
+        x,y,z,R=frame.setFrameData(a1,a2,dictRef[side+" Hand"]["TF"]['sequence'])
         for i in range(0,aqui.GetPointFrameNumber()):
-
-            pt1=aqui.GetPoint(str(dictRef[side+" Hand"]["TF"]['labels'][0])).GetValues()[i,:]
-            pt2=aqui.GetPoint(str(dictRef[side+" Hand"]["TF"]['labels'][1])).GetValues()[i,:]
-            pt3=aqui.GetPoint(str(dictRef[side+" Hand"]["TF"]['labels'][2])).GetValues()[i,:]
-            ptOrigin=aqui.GetPoint(str(dictRef[side+" Hand"]["TF"]['labels'][3])).GetValues()[i,:]
-
-            a1=(pt2-pt1)
-            a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
-
-            v=(pt3-pt1)
-            v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
-
-            a2=np.cross(a1,v)
-            a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
-
-            x,y,z,R=frame.setFrameData(a1,a2,dictRef[side+" Hand"]["TF"]['sequence'])
-
-            csFrame.m_axisX=x
-            csFrame.m_axisY=y
-            csFrame.m_axisZ=z
-            csFrame.setRotation(R)
-            csFrame.setTranslation(ptOrigin)
-
-            seg.getReferential("TF").addMotionFrame(copy.deepcopy(csFrame))
+            csFrame=frame.Frame()
+            csFrame.setRotation(R[i])
+            csFrame.setTranslation(ptOrigin[i,:])
+            seg.getReferential("TF").addMotionFrame(csFrame)
 
             WJC=aqui.GetPoint(prefix+"WJC").GetValues()[i,:]
             MH2=aqui.GetPoint(prefix+"FIN").GetValues()[i,:]
@@ -6031,34 +5200,20 @@ class CGM1(CGM):
         # additional markers
         # NA
         # computation
-        csFrame=frame.Frame()
+        pt1=aqui.GetPoint(str(dictAnat[side+" Hand"]['labels'][0])).GetValues()
+        pt2=aqui.GetPoint(str(dictAnat[side+" Hand"]['labels'][1])).GetValues()
+        pt3=aqui.GetPoint(str(dictAnat[side+" Hand"]['labels'][2])).GetValues()
+        ptOrigin=aqui.GetPoint(str(dictAnat[side+" Hand"]['labels'][3])).GetValues()
+
+        a1,a2 = self._frameByFrameAxesConstruction(pt1,pt2,pt3)
+        x,y,z,R=frame.setFrameData(a1,a2,dictAnat[side+" Hand"]['sequence'])
         for i in range(0,aqui.GetPointFrameNumber()):
+            csFrame=frame.Frame()
+            csFrame.setRotation(R[i])
+            csFrame.setTranslation(ptOrigin[i,:])
+            seg.anatomicalFrame.addMotionFrame(csFrame)
 
-            pt1=aqui.GetPoint(str(dictAnat[side+" Hand"]['labels'][0])).GetValues()[i,:]
-            pt2=aqui.GetPoint(str(dictAnat[side+" Hand"]['labels'][1])).GetValues()[i,:]
-            pt3=aqui.GetPoint(str(dictAnat[side+" Hand"]['labels'][2])).GetValues()[i,:]
-            ptOrigin=aqui.GetPoint(str(dictAnat[side+" Hand"]['labels'][3])).GetValues()[i,:]
-
-
-            a1=(pt2-pt1)
-            a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
-
-            v=(pt3-pt1)
-            v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
-
-            a2=np.cross(a1,v)
-            a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
-
-            x,y,z,R=frame.setFrameData(a1,a2,dictAnat[side+" Hand"]['sequence'])
-
-            csFrame.m_axisX=x
-            csFrame.m_axisY=y
-            csFrame.m_axisZ=z
-            csFrame.setRotation(R)
-            csFrame.setTranslation(ptOrigin)
-
-            seg.anatomicalFrame.addMotionFrame(copy.deepcopy(csFrame))
-
+    @time_tracker()
     def _head_motion(self, aqui: btk.btkAcquisition, dictRef: dict, dictAnat: dict, options: Optional[dict] = None) -> None:
         """
         Computes the motion of the head segment.
@@ -6096,32 +5251,18 @@ class CGM1(CGM):
         btkTools.smartAppendPoint(aqui,"HC",valmHC,desc="")
 
         # computation
-        csFrame=frame.Frame()
+        pt1=aqui.GetPoint(str(dictRef["Head"]["TF"]['labels'][0])).GetValues() 
+        pt2=aqui.GetPoint(str(dictRef["Head"]["TF"]['labels'][1])).GetValues() 
+        pt3=aqui.GetPoint(str(dictRef["Head"]["TF"]['labels'][2])).GetValues() 
+        ptOrigin=aqui.GetPoint(str(dictRef["Head"]["TF"]['labels'][3])).GetValues()
+
+        a1,a2 = self._frameByFrameAxesConstruction(pt1,pt2,pt3)
+        x,y,z,R=frame.setFrameData(a1,a2,dictRef["Head"]["TF"]['sequence'])
         for i in range(0,aqui.GetPointFrameNumber()):
-
-            pt1=aqui.GetPoint(str(dictRef["Head"]["TF"]['labels'][0])).GetValues()[i,:] #toe
-            pt2=aqui.GetPoint(str(dictRef["Head"]["TF"]['labels'][1])).GetValues()[i,:] #ajc
-            pt3=aqui.GetPoint(str(dictRef["Head"]["TF"]['labels'][2])).GetValues()[i,:] #ajc
-            ptOrigin=aqui.GetPoint(str(dictRef["Head"]["TF"]['labels'][3])).GetValues()[i,:]
-
-            a1=(pt2-pt1)
-            a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
-
-            v=(pt3-pt1)
-            v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
-
-            a2=np.cross(a1,v)
-            a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
-
-            x,y,z,R=frame.setFrameData(a1,a2,dictRef["Head"]["TF"]['sequence'])
-
-            csFrame.m_axisX=x
-            csFrame.m_axisY=y
-            csFrame.m_axisZ=z
-            csFrame.setRotation(R)
-            csFrame.setTranslation(ptOrigin)
-
-            seg.getReferential("TF").addMotionFrame(copy.deepcopy(csFrame))
+            csFrame=frame.Frame()
+            csFrame.setRotation(R[i])
+            csFrame.setTranslation(ptOrigin[i,:])
+            seg.getReferential("TF").addMotionFrame(csFrame)
 
 
         # --- motion of the anatomical referential
@@ -6132,13 +5273,12 @@ class CGM1(CGM):
         # NA
 
         # computation
-        csFrame=frame.Frame()
+        ptOrigin=aqui.GetPoint(str(dictAnat["Head"]['labels'][3])).GetValues()
         for i in range(0,aqui.GetPointFrameNumber()):
-            ptOrigin=aqui.GetPoint(str(dictAnat["Head"]['labels'][3])).GetValues()[i,:]
+            csFrame=frame.Frame()            
             R = np.dot(seg.getReferential("TF").motion[i].getRotation(), seg.getReferential("TF").relativeMatrixAnatomic)
-
-            csFrame.update(R,ptOrigin)
-            seg.anatomicalFrame.addMotionFrame(copy.deepcopy(csFrame))
+            csFrame.update(R,ptOrigin[i,:])
+            seg.anatomicalFrame.addMotionFrame(csFrame)
 
 
     # --- opensim --------
