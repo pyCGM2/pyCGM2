@@ -110,7 +110,6 @@ def applyKJC_AJCDecorators(dcm: dict, model: CGM, acqStatic: btk.btkAcquisition,
             markerDiameter,optional_mp["RightTibialTorsion"],optional_mp["RightShankRotation"])
         
     else:
-
         if not cgm1only:
             if dcm["Left Knee"] == enums.JointCalibrationMethod.Medial:
                 if  dcm["Left Ankle"] == enums.JointCalibrationMethod.Medial:
@@ -125,9 +124,13 @@ def applyKJC_AJCDecorators(dcm: dict, model: CGM, acqStatic: btk.btkAcquisition,
 
         if dcm["Left Knee"] == enums.JointCalibrationMethod.KAD:
             if  dcm["Left Ankle"] == enums.JointCalibrationMethod.Medial:
-                LOGGER.logger.info("[pyCGM2] scenario Left : KAD - Medial knee marker")
+                LOGGER.logger.info("[pyCGM2] scenario Left : KAD - Medial ankle marker")
                 modelDecorator.Kad(model,acqStatic).compute(markerDiameter=markerDiameter, side="left")
                 modelDecorator.AnkleCalibrationDecorator(model).midMaleolus(acqStatic, markerDiameter=markerDiameter, side="left")
+            elif  dcm["Left Ankle"] == enums.JointCalibrationMethod.Basic:
+                LOGGER.logger.info("[pyCGM2] scenario Left : KAD - lateral shank marker")
+                modelDecorator.Kad(model,acqStatic).compute(markerDiameter=markerDiameter, side="left")
+
 
         if dcm["Left Knee"] == enums.JointCalibrationMethod.Basic:
             if  dcm["Left Ankle"] == enums.JointCalibrationMethod.Medial:
@@ -152,9 +155,13 @@ def applyKJC_AJCDecorators(dcm: dict, model: CGM, acqStatic: btk.btkAcquisition,
 
         if dcm["Right Knee"] == enums.JointCalibrationMethod.KAD:
             if  dcm["Right Ankle"] == enums.JointCalibrationMethod.Medial:
-                LOGGER.logger.info("[pyCGM2] scenario right : KAD - Medial knee marker")
+                LOGGER.logger.info("[pyCGM2] scenario right : KAD - Medial ankle marker")
                 modelDecorator.Kad(model,acqStatic).compute(markerDiameter=markerDiameter, side="right")
                 modelDecorator.AnkleCalibrationDecorator(model).midMaleolus(acqStatic, markerDiameter=markerDiameter, side="right")
+            elif  dcm["Right Ankle"] == enums.JointCalibrationMethod.Basic:
+                LOGGER.logger.info("[pyCGM2] scenario Left : KAD - lateral shank marker")
+                modelDecorator.Kad(model,acqStatic).compute(markerDiameter=markerDiameter, side="right")
+        
 
         if dcm["Right Knee"] == enums.JointCalibrationMethod.Basic:
             if  dcm["Right Ankle"] == enums.JointCalibrationMethod.Medial:
