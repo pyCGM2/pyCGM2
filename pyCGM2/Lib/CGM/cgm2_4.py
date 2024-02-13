@@ -94,7 +94,7 @@ def calibrate(DATA_PATH:str,calibrateFilenameLabelled:str,
 
     acqStatic =  btkTools.applyTranslators(acqStatic,translators)
 
-    trackingMarkers = cgm2.CGM2_4.LOWERLIMB_TRACKING_MARKERS + cgm2.CGM2_4.THORAX_TRACKING_MARKERS+ cgm2.CGM2_4.UPPERLIMB_TRACKING_MARKERS
+    trackingMarkers = cgm2.CGM2_4.LOWERLIMB_TRACKING_MARKERS + cgm2.CGM2_4.THORAX_TRACKING_MARKERS+ cgm2.CGM2_4.UPPERLIMB_TRACKING_MARKERS+["LSMH","RSMH"]
     actual_trackingMarkers,phatoms_trackingMarkers = btkTools.createPhantoms(acqStatic, trackingMarkers)
 
     vff = acqStatic.GetFirstFrame()
