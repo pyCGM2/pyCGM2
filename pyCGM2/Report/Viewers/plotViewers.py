@@ -737,6 +737,23 @@ class NormalizedKinematicsPlotViewer(PlotViewer):
             self.m_concretePlotFunction(self.fig.axes[8],self.m_analysis.kinematicStats,
                     "RWristAngles"+suffixPlus,"Right",2, color="blue",customLimits=None)
 
+        
+        for ax in self.fig.axes:
+            maxs=[ax.get_ylim()[1]]
+            mins=[ax.get_ylim()[0]]
+            for line in ax.get_lines():
+                try: 
+                    if line.get_ydata().shape[0]==101:
+                        maxs.append(max(line.get_ydata()))
+                        mins.append(min(line.get_ydata()))
+                except:
+                    pass
+                ax.set_ylim([min(mins),max(maxs)])
+
+
+
+
+            
 
 
     def plotPanel(self):
@@ -752,6 +769,8 @@ class NormalizedKinematicsPlotViewer(PlotViewer):
         self.__setLayer()
         self.__setData()
 
+       
+
         if self.m_normativeData is not None:
             if self.m_bodyPart == enums.BodyPartPlot.LowerLimb:
 
@@ -760,6 +779,7 @@ class NormalizedKinematicsPlotViewer(PlotViewer):
                         self.m_normativeData["PelvisAngles"]["mean"][:,0]-self.m_normativeData["PelvisAngles"]["sd"][:,0],
                         self.m_normativeData["PelvisAngles"]["mean"][:,0]+self.m_normativeData["PelvisAngles"]["sd"][:,0],
                         facecolor="green", alpha=0.5,linewidth=0)
+                    
 
                     self.fig.axes[1].fill_between(np.linspace(0,100,self.m_normativeData["PelvisAngles"]["mean"].shape[0]),
                         self.m_normativeData["PelvisAngles"]["mean"][:,1]-self.m_normativeData["PelvisAngles"]["sd"][:,1],
@@ -1307,6 +1327,17 @@ class TemporalKinematicsPlotViewer(PlotViewer):
             plot.temporalPlot(self.fig.axes[8],self.m_acq,
                                     "RWristAngles",2,pointLabelSuffix=self.m_pointLabelSuffix,color="blue")
 
+        for ax in self.fig.axes:
+            maxs=[ax.get_ylim()[1]]
+            mins=[ax.get_ylim()[0]]
+            for line in ax.get_lines():
+                try: 
+                    if line.get_ydata().shape[0]==101:
+                        maxs.append(max(line.get_ydata()))
+                        mins.append(min(line.get_ydata()))
+                except:
+                    pass
+                ax.set_ylim([min(mins),max(maxs)])
 
 
     def plotPanel(self):
@@ -1527,6 +1558,18 @@ class NormalizedKineticsPlotViewer(PlotViewer):
                     "LAnklePower"+suffixPlus,"Left",2, color="red", customLimits=None)
             self.m_concretePlotFunction(self.fig.axes[11],self.m_analysis.kineticStats,
                     "RAnklePower"+suffixPlus,"Right",2, color="blue", customLimits=None)
+        
+        for ax in self.fig.axes:
+            maxs=[ax.get_ylim()[1]]
+            mins=[ax.get_ylim()[0]]
+            for line in ax.get_lines():
+                try: 
+                    if line.get_ydata().shape[0]==101:
+                        maxs.append(max(line.get_ydata()))
+                        mins.append(min(line.get_ydata()))
+                except:
+                    pass
+                ax.set_ylim([min(mins),max(maxs)])
 
     def plotPanel(self):
         """
@@ -1770,6 +1813,17 @@ class TemporalKineticsPlotViewer(PlotViewer):
             plot.temporalPlot(self.fig.axes[11],self.m_acq,
                                     "RAnklePower",2,pointLabelSuffix=self.m_pointLabelSuffix,color="blue")
 
+        for ax in self.fig.axes:
+            maxs=[ax.get_ylim()[1]]
+            mins=[ax.get_ylim()[0]]
+            for line in ax.get_lines():
+                try: 
+                    if line.get_ydata().shape[0]==101:
+                        maxs.append(max(line.get_ydata()))
+                        mins.append(min(line.get_ydata()))
+                except:
+                    pass
+                ax.set_ylim([min(mins),max(maxs)])
 
     def plotPanel(self):
         """
