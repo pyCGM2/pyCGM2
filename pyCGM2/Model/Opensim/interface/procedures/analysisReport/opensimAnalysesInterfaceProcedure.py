@@ -316,6 +316,14 @@ class AnalysesXmlCgmDrivenModelProcedure(AnalysesXmlCgmProcedure):
         
         self.m_poseLabel+".mot"
 
+    def forceMotFile(self,motfile):
+        self.m_poseLabel = motfile[:-4]
+
+        files.copyPaste(self.m_DATA_PATH+ motfile,self.m_DATA_PATH+self.m_resultsDir+"\\"+motfile)
+        self.m_refPose = opensimIO.OpensimDataFrame(self.m_DATA_PATH+self.m_resultsDir+"\\", motfile)
+
+        self.m_beginTime = 0
+        self.m_endTime = self.m_refPose.getDataFrame()["time"].iloc[-1]
     
     def prepareXml(self):
         """
