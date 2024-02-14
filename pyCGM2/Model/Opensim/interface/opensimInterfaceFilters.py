@@ -386,7 +386,12 @@ class opensimInterfaceAnalysesFilter(object):
                     serie = storageDataframe.getDataFrame()[muscle].to_list()
                     if freq !=100.0:
                         time = np.arange(0, len(serie)*(1/100), 1/100)
-                        f = interp1d(time, serie, fill_value="extrapolate")
+                        try:
+                            f = interp1d(time, serie, fill_value="extrapolate")
+                        except:
+                            time = time[0:len(serie)]
+                            f = interp1d(time, serie, fill_value="extrapolate")
+
                         newTime = np.arange(0, len(serie)*(1/100), 1/freq)
                         values_interp = f(newTime)
                         
