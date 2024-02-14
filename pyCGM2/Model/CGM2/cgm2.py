@@ -17,7 +17,9 @@ from pyCGM2.Model import modelDecorator
 from pyCGM2.Math import euler
 from pyCGM2.Tools import btkTools
 from pyCGM2.Nexus import nexusTools
+from pyCGM2.decorators.tracker import time_tracker #    @time_tracker()
 
+import os
 
 class CGM2_1(cgm.CGM1):
     """
@@ -1293,62 +1295,15 @@ class CGM2_4(CGM2_3):
 
         if motionMethod == enums.motionMethod.Determinist: #cmf.motionMethod.Native:
 
-            #if not pigStaticProcessing:
-
             self._pelvis_motion(aqui, dictRef, dictAnat)
-
-
-            self._thigh_motion("Left",aqui, dictRef, dictAnat,options=options)
-
-            # if rotation offset from knee functional calibration methods
-            if self.mp_computed["LeftKneeFuncCalibrationOffset"]:
-                offset = self.mp_computed["LeftKneeFuncCalibrationOffset"]
-                self._rotate_anatomical_motion("Left Thigh",offset,
-                                        aqui,options=options)
-
-
-            self._thigh_motion("Right", aqui, dictRef, dictAnat,options=options)
-
-            if  self.mp_computed["RightKneeFuncCalibrationOffset"]:
-                offset = self.mp_computed["RightKneeFuncCalibrationOffset"]
-                self._rotate_anatomical_motion("Right Thigh",offset,
-                                        aqui,options=options)
-
-
-            self._shank_motion("Left",aqui, dictRef, dictAnat,options=options)
-
-            self._shank_motion("Right",aqui, dictRef, dictAnat,options=options)
-
-
-            self._hindFoot_motion("Left",aqui, dictRef, dictAnat, options=options)
-
-            self._foreFoot_motion("Left",aqui, dictRef, dictAnat, options=options)
-
-
-            self._hindFoot_motion("Right",aqui, dictRef, dictAnat, options=options)
-
-            self._foreFoot_motion("Right",aqui, dictRef, dictAnat, options=options)
-
             self._thorax_motion(aqui, dictRef,dictAnat,options=options)
-
-
             self._head_motion(aqui, dictRef,dictAnat,options=options)
 
-            self._clavicle_motion("Left",aqui, dictRef,dictAnat,options=options)
-            self._constructArmVirtualMarkers("Left", aqui)
-            self._upperArm_motion("Left",aqui, dictRef,dictAnat,options=options,   frameReconstruction="Technical")
-            self._foreArm_motion("Left",aqui, dictRef,dictAnat,options=options, frameReconstruction="Technical")
-            self._upperArm_motion("Left",aqui, dictRef,dictAnat,options=options,   frameReconstruction="Anatomical")
-            self._foreArm_motion("Left",aqui, dictRef,dictAnat,options=options, frameReconstruction="Anatomical")
-            self._hand_motion("Left",aqui, dictRef,dictAnat,options=options)
+            self._processLowerMotion("Left",pigStaticProcessing,aqui,dictRef,dictAnat,options)
+            self._processLowerMotion("Right",pigStaticProcessing,aqui,dictRef,dictAnat,options)
+            self._processUpperMotion("Left",aqui,dictRef,dictAnat,options)
+            self._processUpperMotion("Right",aqui,dictRef,dictAnat,options)
 
-            self._clavicle_motion("Right",aqui, dictRef,dictAnat,options=options)
-            self._constructArmVirtualMarkers("Right", aqui)
-            self._upperArm_motion("Right",aqui, dictRef,dictAnat,options=options,   frameReconstruction="Technical")
-            self._foreArm_motion("Right",aqui, dictRef,dictAnat,options=options, frameReconstruction="Technical")
-            self._upperArm_motion("Right",aqui, dictRef,dictAnat,options=options,   frameReconstruction="Anatomical")
-            self._foreArm_motion("Right",aqui, dictRef,dictAnat,options=options, frameReconstruction="Anatomical")
-            self._hand_motion("Right",aqui, dictRef,dictAnat,options=options)
 
         if motionMethod == enums.motionMethod.Sodervisk:
 
@@ -1377,61 +1332,51 @@ class CGM2_4(CGM2_3):
 
             self._TopLumbar5 = TopLumbar5
 
-            self._thigh_motion_optimize("Left",aqui, dictRef,motionMethod)
-            self._anatomical_motion(aqui,"Left Thigh",originLabel = str(dictAnat["Left Thigh"]['labels'][3]))#HJC
-
-            self._thigh_motion_optimize("Right",aqui, dictRef,motionMethod)
-            self._anatomical_motion(aqui,"Right Thigh",originLabel = str(dictAnat["Right Thigh"]['labels'][3]))
-
-            self._shank_motion_optimize("Left",aqui, dictRef,motionMethod)
-            self._anatomical_motion(aqui,"Left Shank",originLabel = str(dictAnat["Left Shank"]['labels'][3])) #KJC
-
-
-            self._shank_motion_optimize("Right",aqui, dictRef,motionMethod)
-            self._anatomical_motion(aqui,"Right Shank",originLabel = str(dictAnat["Right Shank"]['labels'][3]))
-
-
-            if forceFoot6DoF:
-                self._hindFoot_motion_optimize("Left",aqui, dictRef,motionMethod)
-                self._anatomical_motion(aqui,"Left Foot",originLabel = str(dictAnat["Left Foot"]['labels'][3]))
-                self._hindFoot_motion_optimize("Right",aqui, dictRef,motionMethod)
-                self._anatomical_motion(aqui,"Right Foot",originLabel = str(dictAnat["Right Foot"]['labels'][3]))
-
-
-                self._foreFoot_motion_optimize("Left",aqui, dictRef,motionMethod)
-                self._anatomical_motion(aqui,"Left ForeFoot",originLabel = str(dictAnat["Left ForeFoot"]['labels'][3]))
-
-                self._foreFoot_motion_optimize("Right",aqui, dictRef,motionMethod)
-                self._anatomical_motion(aqui,"Right ForeFoot",originLabel = str(dictAnat["Right ForeFoot"]['labels'][3]))
-            else:
-                # hindFoot ( because of singularities AJC- TOE and HEE align)
-                self._hindFoot_motion("Left",aqui, dictRef, dictAnat, options=options)
-                self._hindFoot_motion("Right",aqui, dictRef, dictAnat, options=options)
-
-                # foreFoot (more robust than Sodervisk)
-                self._foreFoot_motion("Left",aqui, dictRef, dictAnat, options=options)
-                self._foreFoot_motion("Right",aqui, dictRef,dictAnat, options=options)
-
-            self._thorax_motion(aqui, dictRef,dictAnat,options=options)
-
             self._thorax_motion(aqui, dictRef,dictAnat,options=options)
             self._head_motion(aqui, dictRef,dictAnat,options=options)
 
-            self._clavicle_motion("Left",aqui, dictRef,dictAnat,options=options)
-            self._constructArmVirtualMarkers("Left", aqui)
-            self._upperArm_motion("Left",aqui, dictRef,dictAnat,options=options,   frameReconstruction="Technical")
-            self._foreArm_motion("Left",aqui, dictRef,dictAnat,options=options, frameReconstruction="Technical")
-            self._upperArm_motion("Left",aqui, dictRef,dictAnat,options=options,   frameReconstruction="Anatomical")
-            self._foreArm_motion("Left",aqui, dictRef,dictAnat,options=options, frameReconstruction="Anatomical")
-            self._hand_motion("Left",aqui, dictRef,dictAnat,options=options)
+            self._processLowerMotionOptimize("Left",forceFoot6DoF,aqui,dictRef,dictAnat,options,motionMethod)
+            self._processLowerMotionOptimize("Right",forceFoot6DoF,aqui,dictRef,dictAnat,options,motionMethod)
+            self._processUpperMotion("Left",aqui,dictRef,dictAnat,options)
+            self._processUpperMotion("Right",aqui,dictRef,dictAnat,options)
 
-            self._clavicle_motion("Right",aqui, dictRef,dictAnat,options=options)
-            self._constructArmVirtualMarkers("Right", aqui)
-            self._upperArm_motion("Right",aqui, dictRef,dictAnat,options=options,   frameReconstruction="Technical")
-            self._foreArm_motion("Right",aqui, dictRef,dictAnat,options=options, frameReconstruction="Technical")
-            self._upperArm_motion("Right",aqui, dictRef,dictAnat,options=options,   frameReconstruction="Anatomical")
-            self._foreArm_motion("Right",aqui, dictRef,dictAnat,options=options, frameReconstruction="Anatomical")
-            self._hand_motion("Right",aqui, dictRef,dictAnat,options=options)
+            
+
+
+    def _processLowerMotion(self,side,pigStaticProcessing,aqui,dictRef,dictAnat,options):
+        self._thigh_motion(side,aqui, dictRef, dictAnat,options=options)
+
+        # if rotation offset from knee functional calibration methods
+        if self.mp_computed[f"{side}KneeFuncCalibrationOffset"]:
+            offset = self.mp_computed[f"{side}KneeFuncCalibrationOffset"]
+            self._rotate_anatomical_motion(f"{side} Thigh",offset,
+                                    aqui,options=options)
+
+        self._shank_motion(side,aqui, dictRef, dictAnat,options=options)
+        self._shankProximal_motion(side,aqui,dictAnat,options=options)
+
+        self._hindFoot_motion(side,aqui, dictRef, dictAnat, options=options)
+        self._foreFoot_motion(side,aqui, dictRef, dictAnat, options=options)
+  
+    
+
+    def _processLowerMotionOptimize(self,side,forceFoot6DoF,aqui,dictRef,dictAnat,options,motionMethod):
+        self._thigh_motion_optimize(side,aqui, dictRef,motionMethod)
+        self._anatomical_motion(aqui,f"{side} Thigh",originLabel = str(dictAnat[f"{side} Thigh"]['labels'][3]))#HJC
+        self._shank_motion_optimize(side,aqui, dictRef,motionMethod)
+        self._anatomical_motion(aqui,f"{side} Shank",originLabel = str(dictAnat[f"{side} Shank"]['labels'][3])) #KJC
+
+
+        if forceFoot6DoF:
+            self._hindFoot_motion_optimize(side,aqui, dictRef,motionMethod)
+            self._anatomical_motion(aqui,f"{side} Foot",originLabel = str(dictAnat[f"{side} Foot"]['labels'][3]))
+            
+            self._foreFoot_motion_optimize(side,aqui, dictRef,motionMethod)
+            self._anatomical_motion(aqui,f"{side} ForeFoot",originLabel = str(dictAnat[f"{side} ForeFoot"]['labels'][3]))
+        else:
+            self._hindFoot_motion(side,aqui, dictRef, dictAnat, options=options)
+            self._foreFoot_motion(side,aqui, dictRef, dictAnat, options=options)
+
 
     # ----- native motion ------
     def _hindFoot_motion(self, side:str, aqui: btk.btkAcquisition, dictRef: Dict[str, Any], dictAnat: Dict[str, Any], options: Optional[Any] = None) -> None:
