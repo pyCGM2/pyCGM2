@@ -37,7 +37,7 @@ def main():
         args = parser.parse_args()
 
         # --- acquisition file and path----
-        DATA_PATH, inputFileNoExt = NEXUS.GetTrialName()
+        DATA_PATH, inputFileNoExt = nexusTools.getTrialName(NEXUS)
         inputFile = inputFileNoExt+".c3d"
 
 

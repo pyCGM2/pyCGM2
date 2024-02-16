@@ -58,7 +58,7 @@ def main(args=None):
 
         # --------------------------LOADING ------------------------------------
         if NEXUS_PYTHON_CONNECTED:
-            DATA_PATH, calibrateFilenameLabelledNoExt = NEXUS.GetTrialName()
+            DATA_PATH, calibrateFilenameLabelledNoExt = nexusTools.getTrialName(NEXUS)
             calibrateFilenameLabelled = calibrateFilenameLabelledNoExt+".c3d"
         else:
             DATA_PATH = os.getcwd()+"\\"

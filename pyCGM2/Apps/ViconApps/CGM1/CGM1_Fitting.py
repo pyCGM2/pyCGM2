@@ -54,7 +54,7 @@ def main(args = None):
 
         # --------------------------LOADING ------------------------------------
         if NEXUS_PYTHON_CONNECTED:        
-            DATA_PATH, reconstructFilenameLabelledNoExt = NEXUS.GetTrialName()
+            DATA_PATH, reconstructFilenameLabelledNoExt = nexusTools.getTrialName(NEXUS)
             reconstructFilenameLabelled = reconstructFilenameLabelledNoExt+".c3d"
         else:
             DATA_PATH = os.getcwd()+"\\"

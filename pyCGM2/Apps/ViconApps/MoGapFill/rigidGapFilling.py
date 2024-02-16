@@ -3,8 +3,6 @@ import copy
 import os
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 
-# vicon nexus
-from viconnexusapi import ViconNexus
 
 # pyCGM2 libraries
 from pyCGM2.Model import model
@@ -12,8 +10,6 @@ from pyCGM2.Model import modelFilters
 from pyCGM2.Tools import btkTools
 
 from pyCGM2 import enums
-from pyCGM2.Nexus import nexusFilters
-from pyCGM2.Nexus import nexusTools
 
 def main():
 
@@ -25,8 +21,13 @@ def main():
     parser.add_argument('--last', type=int, help='last Frame')
 
     try:
+        from viconnexusapi import ViconNexus
+        from pyCGM2.Nexus import nexusFilters
+        from pyCGM2.Nexus import nexusUtils
+        from pyCGM2.Nexus import nexusTools
         NEXUS = ViconNexus.ViconNexus()
         NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
+
     except:
         LOGGER.logger.error("Vicon nexus not connected")
         NEXUS_PYTHON_CONNECTED = False
@@ -34,7 +35,7 @@ def main():
 
     if NEXUS_PYTHON_CONNECTED: # run Operation
         args = parser.parse_args()
-        DATA_PATH, reconstructFilenameLabelledNoExt = NEXUS.GetTrialName()
+        DATA_PATH, reconstructFilenameLabelledNoExt = nexusTools.getTrialName(NEXUS)
 
         # enfFiles = eclipse.getEnfTrials(DATA_PATH)
 

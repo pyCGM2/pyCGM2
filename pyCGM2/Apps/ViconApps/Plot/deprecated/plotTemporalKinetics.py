@@ -46,7 +46,7 @@ def main():
 
         pointSuffix = args.pointSuffix
         # --------------------------INPUTS ------------------------------------
-        DATA_PATH, modelledFilenameNoExt = NEXUS.GetTrialName()
+        DATA_PATH, modelledFilenameNoExt = nexusTools.getTrialName(NEXUS)
 
         modelledFilename = modelledFilenameNoExt+".c3d"
 

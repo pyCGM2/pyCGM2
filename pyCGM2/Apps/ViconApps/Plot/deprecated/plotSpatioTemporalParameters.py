@@ -61,7 +61,7 @@ def main():
         LOGGER.logger.info("[pyCGM2] - Script works with the loaded c3d in vicon Nexus")
 
         # --------------------------INPUTS ------------------------------------
-        DATA_PATH, modelledFilenameNoExt = NEXUS.GetTrialName()
+        DATA_PATH, modelledFilenameNoExt = nexusTools.getTrialName(NEXUS)
 
         modelledFilename = modelledFilenameNoExt+".c3d"
 

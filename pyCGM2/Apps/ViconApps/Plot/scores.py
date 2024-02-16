@@ -8,17 +8,13 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 import pyCGM2
 
 
-# vicon nexus
-from viconnexusapi import ViconNexus
 
 # pyCGM2 libraries
 from pyCGM2.Lib import analysis
 from pyCGM2.Lib import plot
 from pyCGM2.Report import normativeDatasets
 
-from pyCGM2.Nexus import nexusFilters
-from pyCGM2.Nexus import nexusTools
-from pyCGM2.Nexus import eclipse
+
 
 def map(args):
 
@@ -26,6 +22,11 @@ def map(args):
     plt.close("all")
 
     try:
+        from viconnexusapi import ViconNexus
+        from pyCGM2.Nexus import nexusFilters
+        from pyCGM2.Nexus import nexusUtils
+        from pyCGM2.Nexus import nexusTools
+        from pyCGM2.Nexus import eclipse
         NEXUS = ViconNexus.ViconNexus()
         NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
     except:
@@ -59,7 +60,7 @@ def map(args):
     if not ECLIPSE_MODE:
         LOGGER.logger.info("[pyCGM2] - Script works with the loaded c3d in vicon Nexus")
         # --- acquisition file and path----
-        DATA_PATH, modelledFilenameNoExt = NEXUS.GetTrialName()
+        DATA_PATH, modelledFilenameNoExt = nexusTools.getTrialName(NEXUS)
         modelledFilename = modelledFilenameNoExt+".c3d"
 
         LOGGER.logger.info( "data Path: "+ DATA_PATH )

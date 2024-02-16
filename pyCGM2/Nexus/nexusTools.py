@@ -43,6 +43,15 @@ def _setPointData(ftr, framecount, ff, values):
     return data, exists
 
 
+def getTrialName(NEXUS:ViconNexus.ViconNexus):
+
+    DATA_PATH, reconstructFilenameLabelledNoExt = NEXUS.getTrialName(NEXUS)
+    if reconstructFilenameLabelledNoExt!="":
+        return DATA_PATH, reconstructFilenameLabelledNoExt
+    else:
+        raise Exception(
+            "[pyCGM2] : No Trial loaded into nexus")
+
 def getActiveSubject(NEXUS:ViconNexus.ViconNexus):
     """
     Retrieves the active subject from Nexus.
@@ -53,9 +62,16 @@ def getActiveSubject(NEXUS:ViconNexus.ViconNexus):
     """
 
     names, templates, active = NEXUS.GetSubjectInfo()
+
+    if names==[] and templates==[] and active==[]:
+        raise Exception(
+            "[pyCGM2] : No subject find in your session, create one")
     if active.count(True) > 1:
         raise Exception(
             "[pyCGM2] : two subjects are activated. Select one only")
+    if active.count(True) == 0 :
+        raise Exception(
+            "[pyCGM2] : No subject is  activated. Select one ")
 
     for i in range(0, len(names)):
         if active[i]:

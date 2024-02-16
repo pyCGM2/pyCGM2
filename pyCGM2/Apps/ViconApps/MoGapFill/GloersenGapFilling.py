@@ -1,9 +1,7 @@
 import argparse
-from pyCGM2.Nexus import nexusFilters
-from pyCGM2.Nexus import nexusTools
 from pyCGM2.Gap import gapFillingProcedures
 from pyCGM2.Gap import gapFilters
-from viconnexusapi import ViconNexus
+
 import pyCGM2
 LOGGER = pyCGM2.LOGGER
 
@@ -15,6 +13,10 @@ def main(args=None):
 
 
     try:
+        from viconnexusapi import ViconNexus
+        from pyCGM2.Nexus import nexusFilters
+        from pyCGM2.Nexus import nexusUtils
+        from pyCGM2.Nexus import nexusTools
         NEXUS = ViconNexus.ViconNexus()
         NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
     except:
@@ -23,7 +25,7 @@ def main(args=None):
 
     if NEXUS_PYTHON_CONNECTED:  # run Operation
 
-        DATA_PATH, filenameLabelledNoExt = NEXUS.GetTrialName()
+        DATA_PATH, filenameLabelledNoExt = nexusTools.getTrialName(NEXUS)
 
         LOGGER.logger.info("data Path: " + DATA_PATH)
         LOGGER.logger.info("file: " + filenameLabelledNoExt)

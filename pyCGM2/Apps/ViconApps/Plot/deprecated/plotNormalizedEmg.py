@@ -52,7 +52,7 @@ def main():
     if not ECLIPSE_MODE:
         LOGGER.logger.info("[pyCGM2] - Script works with the loaded c3d in vicon Nexus")
         # --- acquisition file and path----
-        DATA_PATH, inputFileNoExt = NEXUS.GetTrialName()
+        DATA_PATH, inputFileNoExt = nexusTools.getTrialName(NEXUS)
         inputFile = inputFileNoExt+".c3d"
 
     LOGGER.set_file_handler(DATA_PATH+"pyCGM2.log")

@@ -6,18 +6,19 @@ import pyCGM2
 
 from pyCGM2.Lib import plot
 from pyCGM2.Lib import emg
-from pyCGM2.Nexus import nexusFilters
-from pyCGM2.Nexus import nexusTools
-from viconnexusapi import ViconNexus
 from pyCGM2.Nexus import eclipse
-
 from pyCGM2.Lib import analysis
 
 def temporal(args):
 
     try:
+        from viconnexusapi import ViconNexus
+        from pyCGM2.Nexus import nexusFilters
+        from pyCGM2.Nexus import nexusUtils
+        from pyCGM2.Nexus import nexusTools
         NEXUS = ViconNexus.ViconNexus()
         NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
+
     except:
         LOGGER.logger.error("Vicon nexus not connected")
         NEXUS_PYTHON_CONNECTED = False
@@ -25,7 +26,7 @@ def temporal(args):
 
     if NEXUS_PYTHON_CONNECTED: # run Operation
         # --- acquisition file and path----
-        DATA_PATH, inputFileNoExt = NEXUS.GetTrialName()
+        DATA_PATH, inputFileNoExt = nexusTools.getTrialName(NEXUS)
         inputFile = inputFileNoExt+".c3d"
 
 
@@ -71,6 +72,10 @@ def temporal(args):
 def normalized(args):
 
     try:
+        from viconnexusapi import ViconNexus
+        from pyCGM2.Nexus import nexusFilters
+        from pyCGM2.Nexus import nexusUtils
+        from pyCGM2.Nexus import nexusTools
         NEXUS = ViconNexus.ViconNexus()
         NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
     except:
@@ -92,7 +97,7 @@ def normalized(args):
     if not ECLIPSE_MODE:
         LOGGER.logger.info("[pyCGM2] - Script works with the loaded c3d in vicon Nexus")
         # --- acquisition file and path----
-        DATA_PATH, inputFileNoExt = NEXUS.GetTrialName()
+        DATA_PATH, inputFileNoExt = nexusTools.getTrialName(NEXUS)
         inputFile = inputFileNoExt+".c3d"
 
     LOGGER.set_file_handler(DATA_PATH+"pyCGM2.log")
@@ -174,6 +179,10 @@ def normalized(args):
 def normalizedComparison(args):
 
     try:
+        from viconnexusapi import ViconNexus
+        from pyCGM2.Nexus import nexusFilters
+        from pyCGM2.Nexus import nexusUtils
+        from pyCGM2.Nexus import nexusTools    
         NEXUS = ViconNexus.ViconNexus()
         NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
     except:

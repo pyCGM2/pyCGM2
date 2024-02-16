@@ -33,7 +33,7 @@ def main(args=None):
 
     if NEXUS_PYTHON_CONNECTED: # run Operation
 
-        data_path, filename = NEXUS.GetTrialName()
+        data_path, filename = nexusTools.getTrialName(NEXUS)
 
         LOGGER.logger.info( "data Path: "+ data_path )
         LOGGER.set_file_handler(data_path+"pyCGM2.log")

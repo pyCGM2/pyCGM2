@@ -38,7 +38,7 @@ def main(args=None):
     if NEXUS_PYTHON_CONNECTED: # run Operation
         
 
-        DATA_PATH, reconstructedFilenameLabelledNoExt = NEXUS.GetTrialName()
+        DATA_PATH, reconstructedFilenameLabelledNoExt = nexusTools.getTrialName(NEXUS)
 
         reconstructFilenameLabelled = reconstructedFilenameLabelledNoExt+".c3d"
 
