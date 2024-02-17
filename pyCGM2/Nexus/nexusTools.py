@@ -45,7 +45,7 @@ def _setPointData(ftr, framecount, ff, values):
 
 def getTrialName(NEXUS:ViconNexus.ViconNexus):
 
-    DATA_PATH, reconstructFilenameLabelledNoExt = NEXUS.getTrialName(NEXUS)
+    DATA_PATH, reconstructFilenameLabelledNoExt = NEXUS.GetTrialName()
     if reconstructFilenameLabelledNoExt!="":
         return DATA_PATH, reconstructFilenameLabelledNoExt
     else:

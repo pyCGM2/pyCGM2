@@ -190,6 +190,75 @@ def plotTemporalKinetic(DATA_PATH:str, modelledFilenames:str,bodyPart:str,
         return fig
 
 
+def plotTemporalReaction(DATA_PATH:str, modelledFilenames:str,
+                        pointLabelSuffix:Optional[str]=None,exportPdf:bool=False,
+                        OUT_PATH:Optional[str]= None, outputName:Optional[str]=None,show:bool=True,title:str=None,
+                        exportPng:bool=False,autoYlim:bool=False,**kwargs):
+
+    """
+    Displays temporal traces of the ground reaction.
+
+
+
+    Args:
+        DATA_PATH (str): Path to the data directory.
+        modelledFilenames (str): Filename of the C3D file including kinetic output.
+        pointLabelSuffix (Optional[str]): Suffix added to model outputs. Defaults to None.
+        exportPdf (bool): If True, exports the plot as a PDF. Defaults to False.
+        OUT_PATH (Optional[str]): Path for saving exported files. Defaults to None.
+        outputName (Optional[str]): Name of the output file. Defaults to None.
+        show (bool): If True, displays the plot using Matplotlib. Defaults to True.
+        title (Optional[str]): Title for the plot panel. Defaults to None.
+        exportPng (bool): If True, exports the plot as a PNG. Defaults to False.
+        autoYlim (bool): If True, sets Y-axis limits automatically. Defaults to False.
+
+    Keyword Args:
+        btkAcq (Optional[btk.Acquisition]): If provided, uses this acquisition instead of loading from `modelledFilenames`.
+
+    Returns:
+        Union[matplotlib.figure.Figure, Tuple[matplotlib.figure.Figure, str]]: The Matplotlib figure object. 
+        If exporting as PNG, returns a tuple of the figure object and the filename.
+
+    Examples:
+        >>> fig = plotTemporalKinetic("/myDATA/", "file1.c3d", "LowerLimb")
+
+    Note:
+        Ensure the specified `bodyPart` is one of the valid choices. Invalid input will raise an exception.
+    """
+    if OUT_PATH is None:
+        OUT_PATH = DATA_PATH
+
+    if exportPdf or exportPng:
+        if outputName is None:
+            filenameOut =  modelledFilenames+"-Temporal Ground reaction"
+        else:
+            filenameOut =  outputName+"-Temporal Ground reaction"
+
+    if "btkAcq" in kwargs.keys() and  kwargs["btkAcq"] is not None:
+        acq = kwargs["btkAcq"]
+        btkTools.sortedEvents(acq)
+
+    else:
+        acq =btkTools.smartReader(DATA_PATH+modelledFilenames)
+
+    kv = groundReactionPlotViewers.TemporalReactionPlotViewer(acq,pointLabelSuffix=pointLabelSuffix)
+    kv.setAutomaticYlimits(autoYlim)
+    # # filter
+    pf = plotFilters.PlottingFilter()
+    pf.setViewer(kv)
+    if title is not None: pf.setTitle(title+"-Temporal Ground reaction ")
+    if exportPdf :pf.setExport(OUT_PATH,filenameOut,"pdf")
+    fig = pf.plot()
+
+    if show: plt.show()
+
+    if exportPng:
+        fig.savefig(OUT_PATH+filenameOut+".png")
+        return fig,filenameOut+".png"
+    else:
+        return fig
+
+
 def plotTemporalEMG(DATA_PATH:str, processedEmgfile:str,
                     rectify:bool = True, exportPdf:bool=False,outputName:Optional[str]=None,show:bool=True,title:Optional[str]=None,
                     ignoreNormalActivity:bool= False,exportPng:bool=False,OUT_PATH:Optional[str]=None,autoYlim:bool=False,
@@ -1083,6 +1152,84 @@ def compareKinetic(DATA_PATH:str,analyses:List[Analysis],legends:List[str],conte
     else:
         return fig
 
+def compareReaction(DATA_PATH:str,analyses:List[Analysis],legends:List[str],normativeDataset:NormativeData,
+    plotType="Descriptive",eventType:str="Gait",pointSuffixes=None,show:bool=True,title:Optional[str]=None,
+    OUT_PATH:Optional[str]=None,outputName:Optional[str]=None,exportPng:bool=False,exportPdf:bool=False,autoYlim:bool=False):
+
+    """
+    Plots ground reaction from different analysis instances for comparison.
+
+    This function visualizes and compares ground reaction data from multiple analysis instances. It supports 
+    descriptive and consistency plot types and can compare data across different contexts .
+
+    Args:
+        DATA_PATH (str): Path to the data directory.
+        analyses (List[Analysis]): List of Analysis instances to compare.
+        legends (List[str]): Labels representing each analysis instance.
+        normativeDataset (NormativeData): Normative data instance for comparison.
+        plotType (str): Type of plot ('Descriptive' or 'Consistency'). Defaults to 'Descriptive'.
+        eventType (str): Event type to consider (e.g., 'Gait'). Defaults to 'Gait'.
+        pointSuffixes (Optional[List[str]]): Suffixes previously added to model outputs. Defaults to None.
+        show (bool): If True, shows the plot using Matplotlib. Defaults to True.
+        title (Optional[str]): Title for the plot panel. Defaults to None.
+        OUT_PATH (Optional[str]): Path for saving exported files. Defaults to None.
+        outputName (Optional[str]): Name of the output file. Defaults to None.
+        exportPng (bool): If True, exports the plot as a PNG. Defaults to False.
+        exportPdf (bool): If True, exports the plot as a PDF. Defaults to False.
+        autoYlim (bool): If True, sets Y-axis limits automatically. Defaults to False.
+
+    Returns:
+        Union[matplotlib.figure.Figure, Tuple[matplotlib.figure.Figure, str]]: The Matplotlib figure object. 
+        If exporting as PNG, returns a tuple of the figure object and the filename.
+
+    Examples:
+        >>> fig = compareReaction("/data/path", [analysis1, analysis2], ["pre", "post"],  normativeDataset)
+    """
+
+    if OUT_PATH is None:
+        OUT_PATH = DATA_PATH
+
+    if outputName is None:
+        outputName = "pyCGM2-Comparison"+"-"
+
+    if exportPdf or exportPng:
+        filenameOut =  outputName+"- Reaction Comparison "
+
+
+    i=1
+    for analysis in analyses:
+        if analysis.kineticStats.data == {}:
+            raise Exception("[pyCGM2]: Reaction comparison aborted. Analysis [%i] has no kinetic data"%(i))
+        i+=1
+
+
+    kv = comparisonPlotViewers.GroundReactionForceComparisonViewer(analyses,legends,pointLabelSuffix_lst=pointSuffixes)
+
+    kv.setAutomaticYlimits(autoYlim)
+
+    if plotType == "Descriptive":
+        kv.setConcretePlotFunction(plot.gaitDescriptivePlot ) if eventType =="Gait" else kv.setConcretePlotFunction(plot.descriptivePlot )
+    elif plotType == "Consistency":
+        kv.setConcretePlotFunction(plot.gaitConsistencyPlot ) if eventType =="Gait" else kv.setConcretePlotFunction(plot.consistencyPlot )
+
+
+    if normativeDataset is not None:
+        kv.setNormativeDataset(normativeDataset)
+
+    # filter
+    pf = plotFilters.PlottingFilter()
+    pf.setViewer(kv)
+    if exportPdf: pf.setExport(OUT_PATH,filenameOut,"pdf")
+    if title is not None: pf.setTitle(title+"-Reaction comparison")
+    fig = pf.plot()
+    if show: plt.show()
+
+    if exportPng:
+        fig.savefig(OUT_PATH+filenameOut+".png")
+        return fig,filenameOut+".png"
+    else:
+        return fig
+
 def compareEmgEnvelops(DATA_PATH:str,analyses:List[Analysis],legends:List[str],
         normalized:bool=False,plotType="Descriptive",show:bool=True,title:Optional[str]=None,
         eventType:str="Gait",
@@ -1504,7 +1651,71 @@ def plot_DescriptiveGRF(DATA_PATH:str,analysis:Analysis,normativeDataset:Normati
         return fig
     
 
+def plot_ConsistencyGRF(DATA_PATH:str,analysis:Analysis,normativeDataset:NormativeData,
+        pointLabelSuffix:Optional[str]=None,eventType:str="Gait",
+        OUT_PATH:Optional[str]=None,exportPdf:bool=False,outputName:Optional[str]=None,show:bool=True,title:Optional[str]=None,exportPng:bool=False,
+        autoYlim:bool=False):
+    """display all-cycle time-normalized ground reaction force.
 
+    Args:
+        DATA_PATH (str): path to your data
+        analysis (pyCGM2.Processing.analysis.Analysis): analysis instance.
+        bodyPart (str): body part (choice : LowerLimb, Trunk, UpperLimb)
+        normativeDataset (pyCGM2.Report.normativeDatasets.NormativeData): normative data instance.
+        pointLabelSuffix (str)[Optional,None]:suffix previously added to your model outputs.
+        eventType (str): [Optional, "Gait"]. event type. By default cycle is defined from foot strike.  `Gait` searched for the foot off events.
+        OUT_PATH (str)[Optional,None]: path to your ouput folder
+        exportPdf (bool)[Optional,False]: export as pdf
+        outputName (str)[Optional,None]: name of the output filename.
+        show (bool)[Optional,True]: show matplotlib figure.
+        title (str)[Optional,None]: modify the plot panel title.
+        exportPng (bool)[Optional,False]: export as png.
+        autoYlim(bool)[Optional,False]: ignore predefined Y-axis boundaries
+
+    Examples:
+
+    .. code-block:: python
+
+        plot_DescriptiveKinematic("c:\\mydata\\",analysisInstance,"LowerLimb",normativeInstance)
+
+    """
+    if OUT_PATH is None:
+        OUT_PATH = DATA_PATH
+
+    outputName = "pyCGM2-analysis ground reaction force"
+
+    if exportPdf or exportPng:
+        filenameOut =  outputName+"-consistency GRF "
+
+
+    # filter 1 - consistency kinematic panel
+    #-------------------------------------------
+    # viewer
+
+    kv = groundReactionPlotViewers.NormalizedGroundReactionForcePlotViewer(analysis,pointLabelSuffix=pointLabelSuffix)
+    kv.setAutomaticYlimits(autoYlim)
+
+    if eventType == "Gait":
+        kv.setConcretePlotFunction(plot.gaitConsistencyPlot)
+    else:
+        kv.setConcretePlotFunction(plot.consistencyPlot)
+
+    if normativeDataset is not None:
+        kv.setNormativeDataset(normativeDataset)
+
+    # filter
+    pf = plotFilters.PlottingFilter()
+    pf.setViewer(kv)
+    if title is not None: pf.setTitle(title+"-consistency Ground reaction force")
+    if exportPdf: pf.setExport(OUT_PATH,filenameOut,"pdf")
+    fig = pf.plot()
+    if show: plt.show()
+
+    if exportPng:
+        fig.savefig(OUT_PATH+filenameOut+".png")
+        return fig,filenameOut+".png"
+    else:
+        return fig
 
 
 

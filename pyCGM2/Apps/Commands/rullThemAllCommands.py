@@ -32,6 +32,7 @@ from pyCGM2.Apps.ViconApps.Plot import spatioTemporalParameters
 from pyCGM2.Apps.ViconApps.Plot import kinematics
 from pyCGM2.Apps.ViconApps.Plot import scores
 from pyCGM2.Apps.ViconApps.Plot import kinetics
+from pyCGM2.Apps.ViconApps.Plot import reaction
 from pyCGM2.Apps.ViconApps.Plot import emg
 
 from pyCGM2.Apps.QtmApps.CGMi import QPYCGM2_events
@@ -74,6 +75,17 @@ class NEXUS_PlotsParser(object):
                 - Similar to Normalized parser, excluding the 'consistency' option.
 
         'Kinetics' Parser:
+            - 'Temporal':
+                - '-ps', '--pointSuffix': Suffix of model outputs, type: str.
+            - 'Normalized':
+                - '-nd', '--normativeData': Normative data set, type: str.
+                - '-ndm', '--normativeDataModality': Normative data modality, type: str.
+                - '-ps', '--pointSuffix': Suffix of model outputs, type: str.
+                - '-c', '--consistency': Consistency plots, action: 'store_true'.
+            - 'Comparison':
+                - Similar to Normalized parser.
+
+        'Reaction' Parser:
             - 'Temporal':
                 - '-ps', '--pointSuffix': Suffix of model outputs, type: str.
             - 'Normalized':
@@ -178,6 +190,35 @@ class NEXUS_PlotsParser(object):
         parser_kineticsComparison.add_argument('-ps','--pointSuffix', type=str, help='suffix of model outputs')
         parser_kineticsComparison.add_argument('-c','--consistency', action='store_true', help='consistency plots')
 
+
+        # ------ Reaction ------------
+
+        parser_reaction = plot_subparsers.add_parser('Reaction', help='reaction plots')
+            
+        reaction_sub_parsers = parser_reaction.add_subparsers(help='Reaction plots sub-commands',dest="Reaction")
+
+        # level 0.0
+        parser_reactionTemporal = reaction_sub_parsers.add_parser('Temporal', help='temporal plot')
+        parser_reactionTemporal.add_argument('-ps', '--pointSuffix', type=str,
+                             help='suffix of model outputs')
+
+        # level 0.1
+        parser_reactionNormalized = reaction_sub_parsers.add_parser('Normalized', help='time-normalized')
+        parser_reactionNormalized.add_argument('-nd','--normativeData', type=str, help='normative Data set (Schwartz2008 or Pinzone2014)', default="Schwartz2008")
+        parser_reactionNormalized.add_argument('-ndm','--normativeDataModality', type=str,
+                            help="if Schwartz2008 [VerySlow,SlowFree,Fast,VeryFast] - if Pinzone2014 [CentreOne,CentreTwo]",
+                            default="Free")
+        parser_reactionNormalized.add_argument('-ps','--pointSuffix', type=str, help='suffix of model outputs')
+        parser_reactionNormalized.add_argument('-c','--consistency', action='store_true', help='consistency plots')
+
+        # level 0.2
+        parser_reactionComparison = reaction_sub_parsers.add_parser('Comparison', help='time-normalized comparison')   
+        parser_reactionComparison.add_argument('-nd','--normativeData', type=str, help='normative Data set (Schwartz2008 or Pinzone2014)', default="Schwartz2008")
+        parser_reactionComparison.add_argument('-ndm','--normativeDataModality', type=str,
+                            help="if Schwartz2008 [VerySlow,SlowFree,Fast,VeryFast] - if Pinzone2014 [CentreOne,CentreTwo]",
+                            default="Free")
+        parser_reactionComparison.add_argument('-ps','--pointSuffix', type=str, help='suffix of model outputs')
+        parser_reactionComparison.add_argument('-c','--consistency', action='store_true', help='consistency plots')
 
         # ------ EMG ------------
 
@@ -710,6 +751,14 @@ class MainParser:
                             kinetics.normalized(args)
                         elif args.Kinetics == "Comparison":
                             kinetics.normalizedComparison(args)
+
+                    elif args.Plots == "Reaction":
+                        if args.Reaction == "Temporal":
+                            reaction.temporal(args)
+                        elif args.Reaction == "Normalized":
+                            reaction.normalized(args)
+                        elif args.Reaction == "Comparison":
+                            reaction.normalizedComparison(args)
 
                     elif args.Plots == "EMG":
                         if args.EMG == "Temporal":

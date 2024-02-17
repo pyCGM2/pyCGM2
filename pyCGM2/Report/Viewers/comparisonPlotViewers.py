@@ -978,3 +978,209 @@ class KineticsPlotComparisonViewer(plotViewers.PlotViewer):
                     facecolor="green", alpha=0.5,linewidth=0)
 
         return self.fig
+
+class GroundReactionForceComparisonViewer(plotViewers.PlotViewer):
+    """ 
+    A viewer for comparing Ground reaction Force  across multiple `Analysis` instances.
+    
+    This class is designed for the visualization
+    and comparison of ground reaction force from different analysis instances.
+
+
+    Args:
+        iAnalyses (List[Analysis]): Instances of analyses to be compared.
+        legends (List[str]): Descriptive labels for each analysis instance.
+        pointLabelSuffix_lst (Optional[List[str]]): Suffixes for model output labels.
+        bodyPart (enums.BodyPartPlot): The body part to be visualized, defaults to LowerLimb.
+
+
+    """
+
+    def __init__(self,iAnalyses:List[Analysis],legends:List[str],pointLabelSuffix_lst:Optional[List[str]]=None):
+        """Initialize the comparison plot viewer"""
+
+
+        super(GroundReactionForceComparisonViewer, self).__init__(iAnalyses)
+
+        for itAnalysis in iAnalyses:
+            if isinstance(itAnalysis,pyCGM2.Processing.analysis.Analysis):
+                pass
+            else:
+                LOGGER.logger.error( "[pyCGM2] error input object type. must be a pyCGM2.Core.Processing.analysis.Analysis")
+
+        self.m_analysis = self.m_input
+        self.m_pointLabelSuffixes = pointLabelSuffix_lst
+        self.m_normativeData = None
+        self.m_flagConsistencyOnly = False
+        self.m_legends = legends
+
+        if len(iAnalyses) != len(legends):
+            raise Exception("legends don t match analysis. Must have same length")
+        if pointLabelSuffix_lst is not None:
+            if len(iAnalyses) != len(pointLabelSuffix_lst):
+                raise Exception("list of point label suffix don t match analysis. Must have same length")
+
+        self.m_concretePlotFunction = None
+
+    def setConcretePlotFunction(self, concreteplotFunction:Callable):
+        """
+        Sets a specific plot function for kinetic data visualization.
+        
+        This method allows the customization of the plot based on the user's needs,
+        enabling the use of various plot types from the pyCGM2.Report.plot library.
+
+        Args:
+            concreteplotFunction (Callable): A plot function from pyCGM2.Report.plot.
+        """
+        self.m_concretePlotFunction = concreteplotFunction
+
+    def __setLayer(self):
+        """
+        private method to Set up the plot layers for ground reaction force visualization.
+        """
+
+        self.fig = plt.figure(figsize=(8.27,11.69), dpi=100,facecolor="white")
+        if self.m_concretePlotFunction.__name__ in ["descriptivePlot","gaitDescriptivePlot"]:
+            title=u""" Descriptive Time-normalized Ground reaction force \n """
+        elif self.m_concretePlotFunction.__name__ in ["consistencyPlot","gaitConsistencyPlot"]:
+            title=u""" Consistency Time-normalized Ground reaction force \n """
+        else :
+            title=u"""\n"""
+
+
+        self.fig.suptitle(title)
+        plt.subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=0.5, hspace=0.5)
+
+        nrow = 3 
+
+        ax0 = plt.subplot(nrow,3,1)# 
+        ax1 = plt.subplot(nrow,3,2)# 
+        ax2 = plt.subplot(nrow,3,3)# 
+
+        ax3 = plt.subplot(nrow,3,4)# 
+        ax4 = plt.subplot(nrow,3,5)# 
+        ax5 = plt.subplot(nrow,3,6)#
+
+        for ax in self.fig.axes:
+            ax.tick_params(axis='x', which='major', labelsize=6)
+            ax.tick_params(axis='y', which='major', labelsize=6)
+
+        #  GRF
+        for ax in [self.fig.axes[0],self.fig.axes[1],self.fig.axes[2]]:
+            ax.set_ylabel("Ground reaction force (N.kg-1)",size=8)
+
+        self.fig.axes[0].set_title("Longitudinal Force" ,size=8)
+        self.fig.axes[1].set_title("Lateral Force" ,size=8)
+        self.fig.axes[2].set_title("Vertical Force" ,size=8)
+
+        self.fig.axes[2].axhline(9.81,color="black",ls='dashed')
+
+        self.fig.axes[3].set_title("Longitudinal Force" ,size=8)
+        self.fig.axes[4].set_title("Lateral Force" ,size=8)
+        self.fig.axes[5].set_title("Vertical Force" ,size=8)
+
+        self.fig.axes[5].axhline(9.81,color="black",ls='dashed')
+
+
+        if not self.m_automaticYlim_flag:
+            pass
+       
+        for ax in self.fig.axes[0:6]:    
+            ax.set_xlabel("Cycle %",size=8)
+            ax.set_xlabel("Cycle %",size=8)
+            ax.set_xlabel("Cycle %",size=8)
+
+    def __setLegend(self,axisIndex):
+        """
+        Private method to set the legend for the plot.
+        
+        Configures and places the legend on the plot based on the provided axis index.
+
+        Args:
+            axisIndex (int): Index of the axis where the legend is to be placed.
+
+        Note:
+            This method is internally used by the class and not intended for external use.
+        """
+        self.fig.axes[axisIndex].legend(fontsize=6)
+        #self.fig.axes[axisIndex].legend(fontsize=6, bbox_to_anchor=(0,1.2,1,0.2), loc="lower left",
+        #    mode="None", borderaxespad=0, ncol=len(self.m_analysis))
+
+    def setNormativeDataset(self,iNormativeDataSet:NormativeData):
+        """
+        Set the normative dataset for comparison.
+
+        Args:
+            iNormativeDataSet (NormativeData): An instance of a normative dataset.
+        """
+
+        self.m_normativeData = iNormativeDataSet.data
+
+    def __setData(self):
+        """
+        Set the data for ground reaction force visualization.
+        """
+        colormap_l = plt.cm.Reds
+        colormap_i_l=[colormap_l(i) for i in np.linspace(0.2, 1, len(self.m_analysis))]
+        colormap_i_l = [(0,0,0)] + colormap_i_l
+
+        colormap_r = plt.cm.Blues
+        colormap_i_r=[colormap_r(i) for i in np.linspace(0.2, 1, len(self.m_analysis))]
+        colormap_i_r = [(0,0,0)] + colormap_i_r
+
+        i = 0
+        for analysis in self.m_analysis:
+            if self.m_pointLabelSuffixes is not None:
+                suffixPlus = "_" + self.m_pointLabelSuffixes[i] if self.m_pointLabelSuffixes[i] !="" else ""
+            else:
+                suffixPlus=""
+
+            legend= self.m_legends[i]
+
+        
+            self.m_concretePlotFunction(self.fig.axes[0],analysis.kineticStats,
+                "LStanGroundReactionForce"+suffixPlus,"Left",0, color=colormap_i_l[i], customLimits=None,legendLabel=legend)
+
+            self.m_concretePlotFunction(self.fig.axes[1],analysis.kineticStats,
+                "LStanGroundReactionForce"+suffixPlus,"Left",1, color=colormap_i_l[i], customLimits=None)
+
+            self.m_concretePlotFunction(self.fig.axes[2],analysis.kineticStats,
+                "LStanGroundReactionForce"+suffixPlus,"Left",2, color=colormap_i_l[i], customLimits=None)
+
+
+            self.m_concretePlotFunction(self.fig.axes[3],analysis.kineticStats,
+                "RStanGroundReactionForce"+suffixPlus,"Right",0, color=colormap_i_r[i], customLimits=None,legendLabel=legend)
+
+            self.m_concretePlotFunction(self.fig.axes[4],analysis.kineticStats,
+                "RStanGroundReactionForce"+suffixPlus,"Right",1, color=colormap_i_r[i], customLimits=None)
+
+            self.m_concretePlotFunction(self.fig.axes[5],analysis.kineticStats,
+                "RStanGroundReactionForce"+suffixPlus,"Right",2, color=colormap_i_r[i], customLimits=None)
+            i+=1
+
+        
+
+
+
+    def plotPanel(self):
+        """
+        Generates and plots the kinematic comparison panel.
+
+        This method orchestrates the plotting process, including setting up the layers,
+        arranging data, and rendering the final plot.
+
+        Returns:
+            matplotlib.figure.Figure: The generated plot as a matplotlib figure object.
+            
+        Raises:
+            Exception: If the concrete plot function is not defined.
+        """
+
+        if self.m_concretePlotFunction is None:
+            raise Exception ("[pyCGM2] need definition of the concrete plot function")
+
+        self.__setLayer()
+        self.__setData()
+        self.fig.axes[0].legend(fontsize=6)
+        self.fig.axes[3].legend(fontsize=6)
+        # self.__setLegend(0)

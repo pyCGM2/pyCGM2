@@ -7,11 +7,113 @@ import scipy  as sp
 # pyCGM2
 import pyCGM2
 from pyCGM2.Report.Viewers import plotViewers
-
+from pyCGM2.Report import plot
 from pyCGM2.Report.normativeDatasets import NormativeData
 from pyCGM2.Processing.analysis import Analysis
 
 from typing import List, Tuple, Dict, Optional, Union, Callable
+
+import btk
+
+class TemporalReactionPlotViewer(plotViewers.PlotViewer):
+    """
+    Viewer for displaying temporal ground reaction.
+
+
+    Args:
+        iAcq (btk.Acquisition): An acquisition instance from btk.
+        pointLabelSuffix (str, optional): Suffix for point labels in the plot.
+
+    """
+
+    def __init__(self,iAcq:btk.btkAcquisition,pointLabelSuffix:Optional[str]=None):
+        """Initializes the TemporalReactionPlotViewer.
+        """
+        super(TemporalReactionPlotViewer, self).__init__(iAcq)
+
+        self.m_acq = self.m_input
+        if isinstance(self.m_input,btk.btkAcquisition):
+            pass
+        else:
+            LOGGER.logger.error( "[pyCGM2] error input object type. must be a ma.Trial")
+
+        self.m_pointLabelSuffix = pointLabelSuffix
+        self.m_normativeData = None
+
+    def __setLayer(self):
+        """
+        Sets up the plot layers for temporal ground reaction.
+
+        Defines the structure of the plot, including axes and titles, specific to kinetic data over time.
+        """
+
+        self.fig = plt.figure(figsize=(8.27,11.69), dpi=100,facecolor="white")
+        title=u""" Temporal Ground reaction \n """
+        self.fig.suptitle(title)
+        plt.subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=0.5, hspace=0.5)
+
+        ax0 = plt.subplot(3,1,1)# Rx
+        ax1 = plt.subplot(3,1,2)# Ry
+        ax2 = plt.subplot(3,1,3)# rz
+
+        self.fig.axes[2].axhline(9.81,color="black",ls='dashed')
+
+        self.fig.axes[0].set_title("Longitudinal Force" ,size=8)
+        self.fig.axes[1].set_title("Lateral Force" ,size=8)
+        self.fig.axes[2].set_title("Vertical Force" ,size=8)
+
+        for ax in [self.fig.axes[0],self.fig.axes[1],self.fig.axes[2]]:
+            ax.set_ylabel("Ground reaction force (N.kg-1)",size=8)
+
+    def __setData(self):
+        """
+        Sets up the data for the temporal plot.
+
+        Populates the plot with specific  data over time from the BTK acquisition.
+        """
+
+
+        plot.temporalPlot(self.fig.axes[0],self.m_acq,
+                                "LStanGroundReactionForce",0,pointLabelSuffix=self.m_pointLabelSuffix,color="red")
+        plot.temporalPlot(self.fig.axes[1],self.m_acq,
+                        "LStanGroundReactionForce",1,pointLabelSuffix=self.m_pointLabelSuffix,color="red")
+        plot.temporalPlot(self.fig.axes[2],self.m_acq,
+                                "LStanGroundReactionForce",2,pointLabelSuffix=self.m_pointLabelSuffix,color="red")
+
+        plot.temporalPlot(self.fig.axes[0],self.m_acq,
+                                "RStanGroundReactionForce",0,pointLabelSuffix=self.m_pointLabelSuffix,color="blue")
+        plot.temporalPlot(self.fig.axes[1],self.m_acq,
+                        "RStanGroundReactionForce",1,pointLabelSuffix=self.m_pointLabelSuffix,color="blue")
+        plot.temporalPlot(self.fig.axes[2],self.m_acq,
+                                "RStanGroundReactionForce",2,pointLabelSuffix=self.m_pointLabelSuffix,color="blue")
+
+        for ax in self.fig.axes:
+            maxs=[ax.get_ylim()[1]]
+            mins=[ax.get_ylim()[0]]
+            for line in ax.get_lines():
+                try: 
+                    if line.get_ydata().shape[0]==101:
+                        maxs.append(max(line.get_ydata()))
+                        mins.append(min(line.get_ydata()))
+                except:
+                    pass
+                ax.set_ylim([min(mins),max(maxs)])
+
+    def plotPanel(self):
+        """
+        Executes the temporal  plot.
+
+        Creates the finalized plot using the BTK acquisition data and defined structure.
+        """
+
+        self.__setLayer()
+        self.__setData()
+
+        # normative dataset not implemented
+
+        return self.fig
+
+
 
 class NormalizedGroundReactionForcePlotViewer(plotViewers.PlotViewer):
     """
@@ -115,12 +217,10 @@ class NormalizedGroundReactionForcePlotViewer(plotViewers.PlotViewer):
         """
         suffixPlus = "_" + self.m_pointLabelSuffix if self.m_pointLabelSuffix is not None else ""
 
-        self.m_analysis.kineticStats.data["LStanGroundReactionForce"+suffixPlus,"Left"]["mean"][:,0]
+        
 
         self.m_concretePlotFunction(self.fig.axes[0],self.m_analysis.kineticStats,
                 "LStanGroundReactionForce"+suffixPlus,"Left",0, color="red", customLimits=None)
-        
-
         self.m_concretePlotFunction(self.fig.axes[0],self.m_analysis.kineticStats,
                 "RStanGroundReactionForce"+suffixPlus,"Right",0, color="blue", customLimits=None)
 
