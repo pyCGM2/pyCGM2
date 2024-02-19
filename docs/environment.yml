@@ -6,6 +6,7 @@ channels:
 dependencies:
 - python==3.9
 - opensim=4.4=py39np120
+- btk
 - scipy
 - matplotlib
 - pandas
