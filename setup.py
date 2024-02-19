@@ -18,7 +18,7 @@ if developMode:
 if sys.maxsize < 2**32:
     raise Exception ("32-bit python version detected. PyCGM2-python3 requires a 64 bits python version")
 
-VERSION ="4.3rc2"
+VERSION ="4.3rc3"
 
 # just get one of the site-package and install there (it can be dist-package)
 SITE_PACKAGE_PATH = site.getsitepackages()[0] + "\\"
@@ -251,7 +251,7 @@ setup(name = 'pyCGM2',
                 'Nexus_zeniDetector     =  pyCGM2.Apps.ViconApps.Events.zeniDetector:main',
                 'Nexus_KalmanGapFilling =  pyCGM2.Apps.ViconApps.MoGapFill.KalmanGapFilling:main',
 
-                # QTM
+                #deprecated -------
                 'QTM_CGM1_workflow  =  pyCGM2.Apps.QtmApps.CGMi.CGM1_workflow:main',
                 'QTM_CGM11_workflow  =  pyCGM2.Apps.QtmApps.CGMi.CGM11_workflow:main',
                 'QTM_CGM21_workflow  =  pyCGM2.Apps.QtmApps.CGMi.CGM21_workflow:main',
