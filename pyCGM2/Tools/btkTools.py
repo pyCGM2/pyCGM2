@@ -1296,6 +1296,18 @@ def applyRotation(acq:btk.btkAcquisition, markers:List[str], globalFrameOrientat
 
         acq.GetPoint(marker).SetValues(valuesRot)
 
+def printEvents(acq:btk.btkAcquisition):
+    """
+    Display all events from the acquisition .
+
+    Args:
+        acq (btk.btkAcquisition): BTK acquisition instance.
+
+    """
+    evs = acq.GetEvents()
+    for it in btk.Iterate(evs):
+        print(f"{it.GetLabel()} [{it.GetTime()}][{it.GetFrame()}]-- {it.GetSubject()} --- {it.GetContext()}" )
+
 
 def smartGetEvents(acq:btk.btkAcquisition, label:str, context:str):
     """
