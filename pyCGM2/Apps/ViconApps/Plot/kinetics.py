@@ -9,10 +9,11 @@ import pyCGM2
 
 
 # pyCGM2 libraries
+from pyCGM2.Tools import btkTools
 from pyCGM2.Lib import analysis
 from pyCGM2.Lib import plot
 from pyCGM2.Report import normativeDatasets
-
+from pyCGM2.ForcePlates import forceplates
 
 def temporal(args):
 
@@ -118,8 +119,18 @@ def normalized(args):
 
     if not ECLIPSE_MODE:
         # btkAcq builder
+        
         nacf = nexusFilters.NexusConstructAcquisitionFilter(NEXUS,DATA_PATH,modelledFilenameNoExt,subject)
         acq = nacf.build()
+
+        mfpa = nexusTools.getForcePlateAssignment(NEXUS)
+        mappedForcePlate = forceplates.matchingFootSideOnForceplate(acq,mfpa=mfpa)
+        forceplates.addForcePlateGeneralEvents(acq,mappedForcePlate,subject=subject)
+        nexusTools.updateEvents(NEXUS,subject,acq)
+        # btkTools.printEvents(acq)
+
+
+
 
         outputName = modelledFilename
 
