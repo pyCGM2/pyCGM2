@@ -1536,6 +1536,105 @@ def plot_DescriptiveMuscleLength(DATA_PATH:str,analysis:Analysis,normativeDatase
     return figs,outfilenames
 
 
+def plot_ConsistencyMuscleLength(DATA_PATH:str,analysis:Analysis,normativeDataset:NormativeData,
+        pointLabelSuffix:Optional[str]=None,eventType:str="Gait",
+        normalizedSuffix=None,
+        OUT_PATH:Optional[str]=None,exportPdf:bool=False,outputName:Optional[str]=None,show:bool=True,title:Optional[str]=None,exportPng:bool=False,
+        autoYlim:bool=False,
+        analyticalData=None,muscles=None):
+    """
+    Displays all cycle of time-normalized muscle length outputs.
+
+    This function visualizes the muscle length data from an analysis instance, compared against normative datasets. 
+    It supports options for normalization, event type specification, and selective muscle analysis.
+
+    Args:
+        DATA_PATH (str): Path to the data directory.
+        analysis (Analysis): An Analysis instance containing muscle length data.
+        normativeDataset (NormativeData): A NormativeData instance for comparison.
+        pointLabelSuffix (Optional[str]): Suffix previously added to model outputs. Defaults to None.
+        eventType (str): Event type to consider (e.g., 'Gait'). Defaults to 'Gait'.
+        normalizedSuffix (Optional[str]): Suffix for normalized data. Defaults to None.
+        OUT_PATH (Optional[str]): Path for saving exported files. Defaults to None.
+        exportPdf (bool): If True, exports the plot as a PDF. Defaults to False.
+        outputName (Optional[str]): Name of the output file. Defaults to None.
+        show (bool): If True, shows the plot using Matplotlib. Defaults to True.
+        title (Optional[str]): Title for the plot panel. Defaults to None.
+        exportPng (bool): If True, exports the plot as a PNG. Defaults to False.
+        autoYlim (bool): If True, sets Y-axis limits automatically. Defaults to False.
+        analyticalData (Optional[any]): Additional data for horizontal line plotting. Defaults to None.
+        muscles (Optional[List[str]]): Specific muscles to analyze. Defaults to None.
+
+    Returns:
+        Tuple[List[matplotlib.figure.Figure], List[str]]: A list of Matplotlib figure objects and a list of output filenames.
+
+    Examples:
+        >>> figs, filenames = plot_ConsistencyMuscleLength("/data/path", analysisInstance, normativeDataset)
+    """
+    if OUT_PATH is None:
+        OUT_PATH = DATA_PATH
+
+    # detect muscle name in the analysis
+    if muscles is None:
+        detectedMuscles=[] 
+        for name,side in  analysis.muscleGeometryStats.data:
+            muscle = name[:name.find("[")-2]
+            if muscle not in detectedMuscles: 
+                detectedMuscles.append(muscle)
+    else:
+        detectedMuscles = muscles
+    
+
+    opensimMuscles_grouped = [detectedMuscles[i:i+16] for i in range(0, len(detectedMuscles), 16)]
+   
+    pageNumber = len(opensimMuscles_grouped)
+
+    figs=[]
+    outfilenames=[]
+
+    exportFlag = True if exportPdf or exportPng else False
+
+    page = 0
+    for i in range(0,pageNumber):
+
+        if outputName is None:
+            outputName = "pyCGM2-analysis" 
+  
+        filenameOut =  outputName+"- consistency muscleLength  ["+ str(page)+"]"
+
+        # viewer
+        kv =musclePlotViewers.MuscleNormalizedPlotPanelViewer(analysis)
+        kv.setConcretePlotFunction(plot.gaitConsistencyPlot)
+        kv.setMuscles(opensimMuscles_grouped[page])
+        kv.setMuscleOutputType("MuscleLength")
+        if normalizedSuffix is not None: kv.setNormalizationSuffix(normalizedSuffix) 
+        if normativeDataset is not None: kv.setNormativeDataset(normativeDataset)
+
+        kv.setAutomaticYlimits(autoYlim)
+
+
+
+        # filter
+        pf = plotFilters.PlottingFilter()
+        pf.setViewer(kv)
+        if title is not None: pf.setTitle(title+"-consistency MuscleLength ["+ str(page)+"]")
+        if exportPdf: pf.setExport(OUT_PATH,filenameOut,"pdf")
+
+
+        fig = pf.plot()
+
+        if analyticalData is not None: pf.setHorizontalLines(analyticalData)
+        if exportPng:fig.savefig(OUT_PATH+filenameOut+".png")
+        
+        outfilenames.append(filenameOut+".png")
+        figs.append(fig)
+
+        page+=1
+    
+    if show: plt.show()
+
+    return figs,outfilenames
+
 def plotPFKE(DATA_PATH:str,analysisInstance:Analysis,normativeDataset:NormativeData,
     OUT_PATH:Optional[str]=None,exportPdf:bool=False,outputName:Optional[str]=None,show:bool=True,title:Optional[str]=None,exportPng:bool=False):
     """
