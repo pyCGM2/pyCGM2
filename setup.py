@@ -249,18 +249,7 @@ setup(name = 'pyCGM2',
                 'Nexus_plot_comparison_normalizedEmg = pyCGM2.Apps.ViconApps.Plot.deprecated.plotCompareNormalizedEmg:main',
                 #deprecated -------
                 'Nexus_zeniDetector     =  pyCGM2.Apps.ViconApps.Events.zeniDetector:main',
-                'Nexus_KalmanGapFilling =  pyCGM2.Apps.ViconApps.MoGapFill.KalmanGapFilling:main',
-
-                #deprecated -------
-                'QTM_CGM1_workflow  =  pyCGM2.Apps.QtmApps.CGMi.CGM1_workflow:main',
-                'QTM_CGM11_workflow  =  pyCGM2.Apps.QtmApps.CGMi.CGM11_workflow:main',
-                'QTM_CGM21_workflow  =  pyCGM2.Apps.QtmApps.CGMi.CGM21_workflow:main',
-                'QTM_CGM22_workflow  =  pyCGM2.Apps.QtmApps.CGMi.CGM22_workflow:main',
-                'QTM_CGM23_workflow  =  pyCGM2.Apps.QtmApps.CGMi.CGM23_workflow:main',
-                'QTM_CGM24_workflow  =  pyCGM2.Apps.QtmApps.CGMi.CGM24_workflow:main',
-                'QTM_CGM25_workflow  =  pyCGM2.Apps.QtmApps.CGMi.CGM25_workflow:main',
-                'QTM_CGM26_workflow  =  pyCGM2.Apps.QtmApps.CGMi.CGM26_workflow:main',
-
+                'Nexus_KalmanGapFilling =  pyCGM2.Apps.ViconApps.MoGapFill.KalmanGapFilling:main'
           ]
       },
     )
