@@ -16,6 +16,7 @@
    
       ~AnalysesXmlCgmDrivenModelProcedure.__init__
       ~AnalysesXmlCgmDrivenModelProcedure.finalize
+      ~AnalysesXmlCgmDrivenModelProcedure.forceMotFile
       ~AnalysesXmlCgmDrivenModelProcedure.getXml
       ~AnalysesXmlCgmDrivenModelProcedure.prepareTrial_fromBtkAcq
       ~AnalysesXmlCgmDrivenModelProcedure.prepareTrial_fromMotFiles
