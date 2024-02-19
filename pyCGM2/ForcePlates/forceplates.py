@@ -311,13 +311,14 @@ def matchingFootSideOnForceplate (btkAcq:btk.btkAcquisition,
 
 
 
-def addForcePlateGeneralEvents (btkAcq:btk.btkAcquisition,mappedForcePlate:str):
+def addForcePlateGeneralEvents (btkAcq:btk.btkAcquisition,mappedForcePlate:str,subject:str=None):
     """
     Add maximum force of force plates as general events in the acquisition.
 
     Args:
         btkAcq (btk.btkAcquisition): A BTK acquisition instance.
         mappedForcePlate (str): Letters indicating foot side assigned to each force plate (e.g., "LRX").
+        subject (str): subject name
     """
 
 
@@ -339,6 +340,7 @@ def addForcePlateGeneralEvents (btkAcq:btk.btkAcquisition,mappedForcePlate:str):
     # remove force plates events
     btkTools.clearEvents(btkAcq,["Left-FP","Right-FP"])
 
+    subject="" if subject is None else subject
 
     # add general events
     indexFP =0
@@ -353,10 +355,12 @@ def addForcePlateGeneralEvents (btkAcq:btk.btkAcquisition,mappedForcePlate:str):
         frameMax=  ff+np.argmax(Rz)
 
         if letter == "L":
-            ev = btk.btkEvent('Left-FP', (frameMax-1)/pf, 'General', btk.btkEvent.Automatic, '', 'event from Force plate assignment')
+            ev = btk.btkEvent('Left-FP', (frameMax-1)/pf, 'General', btk.btkEvent.Automatic, subject, 'event from Force plate assignment')
             btkAcq.AppendEvent(ev)
+            ev.SetFrame(int(frameMax-1))
         elif letter == "R":
-            ev = btk.btkEvent('Right-FP', (frameMax-1)/pf, 'General', btk.btkEvent.Automatic, '', 'event from Force plate assignment')
+            ev = btk.btkEvent('Right-FP', (frameMax-1)/pf, 'General', btk.btkEvent.Automatic, subject, 'event from Force plate assignment')
+            ev.SetFrame(int(frameMax-1))
             btkAcq.AppendEvent(ev)
 
 
