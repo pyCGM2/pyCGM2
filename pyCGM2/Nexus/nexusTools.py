@@ -525,6 +525,22 @@ def createEvents(NEXUS:ViconNexus.ViconNexus,subject:str,acq:btk.btkAcquisition,
         if ev.GetLabel() in labels:
             NEXUS.CreateAnEvent( subject, ev.GetContext(), ev.GetLabel(), int(ev.GetTime()*freq), 0.0 )
 
+def updateEvents(NEXUS:ViconNexus.ViconNexus,subject:str,acq:btk.btkAcquisition):
+    """Appends specific events from a BTK acquisition to Nexus.
+
+    Args:
+        NEXUS (ViconNexus.ViconNexus): The Nexus handle.
+        subject (str): Subject-VSK name.
+        acq (btk.btkAcquisition): The BTK acquisition instance.
+        labels (List): List of event labels.
+    """
+    NEXUS.ClearAllEvents()
+    freq = acq.GetPointFrequency()
+    events= acq.GetEvents()
+    for ev in btk.Iterate(events):
+        NEXUS.CreateAnEvent( subject, ev.GetContext(), ev.GetLabel(), int(ev.GetTime()*freq), 0.0 )
+
+
 def getForcePlateAssignment(NEXUS:ViconNexus.ViconNexus):
     """Retrieves force plate assignments from Nexus.
 
