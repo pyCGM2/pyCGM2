@@ -1020,9 +1020,9 @@ class CGM1(CGM):
 
 
     def _thigh_calibrate(self,side:str, aquiStatic: btk.btkAcquisition, dictRef: Dict[str, Any], frameInit: int, frameEnd: int, options: Optional[Dict[str, Any]] = None) -> None:
-        """Calibrate the left thigh segment.
+        """Calibrate the thigh segment.
 
-        Constructs the technical referential for the left thigh segment and calculates the knee joint center based on static acquisition data.
+        Constructs the technical referential for the thigh segment and calculates the knee joint center based on static acquisition data.
 
         Args:
             side (str): bodyside
@@ -1212,9 +1212,9 @@ class CGM1(CGM):
     #     # seg.addCalibrationMarkerLabel("RKJC")
 
     def _shank_calibrate(self,side:str, aquiStatic: btk.btkAcquisition, dictRef: Dict[str, Any], frameInit: int, frameEnd: int, options: Optional[Dict[str, Any]] = None) -> None:
-        """Calibrate the left shank segment.
+        """Calibrate the shank segment.
 
-        Constructs the technical referential for the left shank segment and calculates the ankle joint center based on static acquisition data.
+        Constructs the technical referential for the shank segment and calculates the ankle joint center based on static acquisition data.
 
         Args:
             side (str): body side
@@ -1405,9 +1405,9 @@ class CGM1(CGM):
     #     # seg.addCalibrationMarkerLabel("RAJC")
 
     def _unCorrectedFoot_calibrate(self,side: str, aquiStatic: btk.btkAcquisition, dictRef: Dict[str, Any], frameInit: int, frameEnd: int, options: Optional[Dict[str, Any]] = None) -> None:
-        """Calibrate the left uncorrected foot segment.
+        """Calibrate the uncorrected foot segment.
 
-        Constructs the technical referential for the left uncorrected foot segment based on static acquisition data.
+        Constructs the technical referential for the uncorrected foot segment based on static acquisition data.
 
         Args:
             side (str): body side
@@ -1502,101 +1502,6 @@ class CGM1(CGM):
         # seg.addTrackingMarkerLabel("LAJC") # for LS fitting
 
 
-
-
-    # def _right_unCorrectedFoot_calibrate(self, aquiStatic: btk.btkAcquisition, dictRef: Dict[str, Any], frameInit: int, frameEnd: int, options: Optional[Dict[str, Any]] = None) -> None:
-    #     """Calibrate the left uncorrected foot segment.
-
-    #     Constructs the technical referential for the left uncorrected foot segment based on static acquisition data.
-
-    #     Args:
-    #         aquiStatic (btk.btkAcquisition): Static acquisition data for calibration.
-    #         dictRef (Dict[str, Any]): Dictionary for reference markers used in technical coordinate system calibration.
-    #         frameInit (int): The initial frame for calibration.
-    #         frameEnd (int): The final frame for calibration.
-    #         options (Optional[Dict[str, Any]]): Additional options for calibration, if any.
-    #     """
-    #     seg = self.getSegment("Right Foot")
-    #     seg.resetMarkerLabels()
-
-    #     # ---  additional markers and Update of the marker segment list
-    #     #seg.addMarkerLabel("RKJC")
-
-
-    #     if "useBodyBuilderFoot" in options.keys() and options["useBodyBuilderFoot"]:
-    #         LOGGER.logger.debug("You use a right uncorrected foot sequence different than native CGM1")
-    #         dictRef["Right Foot"]={"TF" : {'sequence':"ZYX", 'labels':   ["RTOE","RAJC","RKJC","RAJC"]} } # uncorrected Foot - use shank flexion axis (Y) as second axis
-
-
-
-    #     # --- Construction of the anatomical Referential
-    #     tf=seg.getReferential("TF")
-
-    #     pt1=aquiStatic.GetPoint(str(dictRef["Right Foot"]["TF"]['labels'][0])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-    #     pt2=aquiStatic.GetPoint(str(dictRef["Right Foot"]["TF"]['labels'][1])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-
-    #     a1=(pt2-pt1)
-    #     a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
-
-    #     if dictRef["Right Foot"]["TF"]['labels'][2] is not None:
-    #         pt3=aquiStatic.GetPoint(str(dictRef["Right Foot"]["TF"]['labels'][2])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-    #         v=(pt3-pt1)
-
-    #         v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
-    #         a2=np.cross(a1,v)
-    #         a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
-    #         x,y,z,R=frame.setFrameData(a1,a2,dictRef["Right Foot"]["TF"]['sequence'])
-
-    #     else:
-    #         distalShank = self.getSegment("Right Shank")
-    #         proximalShank = self.getSegment("Right Shank Proximal")
-
-    #         # uncorrected Refrence with dist shank
-    #         v=distalShank.anatomicalFrame.static.m_axisY #(pt3-pt1)
-    #         v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
-    #         a2=np.cross(a1,v)
-    #         a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
-    #         x_dist,y_dist,z_dist,R_dist=frame.setFrameData(a1,a2,dictRef["Right Foot"]["TF"]['sequence'])
-
-    #         # uncorrected Refrence with prox shank
-    #         v=proximalShank.anatomicalFrame.static.m_axisY #(pt3-pt1)
-    #         v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
-    #         a2=np.cross(a1,v)
-    #         a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
-    #         x_prox,y_prox,z_prox,R_prox=frame.setFrameData(a1,a2,dictRef["Right Foot"]["TF"]['sequence'])
-
-    #         self._R_rightUnCorrfoot_dist_prox = np.dot(R_prox.T,R_dist)
-
-    #         if "viconCGM1compatible" in options.keys() and options["viconCGM1compatible"]:
-    #             if distalShank.getReferential("TF").static.getNode_byLabel("RAJC").m_desc != "mid":
-    #                 x,y,z,R = x_prox,y_prox,z_prox,R_prox
-    #             else:
-    #                 x,y,z,R = x_dist,y_dist,z_dist,R_dist
-    #         else:
-    #             x,y,z,R = x_dist,y_dist,z_dist,R_dist
-
-    #     ptOrigin=aquiStatic.GetPoint(str(dictRef["Right Foot"]["TF"]['labels'][3])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-
-    #     tf.static.m_axisX=x
-    #     tf.static.m_axisY=y
-    #     tf.static.m_axisZ=z
-    #     tf.static.setRotation(R)
-    #     tf.static.setTranslation(ptOrigin)
-
-    #     # --- node manager
-    #     for label in seg.m_tracking_markers:
-    #         globalPosition=aquiStatic.GetPoint(str(label)).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-    #         tf.static.addNode(label,globalPosition,positionType="Global")
-
-    #     # for label in seg.m_calibration_markers:
-    #     #     globalPosition=aquiStatic.GetPoint(str(label)).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-    #     #     tf.static.addNode(label,globalPosition,positionType="Global")
-
-    #     node_prox = self.getSegment("Right Shank").getReferential("TF").static.getNode_byLabel("RAJC")
-    #     tf.static.addNode("RAJC",node_prox.m_global,positionType="Global",desc = node_prox.m_desc)
-    #     # seg.addTrackingMarkerLabel("RAJC")
-
-
     def _pelvis_Anatomicalcalibrate(self, aquiStatic: btk.btkAcquisition, dictAnatomic: Dict[str, Any], frameInit: int, frameEnd: int) -> None:
         """Calibrate the anatomical referential of the pelvis segment.
 
@@ -1660,9 +1565,9 @@ class CGM1(CGM):
         seg.anatomicalFrame.static.addNode("com",com,positionType="Local")
 
     def _thigh_Anatomicalcalibrate(self,side:str, aquiStatic: btk.btkAcquisition, dictAnatomic: Dict[str, Any], frameInit: int, frameEnd: int) -> None:
-        """Calibrate the anatomical referential of the left thigh segment.
+        """Calibrate the anatomical referential of the thigh segment.
 
-        Constructs the anatomical referential for the left thigh segment based on static acquisition data and anatomical dictionary definitions.
+        Constructs the anatomical referential for the thigh segment based on static acquisition data and anatomical dictionary definitions.
 
         Args:
             side (str): body side
@@ -1770,9 +1675,9 @@ class CGM1(CGM):
     #     seg.setLength(np.linalg.norm(kjc-hjc))
 
     def _shank_Anatomicalcalibrate(self, side:str, aquiStatic: btk.btkAcquisition, dictAnatomic: Dict[str, Any], frameInit: int, frameEnd: int) -> None:
-        """Calibrate the anatomical referential of the left shank segment.
+        """Calibrate the anatomical referential of the shank segment.
 
-        Constructs the anatomical referential for the left shank segment based on static acquisition data and anatomical dictionary definitions.
+        Constructs the anatomical referential for the shank segment based on static acquisition data and anatomical dictionary definitions.
 
         Args:
             side (str): body side
@@ -1825,9 +1730,9 @@ class CGM1(CGM):
         seg.setLength(np.linalg.norm(ajc-kjc))
 
     def _shankProximal_AnatomicalCalibrate(self,side:str, aquiStatic: btk.btkAcquisition, dictAnat: Dict[str, Any], frameInit: int, frameEnd: int, options: Optional[Dict[str, Any]] = None) -> None:
-        """Calibrate the anatomical referential of the left shank proximal segment.
+        """Calibrate the anatomical referential of the shank proximal segment.
 
-        Constructs and adjusts the anatomical referential for the left shank proximal segment based on static acquisition data, anatomical dictionary definitions, and optional parameters.
+        Constructs and adjusts the anatomical referential for the shank proximal segment based on static acquisition data, anatomical dictionary definitions, and optional parameters.
 
         Args:
             side (str): body side
@@ -1877,111 +1782,10 @@ class CGM1(CGM):
             seg.anatomicalFrame.static.addNode(node.getLabel(),node.getGlobal(),positionType="Global", desc = node.getDescription())
 
 
-    # def _right_shank_Anatomicalcalibrate(self, aquiStatic: btk.btkAcquisition, dictAnatomic: Dict[str, Any], frameInit: int, frameEnd: int) -> None:
-    #     """Calibrate the anatomical referential of the right shank segment.
-
-    #     Constructs the anatomical referential for the right shank segment based on static acquisition data and anatomical dictionary definitions.
-
-    #     Args:
-    #         aquiStatic (btk.btkAcquisition): Static acquisition data for calibration.
-    #         dictAnatomic (Dict[str, Any]): Dictionary for reference markers used in anatomical coordinate system calibration.
-    #         frameInit (int): The initial frame for calibration.
-    #         frameEnd (int): The final frame for calibration.
-    #     """
-
-
-
-    #     seg=self.getSegment("Right Shank")
-
-    #     # --- Construction of the anatomical Referential
-    #     pt1=aquiStatic.GetPoint(str(dictAnatomic["Right Shank"]['labels'][0])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-    #     pt2=aquiStatic.GetPoint(str(dictAnatomic["Right Shank"]['labels'][1])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-    #     pt3=aquiStatic.GetPoint(str(dictAnatomic["Right Shank"]['labels'][2])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-
-    #     ptOrigin=aquiStatic.GetPoint(str(dictAnatomic["Right Shank"]['labels'][3])).GetValues()[frameInit:frameEnd,:].mean(axis=0)
-
-    #     a1=(pt2-pt1)
-    #     a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
-
-    #     v=(pt3-pt1)
-    #     v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
-
-    #     a2=np.cross(a1,v)
-    #     a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
-
-    #     x,y,z,R=frame.setFrameData(a1,a2,dictAnatomic["Right Shank"]['sequence'])
-
-    #     seg.anatomicalFrame.static.m_axisX=x
-    #     seg.anatomicalFrame.static.m_axisY=y
-    #     seg.anatomicalFrame.static.m_axisZ=z
-    #     seg.anatomicalFrame.static.setRotation(R)
-    #     seg.anatomicalFrame.static.setTranslation(ptOrigin)
-
-    #     # --- relative rotation Technical Anatomical
-    #     tf=seg.getReferential("TF")
-    #     tf.setRelativeMatrixAnatomic( np.dot(tf.static.getRotation().T,seg.anatomicalFrame.static.getRotation()))
-
-    #     # --- node manager
-    #     for node in tf.static.getNodes():
-    #         seg.anatomicalFrame.static.addNode(node.getLabel(),node.getGlobal(),positionType="Global", desc = node.getDescription())
-
-
-    #     # --- compute length
-    #     kjc = seg.anatomicalFrame.static.getNode_byLabel("RKJC").m_local
-    #     ajc = seg.anatomicalFrame.static.getNode_byLabel("RAJC").m_local
-    #     seg.setLength(np.linalg.norm(ajc-kjc))
-
-
-    # def _right_shankProximal_AnatomicalCalibrate(self, aquiStatic: btk.btkAcquisition, dictAnat: Dict[str, Any], frameInit: int, frameEnd: int, options: Optional[Dict[str, Any]] = None) -> None:
-    #     """Calibrate the anatomical referential of the right shank proximal segment.
-
-    #     Constructs and adjusts the anatomical referential for the right shank proximal segment based on static acquisition data, anatomical dictionary definitions, and optional parameters.
-
-    #     Args:
-    #         aquiStatic (btk.btkAcquisition): Static acquisition data for calibration.
-    #         dictAnat (Dict[str, Any]): Dictionary for reference markers used in anatomical coordinate system calibration.
-    #         frameInit (int): The initial frame for calibration.
-    #         frameEnd (int): The final frame for calibration.
-    #         options (Optional[Dict[str, Any]]): Additional options for calibration, if any.
-    #     """
-
-
-    #     if self.m_useRightTibialTorsion:
-    #         tibialTorsion = np.deg2rad(self.mp_computed["RightTibialTorsionOffset"])
-    #     else:
-    #         tibialTorsion = 0.0
-
-
-    #     seg=self.getSegment("Right Shank Proximal")
-
-    #     # --- set static anatomical Referential
-    #     # Rotation of the static anatomical Referential by the tibial Torsion angle
-    #     rotZ_tibRot = np.eye(3,3)
-    #     rotZ_tibRot[0,0] = np.cos(tibialTorsion)
-    #     rotZ_tibRot[0,1] = np.sin(tibialTorsion)
-    #     rotZ_tibRot[1,0] = - np.sin(tibialTorsion)
-    #     rotZ_tibRot[1,1] = np.cos(tibialTorsion)
-
-    #     R = np.dot(seg.anatomicalFrame.static.getRotation(),rotZ_tibRot)
-
-    #     csFrame=frame.Frame()
-    #     csFrame.update(R,seg.anatomicalFrame.static.getTranslation() )
-    #     seg.anatomicalFrame.setStaticFrame(csFrame)
-
-    #     # --- relative rotation Technical Anatomical
-    #     tf=seg.getReferential("TF")
-    #     tf.setRelativeMatrixAnatomic( np.dot(tf.static.getRotation().T,seg.anatomicalFrame.static.getRotation()))
-
-    #     # node manager
-    #     # --- node manager
-    #     for node in tf.static.getNodes():
-    #         seg.anatomicalFrame.static.addNode(node.getLabel(),node.getGlobal(),positionType="Global", desc = node.getDescription())
-
-
     def _foot_corrected_calibrate(self, side: str, aquiStatic: btk.btkAcquisition, dictAnatomic: Dict[str, Any], frameInit: int, frameEnd: int, options: Optional[Dict[str, Any]] = None) -> None:
-        """Calibrate the anatomical referential of the left corrected foot segment.
+        """Calibrate the anatomical referential of the corrected foot segment.
 
-        Constructs the anatomical referential for the left corrected foot segment based on static acquisition data, anatomical dictionary definitions, and optional parameters.
+        Constructs the anatomical referential for the corrected foot segment based on static acquisition data, anatomical dictionary definitions, and optional parameters.
 
         Args:
             side (str): body side
@@ -2863,7 +2667,7 @@ class CGM1(CGM):
     def _clavicle_calibrate(self, side: str, aquiStatic: btk.btkAcquisition, dictRef: Dict[str, Any], frameInit: int, frameEnd: int, options: Optional[Dict[str, Any]] = None) -> None:
         """Calibrates the technical referential of the clavicle segment for a specified side.
 
-        This function constructs the technical referential for either the left or right clavicle segment using static motion data. It computes the mean position of markers within a specified frame range for this purpose.
+        This function constructs the technical referential for either the or right clavicle segment using static motion data. It computes the mean position of markers within a specified frame range for this purpose.
 
         Args:
             side (str): Specifies the side ('Left' or 'Right') of the clavicle.
@@ -2912,7 +2716,7 @@ class CGM1(CGM):
     def _clavicle_Anatomicalcalibrate(self, side: str, aquiStatic: btk.btkAcquisition, dictAnatomic: Dict[str, Any], frameInit: int, frameEnd: int) -> None:
         """Calibrates the anatomical referential of the clavicle segment for a specified side.
 
-        This method establishes the anatomical referential for either the left or right clavicle segment based on static acquisition data. It calculates the average position of anatomical landmarks within a frame range for this purpose.
+        This method establishes the anatomical referential for either the or right clavicle segment based on static acquisition data. It calculates the average position of anatomical landmarks within a frame range for this purpose.
 
         Args:
             side (str): Specifies the side ('Left' or 'Right') of the clavicle.
@@ -3160,7 +2964,7 @@ class CGM1(CGM):
     def _foreArm_calibrate(self, side: str, aquiStatic: btk.btkAcquisition, dictRef: Dict[str, Any], frameInit: int, frameEnd: int, options: Optional[Dict[str, Any]] = None) -> None:
         """Calibrates the technical referential of the forearm segment for the specified side.
 
-        This function constructs the technical referential for either the left or right forearm segment using static motion data. It calculates the mean position of markers within a specified frame range.
+        This function constructs the technical referential for either the or right forearm segment using static motion data. It calculates the mean position of markers within a specified frame range.
 
         Args:
             side (str): The side of the body ('Left' or 'Right').
@@ -3323,7 +3127,7 @@ class CGM1(CGM):
     def _hand_calibrate(self, side: str, aquiStatic: btk.btkAcquisition, dictRef: Dict[str, Any], frameInit: int, frameEnd: int, options: Optional[Dict[str, Any]] = None) -> None:
         """Calibrates the technical referential of the hand segment for the specified side.
 
-        This function establishes the technical referential for either the left or right hand segment using static motion data. It calculates the mean position of markers within a specified frame range.
+        This function establishes the technical referential for either the or right hand segment using static motion data. It calculates the mean position of markers within a specified frame range.
 
         Args:
             side (str): The side of the body ('Left' or 'Right').
@@ -3748,13 +3552,13 @@ class CGM1(CGM):
 
     
     def _thigh_motion(self,side:str, aqui: btk.btkAcquisition, dictRef: Dict[str, Any], dictAnat: Dict[str, Any], options: Optional[Dict[str, Any]] = None) -> None:
-        """Process the motion of the left thigh segment.
+        """Process the motion of the thigh segment.
 
         Args:
             side (str): body side (Left or Right)
             aqui (btk.btkAcquisition): Motion acquisition data.
-            dictRef (Dict[str, Any]): Technical referential definitions for the left thigh.
-            dictAnat (Dict[str, Any]): Anatomical referential definitions for the left thigh.
+            dictRef (Dict[str, Any]): Technical referential definitions for the thigh.
+            dictAnat (Dict[str, Any]): Anatomical referential definitions for the thigh.
             options (Optional[Dict[str, Any]], optional): Additional options. Defaults to None.
         """
         prefix = "L" if side == "Left" else "R" if side == "Right" else ""
@@ -3840,13 +3644,13 @@ class CGM1(CGM):
 
     
     def _shank_motion(self,side:str, aqui: btk.btkAcquisition, dictRef: Dict[str, Any], dictAnat: Dict[str, Any], options: Optional[Dict[str, Any]] = None) -> None:
-        """Process the motion of the left shank segment.
+        """Process the motion of the shank segment.
 
         Args:
             side (str): body side (Left or Right)
             aqui (btk.btkAcquisition): Motion acquisition data.
-            dictRef (Dict[str, Any]): Technical referential definitions for the left shank.
-            dictAnat (Dict[str, Any]): Anatomical referential definitions for the left shank.
+            dictRef (Dict[str, Any]): Technical referential definitions for the shank.
+            dictAnat (Dict[str, Any]): Anatomical referential definitions for the shank.
             options (Optional[Dict[str, Any]], optional): Additional options. Defaults to None.
         """
         prefix = "L" if side == "Left" else "R" if side == "Right" else ""
@@ -3937,12 +3741,12 @@ class CGM1(CGM):
 
     
     def _shankProximal_motion(self, side:str, aqui: btk.btkAcquisition, dictAnat: Dict[str, Any], options: Optional[Dict[str, Any]] = None) -> None:
-        """Process the motion of the left shank proximal segment.
+        """Process the motion of the shank proximal segment.
 
         Args:
             side (str): body side (Left or Right)
             aqui (btk.btkAcquisition): Motion acquisition data.
-            dictAnat (Dict[str, Any]): Anatomical referential definitions for the left shank proximal.
+            dictAnat (Dict[str, Any]): Anatomical referential definitions for the shank proximal.
             options (Optional[Dict[str, Any]], optional): Additional options. Defaults to None.
         """
         prefix = "L" if side == "Left" else "R" if side == "Right" else ""
@@ -4001,13 +3805,13 @@ class CGM1(CGM):
 
     
     def _foot_motion(self, side:str, aqui: btk.btkAcquisition, dictRef: Dict[str, Any], dictAnat: Dict[str, Any], options: Optional[Dict[str, Any]] = None) -> None:
-        """Process the motion of the left foot segment.
+        """Process the motion of the foot segment.
 
         Args:
             side (str): body side (Left or Right)
             aqui (btk.btkAcquisition): Motion acquisition data.
-            dictRef (Dict[str, Any]): Technical referential definitions for the left foot.
-            dictAnat (Dict[str, Any]): Anatomical referential definitions for the left foot.
+            dictRef (Dict[str, Any]): Technical referential definitions for the foot.
+            dictAnat (Dict[str, Any]): Anatomical referential definitions for the foot.
             options (Optional[Dict[str, Any]], optional): Additional options. Defaults to None.
         """
 
@@ -4077,14 +3881,14 @@ class CGM1(CGM):
 
     
     def _foot_motion_static(self,side:str, aquiStatic: btk.btkAcquisition, dictAnat: Dict[str, Any], options: Optional[Dict[str, Any]] = None) -> None:
-        """Process the static motion of the left foot segment.
+        """Process the static motion of the foot segment.
 
-        This method is used for static motion analysis of the left foot, taking into account options like flat foot condition.
+        This method is used for static motion analysis of the foot, taking into account options like flat foot condition.
 
         Args:
             side (str): body side (Left or Right)
             aquiStatic (btk.btkAcquisition): Static motion acquisition data.
-            dictAnat (Dict[str, Any]): Anatomical referential definitions for the left foot.
+            dictAnat (Dict[str, Any]): Anatomical referential definitions for the foot.
             options (Optional[Dict[str, Any]], optional): Additional options including flat foot settings. Defaults to None.
         """
 
@@ -4213,14 +4017,14 @@ class CGM1(CGM):
 
     
     def _thigh_motion_optimize(self,side:str, aqui: btk.btkAcquisition, dictRef: Dict[str, Any], motionMethod: enums.motionMethod) -> None:
-        """Optimizes the motion of the left thigh segment using a specific motion method.
+        """Optimizes the motion of the thigh segment using a specific motion method.
 
-        This method adjusts the technical frame of the left thigh segment based on dynamic position data. It optionally adds LHJC to the tracking markers if needed.
+        This method adjusts the technical frame of the thigh segment based on dynamic position data. It optionally adds LHJC to the tracking markers if needed.
 
         Args:
             aqui (btk.btkAcquisition): Motion acquisition data.
             side (str): body side ( Left or Right)
-            dictRef (Dict[str, Any]): Technical referential definitions for the left thigh.
+            dictRef (Dict[str, Any]): Technical referential definitions for the thigh.
             motionMethod (enums.motionMethod): Segmental motion method to apply.
         """
         
@@ -4293,14 +4097,14 @@ class CGM1(CGM):
     
     
     def _shank_motion_optimize(self,side:str, aqui: btk.btkAcquisition, dictRef: Dict[str, Any], motionMethod: enums.motionMethod) -> None:
-        """Optimizes the motion of the left shank segment using a specific motion method.
+        """Optimizes the motion of the shank segment using a specific motion method.
 
-        This method adjusts the technical frame of the left shank segment based on dynamic position data. It optionally adds LKJC to the tracking markers if needed.
+        This method adjusts the technical frame of the shank segment based on dynamic position data. It optionally adds LKJC to the tracking markers if needed.
 
         Args:
             aqui (btk.btkAcquisition): Motion acquisition data.
             side (str): body side ( Left or Right)
-            dictRef (Dict[str, Any]): Technical referential definitions for the left shank.
+            dictRef (Dict[str, Any]): Technical referential definitions for the shank.
             motionMethod (enums.motionMethod): Segmental motion method to apply.
         """
         prefix = "L" if side == "Left" else "R" if side == "Right" else ""
@@ -4368,14 +4172,14 @@ class CGM1(CGM):
     
     
     def _foot_motion_optimize(self,side:str, aqui: btk.btkAcquisition, dictRef: Dict[str, Any], motionMethod: enums.motionMethod) -> None:
-        """Optimizes the motion of the left foot segment using a specified motion method.
+        """Optimizes the motion of the foot segment using a specified motion method.
 
-        This method adjusts the technical frame of the left foot segment based on dynamic position data. It may add LAJC to the tracking markers if the marker list is less than 2 and checks the presence of tracking markers in the acquisition.
+        This method adjusts the technical frame of the foot segment based on dynamic position data. It may add LAJC to the tracking markers if the marker list is less than 2 and checks the presence of tracking markers in the acquisition.
 
         Args:
             side (str): body side ( Left or Right)
             aqui (btk.btkAcquisition): Motion acquisition data.
-            dictRef (Dict[str, Any]): Technical referential definitions for the left foot.
+            dictRef (Dict[str, Any]): Technical referential definitions for the foot.
             motionMethod (enums.motionMethod): Segmental motion method to apply.
         """
         prefix = "L" if side == "Left" else "R" if side == "Right" else ""

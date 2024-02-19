@@ -819,7 +819,7 @@ class CGM2_4(CGM2_3):
                                 frameEnd: int, 
                                 options: Optional[Dict[str, Any]] = None):
         """
-        Calibrate the technical frame for the left hind foot segment based on static acquisition data.
+        Calibrate the technical frame for the hind foot segment based on static acquisition data.
 
         Args:
             side (str): body side
@@ -905,7 +905,7 @@ class CGM2_4(CGM2_3):
                                 frameEnd: int, 
                                 options: Optional[Dict[str, Any]] = None):
         """
-        Calibrate the technical frame for the left forefoot segment based on static acquisition data.
+        Calibrate the technical frame for the forefoot segment based on static acquisition data.
 
         Args:
             body (str): body side
@@ -978,7 +978,7 @@ class CGM2_4(CGM2_3):
                                           frameEnd: int, 
                                           options: Optional[Dict[str, Any]] = None):
         """
-        Calibrate the anatomical frame for the left hind foot segment based on static acquisition data.
+        Calibrate the anatomical frame for the hind foot segment based on static acquisition data.
 
         Args:
             side (str): body side
@@ -1091,7 +1091,7 @@ class CGM2_4(CGM2_3):
                                           frameEnd: int, 
                                           options: Optional[Dict[str, Any]] = None):
         """
-        Calibrate the anatomical frame for the left forefoot segment based on static acquisition data.
+        Calibrate the anatomical frame for the forefoot segment based on static acquisition data.
 
         Args:
             side (str): body side
@@ -1381,7 +1381,7 @@ class CGM2_4(CGM2_3):
     # ----- native motion ------
     def _hindFoot_motion(self, side:str, aqui: btk.btkAcquisition, dictRef: Dict[str, Any], dictAnat: Dict[str, Any], options: Optional[Any] = None) -> None:
         """
-        Performs motion of the left hindfoot.
+        Performs motion of the hindfoot.
 
         Args:
             side (str): body side (Left or Right)
@@ -1453,7 +1453,7 @@ class CGM2_4(CGM2_3):
                               dictAnat: Dict[str, Any], 
                               options: Optional[Any] = None) -> None:    
         """
-        Performs motion of the left forefoot.
+        Performs motion of the forefoot.
 
         Args:
             side (str): body side (Left or Right)
@@ -1524,7 +1524,7 @@ class CGM2_4(CGM2_3):
                                       dictRef: Dict[str, Any], 
                                       motionMethod: enums.motionMethod) -> None:
         """
-        Optimize the motion of the left hindfoot.
+        Optimize the motion of the hindfoot.
 
         Args:
             side (str): body side (Left or Right)
@@ -1592,7 +1592,7 @@ class CGM2_4(CGM2_3):
                                       dictRef: Dict[str, Any], 
                                       motionMethod: enums.motionMethod) -> None:
         """
-        Optimize the motion of the left forefoot.
+        Optimize the motion of the forefoot.
 
         Args:
             side (str): body side (Left or Right)
