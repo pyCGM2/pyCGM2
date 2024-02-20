@@ -11,12 +11,6 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Set up Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: '3.9' 
-
-
     - name: Setup Miniconda
       uses: conda-incubator/setup-miniconda@v2
       with:
@@ -26,16 +20,13 @@ jobs:
         environment-file: ./virtualEnvs/environment_py39.yml
         activate-environment: pycgm39
 
-    - name: Install dependencies
-      run: |
-        C:\Miniconda\condabin\conda.bat env update --file ./virtualEnvs/environment_py39.yml
 
     - name: Verify Conda Environment
       shell: powershell
       run: |
         conda info
         conda list
-         
+
     - name: Lint with flake8
       run: |
         # Activate the base environment
