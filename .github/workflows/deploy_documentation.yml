@@ -20,6 +20,9 @@ jobs:
       run: |
         C:\Miniconda\condabin\conda.bat env update --file ./virtualEnvs/environment_py39.yml
         C:\Miniconda\condabin\conda.bat init powershell
+        C:\Miniconda\condabin\conda.bat activate pycgm39
+        conda info
+        conda list
     - name: Lint with flake8
       run: |
         # Activate the base environment
