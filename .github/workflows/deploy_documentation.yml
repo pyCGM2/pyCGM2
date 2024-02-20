@@ -30,7 +30,6 @@ jobs:
     - name: Build documentation
       shell: powershell
       run: |
-        C:\Miniconda\condabin\conda.bat activate pycgm39
         cd docs
         make html
 
