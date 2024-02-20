@@ -27,6 +27,11 @@ jobs:
         conda info
         conda list
 
+   - name: Install pyCGM2
+      shell: powershell
+      run: |
+        python -m pip install .  
+
     - name: Build documentation
       shell: powershell
       run: |
