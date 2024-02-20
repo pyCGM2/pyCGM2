@@ -18,7 +18,7 @@ jobs:
 
     - name: Install dependencies
       run: |
-        C:\Miniconda\condabin\conda.bat env update --file environment_py39.yml
+        C:\Miniconda\condabin\conda.bat env update --file ./virtualEnvs/environment_py39.yml
         C:\Miniconda\condabin\conda.bat init powershell
     - name: Lint with flake8
       run: |

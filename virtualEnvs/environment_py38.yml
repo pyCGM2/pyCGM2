@@ -29,6 +29,6 @@ dependencies:
 - sphinx
 - sphinx-argparse
 - sphinxcontrib-mermaid
-- sphinx_rtd_theme
+- pydata-sphinx-theme
 
 
