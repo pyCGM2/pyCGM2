@@ -43,7 +43,7 @@ def _setPointData(ftr, framecount, ff, values):
     return data, exists
 
 
-def getTrialName(NEXUS:ViconNexus.ViconNexus):
+def getTrialName(NEXUS):
 
     DATA_PATH, reconstructFilenameLabelledNoExt = NEXUS.GetTrialName()
     if reconstructFilenameLabelledNoExt!="":
@@ -52,7 +52,7 @@ def getTrialName(NEXUS:ViconNexus.ViconNexus):
         raise Exception(
             "[pyCGM2] : No Trial loaded into nexus")
 
-def getActiveSubject(NEXUS:ViconNexus.ViconNexus):
+def getActiveSubject(NEXUS):
     """
     Retrieves the active subject from Nexus.
     Args:
@@ -121,7 +121,7 @@ def checkActivatedSubject(NEXUS, subjectNames):
     return subjectMarkerWithTraj.keys()[index]
 
 
-def setTrajectoryFromArray(NEXUS:ViconNexus.ViconNexus, 
+def setTrajectoryFromArray(NEXUS, 
                            vskName:str, label:str, array:np.ndarray, firstFrame:int=0):
     """Sets a trajectory in Nexus using data from an array.
 
@@ -142,7 +142,7 @@ def setTrajectoryFromArray(NEXUS:ViconNexus.ViconNexus,
     NEXUS.SetTrajectory(vskName, label, data[0], data[1], data[2], exists)
 
 
-def setTrajectoryFromAcq(NEXUS:ViconNexus.ViconNexus, vskName:str, label:str, acq:btk.btkAcquisition):
+def setTrajectoryFromAcq(NEXUS, vskName:str, label:str, acq:btk.btkAcquisition):
     """Sets a trajectory in Nexus using data from a BTK acquisition.
 
     Args:
@@ -172,7 +172,7 @@ def setTrajectoryFromAcq(NEXUS:ViconNexus.ViconNexus, vskName:str, label:str, ac
     NEXUS.SetTrajectory(vskName, label, data[0], data[1], data[2], exists)
 
 
-def appendModelledMarkerFromAcq(NEXUS:ViconNexus.ViconNexus, 
+def appendModelledMarkerFromAcq(NEXUS, 
                                 vskName:str, label:str, acq:btk.btkAcquisition, suffix:str=""):
     """Appends a modeled marker to Nexus from a BTK acquisition.
 
@@ -206,7 +206,7 @@ def appendModelledMarkerFromAcq(NEXUS:ViconNexus.ViconNexus,
     NEXUS.SetModelOutput(vskName, output_label, data, exists)
 
 
-def appendAngleFromAcq(NEXUS:ViconNexus.ViconNexus, 
+def appendAngleFromAcq(NEXUS, 
                     vskName:str, label:str, acq:btk.btkAcquisition):
     
     """Appends an angle data to Nexus from a BTK acquisition.
@@ -242,7 +242,7 @@ def appendAngleFromAcq(NEXUS:ViconNexus.ViconNexus,
 
 
 
-def appendForceFromAcq(NEXUS:ViconNexus.ViconNexus,
+def appendForceFromAcq(NEXUS,
                        vskName:str,label:str, acq:btk.btkAcquisition,
                        normalizedData:bool=True):
     """Appends force data to Nexus from a BTK acquisition.
@@ -282,7 +282,7 @@ def appendForceFromAcq(NEXUS:ViconNexus.ViconNexus,
 
 
 
-def appendMomentFromAcq(NEXUS:ViconNexus.ViconNexus,vskName:str,label:str, acq:btk.btkAcquisition,
+def appendMomentFromAcq(NEXUS,vskName:str,label:str, acq:btk.btkAcquisition,
                         normalizedData:bool=True):
     """Appends moment data to Nexus from a BTK acquisition.
 
@@ -321,7 +321,7 @@ def appendMomentFromAcq(NEXUS:ViconNexus.ViconNexus,vskName:str,label:str, acq:b
 
     NEXUS.SetModelOutput( vskName, label, data, exists )
 
-def appendPowerFromAcq(NEXUS:ViconNexus.ViconNexus,vskName:str,label:str, acq:btk.btkAcquisition,
+def appendPowerFromAcq(NEXUS,vskName:str,label:str, acq:btk.btkAcquisition,
                        normalizedData:bool=True):
     """Appends power data to Nexus from a BTK acquisition.
 
@@ -355,7 +355,7 @@ def appendPowerFromAcq(NEXUS:ViconNexus.ViconNexus,vskName:str,label:str, acq:bt
 
     NEXUS.SetModelOutput( vskName, label, data, exists )
 
-def appendBones(NEXUS:ViconNexus.ViconNexus,
+def appendBones(NEXUS,
                 vskName:str,acq:btk.btkAcquisition,label:str,segment:str,
                 OriginValues:Optional[np.ndarray]=None,
                 manualScale:Optional[np.ndarray]=None,
@@ -444,7 +444,7 @@ def appendBones(NEXUS:ViconNexus.ViconNexus,
 
         NEXUS.SetModelOutput( vskName, output_label, data, exists )
 
-def appendBtkScalarFromAcq(NEXUS:ViconNexus.ViconNexus,vskName:str,
+def appendBtkScalarFromAcq(NEXUS,vskName:str,
                            groupName:str,label:str,nexusTypes:Union[str,list],acq:btk.btkAcquisition):
     """Appends BTK scalar to the acquisition instance.
 
@@ -493,7 +493,7 @@ def appendBtkScalarFromAcq(NEXUS:ViconNexus.ViconNexus,vskName:str,
 
         NEXUS.SetModelOutput( vskName, label, data, exists )
 
-def createGeneralEvents(NEXUS:ViconNexus.ViconNexus,subject:str,acq:btk.btkAcquisition,labels:List):
+def createGeneralEvents(NEXUS,subject:str,acq:btk.btkAcquisition,labels:List):
     """Appends general events from a BTK acquisition to Nexus.
 
     Args:
@@ -509,7 +509,7 @@ def createGeneralEvents(NEXUS:ViconNexus.ViconNexus,subject:str,acq:btk.btkAcqui
         if ev.GetLabel() in labels:
             NEXUS.CreateAnEvent( subject, "General", ev.GetLabel(), int(ev.GetTime()*freq), 0.0 )
 
-def createEvents(NEXUS:ViconNexus.ViconNexus,subject:str,acq:btk.btkAcquisition,labels:List):
+def createEvents(NEXUS,subject:str,acq:btk.btkAcquisition,labels:List):
     """Appends specific events from a BTK acquisition to Nexus.
 
     Args:
@@ -525,7 +525,7 @@ def createEvents(NEXUS:ViconNexus.ViconNexus,subject:str,acq:btk.btkAcquisition,
         if ev.GetLabel() in labels:
             NEXUS.CreateAnEvent( subject, ev.GetContext(), ev.GetLabel(), int(ev.GetTime()*freq), 0.0 )
 
-def updateEvents(NEXUS:ViconNexus.ViconNexus,subject:str,acq:btk.btkAcquisition):
+def updateEvents(NEXUS,subject:str,acq:btk.btkAcquisition):
     """Appends specific events from a BTK acquisition to Nexus.
 
     Args:
@@ -541,7 +541,7 @@ def updateEvents(NEXUS:ViconNexus.ViconNexus,subject:str,acq:btk.btkAcquisition)
         NEXUS.CreateAnEvent( subject, ev.GetContext(), ev.GetLabel(), int(ev.GetTime()*freq), 0.0 )
 
 
-def getForcePlateAssignment(NEXUS:ViconNexus.ViconNexus):
+def getForcePlateAssignment(NEXUS):
     """Retrieves force plate assignments from Nexus.
 
     Args:
@@ -564,7 +564,7 @@ def getForcePlateAssignment(NEXUS:ViconNexus.ViconNexus):
                 out[str(id)]="A"
     return out
 
-def appendAnalysisParameters(NEXUS:ViconNexus.ViconNexus, acq:btk.btkAcquisition):
+def appendAnalysisParameters(NEXUS, acq:btk.btkAcquisition):
     """Appends analysis parameters to a BTK acquisition.
 
     Args:

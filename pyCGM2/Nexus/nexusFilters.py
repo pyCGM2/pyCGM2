@@ -36,7 +36,7 @@ class NexusModelFilter(object):
 
     """
 
-    def __init__(self, NEXUS:ViconNexus.ViconNexus, 
+    def __init__(self, NEXUS, 
                  iModel:model.Model, 
                  iAcq:btk.btkAcquisition, 
                  vskName:str, pointSuffix:str, staticProcessing:bool=False):
@@ -68,7 +68,7 @@ class NexusConstructAcquisitionFilter(object):
 
     """
 
-    def __init__(self, NEXUS:ViconNexus.ViconNexus,
+    def __init__(self, NEXUS,
                  dataPath:str, filenameNoExt:str, subject:str):
         """Initializes the NexusConstructAcquisitionFilter class."""
         self.NEXUS = NEXUS

@@ -78,7 +78,7 @@ class Device(object):
         id (str): The identifier of the device.
     """
 
-    def __init__(self,NEXUS:ViconNexus.ViconNexus, id:str):
+    def __init__(self,NEXUS, id:str):
         """Initializes the Device object with a Vicon Nexus handle and device ID.
         """
         self.NEXUS = NEXUS
@@ -133,7 +133,7 @@ class AnalogDevice(Device):
         channels (list[Channel]): A list of channels associated with the analog device.
     """
 
-    def __init__(self,NEXUS:ViconNexus.ViconNexus, id:str):
+    def __init__(self,NEXUS, id:str):
         """Initializes the AnalogDevice object with a Vicon Nexus handle and device ID.
         """
         super(AnalogDevice, self).__init__(NEXUS,id)
@@ -184,7 +184,7 @@ class ForcePlate(Device):
         forcePlateInfo: Information about the force plate, such as origin and orientation.
     """
 
-    def __init__(self,NEXUS:ViconNexus.ViconNexus, id:str):
+    def __init__(self,NEXUS, id:str):
         """Initializes the ForcePlate object with a Vicon Nexus handle and device ID.
         """
         super(ForcePlate, self).__init__(NEXUS,id)

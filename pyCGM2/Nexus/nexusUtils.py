@@ -8,7 +8,7 @@ from pyCGM2.Model import model
 
 from typing import List, Tuple, Dict, Optional,Union
 
-def getNexusSubjectMp(NEXUS:ViconNexus.ViconNexus,subject:str, resetFlag:bool=False):
+def getNexusSubjectMp(NEXUS,subject:str, resetFlag:bool=False):
     """Retrieves required and optional anthropometric parameters from Nexus.
 
     Args:
@@ -71,7 +71,7 @@ def getNexusSubjectMp(NEXUS:ViconNexus.ViconNexus,subject:str, resetFlag:bool=Fa
         })
     return required_mp,optional_mp
 
-def updateNexusSubjectMp(NEXUS:ViconNexus.ViconNexus,model:model.Model,subjectName:str):
+def updateNexusSubjectMp(NEXUS,model:model.Model,subjectName:str):
     """Updates anthropometric parameters in Nexus from a pyCGM2 model instance.
 
     Args:
