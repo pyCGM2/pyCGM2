@@ -1,0 +1,580 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>pyCGM2.Lib.plot.plot_DescriptiveGRF &#8212; pyCGM2-API 4.2.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../../../_static/styles/bootstrap.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+
+  
+  <link href="../../../_static/vendor/fontawesome/6.5.1/css/all.min.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.1/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.1/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.1/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae" />
+  <script src="../../../_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=8d27b9dea8ad943066ae"></script>
+
+    <script src="../../../_static/documentation_options.js?v=d0ae6d56"></script>
+    <script src="../../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'Lib/plot/generated/pyCGM2.Lib.plot.plot_DescriptiveGRF';</script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="pyCGM2.Lib.plot.plot_DescriptiveGrfIntegration" href="pyCGM2.Lib.plot.plot_DescriptiveGrfIntegration.html" />
+    <link rel="prev" title="pyCGM2.Lib.plot.plot_ConsistencyKinetic" href="pyCGM2.Lib.plot.plot_ConsistencyKinetic.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a id="pst-skip-link" class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar">
+<div class="bd-header__inner bd-page-width">
+  <label class="sidebar-toggle primary-toggle" for="__primary">
+    <span class="fa-solid fa-bars"></span>
+  </label>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../../_static/pyCGM2-logo2.png" class="logo__image only-light" alt="pyCGM2-API 4.2.0 documentation - Home"/>
+    <script>document.write(`<img src="../../../_static/pyCGM2-logo2.png" class="logo__image only-dark" alt="pyCGM2-API 4.2.0 documentation - Home"/>`);</script>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav class="navbar-nav">
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../Apps/apps.html">
+                        Apps
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item current active">
+                      <a class="nav-link nav-internal" href="../../libIndex.html">
+                        High Level functions
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../modules/moduleIndex.html">
+                        API Reference
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../thirdparty/thirdpartyIndex.html">
+                        Third party package
+                      </a>
+                    </li>
+                
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+    </div>
+  
+
+  
+    <label class="sidebar-toggle secondary-toggle" for="__secondary" tabindex="0">
+      <span class="fa-solid fa-outdent"></span>
+    </label>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          <div class="navbar-item">
+<nav class="navbar-nav">
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../Apps/apps.html">
+                        Apps
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item current active">
+                      <a class="nav-link nav-internal" href="../../libIndex.html">
+                        High Level functions
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../modules/moduleIndex.html">
+                        API Reference
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../thirdparty/thirdpartyIndex.html">
+                        Third party package
+                      </a>
+                    </li>
+                
+  </ul>
+</nav></div>
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../cgm/cgm.html">pyCGM2.Lib.CGM</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../cgm/generated/pyCGM2.Lib.CGM.cgm1.calibrate.html">pyCGM2.Lib.CGM.cgm1.calibrate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../cgm/generated/pyCGM2.Lib.CGM.cgm1.fitting.html">pyCGM2.Lib.CGM.cgm1.fitting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../cgm/generated/pyCGM2.Lib.CGM.cgm1_1.calibrate.html">pyCGM2.Lib.CGM.cgm1_1.calibrate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../cgm/generated/pyCGM2.Lib.CGM.cgm1_1.fitting.html">pyCGM2.Lib.CGM.cgm1_1.fitting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../cgm/generated/pyCGM2.Lib.CGM.cgm2_1.calibrate.html">pyCGM2.Lib.CGM.cgm2_1.calibrate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../cgm/generated/pyCGM2.Lib.CGM.cgm2_1.fitting.html">pyCGM2.Lib.CGM.cgm2_1.fitting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../cgm/generated/pyCGM2.Lib.CGM.cgm2_2.calibrate.html">pyCGM2.Lib.CGM.cgm2_2.calibrate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../cgm/generated/pyCGM2.Lib.CGM.cgm2_2.fitting.html">pyCGM2.Lib.CGM.cgm2_2.fitting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../cgm/generated/pyCGM2.Lib.CGM.musculoskeletal.cgm2_2.calibrate.html">pyCGM2.Lib.CGM.musculoskeletal.cgm2_2.calibrate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../cgm/generated/pyCGM2.Lib.CGM.musculoskeletal.cgm2_2.fitting.html">pyCGM2.Lib.CGM.musculoskeletal.cgm2_2.fitting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../cgm/generated/pyCGM2.Lib.CGM.cgm2_3.calibrate.html">pyCGM2.Lib.CGM.cgm2_3.calibrate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../cgm/generated/pyCGM2.Lib.CGM.cgm2_3.fitting.html">pyCGM2.Lib.CGM.cgm2_3.fitting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../cgm/generated/pyCGM2.Lib.CGM.musculoskeletal.cgm2_3.calibrate.html">pyCGM2.Lib.CGM.musculoskeletal.cgm2_3.calibrate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../cgm/generated/pyCGM2.Lib.CGM.musculoskeletal.cgm2_3.fitting.html">pyCGM2.Lib.CGM.musculoskeletal.cgm2_3.fitting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../cgm/generated/pyCGM2.Lib.CGM.cgm2_4.calibrate.html">pyCGM2.Lib.CGM.cgm2_4.calibrate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../cgm/generated/pyCGM2.Lib.CGM.cgm2_4.fitting.html">pyCGM2.Lib.CGM.cgm2_4.fitting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../cgm/generated/pyCGM2.Lib.CGM.cgm2_5.calibrate.html">pyCGM2.Lib.CGM.cgm2_5.calibrate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../cgm/generated/pyCGM2.Lib.CGM.cgm2_5.fitting.html">pyCGM2.Lib.CGM.cgm2_5.fitting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../cgm/generated/pyCGM2.Lib.CGM.kneeCalibration.calibration2Dof.html">pyCGM2.Lib.CGM.kneeCalibration.calibration2Dof</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../cgm/generated/pyCGM2.Lib.CGM.kneeCalibration.sara.html">pyCGM2.Lib.CGM.kneeCalibration.sara</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../analysis/analysis.html">pyCGM2.Lib.analysis</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../analysis/generated/pyCGM2.Lib.analysis.makeAnalysis.html">pyCGM2.Lib.analysis.makeAnalysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../analysis/generated/pyCGM2.Lib.analysis.exportAnalysis.html">pyCGM2.Lib.analysis.exportAnalysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../analysis/generated/pyCGM2.Lib.analysis.automaticCPdeviations.html">pyCGM2.Lib.analysis.automaticCPdeviations</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../emg/emg.html">pyCGM2.Lib.emg</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../emg/generated/pyCGM2.Lib.emg.loadEmg.html">pyCGM2.Lib.emg.loadEmg</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../emg/generated/pyCGM2.Lib.emg.processEMG.html">pyCGM2.Lib.emg.processEMG</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../emg/generated/pyCGM2.Lib.emg.normalizedEMG.html">pyCGM2.Lib.emg.normalizedEMG</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../emg/generated/pyCGM2.Lib.emg.processEMG_fromBtkAcq.html">pyCGM2.Lib.emg.processEMG_fromBtkAcq</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../event/eventDetectors.html">pyCGM2.Lib.eventDetector</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-4"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../event/generated/pyCGM2.Lib.eventDetector.zeni.html">pyCGM2.Lib.eventDetector.zeni</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../plot.html">pyCGM2.Lib.plot</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-5"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="pyCGM2.Lib.plot.compareEmgEnvelops.html">pyCGM2.Lib.plot.compareEmgEnvelops</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyCGM2.Lib.plot.compareKinematic.html">pyCGM2.Lib.plot.compareKinematic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyCGM2.Lib.plot.compareKinetic.html">pyCGM2.Lib.plot.compareKinetic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyCGM2.Lib.plot.compareSelectedEmgEvelops.html">pyCGM2.Lib.plot.compareSelectedEmgEvelops</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyCGM2.Lib.plot.plotConsistencyEnvelopEMGpanel.html">pyCGM2.Lib.plot.plotConsistencyEnvelopEMGpanel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyCGM2.Lib.plot.plotDescriptiveEnvelopEMGpanel.html">pyCGM2.Lib.plot.plotDescriptiveEnvelopEMGpanel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyCGM2.Lib.plot.plotPFKE.html">pyCGM2.Lib.plot.plotPFKE</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyCGM2.Lib.plot.plotSaggitalGagePanel.html">pyCGM2.Lib.plot.plotSaggitalGagePanel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyCGM2.Lib.plot.plotTemporalEMG.html">pyCGM2.Lib.plot.plotTemporalEMG</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyCGM2.Lib.plot.plotTemporalKinematic.html">pyCGM2.Lib.plot.plotTemporalKinematic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyCGM2.Lib.plot.plotTemporalKinetic.html">pyCGM2.Lib.plot.plotTemporalKinetic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyCGM2.Lib.plot.plot_ConsistencyKinematic.html">pyCGM2.Lib.plot.plot_ConsistencyKinematic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyCGM2.Lib.plot.plot_ConsistencyKinetic.html">pyCGM2.Lib.plot.plot_ConsistencyKinetic</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">pyCGM2.Lib.plot.plot_DescriptiveGRF</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyCGM2.Lib.plot.plot_DescriptiveGrfIntegration.html">pyCGM2.Lib.plot.plot_DescriptiveGrfIntegration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyCGM2.Lib.plot.plot_DescriptiveKinematic.html">pyCGM2.Lib.plot.plot_DescriptiveKinematic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyCGM2.Lib.plot.plot_DescriptiveKinetic.html">pyCGM2.Lib.plot.plot_DescriptiveKinetic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyCGM2.Lib.plot.plot_DescriptiveMuscleLength.html">pyCGM2.Lib.plot.plot_DescriptiveMuscleLength</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyCGM2.Lib.plot.plot_MAP.html">pyCGM2.Lib.plot.plot_MAP</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyCGM2.Lib.plot.plot_spatioTemporal.html">pyCGM2.Lib.plot.plot_spatioTemporal</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../report/report.html">pyCGM2.Lib.report</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-6"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../report/generated/pyCGM2.Lib.report.pdfGaitReport.html">pyCGM2.Lib.report.pdfGaitReport</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+
+
+<nav aria-label="Breadcrumb">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../libIndex.html" class="nav-link">High Level functions</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../plot.html" class="nav-link">pyCGM2.Lib.plot module</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page">pyCGM2.Lib.p...</li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="pycgm2-lib-plot-plot-descriptivegrf">
+<h1>pyCGM2.Lib.plot.plot_DescriptiveGRF<a class="headerlink" href="#pycgm2-lib-plot-plot-descriptivegrf" title="Link to this heading">#</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="pyCGM2.Lib.plot.plot_DescriptiveGRF">
+<span class="sig-prename descclassname"><span class="pre">pyCGM2.Lib.plot.</span></span><span class="sig-name descname"><span class="pre">plot_DescriptiveGRF</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">DATA_PATH</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">analysis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../../modules/processing/generated/pyCGM2.Processing.analysis.Analysis.html#pyCGM2.Processing.analysis.Analysis" title="pyCGM2.Processing.analysis.Analysis"><span class="pre">Analysis</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">normativeDataset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../../modules/report/generated/pyCGM2.Report.normativeDatasets.NormativeData.html#pyCGM2.Report.normativeDatasets.NormativeData" title="pyCGM2.Report.normativeDatasets.NormativeData"><span class="pre">NormativeData</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">pointLabelSuffix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eventType</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Gait'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">OUT_PATH</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exportPdf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outputName</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exportPng</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">autoYlim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyCGM2.Lib.plot.plot_DescriptiveGRF" title="Link to this definition">#</a></dt>
+<dd><p>display average and standard deviation of time-normalized ground reaction force.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>DATA_PATH</strong> (<em>str</em>) – path to your data</p></li>
+<li><p><strong>analysis</strong> (<a class="reference internal" href="../../../modules/processing/generated/pyCGM2.Processing.analysis.Analysis.html#pyCGM2.Processing.analysis.Analysis" title="pyCGM2.Processing.analysis.Analysis"><em>pyCGM2.Processing.analysis.Analysis</em></a>) – analysis instance.</p></li>
+<li><p><strong>bodyPart</strong> (<em>str</em>) – body part (choice : LowerLimb, Trunk, UpperLimb)</p></li>
+<li><p><strong>normativeDataset</strong> (<a class="reference internal" href="../../../modules/report/generated/pyCGM2.Report.normativeDatasets.NormativeData.html#pyCGM2.Report.normativeDatasets.NormativeData" title="pyCGM2.Report.normativeDatasets.NormativeData"><em>pyCGM2.Report.normativeDatasets.NormativeData</em></a>) – normative data instance.</p></li>
+<li><p><strong>pointLabelSuffix</strong> (<em>str</em>) – suffix previously added to your model outputs.</p></li>
+<li><p><strong>eventType</strong> (<em>str</em>) – [Optional, “Gait”]. event type. By default cycle is defined from foot strike.  <cite>Gait</cite> searched for the foot off events.</p></li>
+<li><p><strong>OUT_PATH</strong> (<em>str</em>) – path to your ouput folder</p></li>
+<li><p><strong>exportPdf</strong> (<em>bool</em>) – export as pdf</p></li>
+<li><p><strong>outputName</strong> (<em>str</em>) – name of the output filename.</p></li>
+<li><p><strong>show</strong> (<em>bool</em>) – show matplotlib figure.</p></li>
+<li><p><strong>title</strong> (<em>str</em>) – modify the plot panel title.</p></li>
+<li><p><strong>exportPng</strong> (<em>bool</em>) – export as png.</p></li>
+<li><p><strong>autoYlim</strong> (<em>bool</em>) – ignore predefined Y-axis boundaries</p></li>
+</ul>
+</dd>
+</dl>
+<p>Examples:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">plot_DescriptiveKinematic</span><span class="p">(</span><span class="s2">&quot;c:\mydata</span><span class="se">\&quot;</span><span class="s2">,analysisInstance,&quot;</span><span class="n">LowerLimb</span><span class="s2">&quot;,normativeInstance)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="pyCGM2.Lib.plot.plot_ConsistencyKinetic.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">pyCGM2.Lib.plot.plot_ConsistencyKinetic</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="pyCGM2.Lib.plot.plot_DescriptiveGrfIntegration.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">pyCGM2.Lib.plot.plot_DescriptiveGrfIntegration</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pyCGM2.Lib.plot.plot_DescriptiveGRF"><code class="docutils literal notranslate"><span class="pre">plot_DescriptiveGRF()</span></code></a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  <div class="tocsection sourcelink">
+    <a href="../../../_sources/Lib/plot/generated/pyCGM2.Lib.plot.plot_DescriptiveGRF.rst.txt">
+      <i class="fa-solid fa-file-lines"></i> Show Source
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae"></script>
+<script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2022, Fabien Leboeuf.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.15.2.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
