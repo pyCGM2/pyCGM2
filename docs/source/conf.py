@@ -30,7 +30,7 @@ copyright = '2022, Fabien Leboeuf'
 author = 'Fabien Leboeuf'
 
 # The full version, including alpha/beta/rc tags
-release = '4.2.0'
+release = '4.3.0-rc3'
 
 
 # -- General configuration ---------------------------------------------------
