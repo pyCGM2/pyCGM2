@@ -25,8 +25,15 @@ jobs:
         # Activate the base environment
         C:\Miniconda\condabin\conda.bat activate pycgm39
 
+    - name: Check Conda environment
+      run: |
+        C:\Miniconda\condabin\conda.bat activate pycgm39
+        conda info
+        conda list
+
     - name: Build documentation
       run: |
+        C:\Miniconda\condabin\conda.bat activate pycgm39
         cd docs
         make html
 
