@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>The SETTINGS sub-command &#8212; pyCGM2-API 4.3.0-rc3 documentation</title>
+    <title>The SETTINGS sub-command &#8212; pyCGM2-API 4.3.1-rc3 documentation</title>
   
   
   
@@ -35,7 +35,7 @@
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae" />
   <script src="../_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=8d27b9dea8ad943066ae"></script>
 
-    <script src="../_static/documentation_options.js?v=7115d642"></script>
+    <script src="../_static/documentation_options.js?v=8c65e904"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'Apps/settings';</script>
@@ -119,8 +119,8 @@
       
     
     
-    <img src="../_static/pyCGM2-logo2.png" class="logo__image only-light" alt="pyCGM2-API 4.3.0-rc3 documentation - Home"/>
-    <script>document.write(`<img src="../_static/pyCGM2-logo2.png" class="logo__image only-dark" alt="pyCGM2-API 4.3.0-rc3 documentation - Home"/>`);</script>
+    <img src="../_static/pyCGM2-logo2.png" class="logo__image only-light" alt="pyCGM2-API 4.3.1-rc3 documentation - Home"/>
+    <script>document.write(`<img src="../_static/pyCGM2-logo2.png" class="logo__image only-dark" alt="pyCGM2-API 4.3.1-rc3 documentation - Home"/>`);</script>
   
   
 </a></div>
@@ -365,6 +365,39 @@ document.write(`
                   
   <section id="the-settings-sub-command">
 <span id="settings-section"></span><h1>The SETTINGS sub-command<a class="headerlink" href="#the-settings-sub-command" title="Link to this heading">#</a></h1>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">usage</span><span class="p">:</span> <span class="n">pycgm2</span><span class="o">.</span><span class="n">exe</span> <span class="n">SETTINGS</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">{</span><span class="n">Edit</span><span class="p">}</span> <span class="o">...</span>
+</pre></div>
+</div>
+<section id="positional-arguments">
+<h2>Positional Arguments<a class="headerlink" href="#positional-arguments" title="Link to this heading">#</a></h2>
+<dl class="option-list">
+<dt><kbd>SETTINGS</kbd></dt>
+<dd><p>Possible choices: Edit</p>
+</dd>
+</dl>
+</section>
+<section id="Sub-commands">
+<h2>Sub-commands<a class="headerlink" href="#Sub-commands" title="Link to this heading">#</a></h2>
+<section id="Edit">
+<h3>Edit<a class="headerlink" href="#Edit" title="Link to this heading">#</a></h3>
+<p>folder initialisation commands</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pycgm2</span><span class="o">.</span><span class="n">exe</span> <span class="n">SETTINGS</span> <span class="n">Edit</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">m</span> <span class="n">MODEL</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">e</span><span class="p">]</span>
+</pre></div>
+</div>
+<section id="named-arguments">
+<h4>Named Arguments<a class="headerlink" href="#named-arguments" title="Link to this heading">#</a></h4>
+<dl class="option-list">
+<dt><kbd>-m, --model</kbd></dt>
+<dd><p>copy CGM settings</p>
+</dd>
+<dt><kbd>-e, --emg</kbd></dt>
+<dd><p>copy emg settings</p>
+<p>Default: False</p>
+</dd>
+</dl>
+</section>
+</section>
+</section>
 </section>
 
 
@@ -404,6 +437,25 @@ document.write(`
               
                 <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#positional-arguments">Positional Arguments</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Sub-commands">Sub-commands</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Edit">Edit</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#named-arguments">Named Arguments</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+  </nav></div>
 
   <div class="sidebar-secondary-item">
 

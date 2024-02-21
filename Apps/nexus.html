@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>The NEXUS sub-command &#8212; pyCGM2-API 4.3.0-rc3 documentation</title>
+    <title>The NEXUS sub-command &#8212; pyCGM2-API 4.3.1-rc3 documentation</title>
   
   
   
@@ -35,7 +35,7 @@
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae" />
   <script src="../_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=8d27b9dea8ad943066ae"></script>
 
-    <script src="../_static/documentation_options.js?v=7115d642"></script>
+    <script src="../_static/documentation_options.js?v=8c65e904"></script>
     <script src="../_static/doctools.js?v=888ff710"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'Apps/nexus';</script>
@@ -119,8 +119,8 @@
       
     
     
-    <img src="../_static/pyCGM2-logo2.png" class="logo__image only-light" alt="pyCGM2-API 4.3.0-rc3 documentation - Home"/>
-    <script>document.write(`<img src="../_static/pyCGM2-logo2.png" class="logo__image only-dark" alt="pyCGM2-API 4.3.0-rc3 documentation - Home"/>`);</script>
+    <img src="../_static/pyCGM2-logo2.png" class="logo__image only-light" alt="pyCGM2-API 4.3.1-rc3 documentation - Home"/>
+    <script>document.write(`<img src="../_static/pyCGM2-logo2.png" class="logo__image only-dark" alt="pyCGM2-API 4.3.1-rc3 documentation - Home"/>`);</script>
   
   
 </a></div>
@@ -365,6 +365,1523 @@ document.write(`
                   
   <section id="the-nexus-sub-command">
 <span id="nexus-section"></span><h1>The NEXUS sub-command<a class="headerlink" href="#the-nexus-sub-command" title="Link to this heading">#</a></h1>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">usage</span><span class="p">:</span> <span class="n">pycgm2</span><span class="o">.</span><span class="n">exe</span> <span class="n">NEXUS</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span>
+                        <span class="p">{</span><span class="n">CGM1</span><span class="mf">.0</span><span class="p">,</span><span class="n">CGM1</span><span class="mf">.1</span><span class="p">,</span><span class="n">CGM2</span><span class="mf">.1</span><span class="p">,</span><span class="n">CGM2</span><span class="mf">.2</span><span class="p">,</span><span class="n">CGM2</span><span class="mf">.3</span><span class="p">,</span><span class="n">CGM2</span><span class="mf">.4</span><span class="p">,</span><span class="n">CGM2</span><span class="mf">.5</span><span class="p">,</span><span class="n">CGM2</span><span class="mf">.6</span><span class="p">,</span><span class="n">Events</span><span class="p">,</span><span class="n">Gaps</span><span class="p">,</span><span class="n">Plots</span><span class="p">,</span><span class="n">System</span><span class="p">}</span>
+                        <span class="o">...</span>
+</pre></div>
+</div>
+<section id="positional-arguments">
+<h2>Positional Arguments<a class="headerlink" href="#positional-arguments" title="Link to this heading">#</a></h2>
+<dl class="option-list">
+<dt><kbd>NEXUS</kbd></dt>
+<dd><p>Possible choices: CGM1.0, CGM1.1, CGM2.1, CGM2.2, CGM2.3, CGM2.4, CGM2.5, CGM2.6, Events, Gaps, Plots, System</p>
+</dd>
+</dl>
+</section>
+<section id="Sub-commands">
+<h2>Sub-commands<a class="headerlink" href="#Sub-commands" title="Link to this heading">#</a></h2>
+<section id="CGM1.0">
+<h3>CGM1.0<a class="headerlink" href="#CGM1.0" title="Link to this heading">#</a></h3>
+<p>CGM1.0 commands</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pycgm2</span><span class="o">.</span><span class="n">exe</span> <span class="n">NEXUS</span> <span class="n">CGM1</span><span class="mf">.0</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">{</span><span class="n">Calibration</span><span class="p">,</span><span class="n">Fitting</span><span class="p">}</span> <span class="o">...</span>
+</pre></div>
+</div>
+<section id="positional-arguments_repeat1">
+<h4>Positional Arguments<a class="headerlink" href="#positional-arguments_repeat1" title="Link to this heading">#</a></h4>
+<dl class="option-list">
+<dt><kbd>CGM10</kbd></dt>
+<dd><p>Possible choices: Calibration, Fitting</p>
+</dd>
+</dl>
+</section>
+<section id="Sub-commands_repeat1">
+<h4>Sub-commands<a class="headerlink" href="#Sub-commands_repeat1" title="Link to this heading">#</a></h4>
+<section id="Calibration">
+<h5>Calibration<a class="headerlink" href="#Calibration" title="Link to this heading">#</a></h5>
+<p>Calibration command of the CGM1.0</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pycgm2</span><span class="o">.</span><span class="n">exe</span> <span class="n">NEXUS</span> <span class="n">CGM1</span><span class="mf">.0</span> <span class="n">Calibration</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">l</span> <span class="n">LEFTFLATFOOT</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">r</span> <span class="n">RIGHTFLATFOOT</span><span class="p">]</span>
+                                    <span class="p">[</span><span class="o">-</span><span class="n">hf</span> <span class="n">HEADFLAT</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">md</span> <span class="n">MARKERDIAMETER</span><span class="p">]</span>
+                                    <span class="p">[</span><span class="o">-</span><span class="n">ps</span> <span class="n">POINTSUFFIX</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">check</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">resetMP</span><span class="p">]</span>
+                                    <span class="p">[</span><span class="o">--</span><span class="n">forceMP</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">ae</span><span class="p">]</span>
+                                    <span class="p">[</span><span class="o">--</span><span class="n">offline</span> <span class="n">OFFLINE</span> <span class="n">OFFLINE</span><span class="p">]</span>
+</pre></div>
+</div>
+<section id="named-arguments">
+<h6>Named Arguments<a class="headerlink" href="#named-arguments" title="Link to this heading">#</a></h6>
+<dl class="option-list">
+<dt><kbd>-l, --leftFlatFoot</kbd></dt>
+<dd><p>left flat foot option</p>
+</dd>
+<dt><kbd>-r, --rightFlatFoot</kbd></dt>
+<dd><p>right flat foot option</p>
+</dd>
+<dt><kbd>-hf, --headFlat</kbd></dt>
+<dd><p>head flat option</p>
+</dd>
+<dt><kbd>-md, --markerDiameter</kbd></dt>
+<dd><p>marker diameter</p>
+</dd>
+<dt><kbd>-ps, --pointSuffix</kbd></dt>
+<dd><p>suffix of the model outputs</p>
+</dd>
+<dt><kbd>--check</kbd></dt>
+<dd><p>force CGM10 as model ouput suffix</p>
+<p>Default: False</p>
+</dd>
+<dt><kbd>--resetMP</kbd></dt>
+<dd><p>reset optional anthropometric parameters</p>
+<p>Default: False</p>
+</dd>
+<dt><kbd>--forceMP</kbd></dt>
+<dd><p>force the use of MP offsets to compute knee and ankle joint centres</p>
+<p>Default: False</p>
+</dd>
+<dt><kbd>-ae, --anomalyException</kbd></dt>
+<dd><p>raise an exception if an anomaly is detected</p>
+<p>Default: False</p>
+</dd>
+<dt><kbd>--offline</kbd></dt>
+<dd><blockquote>
+<div><p>subject name and static c3d file</p>
+</div></blockquote>
+</dd>
+</dl>
+</section>
+</section>
+<section id="Fitting">
+<h5>Fitting<a class="headerlink" href="#Fitting" title="Link to this heading">#</a></h5>
+<p>Fitting command of the CGM1.0</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pycgm2</span><span class="o">.</span><span class="n">exe</span> <span class="n">NEXUS</span> <span class="n">CGM1</span><span class="mf">.0</span> <span class="n">Fitting</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">md</span> <span class="n">MARKERDIAMETER</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">ps</span> <span class="n">POINTSUFFIX</span><span class="p">]</span>
+                                <span class="p">[</span><span class="o">--</span><span class="n">check</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">ae</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">fi</span> <span class="n">FRAMEINIT</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">fe</span> <span class="n">FRAMEEND</span><span class="p">]</span>
+                                <span class="p">[</span><span class="o">--</span><span class="n">offline</span> <span class="n">OFFLINE</span> <span class="n">OFFLINE</span> <span class="n">OFFLINE</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">c3d</span> <span class="n">C3D</span><span class="p">]</span>
+                                <span class="p">[</span><span class="o">--</span><span class="n">proj</span> <span class="n">PROJ</span><span class="p">]</span>
+</pre></div>
+</div>
+<section id="named-arguments_repeat1">
+<h6>Named Arguments<a class="headerlink" href="#named-arguments_repeat1" title="Link to this heading">#</a></h6>
+<dl class="option-list">
+<dt><kbd>-md, --markerDiameter</kbd></dt>
+<dd><p>marker diameter</p>
+</dd>
+<dt><kbd>-ps, --pointSuffix</kbd></dt>
+<dd><p>suffix of model outputs</p>
+</dd>
+<dt><kbd>--check</kbd></dt>
+<dd><p>force CGM10 as model ouput suffix</p>
+<p>Default: False</p>
+</dd>
+<dt><kbd>-ae, --anomalyException</kbd></dt>
+<dd><p>raise an exception if an anomaly is detected</p>
+<p>Default: False</p>
+</dd>
+<dt><kbd>-fi, --frameInit</kbd></dt>
+<dd><p>first frame to process</p>
+</dd>
+<dt><kbd>-fe, --frameEnd</kbd></dt>
+<dd><p>last frame to process</p>
+</dd>
+<dt><kbd>--offline</kbd></dt>
+<dd><blockquote>
+<div><p>subject name - dynamic c3d file - mfpa</p>
+</div></blockquote>
+</dd>
+<dt><kbd>-c3d, --c3d</kbd></dt>
+<dd><p>load the c3d file. This operation avoid to load data from the Nexus API.                             (be sure you save the c3d beforehand  )</p>
+</dd>
+<dt><kbd>--proj</kbd></dt>
+<dd><p>Referential to project joint moment. Choice : Distal, Proximal or Global</p>
+</dd>
+</dl>
+</section>
+</section>
+</section>
+</section>
+<section id="CGM1.1">
+<h3>CGM1.1<a class="headerlink" href="#CGM1.1" title="Link to this heading">#</a></h3>
+<p>CGM1.1 commands</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pycgm2</span><span class="o">.</span><span class="n">exe</span> <span class="n">NEXUS</span> <span class="n">CGM1</span><span class="mf">.1</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">{</span><span class="n">Calibration</span><span class="p">,</span><span class="n">Fitting</span><span class="p">}</span> <span class="o">...</span>
+</pre></div>
+</div>
+<section id="positional-arguments_repeat2">
+<h4>Positional Arguments<a class="headerlink" href="#positional-arguments_repeat2" title="Link to this heading">#</a></h4>
+<dl class="option-list">
+<dt><kbd>CGM11</kbd></dt>
+<dd><p>Possible choices: Calibration, Fitting</p>
+</dd>
+</dl>
+</section>
+<section id="Sub-commands_repeat2">
+<h4>Sub-commands<a class="headerlink" href="#Sub-commands_repeat2" title="Link to this heading">#</a></h4>
+<section id="Calibration_repeat1">
+<h5>Calibration<a class="headerlink" href="#Calibration_repeat1" title="Link to this heading">#</a></h5>
+<p>Calibration command of the CGM1.1</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pycgm2</span><span class="o">.</span><span class="n">exe</span> <span class="n">NEXUS</span> <span class="n">CGM1</span><span class="mf">.1</span> <span class="n">Calibration</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">l</span> <span class="n">LEFTFLATFOOT</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">r</span> <span class="n">RIGHTFLATFOOT</span><span class="p">]</span>
+                                    <span class="p">[</span><span class="o">-</span><span class="n">hf</span> <span class="n">HEADFLAT</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">md</span> <span class="n">MARKERDIAMETER</span><span class="p">]</span>
+                                    <span class="p">[</span><span class="o">-</span><span class="n">ps</span> <span class="n">POINTSUFFIX</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">check</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">resetMP</span><span class="p">]</span>
+                                    <span class="p">[</span><span class="o">--</span><span class="n">forceMP</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">ae</span><span class="p">]</span>
+                                    <span class="p">[</span><span class="o">--</span><span class="n">offline</span> <span class="n">OFFLINE</span> <span class="n">OFFLINE</span><span class="p">]</span>
+</pre></div>
+</div>
+<section id="named-arguments_repeat2">
+<h6>Named Arguments<a class="headerlink" href="#named-arguments_repeat2" title="Link to this heading">#</a></h6>
+<dl class="option-list">
+<dt><kbd>-l, --leftFlatFoot</kbd></dt>
+<dd><p>left flat foot option</p>
+</dd>
+<dt><kbd>-r, --rightFlatFoot</kbd></dt>
+<dd><p>right flat foot option</p>
+</dd>
+<dt><kbd>-hf, --headFlat</kbd></dt>
+<dd><p>head flat option</p>
+</dd>
+<dt><kbd>-md, --markerDiameter</kbd></dt>
+<dd><p>marker diameter</p>
+</dd>
+<dt><kbd>-ps, --pointSuffix</kbd></dt>
+<dd><p>suffix of the model outputs</p>
+</dd>
+<dt><kbd>--check</kbd></dt>
+<dd><p>force CGM11 as model ouput suffix</p>
+<p>Default: False</p>
+</dd>
+<dt><kbd>--resetMP</kbd></dt>
+<dd><p>reset optional anthropometric parameters</p>
+<p>Default: False</p>
+</dd>
+<dt><kbd>--forceMP</kbd></dt>
+<dd><p>force the use of MP offsets to compute knee and ankle joint centres</p>
+<p>Default: False</p>
+</dd>
+<dt><kbd>-ae, --anomalyException</kbd></dt>
+<dd><p>raise an exception if an anomaly is detected</p>
+<p>Default: False</p>
+</dd>
+<dt><kbd>--offline</kbd></dt>
+<dd><blockquote>
+<div><p>subject name and static c3d file</p>
+</div></blockquote>
+</dd>
+</dl>
+</section>
+</section>
+<section id="Fitting_repeat1">
+<h5>Fitting<a class="headerlink" href="#Fitting_repeat1" title="Link to this heading">#</a></h5>
+<p>Fitting command of the CGM1.1</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pycgm2</span><span class="o">.</span><span class="n">exe</span> <span class="n">NEXUS</span> <span class="n">CGM1</span><span class="mf">.1</span> <span class="n">Fitting</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">md</span> <span class="n">MARKERDIAMETER</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">ps</span> <span class="n">POINTSUFFIX</span><span class="p">]</span>
+                                <span class="p">[</span><span class="o">--</span><span class="n">check</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">ae</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">fi</span> <span class="n">FRAMEINIT</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">fe</span> <span class="n">FRAMEEND</span><span class="p">]</span>
+                                <span class="p">[</span><span class="o">--</span><span class="n">offline</span> <span class="n">OFFLINE</span> <span class="n">OFFLINE</span> <span class="n">OFFLINE</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">c3d</span> <span class="n">C3D</span><span class="p">]</span>
+                                <span class="p">[</span><span class="o">--</span><span class="n">proj</span> <span class="n">PROJ</span><span class="p">]</span>
+</pre></div>
+</div>
+<section id="named-arguments_repeat3">
+<h6>Named Arguments<a class="headerlink" href="#named-arguments_repeat3" title="Link to this heading">#</a></h6>
+<dl class="option-list">
+<dt><kbd>-md, --markerDiameter</kbd></dt>
+<dd><p>marker diameter</p>
+</dd>
+<dt><kbd>-ps, --pointSuffix</kbd></dt>
+<dd><p>suffix of model outputs</p>
+</dd>
+<dt><kbd>--check</kbd></dt>
+<dd><p>force CGM11 as model ouput suffix</p>
+<p>Default: False</p>
+</dd>
+<dt><kbd>-ae, --anomalyException</kbd></dt>
+<dd><p>raise an exception if an anomaly is detected</p>
+<p>Default: False</p>
+</dd>
+<dt><kbd>-fi, --frameInit</kbd></dt>
+<dd><p>first frame to process</p>
+</dd>
+<dt><kbd>-fe, --frameEnd</kbd></dt>
+<dd><p>last frame to process</p>
+</dd>
+<dt><kbd>--offline</kbd></dt>
+<dd><blockquote>
+<div><p>subject name - dynamic c3d file - mfpa</p>
+</div></blockquote>
+</dd>
+<dt><kbd>-c3d, --c3d</kbd></dt>
+<dd><p>load the c3d file. This operation avoid to load data from the Nexus API.                             (be sure you save the c3d beforehand  )</p>
+</dd>
+<dt><kbd>--proj</kbd></dt>
+<dd><p>Referential to project joint moment. Choice : JCS, Distal, Proximal or Global</p>
+</dd>
+</dl>
+</section>
+</section>
+</section>
+</section>
+<section id="CGM2.1">
+<h3>CGM2.1<a class="headerlink" href="#CGM2.1" title="Link to this heading">#</a></h3>
+<p>CGM2.1 commands</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pycgm2</span><span class="o">.</span><span class="n">exe</span> <span class="n">NEXUS</span> <span class="n">CGM2</span><span class="mf">.1</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">{</span><span class="n">Calibration</span><span class="p">,</span><span class="n">Fitting</span><span class="p">}</span> <span class="o">...</span>
+</pre></div>
+</div>
+<section id="positional-arguments_repeat3">
+<h4>Positional Arguments<a class="headerlink" href="#positional-arguments_repeat3" title="Link to this heading">#</a></h4>
+<dl class="option-list">
+<dt><kbd>CGM21</kbd></dt>
+<dd><p>Possible choices: Calibration, Fitting</p>
+</dd>
+</dl>
+</section>
+<section id="Sub-commands_repeat3">
+<h4>Sub-commands<a class="headerlink" href="#Sub-commands_repeat3" title="Link to this heading">#</a></h4>
+<section id="Calibration_repeat2">
+<h5>Calibration<a class="headerlink" href="#Calibration_repeat2" title="Link to this heading">#</a></h5>
+<p>Calibration command of the CGM2.1</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pycgm2</span><span class="o">.</span><span class="n">exe</span> <span class="n">NEXUS</span> <span class="n">CGM2</span><span class="mf">.1</span> <span class="n">Calibration</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">l</span> <span class="n">LEFTFLATFOOT</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">r</span> <span class="n">RIGHTFLATFOOT</span><span class="p">]</span>
+                                    <span class="p">[</span><span class="o">-</span><span class="n">hf</span> <span class="n">HEADFLAT</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">md</span> <span class="n">MARKERDIAMETER</span><span class="p">]</span>
+                                    <span class="p">[</span><span class="o">-</span><span class="n">ps</span> <span class="n">POINTSUFFIX</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">check</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">resetMP</span><span class="p">]</span>
+                                    <span class="p">[</span><span class="o">--</span><span class="n">forceMP</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">ae</span><span class="p">]</span>
+                                    <span class="p">[</span><span class="o">--</span><span class="n">offline</span> <span class="n">OFFLINE</span> <span class="n">OFFLINE</span><span class="p">]</span>
+                                    <span class="p">[</span><span class="o">--</span><span class="n">forceLHJC</span> <span class="n">FORCELHJC</span> <span class="p">[</span><span class="n">FORCELHJC</span> <span class="o">...</span><span class="p">]]</span>
+                                    <span class="p">[</span><span class="o">--</span><span class="n">forceRHJC</span> <span class="n">FORCERHJC</span> <span class="p">[</span><span class="n">FORCERHJC</span> <span class="o">...</span><span class="p">]]</span>
+</pre></div>
+</div>
+<section id="named-arguments_repeat4">
+<h6>Named Arguments<a class="headerlink" href="#named-arguments_repeat4" title="Link to this heading">#</a></h6>
+<dl class="option-list">
+<dt><kbd>-l, --leftFlatFoot</kbd></dt>
+<dd><p>left flat foot option</p>
+</dd>
+<dt><kbd>-r, --rightFlatFoot</kbd></dt>
+<dd><p>right flat foot option</p>
+</dd>
+<dt><kbd>-hf, --headFlat</kbd></dt>
+<dd><p>head flat option</p>
+</dd>
+<dt><kbd>-md, --markerDiameter</kbd></dt>
+<dd><p>marker diameter</p>
+</dd>
+<dt><kbd>-ps, --pointSuffix</kbd></dt>
+<dd><p>suffix of the model outputs</p>
+</dd>
+<dt><kbd>--check</kbd></dt>
+<dd><p>force CGM21 as model ouput suffix</p>
+<p>Default: False</p>
+</dd>
+<dt><kbd>--resetMP</kbd></dt>
+<dd><p>reset optional anthropometric parameters</p>
+<p>Default: False</p>
+</dd>
+<dt><kbd>--forceMP</kbd></dt>
+<dd><p>force the use of MP offsets to compute knee and ankle joint centres</p>
+<p>Default: False</p>
+</dd>
+<dt><kbd>-ae, --anomalyException</kbd></dt>
+<dd><p>raise an exception if an anomaly is detected</p>
+<p>Default: False</p>
+</dd>
+<dt><kbd>--offline</kbd></dt>
+<dd><blockquote>
+<div><p>subject name and static c3d file</p>
+</div></blockquote>
+</dd>
+<dt><kbd>--forceLHJC</kbd></dt>
+<dd></dd>
+<dt><kbd>--forceRHJC</kbd></dt>
+<dd></dd>
+</dl>
+</section>
+</section>
+<section id="Fitting_repeat2">
+<h5>Fitting<a class="headerlink" href="#Fitting_repeat2" title="Link to this heading">#</a></h5>
+<p>Fitting command of the CGM2.1</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pycgm2</span><span class="o">.</span><span class="n">exe</span> <span class="n">NEXUS</span> <span class="n">CGM2</span><span class="mf">.1</span> <span class="n">Fitting</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">md</span> <span class="n">MARKERDIAMETER</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">ps</span> <span class="n">POINTSUFFIX</span><span class="p">]</span>
+                                <span class="p">[</span><span class="o">--</span><span class="n">check</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">ae</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">fi</span> <span class="n">FRAMEINIT</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">fe</span> <span class="n">FRAMEEND</span><span class="p">]</span>
+                                <span class="p">[</span><span class="o">--</span><span class="n">offline</span> <span class="n">OFFLINE</span> <span class="n">OFFLINE</span> <span class="n">OFFLINE</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">c3d</span> <span class="n">C3D</span><span class="p">]</span>
+                                <span class="p">[</span><span class="o">--</span><span class="n">proj</span> <span class="n">PROJ</span><span class="p">]</span>
+</pre></div>
+</div>
+<section id="named-arguments_repeat5">
+<h6>Named Arguments<a class="headerlink" href="#named-arguments_repeat5" title="Link to this heading">#</a></h6>
+<dl class="option-list">
+<dt><kbd>-md, --markerDiameter</kbd></dt>
+<dd><p>marker diameter</p>
+</dd>
+<dt><kbd>-ps, --pointSuffix</kbd></dt>
+<dd><p>suffix of model outputs</p>
+</dd>
+<dt><kbd>--check</kbd></dt>
+<dd><p>force CGM21 as model ouput suffix</p>
+<p>Default: False</p>
+</dd>
+<dt><kbd>-ae, --anomalyException</kbd></dt>
+<dd><p>raise an exception if an anomaly is detected</p>
+<p>Default: False</p>
+</dd>
+<dt><kbd>-fi, --frameInit</kbd></dt>
+<dd><p>first frame to process</p>
+</dd>
+<dt><kbd>-fe, --frameEnd</kbd></dt>
+<dd><p>last frame to process</p>
+</dd>
+<dt><kbd>--offline</kbd></dt>
+<dd><blockquote>
+<div><p>subject name - dynamic c3d file - mfpa</p>
+</div></blockquote>
+</dd>
+<dt><kbd>-c3d, --c3d</kbd></dt>
+<dd><p>load the c3d file. This operation avoid to load data from the Nexus API.                             (be sure you save the c3d beforehand  )</p>
+</dd>
+<dt><kbd>--proj</kbd></dt>
+<dd><p>Referential to project joint moment. Choice : JCS, Distal, Proximal or Global</p>
+</dd>
+</dl>
+</section>
+</section>
+</section>
+</section>
+<section id="CGM2.2">
+<h3>CGM2.2<a class="headerlink" href="#CGM2.2" title="Link to this heading">#</a></h3>
+<p>CGM2.2 commands</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pycgm2</span><span class="o">.</span><span class="n">exe</span> <span class="n">NEXUS</span> <span class="n">CGM2</span><span class="mf">.2</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">{</span><span class="n">Calibration</span><span class="p">,</span><span class="n">Fitting</span><span class="p">}</span> <span class="o">...</span>
+</pre></div>
+</div>
+<section id="positional-arguments_repeat4">
+<h4>Positional Arguments<a class="headerlink" href="#positional-arguments_repeat4" title="Link to this heading">#</a></h4>
+<dl class="option-list">
+<dt><kbd>CGM22</kbd></dt>
+<dd><p>Possible choices: Calibration, Fitting</p>
+</dd>
+</dl>
+</section>
+<section id="Sub-commands_repeat4">
+<h4>Sub-commands<a class="headerlink" href="#Sub-commands_repeat4" title="Link to this heading">#</a></h4>
+<section id="Calibration_repeat3">
+<h5>Calibration<a class="headerlink" href="#Calibration_repeat3" title="Link to this heading">#</a></h5>
+<p>Calibration command of the CGM2.2</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pycgm2</span><span class="o">.</span><span class="n">exe</span> <span class="n">NEXUS</span> <span class="n">CGM2</span><span class="mf">.2</span> <span class="n">Calibration</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">l</span> <span class="n">LEFTFLATFOOT</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">r</span> <span class="n">RIGHTFLATFOOT</span><span class="p">]</span>
+                                    <span class="p">[</span><span class="o">-</span><span class="n">hf</span> <span class="n">HEADFLAT</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">md</span> <span class="n">MARKERDIAMETER</span><span class="p">]</span>
+                                    <span class="p">[</span><span class="o">-</span><span class="n">ps</span> <span class="n">POINTSUFFIX</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">check</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">resetMP</span><span class="p">]</span>
+                                    <span class="p">[</span><span class="o">--</span><span class="n">forceMP</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">ae</span><span class="p">]</span>
+                                    <span class="p">[</span><span class="o">--</span><span class="n">offline</span> <span class="n">OFFLINE</span> <span class="n">OFFLINE</span><span class="p">]</span>
+                                    <span class="p">[</span><span class="o">--</span><span class="n">forceLHJC</span> <span class="n">FORCELHJC</span> <span class="p">[</span><span class="n">FORCELHJC</span> <span class="o">...</span><span class="p">]]</span>
+                                    <span class="p">[</span><span class="o">--</span><span class="n">forceRHJC</span> <span class="n">FORCERHJC</span> <span class="p">[</span><span class="n">FORCERHJC</span> <span class="o">...</span><span class="p">]]</span>
+                                    <span class="p">[</span><span class="o">-</span><span class="n">msm</span><span class="p">]</span>
+</pre></div>
+</div>
+<section id="named-arguments_repeat6">
+<h6>Named Arguments<a class="headerlink" href="#named-arguments_repeat6" title="Link to this heading">#</a></h6>
+<dl class="option-list">
+<dt><kbd>-l, --leftFlatFoot</kbd></dt>
+<dd><p>left flat foot option</p>
+</dd>
+<dt><kbd>-r, --rightFlatFoot</kbd></dt>
+<dd><p>right flat foot option</p>
+</dd>
+<dt><kbd>-hf, --headFlat</kbd></dt>
+<dd><p>head flat option</p>
+</dd>
+<dt><kbd>-md, --markerDiameter</kbd></dt>
+<dd><p>marker diameter</p>
+</dd>
+<dt><kbd>-ps, --pointSuffix</kbd></dt>
+<dd><p>suffix of the model outputs</p>
+</dd>
+<dt><kbd>--check</kbd></dt>
+<dd><p>force CGM22 as model ouput suffix</p>
+<p>Default: False</p>
+</dd>
+<dt><kbd>--resetMP</kbd></dt>
+<dd><p>reset optional anthropometric parameters</p>
+<p>Default: False</p>
+</dd>
+<dt><kbd>--forceMP</kbd></dt>
+<dd><p>force the use of MP offsets to compute knee and ankle joint centres</p>
+<p>Default: False</p>
+</dd>
+<dt><kbd>-ae, --anomalyException</kbd></dt>
+<dd><p>raise an exception if an anomaly is detected</p>
+<p>Default: False</p>
+</dd>
+<dt><kbd>--offline</kbd></dt>
+<dd><blockquote>
+<div><p>subject name and static c3d file</p>
+</div></blockquote>
+</dd>
+<dt><kbd>--forceLHJC</kbd></dt>
+<dd></dd>
+<dt><kbd>--forceRHJC</kbd></dt>
+<dd></dd>
+<dt><kbd>-msm, --musculoSkeletalModel</kbd></dt>
+<dd><p>musculoskeletal model</p>
+<p>Default: False</p>
+</dd>
+</dl>
+</section>
+</section>
+<section id="Fitting_repeat3">
+<h5>Fitting<a class="headerlink" href="#Fitting_repeat3" title="Link to this heading">#</a></h5>
+<p>Fitting command of the CGM2.2</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pycgm2</span><span class="o">.</span><span class="n">exe</span> <span class="n">NEXUS</span> <span class="n">CGM2</span><span class="mf">.2</span> <span class="n">Fitting</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">md</span> <span class="n">MARKERDIAMETER</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">ps</span> <span class="n">POINTSUFFIX</span><span class="p">]</span>
+                                <span class="p">[</span><span class="o">--</span><span class="n">check</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">ae</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">fi</span> <span class="n">FRAMEINIT</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">fe</span> <span class="n">FRAMEEND</span><span class="p">]</span>
+                                <span class="p">[</span><span class="o">--</span><span class="n">offline</span> <span class="n">OFFLINE</span> <span class="n">OFFLINE</span> <span class="n">OFFLINE</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">c3d</span> <span class="n">C3D</span><span class="p">]</span>
+                                <span class="p">[</span><span class="o">--</span><span class="n">proj</span> <span class="n">PROJ</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">msm</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">a</span> <span class="n">ACCURACY</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">noIk</span><span class="p">]</span>
+</pre></div>
+</div>
+<section id="named-arguments_repeat7">
+<h6>Named Arguments<a class="headerlink" href="#named-arguments_repeat7" title="Link to this heading">#</a></h6>
+<dl class="option-list">
+<dt><kbd>-md, --markerDiameter</kbd></dt>
+<dd><p>marker diameter</p>
+</dd>
+<dt><kbd>-ps, --pointSuffix</kbd></dt>
+<dd><p>suffix of model outputs</p>
+</dd>
+<dt><kbd>--check</kbd></dt>
+<dd><p>force CGM22 as model ouput suffix</p>
+<p>Default: False</p>
+</dd>
+<dt><kbd>-ae, --anomalyException</kbd></dt>
+<dd><p>raise an exception if an anomaly is detected</p>
+<p>Default: False</p>
+</dd>
+<dt><kbd>-fi, --frameInit</kbd></dt>
+<dd><p>first frame to process</p>
+</dd>
+<dt><kbd>-fe, --frameEnd</kbd></dt>
+<dd><p>last frame to process</p>
+</dd>
+<dt><kbd>--offline</kbd></dt>
+<dd><blockquote>
+<div><p>subject name - dynamic c3d file - mfpa</p>
+</div></blockquote>
+</dd>
+<dt><kbd>-c3d, --c3d</kbd></dt>
+<dd><p>load the c3d file. This operation avoid to load data from the Nexus API.                             (be sure you save the c3d beforehand  )</p>
+</dd>
+<dt><kbd>--proj</kbd></dt>
+<dd><p>Referential to project joint moment. Choice : JCS, Distal, Proximal or Global</p>
+</dd>
+<dt><kbd>-msm, --musculoSkeletalModel</kbd></dt>
+<dd><p>musculoskeletal model</p>
+<p>Default: False</p>
+</dd>
+<dt><kbd>-a, --accuracy</kbd></dt>
+<dd><p>Inverse Kinematics accuracy</p>
+</dd>
+<dt><kbd>--noIk</kbd></dt>
+<dd><p>cancel inverse kinematic</p>
+<p>Default: False</p>
+</dd>
+</dl>
+</section>
+</section>
+</section>
+</section>
+<section id="CGM2.3">
+<h3>CGM2.3<a class="headerlink" href="#CGM2.3" title="Link to this heading">#</a></h3>
+<p>CGM2.3 commands</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pycgm2</span><span class="o">.</span><span class="n">exe</span> <span class="n">NEXUS</span> <span class="n">CGM2</span><span class="mf">.3</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">{</span><span class="n">Calibration</span><span class="p">,</span><span class="n">Fitting</span><span class="p">}</span> <span class="o">...</span>
+</pre></div>
+</div>
+<section id="positional-arguments_repeat5">
+<h4>Positional Arguments<a class="headerlink" href="#positional-arguments_repeat5" title="Link to this heading">#</a></h4>
+<dl class="option-list">
+<dt><kbd>CGM23</kbd></dt>
+<dd><p>Possible choices: Calibration, Fitting</p>
+</dd>
+</dl>
+</section>
+<section id="Sub-commands_repeat5">
+<h4>Sub-commands<a class="headerlink" href="#Sub-commands_repeat5" title="Link to this heading">#</a></h4>
+<section id="Calibration_repeat4">
+<h5>Calibration<a class="headerlink" href="#Calibration_repeat4" title="Link to this heading">#</a></h5>
+<p>Calibration command of the CGM2.3</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pycgm2</span><span class="o">.</span><span class="n">exe</span> <span class="n">NEXUS</span> <span class="n">CGM2</span><span class="mf">.3</span> <span class="n">Calibration</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">l</span> <span class="n">LEFTFLATFOOT</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">r</span> <span class="n">RIGHTFLATFOOT</span><span class="p">]</span>
+                                    <span class="p">[</span><span class="o">-</span><span class="n">hf</span> <span class="n">HEADFLAT</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">md</span> <span class="n">MARKERDIAMETER</span><span class="p">]</span>
+                                    <span class="p">[</span><span class="o">-</span><span class="n">ps</span> <span class="n">POINTSUFFIX</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">check</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">resetMP</span><span class="p">]</span>
+                                    <span class="p">[</span><span class="o">--</span><span class="n">forceMP</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">ae</span><span class="p">]</span>
+                                    <span class="p">[</span><span class="o">--</span><span class="n">offline</span> <span class="n">OFFLINE</span> <span class="n">OFFLINE</span><span class="p">]</span>
+                                    <span class="p">[</span><span class="o">--</span><span class="n">forceLHJC</span> <span class="n">FORCELHJC</span> <span class="p">[</span><span class="n">FORCELHJC</span> <span class="o">...</span><span class="p">]]</span>
+                                    <span class="p">[</span><span class="o">--</span><span class="n">forceRHJC</span> <span class="n">FORCERHJC</span> <span class="p">[</span><span class="n">FORCERHJC</span> <span class="o">...</span><span class="p">]]</span>
+                                    <span class="p">[</span><span class="o">-</span><span class="n">msm</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">noIk</span><span class="p">]</span>
+</pre></div>
+</div>
+<section id="named-arguments_repeat8">
+<h6>Named Arguments<a class="headerlink" href="#named-arguments_repeat8" title="Link to this heading">#</a></h6>
+<dl class="option-list">
+<dt><kbd>-l, --leftFlatFoot</kbd></dt>
+<dd><p>left flat foot option</p>
+</dd>
+<dt><kbd>-r, --rightFlatFoot</kbd></dt>
+<dd><p>right flat foot option</p>
+</dd>
+<dt><kbd>-hf, --headFlat</kbd></dt>
+<dd><p>head flat option</p>
+</dd>
+<dt><kbd>-md, --markerDiameter</kbd></dt>
+<dd><p>marker diameter</p>
+</dd>
+<dt><kbd>-ps, --pointSuffix</kbd></dt>
+<dd><p>suffix of the model outputs</p>
+</dd>
+<dt><kbd>--check</kbd></dt>
+<dd><p>force CGM23 as model ouput suffix</p>
+<p>Default: False</p>
+</dd>
+<dt><kbd>--resetMP</kbd></dt>
+<dd><p>reset optional anthropometric parameters</p>
+<p>Default: False</p>
+</dd>
+<dt><kbd>--forceMP</kbd></dt>
+<dd><p>force the use of MP offsets to compute knee and ankle joint centres</p>
+<p>Default: False</p>
+</dd>
+<dt><kbd>-ae, --anomalyException</kbd></dt>
+<dd><p>raise an exception if an anomaly is detected</p>
+<p>Default: False</p>
+</dd>
+<dt><kbd>--offline</kbd></dt>
+<dd><blockquote>
+<div><p>subject name and static c3d file</p>
+</div></blockquote>
+</dd>
+<dt><kbd>--forceLHJC</kbd></dt>
+<dd></dd>
+<dt><kbd>--forceRHJC</kbd></dt>
+<dd></dd>
+<dt><kbd>-msm, --musculoSkeletalModel</kbd></dt>
+<dd><p>musculoskeletal model</p>
+<p>Default: False</p>
+</dd>
+<dt><kbd>--noIk</kbd></dt>
+<dd><p>cancel inverse kinematic</p>
+<p>Default: False</p>
+</dd>
+</dl>
+</section>
+</section>
+<section id="Fitting_repeat4">
+<h5>Fitting<a class="headerlink" href="#Fitting_repeat4" title="Link to this heading">#</a></h5>
+<p>Fitting command of the CGM2.3</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pycgm2</span><span class="o">.</span><span class="n">exe</span> <span class="n">NEXUS</span> <span class="n">CGM2</span><span class="mf">.3</span> <span class="n">Fitting</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">md</span> <span class="n">MARKERDIAMETER</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">ps</span> <span class="n">POINTSUFFIX</span><span class="p">]</span>
+                                <span class="p">[</span><span class="o">--</span><span class="n">check</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">ae</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">fi</span> <span class="n">FRAMEINIT</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">fe</span> <span class="n">FRAMEEND</span><span class="p">]</span>
+                                <span class="p">[</span><span class="o">--</span><span class="n">offline</span> <span class="n">OFFLINE</span> <span class="n">OFFLINE</span> <span class="n">OFFLINE</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">c3d</span> <span class="n">C3D</span><span class="p">]</span>
+                                <span class="p">[</span><span class="o">--</span><span class="n">proj</span> <span class="n">PROJ</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">msm</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">a</span> <span class="n">ACCURACY</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">noIk</span><span class="p">]</span>
+</pre></div>
+</div>
+<section id="named-arguments_repeat9">
+<h6>Named Arguments<a class="headerlink" href="#named-arguments_repeat9" title="Link to this heading">#</a></h6>
+<dl class="option-list">
+<dt><kbd>-md, --markerDiameter</kbd></dt>
+<dd><p>marker diameter</p>
+</dd>
+<dt><kbd>-ps, --pointSuffix</kbd></dt>
+<dd><p>suffix of model outputs</p>
+</dd>
+<dt><kbd>--check</kbd></dt>
+<dd><p>force CGM23 as model ouput suffix</p>
+<p>Default: False</p>
+</dd>
+<dt><kbd>-ae, --anomalyException</kbd></dt>
+<dd><p>raise an exception if an anomaly is detected</p>
+<p>Default: False</p>
+</dd>
+<dt><kbd>-fi, --frameInit</kbd></dt>
+<dd><p>first frame to process</p>
+</dd>
+<dt><kbd>-fe, --frameEnd</kbd></dt>
+<dd><p>last frame to process</p>
+</dd>
+<dt><kbd>--offline</kbd></dt>
+<dd><blockquote>
+<div><p>subject name - dynamic c3d file - mfpa</p>
+</div></blockquote>
+</dd>
+<dt><kbd>-c3d, --c3d</kbd></dt>
+<dd><p>load the c3d file. This operation avoid to load data from the Nexus API.                             (be sure you save the c3d beforehand  )</p>
+</dd>
+<dt><kbd>--proj</kbd></dt>
+<dd><p>Referential to project joint moment. Choice : JCS, Distal, Proximal or Global</p>
+</dd>
+<dt><kbd>-msm, --musculoSkeletalModel</kbd></dt>
+<dd><p>musculoskeletal model</p>
+<p>Default: False</p>
+</dd>
+<dt><kbd>-a, --accuracy</kbd></dt>
+<dd><p>Inverse Kinematics accuracy</p>
+</dd>
+<dt><kbd>--noIk</kbd></dt>
+<dd><p>cancel inverse kinematic</p>
+<p>Default: False</p>
+</dd>
+</dl>
+</section>
+</section>
+</section>
+</section>
+<section id="CGM2.4">
+<h3>CGM2.4<a class="headerlink" href="#CGM2.4" title="Link to this heading">#</a></h3>
+<p>CGM2.4 commands</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pycgm2</span><span class="o">.</span><span class="n">exe</span> <span class="n">NEXUS</span> <span class="n">CGM2</span><span class="mf">.4</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">{</span><span class="n">Calibration</span><span class="p">,</span><span class="n">Fitting</span><span class="p">}</span> <span class="o">...</span>
+</pre></div>
+</div>
+<section id="positional-arguments_repeat6">
+<h4>Positional Arguments<a class="headerlink" href="#positional-arguments_repeat6" title="Link to this heading">#</a></h4>
+<dl class="option-list">
+<dt><kbd>CGM24</kbd></dt>
+<dd><p>Possible choices: Calibration, Fitting</p>
+</dd>
+</dl>
+</section>
+<section id="Sub-commands_repeat6">
+<h4>Sub-commands<a class="headerlink" href="#Sub-commands_repeat6" title="Link to this heading">#</a></h4>
+<section id="Calibration_repeat5">
+<h5>Calibration<a class="headerlink" href="#Calibration_repeat5" title="Link to this heading">#</a></h5>
+<p>Calibration command of the CGM2.4</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pycgm2</span><span class="o">.</span><span class="n">exe</span> <span class="n">NEXUS</span> <span class="n">CGM2</span><span class="mf">.4</span> <span class="n">Calibration</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">l</span> <span class="n">LEFTFLATFOOT</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">r</span> <span class="n">RIGHTFLATFOOT</span><span class="p">]</span>
+                                    <span class="p">[</span><span class="o">-</span><span class="n">hf</span> <span class="n">HEADFLAT</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">md</span> <span class="n">MARKERDIAMETER</span><span class="p">]</span>
+                                    <span class="p">[</span><span class="o">-</span><span class="n">ps</span> <span class="n">POINTSUFFIX</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">check</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">resetMP</span><span class="p">]</span>
+                                    <span class="p">[</span><span class="o">--</span><span class="n">forceMP</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">ae</span><span class="p">]</span>
+                                    <span class="p">[</span><span class="o">--</span><span class="n">offline</span> <span class="n">OFFLINE</span> <span class="n">OFFLINE</span><span class="p">]</span>
+                                    <span class="p">[</span><span class="o">--</span><span class="n">forceLHJC</span> <span class="n">FORCELHJC</span> <span class="p">[</span><span class="n">FORCELHJC</span> <span class="o">...</span><span class="p">]]</span>
+                                    <span class="p">[</span><span class="o">--</span><span class="n">forceRHJC</span> <span class="n">FORCERHJC</span> <span class="p">[</span><span class="n">FORCERHJC</span> <span class="o">...</span><span class="p">]]</span>
+                                    <span class="p">[</span><span class="o">--</span><span class="n">noIk</span><span class="p">]</span>
+</pre></div>
+</div>
+<section id="named-arguments_repeat10">
+<h6>Named Arguments<a class="headerlink" href="#named-arguments_repeat10" title="Link to this heading">#</a></h6>
+<dl class="option-list">
+<dt><kbd>-l, --leftFlatFoot</kbd></dt>
+<dd><p>left flat foot option</p>
+</dd>
+<dt><kbd>-r, --rightFlatFoot</kbd></dt>
+<dd><p>right flat foot option</p>
+</dd>
+<dt><kbd>-hf, --headFlat</kbd></dt>
+<dd><p>head flat option</p>
+</dd>
+<dt><kbd>-md, --markerDiameter</kbd></dt>
+<dd><p>marker diameter</p>
+</dd>
+<dt><kbd>-ps, --pointSuffix</kbd></dt>
+<dd><p>suffix of the model outputs</p>
+</dd>
+<dt><kbd>--check</kbd></dt>
+<dd><p>force CGM24 as model ouput suffix</p>
+<p>Default: False</p>
+</dd>
+<dt><kbd>--resetMP</kbd></dt>
+<dd><p>reset optional anthropometric parameters</p>
+<p>Default: False</p>
+</dd>
+<dt><kbd>--forceMP</kbd></dt>
+<dd><p>force the use of MP offsets to compute knee and ankle joint centres</p>
+<p>Default: False</p>
+</dd>
+<dt><kbd>-ae, --anomalyException</kbd></dt>
+<dd><p>raise an exception if an anomaly is detected</p>
+<p>Default: False</p>
+</dd>
+<dt><kbd>--offline</kbd></dt>
+<dd><blockquote>
+<div><p>subject name and static c3d file</p>
+</div></blockquote>
+</dd>
+<dt><kbd>--forceLHJC</kbd></dt>
+<dd></dd>
+<dt><kbd>--forceRHJC</kbd></dt>
+<dd></dd>
+<dt><kbd>--noIk</kbd></dt>
+<dd><p>cancel inverse kinematic</p>
+<p>Default: False</p>
+</dd>
+</dl>
+</section>
+</section>
+<section id="Fitting_repeat5">
+<h5>Fitting<a class="headerlink" href="#Fitting_repeat5" title="Link to this heading">#</a></h5>
+<p>Fitting command of the CGM2.4</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pycgm2</span><span class="o">.</span><span class="n">exe</span> <span class="n">NEXUS</span> <span class="n">CGM2</span><span class="mf">.4</span> <span class="n">Fitting</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">md</span> <span class="n">MARKERDIAMETER</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">ps</span> <span class="n">POINTSUFFIX</span><span class="p">]</span>
+                                <span class="p">[</span><span class="o">--</span><span class="n">check</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">ae</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">fi</span> <span class="n">FRAMEINIT</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">fe</span> <span class="n">FRAMEEND</span><span class="p">]</span>
+                                <span class="p">[</span><span class="o">--</span><span class="n">offline</span> <span class="n">OFFLINE</span> <span class="n">OFFLINE</span> <span class="n">OFFLINE</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">c3d</span> <span class="n">C3D</span><span class="p">]</span>
+                                <span class="p">[</span><span class="o">--</span><span class="n">proj</span> <span class="n">PROJ</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">a</span> <span class="n">ACCURACY</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">noIk</span><span class="p">]</span>
+</pre></div>
+</div>
+<section id="named-arguments_repeat11">
+<h6>Named Arguments<a class="headerlink" href="#named-arguments_repeat11" title="Link to this heading">#</a></h6>
+<dl class="option-list">
+<dt><kbd>-md, --markerDiameter</kbd></dt>
+<dd><p>marker diameter</p>
+</dd>
+<dt><kbd>-ps, --pointSuffix</kbd></dt>
+<dd><p>suffix of model outputs</p>
+</dd>
+<dt><kbd>--check</kbd></dt>
+<dd><p>force CGM24 as model ouput suffix</p>
+<p>Default: False</p>
+</dd>
+<dt><kbd>-ae, --anomalyException</kbd></dt>
+<dd><p>raise an exception if an anomaly is detected</p>
+<p>Default: False</p>
+</dd>
+<dt><kbd>-fi, --frameInit</kbd></dt>
+<dd><p>first frame to process</p>
+</dd>
+<dt><kbd>-fe, --frameEnd</kbd></dt>
+<dd><p>last frame to process</p>
+</dd>
+<dt><kbd>--offline</kbd></dt>
+<dd><blockquote>
+<div><p>subject name - dynamic c3d file - mfpa</p>
+</div></blockquote>
+</dd>
+<dt><kbd>-c3d, --c3d</kbd></dt>
+<dd><p>load the c3d file. This operation avoid to load data from the Nexus API.                             (be sure you save the c3d beforehand  )</p>
+</dd>
+<dt><kbd>--proj</kbd></dt>
+<dd><p>Referential to project joint moment. Choice : JCS, Distal, Proximal or Global</p>
+</dd>
+<dt><kbd>-a, --accuracy</kbd></dt>
+<dd><p>Inverse Kinematics accuracy</p>
+</dd>
+<dt><kbd>--noIk</kbd></dt>
+<dd><p>cancel inverse kinematic</p>
+<p>Default: False</p>
+</dd>
+</dl>
+</section>
+</section>
+</section>
+</section>
+<section id="CGM2.5">
+<h3>CGM2.5<a class="headerlink" href="#CGM2.5" title="Link to this heading">#</a></h3>
+<p>CGM2.5 commands</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pycgm2</span><span class="o">.</span><span class="n">exe</span> <span class="n">NEXUS</span> <span class="n">CGM2</span><span class="mf">.5</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">{</span><span class="n">Calibration</span><span class="p">,</span><span class="n">Fitting</span><span class="p">}</span> <span class="o">...</span>
+</pre></div>
+</div>
+<section id="positional-arguments_repeat7">
+<h4>Positional Arguments<a class="headerlink" href="#positional-arguments_repeat7" title="Link to this heading">#</a></h4>
+<dl class="option-list">
+<dt><kbd>CGM25</kbd></dt>
+<dd><p>Possible choices: Calibration, Fitting</p>
+</dd>
+</dl>
+</section>
+<section id="Sub-commands_repeat7">
+<h4>Sub-commands<a class="headerlink" href="#Sub-commands_repeat7" title="Link to this heading">#</a></h4>
+<section id="Calibration_repeat6">
+<h5>Calibration<a class="headerlink" href="#Calibration_repeat6" title="Link to this heading">#</a></h5>
+<p>Calibration command of the CGM2.5</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pycgm2</span><span class="o">.</span><span class="n">exe</span> <span class="n">NEXUS</span> <span class="n">CGM2</span><span class="mf">.5</span> <span class="n">Calibration</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">l</span> <span class="n">LEFTFLATFOOT</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">r</span> <span class="n">RIGHTFLATFOOT</span><span class="p">]</span>
+                                    <span class="p">[</span><span class="o">-</span><span class="n">hf</span> <span class="n">HEADFLAT</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">md</span> <span class="n">MARKERDIAMETER</span><span class="p">]</span>
+                                    <span class="p">[</span><span class="o">-</span><span class="n">ps</span> <span class="n">POINTSUFFIX</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">check</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">resetMP</span><span class="p">]</span>
+                                    <span class="p">[</span><span class="o">--</span><span class="n">forceMP</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">ae</span><span class="p">]</span>
+                                    <span class="p">[</span><span class="o">--</span><span class="n">offline</span> <span class="n">OFFLINE</span> <span class="n">OFFLINE</span><span class="p">]</span>
+                                    <span class="p">[</span><span class="o">--</span><span class="n">forceLHJC</span> <span class="n">FORCELHJC</span> <span class="p">[</span><span class="n">FORCELHJC</span> <span class="o">...</span><span class="p">]]</span>
+                                    <span class="p">[</span><span class="o">--</span><span class="n">forceRHJC</span> <span class="n">FORCERHJC</span> <span class="p">[</span><span class="n">FORCERHJC</span> <span class="o">...</span><span class="p">]]</span>
+                                    <span class="p">[</span><span class="o">--</span><span class="n">noIk</span><span class="p">]</span>
+</pre></div>
+</div>
+<section id="named-arguments_repeat12">
+<h6>Named Arguments<a class="headerlink" href="#named-arguments_repeat12" title="Link to this heading">#</a></h6>
+<dl class="option-list">
+<dt><kbd>-l, --leftFlatFoot</kbd></dt>
+<dd><p>left flat foot option</p>
+</dd>
+<dt><kbd>-r, --rightFlatFoot</kbd></dt>
+<dd><p>right flat foot option</p>
+</dd>
+<dt><kbd>-hf, --headFlat</kbd></dt>
+<dd><p>head flat option</p>
+</dd>
+<dt><kbd>-md, --markerDiameter</kbd></dt>
+<dd><p>marker diameter</p>
+</dd>
+<dt><kbd>-ps, --pointSuffix</kbd></dt>
+<dd><p>suffix of the model outputs</p>
+</dd>
+<dt><kbd>--check</kbd></dt>
+<dd><p>force CGM25 as model ouput suffix</p>
+<p>Default: False</p>
+</dd>
+<dt><kbd>--resetMP</kbd></dt>
+<dd><p>reset optional anthropometric parameters</p>
+<p>Default: False</p>
+</dd>
+<dt><kbd>--forceMP</kbd></dt>
+<dd><p>force the use of MP offsets to compute knee and ankle joint centres</p>
+<p>Default: False</p>
+</dd>
+<dt><kbd>-ae, --anomalyException</kbd></dt>
+<dd><p>raise an exception if an anomaly is detected</p>
+<p>Default: False</p>
+</dd>
+<dt><kbd>--offline</kbd></dt>
+<dd><blockquote>
+<div><p>subject name and static c3d file</p>
+</div></blockquote>
+</dd>
+<dt><kbd>--forceLHJC</kbd></dt>
+<dd></dd>
+<dt><kbd>--forceRHJC</kbd></dt>
+<dd></dd>
+<dt><kbd>--noIk</kbd></dt>
+<dd><p>cancel inverse kinematic</p>
+<p>Default: False</p>
+</dd>
+</dl>
+</section>
+</section>
+<section id="Fitting_repeat6">
+<h5>Fitting<a class="headerlink" href="#Fitting_repeat6" title="Link to this heading">#</a></h5>
+<p>Fitting command of the CGM2.5</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pycgm2</span><span class="o">.</span><span class="n">exe</span> <span class="n">NEXUS</span> <span class="n">CGM2</span><span class="mf">.5</span> <span class="n">Fitting</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">md</span> <span class="n">MARKERDIAMETER</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">ps</span> <span class="n">POINTSUFFIX</span><span class="p">]</span>
+                                <span class="p">[</span><span class="o">--</span><span class="n">check</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">ae</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">fi</span> <span class="n">FRAMEINIT</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">fe</span> <span class="n">FRAMEEND</span><span class="p">]</span>
+                                <span class="p">[</span><span class="o">--</span><span class="n">offline</span> <span class="n">OFFLINE</span> <span class="n">OFFLINE</span> <span class="n">OFFLINE</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">c3d</span> <span class="n">C3D</span><span class="p">]</span>
+                                <span class="p">[</span><span class="o">--</span><span class="n">proj</span> <span class="n">PROJ</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">a</span> <span class="n">ACCURACY</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">noIk</span><span class="p">]</span>
+</pre></div>
+</div>
+<section id="named-arguments_repeat13">
+<h6>Named Arguments<a class="headerlink" href="#named-arguments_repeat13" title="Link to this heading">#</a></h6>
+<dl class="option-list">
+<dt><kbd>-md, --markerDiameter</kbd></dt>
+<dd><p>marker diameter</p>
+</dd>
+<dt><kbd>-ps, --pointSuffix</kbd></dt>
+<dd><p>suffix of model outputs</p>
+</dd>
+<dt><kbd>--check</kbd></dt>
+<dd><p>force CGM25 as model ouput suffix</p>
+<p>Default: False</p>
+</dd>
+<dt><kbd>-ae, --anomalyException</kbd></dt>
+<dd><p>raise an exception if an anomaly is detected</p>
+<p>Default: False</p>
+</dd>
+<dt><kbd>-fi, --frameInit</kbd></dt>
+<dd><p>first frame to process</p>
+</dd>
+<dt><kbd>-fe, --frameEnd</kbd></dt>
+<dd><p>last frame to process</p>
+</dd>
+<dt><kbd>--offline</kbd></dt>
+<dd><blockquote>
+<div><p>subject name - dynamic c3d file - mfpa</p>
+</div></blockquote>
+</dd>
+<dt><kbd>-c3d, --c3d</kbd></dt>
+<dd><p>load the c3d file. This operation avoid to load data from the Nexus API.                             (be sure you save the c3d beforehand  )</p>
+</dd>
+<dt><kbd>--proj</kbd></dt>
+<dd><p>Referential to project joint moment. Choice : JCS, Distal, Proximal or Global</p>
+</dd>
+<dt><kbd>-a, --accuracy</kbd></dt>
+<dd><p>Inverse Kinematics accuracy</p>
+</dd>
+<dt><kbd>--noIk</kbd></dt>
+<dd><p>cancel inverse kinematic</p>
+<p>Default: False</p>
+</dd>
+</dl>
+</section>
+</section>
+</section>
+</section>
+<section id="CGM2.6">
+<h3>CGM2.6<a class="headerlink" href="#CGM2.6" title="Link to this heading">#</a></h3>
+<p>CGM2.6 commands</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pycgm2</span><span class="o">.</span><span class="n">exe</span> <span class="n">NEXUS</span> <span class="n">CGM2</span><span class="mf">.6</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">{</span><span class="mi">2</span><span class="n">DOF</span><span class="p">,</span><span class="n">SARA</span><span class="p">}</span> <span class="o">...</span>
+</pre></div>
+</div>
+<section id="positional-arguments_repeat8">
+<h4>Positional Arguments<a class="headerlink" href="#positional-arguments_repeat8" title="Link to this heading">#</a></h4>
+<dl class="option-list">
+<dt><kbd>CGM26</kbd></dt>
+<dd><p>Possible choices: 2DOF, SARA</p>
+</dd>
+</dl>
+</section>
+<section id="Sub-commands_repeat8">
+<h4>Sub-commands<a class="headerlink" href="#Sub-commands_repeat8" title="Link to this heading">#</a></h4>
+<section id="2DOF">
+<h5>2DOF<a class="headerlink" href="#2DOF" title="Link to this heading">#</a></h5>
+<p>2DOF knee functional calibration</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pycgm2</span><span class="o">.</span><span class="n">exe</span> <span class="n">NEXUS</span> <span class="n">CGM2</span><span class="mf">.6</span> <span class="mi">2</span><span class="n">DOF</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">s</span> <span class="n">SIDE</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">fi</span> <span class="n">FRAMEINIT</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">fe</span> <span class="n">FRAMEEND</span><span class="p">]</span>
+</pre></div>
+</div>
+<section id="named-arguments_repeat14">
+<h6>Named Arguments<a class="headerlink" href="#named-arguments_repeat14" title="Link to this heading">#</a></h6>
+<dl class="option-list">
+<dt><kbd>-s, --side</kbd></dt>
+<dd><p>Side : Left or Right</p>
+</dd>
+<dt><kbd>-fi, --frameInit</kbd></dt>
+<dd><p>first frame to process</p>
+</dd>
+<dt><kbd>-fe, --frameEnd</kbd></dt>
+<dd><p>last frame to process</p>
+</dd>
+</dl>
+</section>
+</section>
+<section id="SARA">
+<h5>SARA<a class="headerlink" href="#SARA" title="Link to this heading">#</a></h5>
+<p>SARA knee functional calibration</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pycgm2</span><span class="o">.</span><span class="n">exe</span> <span class="n">NEXUS</span> <span class="n">CGM2</span><span class="mf">.6</span> <span class="n">SARA</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">s</span> <span class="n">SIDE</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">fi</span> <span class="n">FRAMEINIT</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">fe</span> <span class="n">FRAMEEND</span><span class="p">]</span>
+</pre></div>
+</div>
+<section id="named-arguments_repeat15">
+<h6>Named Arguments<a class="headerlink" href="#named-arguments_repeat15" title="Link to this heading">#</a></h6>
+<dl class="option-list">
+<dt><kbd>-s, --side</kbd></dt>
+<dd><p>Side : Left or Right</p>
+</dd>
+<dt><kbd>-fi, --frameInit</kbd></dt>
+<dd><p>first frame to process</p>
+</dd>
+<dt><kbd>-fe, --frameEnd</kbd></dt>
+<dd><p>last frame to process</p>
+</dd>
+</dl>
+</section>
+</section>
+</section>
+</section>
+<section id="Events">
+<h3>Events<a class="headerlink" href="#Events" title="Link to this heading">#</a></h3>
+<p>events commands</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pycgm2</span><span class="o">.</span><span class="n">exe</span> <span class="n">NEXUS</span> <span class="n">Events</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">{</span><span class="n">Zeni</span><span class="p">}</span> <span class="o">...</span>
+</pre></div>
+</div>
+<section id="positional-arguments_repeat9">
+<h4>Positional Arguments<a class="headerlink" href="#positional-arguments_repeat9" title="Link to this heading">#</a></h4>
+<dl class="option-list">
+<dt><kbd>Events</kbd></dt>
+<dd><p>Possible choices: Zeni</p>
+</dd>
+</dl>
+</section>
+<section id="Sub-commands_repeat9">
+<h4>Sub-commands<a class="headerlink" href="#Sub-commands_repeat9" title="Link to this heading">#</a></h4>
+<section id="Zeni">
+<h5>Zeni<a class="headerlink" href="#Zeni" title="Link to this heading">#</a></h5>
+<p>zeni kinematic-based event detection</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pycgm2</span><span class="o">.</span><span class="n">exe</span> <span class="n">NEXUS</span> <span class="n">Events</span> <span class="n">Zeni</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">fso</span> <span class="n">FOOTSTRIKEOFFSET</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">foo</span> <span class="n">FOOTOFFOFFSET</span><span class="p">]</span>
+</pre></div>
+</div>
+<section id="named-arguments_repeat16">
+<h6>Named Arguments<a class="headerlink" href="#named-arguments_repeat16" title="Link to this heading">#</a></h6>
+<dl class="option-list">
+<dt><kbd>-fso, --footStrikeOffset</kbd></dt>
+<dd><p>systenatic foot strike offset on both side</p>
+</dd>
+<dt><kbd>-foo, --footOffOffset</kbd></dt>
+<dd><p>systenatic foot off offset on both side</p>
+</dd>
+</dl>
+</section>
+</section>
+</section>
+</section>
+<section id="Gaps">
+<h3>Gaps<a class="headerlink" href="#Gaps" title="Link to this heading">#</a></h3>
+<p>Gap filling commands</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pycgm2</span><span class="o">.</span><span class="n">exe</span> <span class="n">NEXUS</span> <span class="n">Gaps</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">{</span><span class="n">Kalman</span><span class="p">,</span><span class="n">Gloersen</span><span class="p">}</span> <span class="o">...</span>
+</pre></div>
+</div>
+<section id="positional-arguments_repeat10">
+<h4>Positional Arguments<a class="headerlink" href="#positional-arguments_repeat10" title="Link to this heading">#</a></h4>
+<dl class="option-list">
+<dt><kbd>Gaps</kbd></dt>
+<dd><p>Possible choices: Kalman, Gloersen</p>
+</dd>
+</dl>
+</section>
+<section id="Sub-commands_repeat10">
+<h4>Sub-commands<a class="headerlink" href="#Sub-commands_repeat10" title="Link to this heading">#</a></h4>
+<section id="Kalman">
+<h5>Kalman<a class="headerlink" href="#Kalman" title="Link to this heading">#</a></h5>
+<p>kalman gap filling</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pycgm2</span><span class="o">.</span><span class="n">exe</span> <span class="n">NEXUS</span> <span class="n">Gaps</span> <span class="n">Kalman</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">markers</span> <span class="p">[</span><span class="n">MARKERS</span> <span class="o">...</span><span class="p">]]</span>
+</pre></div>
+</div>
+<section id="named-arguments_repeat17">
+<h6>Named Arguments<a class="headerlink" href="#named-arguments_repeat17" title="Link to this heading">#</a></h6>
+<dl class="option-list">
+<dt><kbd>--markers</kbd></dt>
+<dd><p>list of markers</p>
+</dd>
+</dl>
+</section>
+</section>
+<section id="Gloersen">
+<h5>Gloersen<a class="headerlink" href="#Gloersen" title="Link to this heading">#</a></h5>
+<p>Gloersen gap filling</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pycgm2</span><span class="o">.</span><span class="n">exe</span> <span class="n">NEXUS</span> <span class="n">Gaps</span> <span class="n">Gloersen</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">markers</span> <span class="p">[</span><span class="n">MARKERS</span> <span class="o">...</span><span class="p">]]</span>
+</pre></div>
+</div>
+<section id="named-arguments_repeat18">
+<h6>Named Arguments<a class="headerlink" href="#named-arguments_repeat18" title="Link to this heading">#</a></h6>
+<dl class="option-list">
+<dt><kbd>--markers</kbd></dt>
+<dd><p>list of markers</p>
+</dd>
+</dl>
+</section>
+</section>
+</section>
+</section>
+<section id="Plots">
+<h3>Plots<a class="headerlink" href="#Plots" title="Link to this heading">#</a></h3>
+<p>Plot commands</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pycgm2</span><span class="o">.</span><span class="n">exe</span> <span class="n">NEXUS</span> <span class="n">Plots</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">{</span><span class="n">STP</span><span class="p">,</span><span class="n">Kinematics</span><span class="p">,</span><span class="n">Kinetics</span><span class="p">,</span><span class="n">Reaction</span><span class="p">,</span><span class="n">EMG</span><span class="p">}</span> <span class="o">...</span>
+</pre></div>
+</div>
+<section id="positional-arguments_repeat11">
+<h4>Positional Arguments<a class="headerlink" href="#positional-arguments_repeat11" title="Link to this heading">#</a></h4>
+<dl class="option-list">
+<dt><kbd>Plots</kbd></dt>
+<dd><p>Possible choices: STP, Kinematics, Kinetics, Reaction, EMG</p>
+</dd>
+</dl>
+</section>
+<section id="Sub-commands_repeat11">
+<h4>Sub-commands<a class="headerlink" href="#Sub-commands_repeat11" title="Link to this heading">#</a></h4>
+<section id="STP">
+<h5>STP<a class="headerlink" href="#STP" title="Link to this heading">#</a></h5>
+<p>SpatiotemporalParameters plots</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pycgm2</span><span class="o">.</span><span class="n">exe</span> <span class="n">NEXUS</span> <span class="n">Plots</span> <span class="n">STP</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">ps</span> <span class="n">POINTSUFFIX</span><span class="p">]</span>
+</pre></div>
+</div>
+<section id="named-arguments_repeat19">
+<h6>Named Arguments<a class="headerlink" href="#named-arguments_repeat19" title="Link to this heading">#</a></h6>
+<dl class="option-list">
+<dt><kbd>-ps, --pointSuffix</kbd></dt>
+<dd><p>suffix added to model outputs</p>
+</dd>
+</dl>
+</section>
+</section>
+<section id="Kinematics">
+<h5>Kinematics<a class="headerlink" href="#Kinematics" title="Link to this heading">#</a></h5>
+<p>Kinematics plots</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pycgm2</span><span class="o">.</span><span class="n">exe</span> <span class="n">NEXUS</span> <span class="n">Plots</span> <span class="n">Kinematics</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span>
+                                  <span class="p">{</span><span class="n">Temporal</span><span class="p">,</span><span class="n">Normalized</span><span class="p">,</span><span class="n">Comparison</span><span class="p">,</span><span class="n">MAP</span><span class="p">}</span> <span class="o">...</span>
+</pre></div>
+</div>
+<section id="positional-arguments_repeat12">
+<h6>Positional Arguments<a class="headerlink" href="#positional-arguments_repeat12" title="Link to this heading">#</a></h6>
+<dl class="option-list">
+<dt><kbd>Kinematics</kbd></dt>
+<dd><p>Possible choices: Temporal, Normalized, Comparison, MAP</p>
+<p>kinematics plots sub-commands</p>
+</dd>
+</dl>
+</section>
+<section id="Sub-commands_repeat12">
+<h6>Sub-commands<a class="headerlink" href="#Sub-commands_repeat12" title="Link to this heading">#</a></h6>
+<section id="Temporal">
+<h6 aria-level="7">Temporal<a class="headerlink" href="#Temporal" title="Link to this heading">#</a></h6>
+<p>temporal plot</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pycgm2</span><span class="o">.</span><span class="n">exe</span> <span class="n">NEXUS</span> <span class="n">Plots</span> <span class="n">Kinematics</span> <span class="n">Temporal</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">ps</span> <span class="n">POINTSUFFIX</span><span class="p">]</span>
+</pre></div>
+</div>
+<section id="named-arguments_repeat20">
+<h6 aria-level="8">Named Arguments<a class="headerlink" href="#named-arguments_repeat20" title="Link to this heading">#</a></h6>
+<dl class="option-list">
+<dt><kbd>-ps, --pointSuffix</kbd></dt>
+<dd><p>suffix of model outputs</p>
+</dd>
+</dl>
+</section>
+</section>
+<section id="Normalized">
+<h6 aria-level="7">Normalized<a class="headerlink" href="#Normalized" title="Link to this heading">#</a></h6>
+<p>time-normalized</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pycgm2</span><span class="o">.</span><span class="n">exe</span> <span class="n">NEXUS</span> <span class="n">Plots</span> <span class="n">Kinematics</span> <span class="n">Normalized</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">nd</span> <span class="n">NORMATIVEDATA</span><span class="p">]</span>
+                                             <span class="p">[</span><span class="o">-</span><span class="n">ndm</span> <span class="n">NORMATIVEDATAMODALITY</span><span class="p">]</span>
+                                             <span class="p">[</span><span class="o">-</span><span class="n">ps</span> <span class="n">POINTSUFFIX</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">c</span><span class="p">]</span>
+</pre></div>
+</div>
+<section id="named-arguments_repeat21">
+<h6 aria-level="8">Named Arguments<a class="headerlink" href="#named-arguments_repeat21" title="Link to this heading">#</a></h6>
+<dl class="option-list">
+<dt><kbd>-nd, --normativeData</kbd></dt>
+<dd><p>normative Data set (Schwartz2008 or Pinzone2014)</p>
+<p>Default: “Schwartz2008”</p>
+</dd>
+<dt><kbd>-ndm, --normativeDataModality</kbd></dt>
+<dd><p>if Schwartz2008 [VerySlow,Slow,Free,Fast,VeryFast] - if Pinzone2014 [CentreOne,CentreTwo]</p>
+<p>Default: “Free”</p>
+</dd>
+<dt><kbd>-ps, --pointSuffix</kbd></dt>
+<dd><p>suffix of model outputs</p>
+</dd>
+<dt><kbd>-c, --consistency</kbd></dt>
+<dd><p>consistency plots</p>
+<p>Default: False</p>
+</dd>
+</dl>
+</section>
+</section>
+<section id="Comparison">
+<h6 aria-level="7">Comparison<a class="headerlink" href="#Comparison" title="Link to this heading">#</a></h6>
+<p>time-normalized comparison</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pycgm2</span><span class="o">.</span><span class="n">exe</span> <span class="n">NEXUS</span> <span class="n">Plots</span> <span class="n">Kinematics</span> <span class="n">Comparison</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">nd</span> <span class="n">NORMATIVEDATA</span><span class="p">]</span>
+                                             <span class="p">[</span><span class="o">-</span><span class="n">ndm</span> <span class="n">NORMATIVEDATAMODALITY</span><span class="p">]</span>
+                                             <span class="p">[</span><span class="o">-</span><span class="n">ps</span> <span class="n">POINTSUFFIX</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">c</span><span class="p">]</span>
+</pre></div>
+</div>
+<section id="named-arguments_repeat22">
+<h6 aria-level="8">Named Arguments<a class="headerlink" href="#named-arguments_repeat22" title="Link to this heading">#</a></h6>
+<dl class="option-list">
+<dt><kbd>-nd, --normativeData</kbd></dt>
+<dd><p>normative Data set (Schwartz2008 or Pinzone2014)</p>
+<p>Default: “Schwartz2008”</p>
+</dd>
+<dt><kbd>-ndm, --normativeDataModality</kbd></dt>
+<dd><p>if Schwartz2008 [VerySlow,SlowFree,Fast,VeryFast] - if Pinzone2014 [CentreOne,CentreTwo]</p>
+<p>Default: “Free”</p>
+</dd>
+<dt><kbd>-ps, --pointSuffix</kbd></dt>
+<dd><p>suffix of model outputs</p>
+</dd>
+<dt><kbd>-c, --consistency</kbd></dt>
+<dd><p>consistency plots</p>
+<p>Default: False</p>
+</dd>
+</dl>
+</section>
+</section>
+<section id="MAP">
+<h6 aria-level="7">MAP<a class="headerlink" href="#MAP" title="Link to this heading">#</a></h6>
+<p>Mouvement analysis profile</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pycgm2</span><span class="o">.</span><span class="n">exe</span> <span class="n">NEXUS</span> <span class="n">Plots</span> <span class="n">Kinematics</span> <span class="n">MAP</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">nd</span> <span class="n">NORMATIVEDATA</span><span class="p">]</span>
+                                      <span class="p">[</span><span class="o">-</span><span class="n">ndm</span> <span class="n">NORMATIVEDATAMODALITY</span><span class="p">]</span>
+                                      <span class="p">[</span><span class="o">-</span><span class="n">ps</span> <span class="n">POINTSUFFIX</span><span class="p">]</span>
+</pre></div>
+</div>
+<section id="named-arguments_repeat23">
+<h6 aria-level="8">Named Arguments<a class="headerlink" href="#named-arguments_repeat23" title="Link to this heading">#</a></h6>
+<dl class="option-list">
+<dt><kbd>-nd, --normativeData</kbd></dt>
+<dd><p>normative Data set (Schwartz2008 or Pinzone2014)</p>
+<p>Default: “Schwartz2008”</p>
+</dd>
+<dt><kbd>-ndm, --normativeDataModality</kbd></dt>
+<dd><p>if Schwartz2008 [VerySlow,Slow,Free,Fast,VeryFast] - if Pinzone2014 [CentreOne,CentreTwo]</p>
+<p>Default: “Free”</p>
+</dd>
+<dt><kbd>-ps, --pointSuffix</kbd></dt>
+<dd><p>suffix of model outputs</p>
+</dd>
+</dl>
+</section>
+</section>
+</section>
+</section>
+<section id="Kinetics">
+<h5>Kinetics<a class="headerlink" href="#Kinetics" title="Link to this heading">#</a></h5>
+<p>kinetics plots</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pycgm2</span><span class="o">.</span><span class="n">exe</span> <span class="n">NEXUS</span> <span class="n">Plots</span> <span class="n">Kinetics</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">{</span><span class="n">Temporal</span><span class="p">,</span><span class="n">Normalized</span><span class="p">,</span><span class="n">Comparison</span><span class="p">}</span> <span class="o">...</span>
+</pre></div>
+</div>
+<section id="positional-arguments_repeat13">
+<h6>Positional Arguments<a class="headerlink" href="#positional-arguments_repeat13" title="Link to this heading">#</a></h6>
+<dl class="option-list">
+<dt><kbd>Kinetics</kbd></dt>
+<dd><p>Possible choices: Temporal, Normalized, Comparison</p>
+<p>kinetics plots sub-commands</p>
+</dd>
+</dl>
+</section>
+<section id="Sub-commands_repeat13">
+<h6>Sub-commands<a class="headerlink" href="#Sub-commands_repeat13" title="Link to this heading">#</a></h6>
+<section id="Temporal_repeat1">
+<h6 aria-level="7">Temporal<a class="headerlink" href="#Temporal_repeat1" title="Link to this heading">#</a></h6>
+<p>temporal plot</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pycgm2</span><span class="o">.</span><span class="n">exe</span> <span class="n">NEXUS</span> <span class="n">Plots</span> <span class="n">Kinetics</span> <span class="n">Temporal</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">ps</span> <span class="n">POINTSUFFIX</span><span class="p">]</span>
+</pre></div>
+</div>
+<section id="named-arguments_repeat24">
+<h6 aria-level="8">Named Arguments<a class="headerlink" href="#named-arguments_repeat24" title="Link to this heading">#</a></h6>
+<dl class="option-list">
+<dt><kbd>-ps, --pointSuffix</kbd></dt>
+<dd><p>suffix of model outputs</p>
+</dd>
+</dl>
+</section>
+</section>
+<section id="Normalized_repeat1">
+<h6 aria-level="7">Normalized<a class="headerlink" href="#Normalized_repeat1" title="Link to this heading">#</a></h6>
+<p>time-normalized</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pycgm2</span><span class="o">.</span><span class="n">exe</span> <span class="n">NEXUS</span> <span class="n">Plots</span> <span class="n">Kinetics</span> <span class="n">Normalized</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">nd</span> <span class="n">NORMATIVEDATA</span><span class="p">]</span>
+                                           <span class="p">[</span><span class="o">-</span><span class="n">ndm</span> <span class="n">NORMATIVEDATAMODALITY</span><span class="p">]</span>
+                                           <span class="p">[</span><span class="o">-</span><span class="n">ps</span> <span class="n">POINTSUFFIX</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">c</span><span class="p">]</span>
+</pre></div>
+</div>
+<section id="named-arguments_repeat25">
+<h6 aria-level="8">Named Arguments<a class="headerlink" href="#named-arguments_repeat25" title="Link to this heading">#</a></h6>
+<dl class="option-list">
+<dt><kbd>-nd, --normativeData</kbd></dt>
+<dd><p>normative Data set (Schwartz2008 or Pinzone2014)</p>
+<p>Default: “Schwartz2008”</p>
+</dd>
+<dt><kbd>-ndm, --normativeDataModality</kbd></dt>
+<dd><p>if Schwartz2008 [VerySlow,SlowFree,Fast,VeryFast] - if Pinzone2014 [CentreOne,CentreTwo]</p>
+<p>Default: “Free”</p>
+</dd>
+<dt><kbd>-ps, --pointSuffix</kbd></dt>
+<dd><p>suffix of model outputs</p>
+</dd>
+<dt><kbd>-c, --consistency</kbd></dt>
+<dd><p>consistency plots</p>
+<p>Default: False</p>
+</dd>
+</dl>
+</section>
+</section>
+<section id="Comparison_repeat1">
+<h6 aria-level="7">Comparison<a class="headerlink" href="#Comparison_repeat1" title="Link to this heading">#</a></h6>
+<p>time-normalized comparison</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pycgm2</span><span class="o">.</span><span class="n">exe</span> <span class="n">NEXUS</span> <span class="n">Plots</span> <span class="n">Kinetics</span> <span class="n">Comparison</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">nd</span> <span class="n">NORMATIVEDATA</span><span class="p">]</span>
+                                           <span class="p">[</span><span class="o">-</span><span class="n">ndm</span> <span class="n">NORMATIVEDATAMODALITY</span><span class="p">]</span>
+                                           <span class="p">[</span><span class="o">-</span><span class="n">ps</span> <span class="n">POINTSUFFIX</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">c</span><span class="p">]</span>
+</pre></div>
+</div>
+<section id="named-arguments_repeat26">
+<h6 aria-level="8">Named Arguments<a class="headerlink" href="#named-arguments_repeat26" title="Link to this heading">#</a></h6>
+<dl class="option-list">
+<dt><kbd>-nd, --normativeData</kbd></dt>
+<dd><p>normative Data set (Schwartz2008 or Pinzone2014)</p>
+<p>Default: “Schwartz2008”</p>
+</dd>
+<dt><kbd>-ndm, --normativeDataModality</kbd></dt>
+<dd><p>if Schwartz2008 [VerySlow,SlowFree,Fast,VeryFast] - if Pinzone2014 [CentreOne,CentreTwo]</p>
+<p>Default: “Free”</p>
+</dd>
+<dt><kbd>-ps, --pointSuffix</kbd></dt>
+<dd><p>suffix of model outputs</p>
+</dd>
+<dt><kbd>-c, --consistency</kbd></dt>
+<dd><p>consistency plots</p>
+<p>Default: False</p>
+</dd>
+</dl>
+</section>
+</section>
+</section>
+</section>
+<section id="Reaction">
+<h5>Reaction<a class="headerlink" href="#Reaction" title="Link to this heading">#</a></h5>
+<p>reaction plots</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pycgm2</span><span class="o">.</span><span class="n">exe</span> <span class="n">NEXUS</span> <span class="n">Plots</span> <span class="n">Reaction</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">{</span><span class="n">Temporal</span><span class="p">,</span><span class="n">Normalized</span><span class="p">,</span><span class="n">Comparison</span><span class="p">}</span> <span class="o">...</span>
+</pre></div>
+</div>
+<section id="positional-arguments_repeat14">
+<h6>Positional Arguments<a class="headerlink" href="#positional-arguments_repeat14" title="Link to this heading">#</a></h6>
+<dl class="option-list">
+<dt><kbd>Reaction</kbd></dt>
+<dd><p>Possible choices: Temporal, Normalized, Comparison</p>
+<p>Reaction plots sub-commands</p>
+</dd>
+</dl>
+</section>
+<section id="Sub-commands_repeat14">
+<h6>Sub-commands<a class="headerlink" href="#Sub-commands_repeat14" title="Link to this heading">#</a></h6>
+<section id="Temporal_repeat2">
+<h6 aria-level="7">Temporal<a class="headerlink" href="#Temporal_repeat2" title="Link to this heading">#</a></h6>
+<p>temporal plot</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pycgm2</span><span class="o">.</span><span class="n">exe</span> <span class="n">NEXUS</span> <span class="n">Plots</span> <span class="n">Reaction</span> <span class="n">Temporal</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">ps</span> <span class="n">POINTSUFFIX</span><span class="p">]</span>
+</pre></div>
+</div>
+<section id="named-arguments_repeat27">
+<h6 aria-level="8">Named Arguments<a class="headerlink" href="#named-arguments_repeat27" title="Link to this heading">#</a></h6>
+<dl class="option-list">
+<dt><kbd>-ps, --pointSuffix</kbd></dt>
+<dd><p>suffix of model outputs</p>
+</dd>
+</dl>
+</section>
+</section>
+<section id="Normalized_repeat2">
+<h6 aria-level="7">Normalized<a class="headerlink" href="#Normalized_repeat2" title="Link to this heading">#</a></h6>
+<p>time-normalized</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pycgm2</span><span class="o">.</span><span class="n">exe</span> <span class="n">NEXUS</span> <span class="n">Plots</span> <span class="n">Reaction</span> <span class="n">Normalized</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">nd</span> <span class="n">NORMATIVEDATA</span><span class="p">]</span>
+                                           <span class="p">[</span><span class="o">-</span><span class="n">ndm</span> <span class="n">NORMATIVEDATAMODALITY</span><span class="p">]</span>
+                                           <span class="p">[</span><span class="o">-</span><span class="n">ps</span> <span class="n">POINTSUFFIX</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">c</span><span class="p">]</span>
+</pre></div>
+</div>
+<section id="named-arguments_repeat28">
+<h6 aria-level="8">Named Arguments<a class="headerlink" href="#named-arguments_repeat28" title="Link to this heading">#</a></h6>
+<dl class="option-list">
+<dt><kbd>-nd, --normativeData</kbd></dt>
+<dd><p>normative Data set (Schwartz2008 or Pinzone2014)</p>
+<p>Default: “Schwartz2008”</p>
+</dd>
+<dt><kbd>-ndm, --normativeDataModality</kbd></dt>
+<dd><p>if Schwartz2008 [VerySlow,SlowFree,Fast,VeryFast] - if Pinzone2014 [CentreOne,CentreTwo]</p>
+<p>Default: “Free”</p>
+</dd>
+<dt><kbd>-ps, --pointSuffix</kbd></dt>
+<dd><p>suffix of model outputs</p>
+</dd>
+<dt><kbd>-c, --consistency</kbd></dt>
+<dd><p>consistency plots</p>
+<p>Default: False</p>
+</dd>
+</dl>
+</section>
+</section>
+<section id="Comparison_repeat2">
+<h6 aria-level="7">Comparison<a class="headerlink" href="#Comparison_repeat2" title="Link to this heading">#</a></h6>
+<p>time-normalized comparison</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pycgm2</span><span class="o">.</span><span class="n">exe</span> <span class="n">NEXUS</span> <span class="n">Plots</span> <span class="n">Reaction</span> <span class="n">Comparison</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">nd</span> <span class="n">NORMATIVEDATA</span><span class="p">]</span>
+                                           <span class="p">[</span><span class="o">-</span><span class="n">ndm</span> <span class="n">NORMATIVEDATAMODALITY</span><span class="p">]</span>
+                                           <span class="p">[</span><span class="o">-</span><span class="n">ps</span> <span class="n">POINTSUFFIX</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">c</span><span class="p">]</span>
+</pre></div>
+</div>
+<section id="named-arguments_repeat29">
+<h6 aria-level="8">Named Arguments<a class="headerlink" href="#named-arguments_repeat29" title="Link to this heading">#</a></h6>
+<dl class="option-list">
+<dt><kbd>-nd, --normativeData</kbd></dt>
+<dd><p>normative Data set (Schwartz2008 or Pinzone2014)</p>
+<p>Default: “Schwartz2008”</p>
+</dd>
+<dt><kbd>-ndm, --normativeDataModality</kbd></dt>
+<dd><p>if Schwartz2008 [VerySlow,SlowFree,Fast,VeryFast] - if Pinzone2014 [CentreOne,CentreTwo]</p>
+<p>Default: “Free”</p>
+</dd>
+<dt><kbd>-ps, --pointSuffix</kbd></dt>
+<dd><p>suffix of model outputs</p>
+</dd>
+<dt><kbd>-c, --consistency</kbd></dt>
+<dd><p>consistency plots</p>
+<p>Default: False</p>
+</dd>
+</dl>
+</section>
+</section>
+</section>
+</section>
+<section id="EMG">
+<h5>EMG<a class="headerlink" href="#EMG" title="Link to this heading">#</a></h5>
+<p>EMG plots</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pycgm2</span><span class="o">.</span><span class="n">exe</span> <span class="n">NEXUS</span> <span class="n">Plots</span> <span class="n">EMG</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">{</span><span class="n">Temporal</span><span class="p">,</span><span class="n">Normalized</span><span class="p">,</span><span class="n">Comparison</span><span class="p">}</span> <span class="o">...</span>
+</pre></div>
+</div>
+<section id="positional-arguments_repeat15">
+<h6>Positional Arguments<a class="headerlink" href="#positional-arguments_repeat15" title="Link to this heading">#</a></h6>
+<dl class="option-list">
+<dt><kbd>EMG</kbd></dt>
+<dd><p>Possible choices: Temporal, Normalized, Comparison</p>
+<p>Emg plots sub-commands</p>
+</dd>
+</dl>
+</section>
+<section id="Sub-commands_repeat15">
+<h6>Sub-commands<a class="headerlink" href="#Sub-commands_repeat15" title="Link to this heading">#</a></h6>
+<section id="Temporal_repeat3">
+<h6 aria-level="7">Temporal<a class="headerlink" href="#Temporal_repeat3" title="Link to this heading">#</a></h6>
+<p>temporal plot</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pycgm2</span><span class="o">.</span><span class="n">exe</span> <span class="n">NEXUS</span> <span class="n">Plots</span> <span class="n">EMG</span> <span class="n">Temporal</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span>
+                                    <span class="p">[</span><span class="o">-</span><span class="n">bpf</span> <span class="n">BANDPASSFREQUENCIES</span> <span class="p">[</span><span class="n">BANDPASSFREQUENCIES</span> <span class="o">...</span><span class="p">]]</span>
+                                    <span class="p">[</span><span class="o">-</span><span class="n">elf</span> <span class="n">ENVELOPLOWPASSFREQUENCY</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">r</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">ina</span><span class="p">]</span>
+</pre></div>
+</div>
+<section id="named-arguments_repeat30">
+<h6 aria-level="8">Named Arguments<a class="headerlink" href="#named-arguments_repeat30" title="Link to this heading">#</a></h6>
+<dl class="option-list">
+<dt><kbd>-bpf, --BandpassFrequencies</kbd></dt>
+<dd><p>bandpass filter</p>
+</dd>
+<dt><kbd>-elf, --EnvelopLowpassFrequency</kbd></dt>
+<dd><p>cutoff frequency for emg envelops</p>
+</dd>
+<dt><kbd>-r, --raw</kbd></dt>
+<dd><p>non rectified data</p>
+<p>Default: False</p>
+</dd>
+<dt><kbd>-ina, --ignoreNormalActivity</kbd></dt>
+<dd><p>do not display normal activity</p>
+<p>Default: False</p>
+</dd>
+</dl>
+</section>
+</section>
+<section id="Normalized_repeat3">
+<h6 aria-level="7">Normalized<a class="headerlink" href="#Normalized_repeat3" title="Link to this heading">#</a></h6>
+<p>time-normalized</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pycgm2</span><span class="o">.</span><span class="n">exe</span> <span class="n">NEXUS</span> <span class="n">Plots</span> <span class="n">EMG</span> <span class="n">Normalized</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span>
+                                      <span class="p">[</span><span class="o">-</span><span class="n">bpf</span> <span class="n">BANDPASSFREQUENCIES</span> <span class="p">[</span><span class="n">BANDPASSFREQUENCIES</span> <span class="o">...</span><span class="p">]]</span>
+                                      <span class="p">[</span><span class="o">-</span><span class="n">elf</span> <span class="n">ENVELOPLOWPASSFREQUENCY</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">c</span><span class="p">]</span>
+</pre></div>
+</div>
+<section id="named-arguments_repeat31">
+<h6 aria-level="8">Named Arguments<a class="headerlink" href="#named-arguments_repeat31" title="Link to this heading">#</a></h6>
+<dl class="option-list">
+<dt><kbd>-bpf, --BandpassFrequencies</kbd></dt>
+<dd><p>bandpass filter</p>
+</dd>
+<dt><kbd>-elf, --EnvelopLowpassFrequency</kbd></dt>
+<dd><p>cutoff frequency for emg envelops</p>
+</dd>
+<dt><kbd>-c, --consistency</kbd></dt>
+<dd><p>consistency plots</p>
+<p>Default: False</p>
+</dd>
+</dl>
+</section>
+</section>
+<section id="Comparison_repeat3">
+<h6 aria-level="7">Comparison<a class="headerlink" href="#Comparison_repeat3" title="Link to this heading">#</a></h6>
+<p>time-normalized comparison</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pycgm2</span><span class="o">.</span><span class="n">exe</span> <span class="n">NEXUS</span> <span class="n">Plots</span> <span class="n">EMG</span> <span class="n">Comparison</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span>
+                                      <span class="p">[</span><span class="o">-</span><span class="n">bpf</span> <span class="n">BANDPASSFREQUENCIES</span> <span class="p">[</span><span class="n">BANDPASSFREQUENCIES</span> <span class="o">...</span><span class="p">]]</span>
+                                      <span class="p">[</span><span class="o">-</span><span class="n">elf</span> <span class="n">ENVELOPLOWPASSFREQUENCY</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">c</span><span class="p">]</span>
+</pre></div>
+</div>
+<section id="named-arguments_repeat32">
+<h6 aria-level="8">Named Arguments<a class="headerlink" href="#named-arguments_repeat32" title="Link to this heading">#</a></h6>
+<dl class="option-list">
+<dt><kbd>-bpf, --BandpassFrequencies</kbd></dt>
+<dd><p>bandpass filter</p>
+</dd>
+<dt><kbd>-elf, --EnvelopLowpassFrequency</kbd></dt>
+<dd><p>cutoff frequency for emg envelops</p>
+</dd>
+<dt><kbd>-c, --consistency</kbd></dt>
+<dd><p>consistency plots</p>
+<p>Default: False</p>
+</dd>
+</dl>
+</section>
+</section>
+</section>
+</section>
+</section>
+</section>
+<section id="System">
+<h3>System<a class="headerlink" href="#System" title="Link to this heading">#</a></h3>
+<p>Nexus system commands</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pycgm2</span><span class="o">.</span><span class="n">exe</span> <span class="n">NEXUS</span> <span class="n">System</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">{</span><span class="n">DeviceDetails</span><span class="p">}</span> <span class="o">...</span>
+</pre></div>
+</div>
+<section id="positional-arguments_repeat16">
+<h4>Positional Arguments<a class="headerlink" href="#positional-arguments_repeat16" title="Link to this heading">#</a></h4>
+<dl class="option-list">
+<dt><kbd>System</kbd></dt>
+<dd><p>Possible choices: DeviceDetails</p>
+</dd>
+</dl>
+</section>
+<section id="Sub-commands_repeat16">
+<h4>Sub-commands<a class="headerlink" href="#Sub-commands_repeat16" title="Link to this heading">#</a></h4>
+<section id="DeviceDetails">
+<h5>DeviceDetails<a class="headerlink" href="#DeviceDetails" title="Link to this heading">#</a></h5>
+<p>command to get device details</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pycgm2</span><span class="o">.</span><span class="n">exe</span> <span class="n">NEXUS</span> <span class="n">System</span> <span class="n">DeviceDetails</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+</section>
 </section>
 
 
@@ -404,6 +1921,266 @@ document.write(`
               
                 <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#positional-arguments">Positional Arguments</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Sub-commands">Sub-commands</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#CGM1.0">CGM1.0</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#positional-arguments_repeat1">Positional Arguments</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#Sub-commands_repeat1">Sub-commands</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#Calibration">Calibration</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h6 nav-item toc-entry"><a class="reference internal nav-link" href="#named-arguments">Named Arguments</a></li>
+</ul>
+</li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#Fitting">Fitting</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h6 nav-item toc-entry"><a class="reference internal nav-link" href="#named-arguments_repeat1">Named Arguments</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#CGM1.1">CGM1.1</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#positional-arguments_repeat2">Positional Arguments</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#Sub-commands_repeat2">Sub-commands</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#Calibration_repeat1">Calibration</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h6 nav-item toc-entry"><a class="reference internal nav-link" href="#named-arguments_repeat2">Named Arguments</a></li>
+</ul>
+</li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#Fitting_repeat1">Fitting</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h6 nav-item toc-entry"><a class="reference internal nav-link" href="#named-arguments_repeat3">Named Arguments</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#CGM2.1">CGM2.1</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#positional-arguments_repeat3">Positional Arguments</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#Sub-commands_repeat3">Sub-commands</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#Calibration_repeat2">Calibration</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h6 nav-item toc-entry"><a class="reference internal nav-link" href="#named-arguments_repeat4">Named Arguments</a></li>
+</ul>
+</li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#Fitting_repeat2">Fitting</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h6 nav-item toc-entry"><a class="reference internal nav-link" href="#named-arguments_repeat5">Named Arguments</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#CGM2.2">CGM2.2</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#positional-arguments_repeat4">Positional Arguments</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#Sub-commands_repeat4">Sub-commands</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#Calibration_repeat3">Calibration</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h6 nav-item toc-entry"><a class="reference internal nav-link" href="#named-arguments_repeat6">Named Arguments</a></li>
+</ul>
+</li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#Fitting_repeat3">Fitting</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h6 nav-item toc-entry"><a class="reference internal nav-link" href="#named-arguments_repeat7">Named Arguments</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#CGM2.3">CGM2.3</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#positional-arguments_repeat5">Positional Arguments</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#Sub-commands_repeat5">Sub-commands</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#Calibration_repeat4">Calibration</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h6 nav-item toc-entry"><a class="reference internal nav-link" href="#named-arguments_repeat8">Named Arguments</a></li>
+</ul>
+</li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#Fitting_repeat4">Fitting</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h6 nav-item toc-entry"><a class="reference internal nav-link" href="#named-arguments_repeat9">Named Arguments</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#CGM2.4">CGM2.4</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#positional-arguments_repeat6">Positional Arguments</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#Sub-commands_repeat6">Sub-commands</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#Calibration_repeat5">Calibration</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h6 nav-item toc-entry"><a class="reference internal nav-link" href="#named-arguments_repeat10">Named Arguments</a></li>
+</ul>
+</li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#Fitting_repeat5">Fitting</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h6 nav-item toc-entry"><a class="reference internal nav-link" href="#named-arguments_repeat11">Named Arguments</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#CGM2.5">CGM2.5</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#positional-arguments_repeat7">Positional Arguments</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#Sub-commands_repeat7">Sub-commands</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#Calibration_repeat6">Calibration</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h6 nav-item toc-entry"><a class="reference internal nav-link" href="#named-arguments_repeat12">Named Arguments</a></li>
+</ul>
+</li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#Fitting_repeat6">Fitting</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h6 nav-item toc-entry"><a class="reference internal nav-link" href="#named-arguments_repeat13">Named Arguments</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#CGM2.6">CGM2.6</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#positional-arguments_repeat8">Positional Arguments</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#Sub-commands_repeat8">Sub-commands</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#2DOF">2DOF</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h6 nav-item toc-entry"><a class="reference internal nav-link" href="#named-arguments_repeat14">Named Arguments</a></li>
+</ul>
+</li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#SARA">SARA</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h6 nav-item toc-entry"><a class="reference internal nav-link" href="#named-arguments_repeat15">Named Arguments</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Events">Events</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#positional-arguments_repeat9">Positional Arguments</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#Sub-commands_repeat9">Sub-commands</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#Zeni">Zeni</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h6 nav-item toc-entry"><a class="reference internal nav-link" href="#named-arguments_repeat16">Named Arguments</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Gaps">Gaps</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#positional-arguments_repeat10">Positional Arguments</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#Sub-commands_repeat10">Sub-commands</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#Kalman">Kalman</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h6 nav-item toc-entry"><a class="reference internal nav-link" href="#named-arguments_repeat17">Named Arguments</a></li>
+</ul>
+</li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#Gloersen">Gloersen</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h6 nav-item toc-entry"><a class="reference internal nav-link" href="#named-arguments_repeat18">Named Arguments</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Plots">Plots</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#positional-arguments_repeat11">Positional Arguments</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#Sub-commands_repeat11">Sub-commands</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#STP">STP</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h6 nav-item toc-entry"><a class="reference internal nav-link" href="#named-arguments_repeat19">Named Arguments</a></li>
+</ul>
+</li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#Kinematics">Kinematics</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h6 nav-item toc-entry"><a class="reference internal nav-link" href="#positional-arguments_repeat12">Positional Arguments</a></li>
+<li class="toc-h6 nav-item toc-entry"><a class="reference internal nav-link" href="#Sub-commands_repeat12">Sub-commands</a><ul class="nav section-nav flex-column">
+<li class="toc-h7 nav-item toc-entry"><a class="reference internal nav-link" href="#Temporal">Temporal</a><ul class="nav section-nav flex-column">
+<li class="toc-h8 nav-item toc-entry"><a class="reference internal nav-link" href="#named-arguments_repeat20">Named Arguments</a></li>
+</ul>
+</li>
+<li class="toc-h7 nav-item toc-entry"><a class="reference internal nav-link" href="#Normalized">Normalized</a><ul class="nav section-nav flex-column">
+<li class="toc-h8 nav-item toc-entry"><a class="reference internal nav-link" href="#named-arguments_repeat21">Named Arguments</a></li>
+</ul>
+</li>
+<li class="toc-h7 nav-item toc-entry"><a class="reference internal nav-link" href="#Comparison">Comparison</a><ul class="nav section-nav flex-column">
+<li class="toc-h8 nav-item toc-entry"><a class="reference internal nav-link" href="#named-arguments_repeat22">Named Arguments</a></li>
+</ul>
+</li>
+<li class="toc-h7 nav-item toc-entry"><a class="reference internal nav-link" href="#MAP">MAP</a><ul class="nav section-nav flex-column">
+<li class="toc-h8 nav-item toc-entry"><a class="reference internal nav-link" href="#named-arguments_repeat23">Named Arguments</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#Kinetics">Kinetics</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h6 nav-item toc-entry"><a class="reference internal nav-link" href="#positional-arguments_repeat13">Positional Arguments</a></li>
+<li class="toc-h6 nav-item toc-entry"><a class="reference internal nav-link" href="#Sub-commands_repeat13">Sub-commands</a><ul class="nav section-nav flex-column">
+<li class="toc-h7 nav-item toc-entry"><a class="reference internal nav-link" href="#Temporal_repeat1">Temporal</a><ul class="nav section-nav flex-column">
+<li class="toc-h8 nav-item toc-entry"><a class="reference internal nav-link" href="#named-arguments_repeat24">Named Arguments</a></li>
+</ul>
+</li>
+<li class="toc-h7 nav-item toc-entry"><a class="reference internal nav-link" href="#Normalized_repeat1">Normalized</a><ul class="nav section-nav flex-column">
+<li class="toc-h8 nav-item toc-entry"><a class="reference internal nav-link" href="#named-arguments_repeat25">Named Arguments</a></li>
+</ul>
+</li>
+<li class="toc-h7 nav-item toc-entry"><a class="reference internal nav-link" href="#Comparison_repeat1">Comparison</a><ul class="nav section-nav flex-column">
+<li class="toc-h8 nav-item toc-entry"><a class="reference internal nav-link" href="#named-arguments_repeat26">Named Arguments</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#Reaction">Reaction</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h6 nav-item toc-entry"><a class="reference internal nav-link" href="#positional-arguments_repeat14">Positional Arguments</a></li>
+<li class="toc-h6 nav-item toc-entry"><a class="reference internal nav-link" href="#Sub-commands_repeat14">Sub-commands</a><ul class="nav section-nav flex-column">
+<li class="toc-h7 nav-item toc-entry"><a class="reference internal nav-link" href="#Temporal_repeat2">Temporal</a><ul class="nav section-nav flex-column">
+<li class="toc-h8 nav-item toc-entry"><a class="reference internal nav-link" href="#named-arguments_repeat27">Named Arguments</a></li>
+</ul>
+</li>
+<li class="toc-h7 nav-item toc-entry"><a class="reference internal nav-link" href="#Normalized_repeat2">Normalized</a><ul class="nav section-nav flex-column">
+<li class="toc-h8 nav-item toc-entry"><a class="reference internal nav-link" href="#named-arguments_repeat28">Named Arguments</a></li>
+</ul>
+</li>
+<li class="toc-h7 nav-item toc-entry"><a class="reference internal nav-link" href="#Comparison_repeat2">Comparison</a><ul class="nav section-nav flex-column">
+<li class="toc-h8 nav-item toc-entry"><a class="reference internal nav-link" href="#named-arguments_repeat29">Named Arguments</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#EMG">EMG</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h6 nav-item toc-entry"><a class="reference internal nav-link" href="#positional-arguments_repeat15">Positional Arguments</a></li>
+<li class="toc-h6 nav-item toc-entry"><a class="reference internal nav-link" href="#Sub-commands_repeat15">Sub-commands</a><ul class="nav section-nav flex-column">
+<li class="toc-h7 nav-item toc-entry"><a class="reference internal nav-link" href="#Temporal_repeat3">Temporal</a><ul class="nav section-nav flex-column">
+<li class="toc-h8 nav-item toc-entry"><a class="reference internal nav-link" href="#named-arguments_repeat30">Named Arguments</a></li>
+</ul>
+</li>
+<li class="toc-h7 nav-item toc-entry"><a class="reference internal nav-link" href="#Normalized_repeat3">Normalized</a><ul class="nav section-nav flex-column">
+<li class="toc-h8 nav-item toc-entry"><a class="reference internal nav-link" href="#named-arguments_repeat31">Named Arguments</a></li>
+</ul>
+</li>
+<li class="toc-h7 nav-item toc-entry"><a class="reference internal nav-link" href="#Comparison_repeat3">Comparison</a><ul class="nav section-nav flex-column">
+<li class="toc-h8 nav-item toc-entry"><a class="reference internal nav-link" href="#named-arguments_repeat32">Named Arguments</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#System">System</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#positional-arguments_repeat16">Positional Arguments</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#Sub-commands_repeat16">Sub-commands</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#DeviceDetails">DeviceDetails</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+  </nav></div>
 
   <div class="sidebar-secondary-item">
 
