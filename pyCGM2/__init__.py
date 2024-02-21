@@ -11,7 +11,7 @@ LOGGER = log.pyCGM2_Logger(__name__)
 NEXUS_VERSION = None
 
 def getLastNexusVersion():
-    nexusDir = "C:\Program Files (x86)\Vicon"
+    nexusDir = "C:\Program Files\Vicon"
     dirs = os.listdir(nexusDir)
     li =[]
     for it in dirs:

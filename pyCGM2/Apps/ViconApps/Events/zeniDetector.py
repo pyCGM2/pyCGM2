@@ -1,7 +1,6 @@
-from pyCGM2.Nexus import nexusFilters
-from pyCGM2.Nexus import nexusTools
+
 from pyCGM2.Lib import eventDetector
-from viconnexusapi import ViconNexus
+
 import argparse
 import pyCGM2
 LOGGER = pyCGM2.LOGGER
@@ -18,7 +17,10 @@ def main(args=None):
         args = parser.parse_args()
 
     try:
+        from viconnexusapi import ViconNexus
         NEXUS = ViconNexus.ViconNexus()
+        from pyCGM2.Nexus import nexusFilters
+        from pyCGM2.Nexus import nexusTools
         NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
     except:
         LOGGER.logger.error("Vicon nexus not connected")

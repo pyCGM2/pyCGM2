@@ -1,17 +1,11 @@
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 import argparse
 
-# vicon nexus
-from viconnexusapi import ViconNexus
 
 # pyCGM2 libraries
 from pyCGM2 import enums
 from pyCGM2.Tools import btkTools
 from pyCGM2.Utils import files
-from pyCGM2.Nexus import nexusFilters
-from pyCGM2.Nexus import nexusUtils
-from pyCGM2.Nexus import nexusTools
-
 from pyCGM2.Model import  modelFilters
 
 from pyCGM2.Lib.CGM import  kneeCalibration
@@ -31,7 +25,11 @@ def main(args=None):
 
 
     try:
+        from viconnexusapi import ViconNexus
         NEXUS = ViconNexus.ViconNexus()
+        from pyCGM2.Nexus import nexusFilters
+        from pyCGM2.Nexus import nexusUtils
+        from pyCGM2.Nexus import nexusTools
         NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
     except:
         LOGGER.logger.error("Vicon nexus not connected")
