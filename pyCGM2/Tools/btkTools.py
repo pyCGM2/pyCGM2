@@ -1330,6 +1330,22 @@ def smartGetEvents(acq:btk.btkAcquisition, label:str, context:str):
 
     return out
 
+def getEventsAsList(acq:btk.btkAcquisition):
+    """
+    return a list with all events set as a list structured Label-Context-Subject-Time-Frame
+
+    Args:
+        acq (btk.btkAcquisition): BTK acquisition instance.
+
+    """
+    evs = acq.GetEvents()
+    out = []
+    for it in btk.Iterate(evs):
+        out.append([it.GetLabel(),it.GetContext(), it.GetSubject(), it.GetTime(),it.GetFrame()])
+    return out
+
+
+
 def isEventExist(acq:btk.btkAcquisition, label:str, context:str):
     """
     Checks if an event with the specified label and context exists in the acquisition.
