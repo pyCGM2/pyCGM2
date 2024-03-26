@@ -1,5 +1,5 @@
 # coding: utf-8
-# pytest -s --disable-pytest-warnings  test_files.py::Test_UtilsFiles::test_loadAndSaveAnalysis
+# pytest -s --disable-pytest-warnings  test_files.py::Test_UtilsFiles::testYamlSave
 import pyCGM2
 from pyCGM2.Utils import testingUtils,files
 import pyCGM2; LOGGER = pyCGM2.LOGGER
@@ -64,6 +64,11 @@ class Test_UtilsFiles:
 
     def test_getFileCreationDate(self):
         files.getFileCreationDate(pyCGM2.TEST_DATA_PATH + "\\LowLevel\\IO\\Hanibal_files\\file.c3d")
+
+    def testYamlSave(self):
+        contentYaml = files.openFile(pyCGM2.PYCGM2_SETTINGS_FOLDER,"emg.settings")
+        files.saveYaml(pyCGM2.TEST_DATA_PATH + "\\LowLevel\\IO\\Hanibal_files\\", "testEmgYamlOut", contentYaml)
+
 
 class Test_vsk:
 

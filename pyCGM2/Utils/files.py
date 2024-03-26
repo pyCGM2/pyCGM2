@@ -16,6 +16,13 @@ from pyCGM2.Processing.analysis import Analysis
 from typing import List, Tuple, Dict, Optional
 
 
+# set to fix orderdict in saveYaml
+def __represent_ordereddict(dumper, data):
+    return dumper.represent_dict(data.items())
+
+yaml.add_representer(OrderedDict, __represent_ordereddict)
+
+
 def loadSettings(DATA_PATH:str,settingFile:str,subfolder:str=""):
     """
     Load settings from a specified file. It first checks the data path for the settings file,
@@ -357,10 +364,10 @@ def saveYaml(path:str, filename:str, content:Dict):
     filename = filename
     if path is None:
         with open((filename), 'w') as outfile:
-            yaml.dump(content, outfile,indent=4)
+            yaml.dump(content, outfile,indent=4,default_flow_style=False)
     else:
         with open((path+filename), 'w') as outfile:
-            yaml.dump(content, outfile,indent=4)
+            yaml.dump(content, outfile,indent=4,default_flow_style=False)
 
 
 def getTranslators(DATA_PATH:str, translatorType:str = "CGM1.translators"):
