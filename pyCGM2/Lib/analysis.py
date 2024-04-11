@@ -221,7 +221,7 @@ def exportAnalysis(analysisInstance:Analysis, DATA_PATH:str, name:str,
 
     exportFilter = exporter.XlsAnalysisExportFilter()
     exportFilter.setAnalysisInstance(analysisInstance)
-    exportFilter.export(name, path=DATA_PATH, excelFormat="xls", mode=mode)
+    exportFilter.export(name, path=DATA_PATH, mode=mode)
 
 
 def automaticCPdeviations(

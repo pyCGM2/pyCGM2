@@ -850,32 +850,25 @@ class XlsExportDataFrameFilter(object):
         for it in dataframes:
             self.dataframes.append(it)
 
-    def export(self, outputName: str, path: Optional[str] = None, excelFormat: str = "xls"):
+    def export(self, outputName: str, path: Optional[str] = None):
         """
-        Export the DataFrame(s) as XLS or XLSX spreadsheet(s).
+        Export the DataFrame(s) as  XLSX spreadsheet(s).
 
         Args:
             outputName (str): Base filename for the output file(s), without extension.
             path (Optional[str]): Directory path for the output file(s). If None, the current directory is used.
-            excelFormat (str): Desired spreadsheet format ('xls' or 'xlsx').
         """
         i=0
         for  dataframe in self.dataframes:
             if path == None:
-                if excelFormat == "xls":
-                    xlsxWriter = pd.ExcelWriter((outputName + "- dataframe.xls"),engine='xlwt')
-                elif excelFormat == "xlsx":
-                    xlsxWriter = pd.ExcelWriter((outputName + "- dataframe.xlsx"))
+                xlsxWriter = pd.ExcelWriter((outputName + "- dataframe.xlsx"))
             else:
-                if excelFormat == "xls":
-                    xlsxWriter = pd.ExcelWriter((path+outputName + "- dataframe.xls"),engine='xlwt')
-                elif excelFormat == "xlsx":
-                    xlsxWriter = pd.ExcelWriter((path+outputName + "- dataFrame.xlsx"))
+                xlsxWriter = pd.ExcelWriter((path+outputName + "- dataFrame.xlsx"))
 
             dataframe.to_excel(xlsxWriter,"dataframe_"+str(i),index=False)
             i+=1
 
-        xlsxWriter.save()
+        xlsxWriter.close()
 
 class XlsAnalysisExportFilter(object):
     """
@@ -903,34 +896,27 @@ class XlsAnalysisExportFilter(object):
 
         self.analysis = analysisInstance
 
-    def export(self, outputName: str, path: Optional[str] = None, excelFormat: str = "xls", mode: str = "Advanced") :
+    def export(self, outputName: str, path: Optional[str] = None,  mode: str = "Advanced") :
         """
         Export the analysis instance as a spreadsheet.
 
         Args:
             outputName (str): The base filename for the output file, without extension.
             path (Optional[str]): The directory path for the output file. If None, the current directory is used.
-            excelFormat (str): The format of the output file ('xls' or 'xlsx').
             mode (str): The structure mode of the spreadsheet ('Advanced' or 'Basic').
         """
 
 
         if mode == "Advanced":
-            self.__advancedExport(outputName, path=path, excelFormat = excelFormat)
+            self.__advancedExport(outputName, path=path)
         elif mode == "Basic":
-            self.__basicExport(outputName, path=path, excelFormat = excelFormat)
+            self.__basicExport(outputName, path=path)
 
-    def __basicExport(self,outputName, path=None,excelFormat = "xls"):
+    def __basicExport(self,outputName, path=None):
         if path == None:
-            if excelFormat == "xls":
-                xlsxWriter = pd.ExcelWriter((outputName + "- basic.xls"),engine='xlwt')
-            elif excelFormat == "xlsx":
-                xlsxWriter = pd.ExcelWriter((outputName + "- basic.xlsx"))
+            xlsxWriter = pd.ExcelWriter((outputName + "- basic.xlsx"))
         else:
-            if excelFormat == "xls":
-                xlsxWriter = pd.ExcelWriter((path+outputName + "- basic.xls"),engine='xlwt')
-            elif excelFormat == "xlsx":
-                xlsxWriter = pd.ExcelWriter((path+outputName + "- basic.xlsx"))
+             xlsxWriter = pd.ExcelWriter((path+outputName + "- basic.xlsx"))
 
         # metadata
         #--------------
@@ -1107,25 +1093,18 @@ class XlsAnalysisExportFilter(object):
                     df_label = pd.concat([df_x,df_y,df_z])
                     df_label.to_excel(xlsxWriter,str(label+"."+context),index=False)
 
-        xlsxWriter.save()
+        xlsxWriter.close()
         LOGGER.logger.info("basic dataFrame [%s- basic] Exported"%outputName)
 
 
 
 
 
-    def __advancedExport(self,outputName, path=None, excelFormat = "xls",csvFileExport =False):
+    def __advancedExport(self,outputName, path=None,csvFileExport =False):
         if path == None:
-            if excelFormat == "xls":
-                xlsxWriter = pd.ExcelWriter((outputName + "- Advanced.xls"),engine='xlwt',encoding='utf-8')
-            elif excelFormat == "xlsx":
-                xlsxWriter = pd.ExcelWriter((outputName + "- Advanced.xlsx"),encoding='utf-8')
+            xlsxWriter = pd.ExcelWriter((outputName + "- Advanced.xlsx"))
         else:
-            if excelFormat == "xls":
-                xlsxWriter = pd.ExcelWriter((path+outputName + "- Advanced.xls"),engine='xlwt',encoding='utf-8')
-            elif excelFormat == "xlsx":
-                xlsxWriter = pd.ExcelWriter((path+outputName + "- Advanced.xlsx"),encoding='utf-8')
-
+            xlsxWriter = pd.ExcelWriter((path+outputName + "- Advanced.xlsx"))
         # infos
         #-------
         if self.analysis.modelInfo is not None:
@@ -1411,6 +1390,7 @@ class XlsAnalysisExportFilter(object):
 
             # stage 1 : get descriptive data
             # --------------------------------
+            
             df_descriptiveEMG = build_df_descriptiveCycle101_1(self.analysis.emgStats)
 
             # add infos
@@ -1593,7 +1573,7 @@ class XlsAnalysisExportFilter(object):
 
         LOGGER.logger.info("advanced dataFrame [%s- Advanced] Exported"%outputName)
 
-        xlsxWriter.save()
+        xlsxWriter.close()
 
 
 class AnalysisExportFilter(object):
