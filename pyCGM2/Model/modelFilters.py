@@ -81,6 +81,12 @@ class GeneralCalibrationProcedure(object):
             self.anatomicalDefinition[segmentName]={'sequence':sequence, 'labels':[nodeLabel1,nodeLabel2,nodeLabel3,nodeLabelOrigin]}
 
 
+    def getDefinition(self):
+        return self.definition
+
+    def getAnatomicalDefinition(self):
+        return self.anatomicalDefinition
+
 class StaticCalibrationProcedure(object):
     """Procedure for calibration using a pyCGM2-embedded model instance.
     Args:
@@ -97,7 +103,11 @@ class StaticCalibrationProcedure(object):
         """Internal method to set calibration definitions based on the model."""
         self.definition=self.model.calibrationProcedure()
 
+    def getDefinitions(self):
+        return self.definition[0]
 
+    def getAnatomicalDefinitions(self):
+        return self.anatomicalDefinition[1]
 
 # ---- inverse dynamic procedure
 class InverseDynamicProcedure(object):
