@@ -552,7 +552,6 @@ class CGM1(CGM):
         dictRef["Right Thigh"]={"TF" : {'sequence':"ZXY", 'labels':   ["RKNE","RHJC","RTHI","RKNE"]} }
         dictRef["Left Shank"]={"TF" : {'sequence':"ZXiY", 'labels':   ["LANK","LKJC","LTIB","LANK"]} }
         dictRef["Right Shank"]={"TF" : {'sequence':"ZXY", 'labels':   ["RANK","RKJC","RTIB","RANK"]} }
-
         dictRef["Left Foot"]={"TF" : {'sequence':"ZXiY", 'labels':   ["LTOE","LAJC",None,"LAJC"]} } # uncorrected Foot - use shank flexion axis (Y) as second axis
         dictRef["Right Foot"]={"TF" : {'sequence':"ZXiY", 'labels':   ["RTOE","RAJC",None,"RAJC"]} } # uncorrected Foot - use shank flexion axis (Y) as second axis
 
@@ -561,7 +560,6 @@ class CGM1(CGM):
         dictRefAnatomical["Right Thigh"]= {'sequence':"ZXY", 'labels': ["RKJC","RHJC","RKNE","RHJC"]}
         dictRefAnatomical["Left Shank"]={'sequence':"ZXiY", 'labels':   ["LAJC","LKJC","LANK","LKJC"]}
         dictRefAnatomical["Right Shank"]={'sequence':"ZXY", 'labels':  ["RAJC","RKJC","RANK","RKJC"]}
-
         dictRefAnatomical["Left Foot"]={'sequence':"ZXiY", 'labels':  ["LTOE","LHEE",None,"LAJC"]}    # corrected foot
         dictRefAnatomical["Right Foot"]={'sequence':"ZXiY", 'labels':  ["RTOE","RHEE",None,"RAJC"]}    # corrected foot
 
@@ -1550,6 +1548,7 @@ class CGM1(CGM):
         for node in seg.getReferential("TF").static.getNodes():
             seg.anatomicalFrame.static.addNode(node.getLabel(),node.getGlobal(),positionType="Global", desc = node.getDescription())
 
+        
         # length
         lhjc = seg.anatomicalFrame.static.getNode_byLabel("LHJC").m_local
         rhjc = seg.anatomicalFrame.static.getNode_byLabel("RHJC").m_local
@@ -1563,6 +1562,37 @@ class CGM1(CGM):
 
         com = offset + (TopLumbar5-offset)*0.895
         seg.anatomicalFrame.static.addNode("com",com,positionType="Local")
+
+
+        #opensim pelvic referential
+        sacr = seg.anatomicalFrame.static.getNode_byLabel("SACR").getGlobal()
+        midASIS = seg.anatomicalFrame.static.getNode_byLabel("midASIS").getGlobal()
+        rasi = seg.anatomicalFrame.static.getNode_byLabel("RASI").getGlobal()
+        midASIS[2] =  sacr[2]
+        rasi[2] =  sacr[2]
+
+
+        a1=(sacr-midASIS)
+        a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
+
+        v=(midASIS-rasi)
+        v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
+
+        a2=np.cross(a1,v)
+        a2=np.nan_to_num(np.divide(a2,np.linalg.norm(a2)))
+
+        x_os,y_os,z_os,R_os=frame.setFrameData(a1,a2,"XYZ")
+        csFrame=frame.Frame()
+        csFrame.update(R,midASIS)
+
+        seg.addTechnicalReferential("opensim")
+        osFrame = seg.getReferential("opensim")
+        osFrame.setStaticFrame(csFrame)
+        osFrame.setRelativeMatrixAnatomic( np.dot(osFrame.static.getRotation().T,seg.anatomicalFrame.static.getRotation()))
+
+        for node in seg.anatomicalFrame.static.getNodes():
+            seg.getReferential("opensim").static.addNode(node.getLabel(),node.getGlobal(),positionType="Global", desc = node.getDescription())
+
 
     def _thigh_Anatomicalcalibrate(self,side:str, aquiStatic: btk.btkAcquisition, dictAnatomic: Dict[str, Any], frameInit: int, frameEnd: int) -> None:
         """Calibrate the anatomical referential of the thigh segment.
@@ -1619,6 +1649,26 @@ class CGM1(CGM):
         kjc = seg.anatomicalFrame.static.getNode_byLabel(f"{prefix}KJC").m_local
 
         seg.setLength(np.linalg.norm(kjc-hjc))
+
+
+        # opensim
+        hjc = seg.anatomicalFrame.static.getNode_byLabel(f"{prefix}HJC").getGlobal()
+        csFrame=frame.Frame()
+        Rana_os = np.array([[1,0,0],
+                           [0,0,1],
+                           [0,-1,0]]) # anat in os
+
+        csFrame.update(np.dot(R,Rana_os.T),
+                        hjc)
+
+        seg.addTechnicalReferential("opensim")
+        osFrame = seg.getReferential("opensim")
+        osFrame.setStaticFrame(csFrame)
+        osFrame.setRelativeMatrixAnatomic( np.dot(osFrame.static.getRotation().T,seg.anatomicalFrame.static.getRotation()))
+
+        for node in seg.anatomicalFrame.static.getNodes():
+            seg.getReferential("opensim").static.addNode(node.getLabel(),node.getGlobal(),positionType="Global", desc = node.getDescription())
+
 
 
     # def _right_thigh_Anatomicalcalibrate(self, aquiStatic: btk.btkAcquisition, dictAnatomic: Dict[str, Any], frameInit: int, frameEnd: int) -> None:
@@ -1728,6 +1778,21 @@ class CGM1(CGM):
         ajc = seg.anatomicalFrame.static.getNode_byLabel(f"{prefix}AJC").m_local
 
         seg.setLength(np.linalg.norm(ajc-kjc))
+
+        # opensim
+        kjc = seg.anatomicalFrame.static.getNode_byLabel(f"{prefix}KJC").getGlobal()
+        csFrame=frame.Frame()
+        Rana_os = np.array([[1,0,0],[0,0,1],[0,-1,0]]) # anat in os
+        csFrame.update(np.dot(R,Rana_os.T),
+                        kjc)
+
+        seg.addTechnicalReferential("opensim")
+        osFrame = seg.getReferential("opensim")
+        osFrame.setStaticFrame(csFrame)
+        osFrame.setRelativeMatrixAnatomic( np.dot(osFrame.static.getRotation().T,seg.anatomicalFrame.static.getRotation()))
+
+        for node in seg.anatomicalFrame.static.getNodes():
+            seg.getReferential("opensim").static.addNode(node.getLabel(),node.getGlobal(),positionType="Global", desc = node.getDescription())
 
     def _shankProximal_AnatomicalCalibrate(self,side:str, aquiStatic: btk.btkAcquisition, dictAnat: Dict[str, Any], frameInit: int, frameEnd: int, options: Optional[Dict[str, Any]] = None) -> None:
         """Calibrate the anatomical referential of the shank proximal segment.
@@ -1919,6 +1984,22 @@ class CGM1(CGM):
 
         seg.anatomicalFrame.static.addNode("FootOriginOffset",local_oo,positionType="Local")
         seg.anatomicalFrame.static.addNode("ToeOrigin",local_to,positionType="Local")
+
+
+        # opensim
+        ajc = seg.anatomicalFrame.static.getNode_byLabel(f"{prefix}AJC").getGlobal()
+        csFrame=frame.Frame()
+        Rana_os = np.array([[1,0,0],[0,0,1],[0,-1,0]]) # anat in os
+        csFrame.update(np.dot(R,Rana_os.T),
+                        ajc)
+
+        seg.addTechnicalReferential("opensim")
+        osFrame = seg.getReferential("opensim")
+        osFrame.setStaticFrame(csFrame)
+        osFrame.setRelativeMatrixAnatomic( np.dot(osFrame.static.getRotation().T,seg.anatomicalFrame.static.getRotation()))
+
+        for node in seg.anatomicalFrame.static.getNodes():
+            seg.getReferential("opensim").static.addNode(node.getLabel(),node.getGlobal(),positionType="Global", desc = node.getDescription())
 
     # def _right_foot_corrected_calibrate(self, aquiStatic: btk.btkAcquisition, dictAnatomic: Dict[str, Any], frameInit: int, frameEnd: int, options: Optional[Dict[str, Any]] = None) -> None:
     #     """Calibrate the anatomical referential of the right corrected foot segment.
@@ -3992,13 +4073,6 @@ class CGM1(CGM):
         
         values_LHJCnode[invalid_indices] = np.zeros(3)
         values_RHJCnode[invalid_indices] = np.zeros(3)
-
-        # import ipdb; ipdb.set_trace()
-        # for i in range(0,aqui.GetPointFrameNumber()):
-        #     if not validFrames[i]:
-        #         values_LHJCnode[i,:] = np.zeros(3)
-        #         values_RHJCnode[i,:] = np.zeros(3)
-
 
         desc_L = seg.getReferential('TF').static.getNode_byLabel("LHJC").m_desc
         desc_R = seg.getReferential('TF').static.getNode_byLabel("RHJC").m_desc

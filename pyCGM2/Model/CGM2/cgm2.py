@@ -1082,6 +1082,21 @@ class CGM2_4(CGM2_3):
 
         seg.anatomicalFrame.static.addNode("com",com,positionType="Global")
 
+        # opensim
+        ajc = seg.anatomicalFrame.static.getNode_byLabel(f"{prefix}AJC").getGlobal()
+        csFrame=frame.Frame()
+        Rana_os = np.array([[1,0,0],[0,0,1],[0,-1,0]]) # anat in os
+        csFrame.update(np.dot(R,Rana_os.T),
+                        ajc)
+
+        seg.addTechnicalReferential("opensim")
+        osFrame = seg.getReferential("opensim")
+        osFrame.setStaticFrame(csFrame)
+        osFrame.setRelativeMatrixAnatomic( np.dot(osFrame.static.getRotation().T,seg.anatomicalFrame.static.getRotation()))
+
+        for node in seg.anatomicalFrame.static.getNodes():
+            seg.getReferential("opensim").static.addNode(node.getLabel(),node.getGlobal(),positionType="Global", desc = node.getDescription())
+
 
     def _foreFoot_anatomicalCalibrate(self,
                                           side:str, 
@@ -1160,6 +1175,8 @@ class CGM2_4(CGM2_3):
         vsmh = seg.anatomicalFrame.static.getNode_byLabel(f"{prefix}vSMH").m_local
         fjc = seg.anatomicalFrame.static.getNode_byLabel(f"{prefix}FJC").m_local
         seg.setLength(np.linalg.norm(fjc-vsmh))
+
+        
 
 
     #---- Offsets -------
