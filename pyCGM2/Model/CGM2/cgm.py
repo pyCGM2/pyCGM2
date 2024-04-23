@@ -1565,17 +1565,18 @@ class CGM1(CGM):
 
 
         #opensim pelvic referential
-        sacr = seg.anatomicalFrame.static.getNode_byLabel("SACR").getGlobal()
-        midASIS = seg.anatomicalFrame.static.getNode_byLabel("midASIS").getGlobal()
-        rasi = seg.anatomicalFrame.static.getNode_byLabel("RASI").getGlobal()
-        midASIS[2] =  sacr[2]
-        rasi[2] =  sacr[2]
+        sacr_node = copy.copy(seg.anatomicalFrame.static.getNode_byLabel("SACR").getGlobal())
+        midASIS_node = copy.copy(seg.anatomicalFrame.static.getNode_byLabel("midASIS").getGlobal())
+        rasi_node = copy.copy(seg.anatomicalFrame.static.getNode_byLabel("RASI").getGlobal())
+
+        midASIS_node[2] =  sacr_node[2]
+        rasi_node[2] =  sacr_node[2]
 
 
-        a1=(sacr-midASIS)
+        a1=(sacr_node-midASIS_node)
         a1=np.nan_to_num(np.divide(a1,np.linalg.norm(a1)))
 
-        v=(midASIS-rasi)
+        v=(midASIS_node-rasi_node)
         v=np.nan_to_num(np.divide(v,np.linalg.norm(v)))
 
         a2=np.cross(a1,v)
@@ -1583,7 +1584,7 @@ class CGM1(CGM):
 
         x_os,y_os,z_os,R_os=frame.setFrameData(a1,a2,"XYZ")
         csFrame=frame.Frame()
-        csFrame.update(R,midASIS)
+        csFrame.update(R_os,midASIS_node)
 
         seg.addTechnicalReferential("opensim")
         osFrame = seg.getReferential("opensim")

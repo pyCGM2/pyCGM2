@@ -103,7 +103,10 @@ def calibrate(DATA_PATH:str,calibrateFilenameLabelled:str,
 
     gapFlag = btkTools.checkGap(acqStatic,actual_trackingMarkers,frameBounds=[vff,vlf])
     if gapFlag:
+        #LOGGER.logger.error("[pyCGM2] Calibration aborted. Gap find during interval [%i-%i]. Crop your c3d " %(vff,vlf))
+        btkTools.findMarkerGap(acqStatic)
         raise Exception("[pyCGM2] Calibration aborted. Gap find during interval [%i-%i]. Crop your c3d " %(vff,vlf))
+    
 
     # --------------------ANOMALY------------------------------
     # --Check MP
