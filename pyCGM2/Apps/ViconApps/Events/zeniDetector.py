@@ -48,7 +48,7 @@ def main(args=None):
         LOGGER.logger.info("Subject name : " + subject)
 
         # --- btk acquisition ----
-        nacf = nexusFilters.NexusConstructAcquisitionFilter(
+        nacf = nexusFilters.NexusConstructAcquisitionFilter(NEXUS,
             DATA_PATH, reconstructFilenameLabelledNoExt, subject)
         acqGait = nacf.build()
 
