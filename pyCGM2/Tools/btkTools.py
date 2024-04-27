@@ -7,7 +7,6 @@ check out **test_btkTools** for examples
 """
 
 import numpy as np
-from scipy import spatial
 from  pyCGM2.Math import geometry
 import pyCGM2
 LOGGER = pyCGM2.LOGGER
@@ -1812,13 +1811,14 @@ def calculateAngleFrom3points( acq:btk.btkAcquisition,pt1:str,pt2:str,pt3:str):
 
     return out
 
-def markersToArray(acq:btk.btkAcquisition,markers:Optional[List[str]]=None):
+def markersToArray(acq:btk.btkAcquisition,markers:Optional[List[str]]=None,gathercolumn:bool=False):
     """
     Converts marker position data from a BTK acquisition to a numpy array.
 
     Args:
         acq (btk.btkAcquisition): BTK acquisition instance.
         markers (List[str], optional): List of marker labels to include. If None, includes all markers. Defaults to None.
+        gathercolumn (bool): gather axis. return array is organized as [mark0_X,...markN_X, mark0_Y,...markN_Y, mark0_Z,...markN_Z,]
 
     Returns:
         np.ndarray: Array of marker trajectories with dimensions [n_frames, n_markers * 3].
@@ -1836,16 +1836,34 @@ def markersToArray(acq:btk.btkAcquisition,markers:Optional[List[str]]=None):
         for ml in markerNames:
             if isPointExist(acq,ml) :
                 btkmarkers.append(ml)
+
     # --------
-    array = np.zeros((pfn,len(btkmarkers)*3))
+    #array = np.zeros((pfn,len(btkmarkers)*3))
+    array = np.array([]).reshape(0, 3)
     for i in range(0,len(btkmarkers)):
         values = acq.GetPoint(btkmarkers[i]).GetValues()
-        residualValues = acq.GetPoint(btkmarkers[i]).GetResiduals()
-        array[:,3*i-3] = values[:,0]
-        array[:,3*i-2] = values[:,1]
-        array[:,3*i-1] = values[:,2]
-        E = residualValues[:,0]
-        array[np.asarray(E)==-1,3*i-3] = np.nan
-        array[np.asarray(E)==-1,3*i-2] = np.nan
-        array[np.asarray(E)==-1,3*i-1] = np.nan
+        residualValues = acq.GetPoint(btkmarkers[i]).GetResiduals()[:,0]
+        values[np.asarray(residualValues)==-1,:] = np.nan
+        
+        if array.size == 0:
+            array = values
+        else:
+            array = np.hstack((array, values))
+        
+        # array[:,3*i-3] = values[:,0]
+        # array[:,3*i-2] = values[:,1]
+        # array[:,3*i-1] = values[:,2]
+        
+        # array[np.asarray(E)==-1,3*i-3] = np.nan
+        # array[np.asarray(E)==-1,3*i-2] = np.nan
+        # array[np.asarray(E)==-1,3*i-1] = np.nan
+    
+    if gathercolumn:
+        array_X =  array[:,np.arange(0,array.shape[1],3).tolist()]
+        array_Y =  array[:,np.arange(1,array.shape[1],3).tolist()]
+        array_Z =  array[:,np.arange(2,array.shape[1],3).tolist()]
+
+        array = np.concatenate([array_X,array_Y,array_Z],axis=1)
+
+    
     return array
