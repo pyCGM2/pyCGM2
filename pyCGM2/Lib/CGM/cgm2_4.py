@@ -74,7 +74,8 @@ def calibrate(DATA_PATH:str,calibrateFilenameLabelled:str,
     else:
         anomalyException=False
 
-
+    pointSuffix = None if pointSuffix == "None" else pointSuffix
+    
     # ---btk acquisition---
 
 
@@ -378,7 +379,8 @@ def fitting(model:Model,DATA_PATH:str, reconstructFilenameLabelled:str,
     else:
         anomalyException=False
 
-
+    pointSuffix = None if pointSuffix == "None" else pointSuffix
+    
     if "forceFoot6DoF" in kwargs.keys() and kwargs["forceFoot6DoF"]:
         forceFoot6DoF_flag = True
     else:

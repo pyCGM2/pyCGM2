@@ -73,6 +73,8 @@ def calibrate(DATA_PATH:str,calibrateFilenameLabelled:str,translators:Dict,
     # ---btk acquisition---
         acqStatic = btkTools.smartReader((DATA_PATH+calibrateFilenameLabelled))
 
+    pointSuffix = None if pointSuffix == "None" else pointSuffix
+    
     btkTools.checkMultipleSubject(acqStatic)
     if btkTools.isPointExist(acqStatic,"SACR") and not btkTools.isPointExist(acqStatic,"LPSI") and not btkTools.isPointExist(acqStatic,"RPSI"):
         translators["LPSI"] = "SACR"
@@ -282,6 +284,9 @@ def fitting(model:Model,DATA_PATH:str, reconstructFilenameLabelled:str,
         anomalyException = kwargs["anomalyException"]
     else:
         anomalyException=False
+
+    pointSuffix = None if pointSuffix == "None" else pointSuffix
+    
 
     # --- btk acquisition ----
     if "forceBtkAcq" in kwargs.keys():

@@ -74,6 +74,8 @@ def calibrate(DATA_PATH:str,calibrateFilenameLabelled:str,
     else:
         anomalyException=False
 
+    pointSuffix = None if pointSuffix == "None" else pointSuffix
+    
 
     if "Fitting" in weights.keys():
         weights  = weights["Fitting"]["Weight"]
@@ -361,6 +363,9 @@ def fitting(model:Model,DATA_PATH:str, reconstructFilenameLabelled:str,
         anomalyException = kwargs["anomalyException"]
     else:
         anomalyException=False
+
+    pointSuffix = None if pointSuffix == "None" else pointSuffix
+    
 
     if "Fitting" in weights.keys():
         weights  = weights["Fitting"]["Weight"]

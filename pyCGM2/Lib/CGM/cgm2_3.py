@@ -74,6 +74,8 @@ def calibrate(DATA_PATH:str,calibrateFilenameLabelled:str,
     else:
         anomalyException=False
 
+    pointSuffix = None if pointSuffix == "None" else pointSuffix
+    
     # --------------------------STATIC FILE WITH TRANSLATORS --------------------------------------
 
     if "Fitting" in weights.keys():
@@ -362,6 +364,8 @@ def fitting(model:Model,DATA_PATH:str, reconstructFilenameLabelled:str,
     utils.homogeneizeArguments(argv,kwargs)
     detectAnomaly = False
 
+    pointSuffix = None if pointSuffix == "None" else pointSuffix
+    
     # --------------------ACQUISITION------------------------------
 
     if "anomalyException" in kwargs.keys():

@@ -60,6 +60,8 @@ def calibrate(DATA_PATH:str,calibrateFilenameLabelled:str,translators:str,
     utils.homogeneizeArguments(argv,kwargs)
     detectAnomaly = False
 
+    pointSuffix = None if pointSuffix == "None" else pointSuffix
+
     if "anomalyException" in kwargs.keys():
         anomalyException = kwargs["anomalyException"]
     else:
@@ -266,7 +268,8 @@ def fitting(model:Model,DATA_PATH:str, reconstructFilenameLabelled:str,
     else:
         anomalyException=False
 
-
+    pointSuffix = None if pointSuffix == "None" else pointSuffix
+    
     # --------------------------ACQUISITION ------------------------------------
 
     # --- btk acquisition ----
