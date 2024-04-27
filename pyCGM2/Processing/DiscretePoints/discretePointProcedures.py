@@ -828,7 +828,7 @@ class BenedettiProcedure(DiscretePointProcedure):
 
             values = normalizedCycleValues["values"][i][:,0]
             valuesFromPreswing = normalizedCycleValues["values"][i][beginFrame:101,0]
-            indexes = detect_peaks(valuesFromPreswing, valley=True)
+            indexes = detect_peaks(valuesFromPreswing, valley=True).tolist()
 
             # rule application
             frame = "NA"
