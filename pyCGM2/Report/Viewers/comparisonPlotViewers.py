@@ -4,8 +4,10 @@ Module contains `plotViewers` for comparing data from different `analysis` insta
 """
 
 import numpy as np
+import pandas as pd
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 import matplotlib.pyplot as plt
+import seaborn as sns
 
 # pyCGM2
 import pyCGM2
@@ -1184,3 +1186,327 @@ class GroundReactionForceComparisonViewer(plotViewers.PlotViewer):
         self.fig.axes[0].legend(fontsize=6)
         self.fig.axes[3].legend(fontsize=6)
         # self.__setLegend(0)
+
+class MapComparisonViewer(plotViewers.PlotViewer):
+    """ 
+    A viewer for comparing Movement Analysis Scrore  across multiple `Analysis` instances.
+    
+
+    Args:
+        iAnalyses (List[Analysis]): Instances of analyses to be compared.
+        legends (List[str]): Descriptive labels for each analysis instance.
+        pointLabelSuffix_lst (Optional[List[str]]): Suffixes for model output labels.
+        bodyPart (enums.BodyPartPlot): The body part to be visualized, defaults to LowerLimb.
+
+
+    """
+
+    def __init__(self,iAnalyses:List[Analysis],legends:List[str],pointLabelSuffix_lst:Optional[List[str]]=None):
+        """Initialize the comparison plot viewer"""
+
+
+        super(MapComparisonViewer, self).__init__(iAnalyses)
+
+        for itAnalysis in iAnalyses:
+            if isinstance(itAnalysis,pyCGM2.Processing.analysis.Analysis):
+                pass
+            else:
+                LOGGER.logger.error( "[pyCGM2] error input object type. must be a pyCGM2.Core.Processing.analysis.Analysis")
+
+        self.m_analysis = self.m_input
+        self.m_pointLabelSuffixes = pointLabelSuffix_lst
+        self.m_legends = legends
+
+        if len(iAnalyses) != len(legends):
+            raise Exception("legends don t match analysis. Must have same length")
+        if pointLabelSuffix_lst is not None:
+            if len(iAnalyses) != len(pointLabelSuffix_lst):
+                raise Exception("list of point label suffix don t match analysis. Must have same length")
+
+        self.m_concretePlotFunction = None
+
+
+    def __setLayer(self):
+        """
+        private method to Set up the plot layers for ground reaction force visualization.
+        """
+
+        self.fig = plt.figure(figsize=(8.27,11.69), dpi=100,facecolor="white")
+        title=u""" Movement Profile Scores Comparison \n """
+        self.fig.suptitle(title)
+        plt.subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=0.5, hspace=0.5)
+
+
+        ax0 = plt.subplot2grid((5, 3), (0, 0), colspan=3) #gps
+        
+        ax1 = plt.subplot2grid((5, 3), (1, 0) ) # pelvis
+        ax2 = plt.subplot2grid((5, 3), (1, 1))
+        ax3 = plt.subplot2grid((5, 3), (1, 2))
+
+
+        ax4 = plt.subplot2grid((5, 3), (2, 0) )#hip
+        ax5 = plt.subplot2grid((5, 3), (2, 1))
+        ax6 = plt.subplot2grid((5, 3), (2, 2))
+
+
+        ax7 = plt.subplot2grid((5, 3), (3, 0) ) # knee
+ 
+        ax8 = plt.subplot2grid((5, 3), (4, 0) ) # knee
+
+        ax9 = plt.subplot2grid((5, 3), (4, 2)) # progression
+
+
+        #ax0 = plt.subplot(4,3,1)# speed overall (speed)
+
+        # for axIt in self.fig.axes:
+        #      axIt.set_ylim([0, 30])
+
+        ax0.set_title("GPS" ,size=8)
+
+        ax1.set_title("Pelvis Tilt" ,size=8) 
+        ax2.set_title("Pelvis Obliquity" ,size=8)
+        ax3.set_title("Pelvis Rotation" ,size=8)
+ 
+        ax4.set_title("Hip Flexion" ,size=8)
+        ax5.set_title("Hip Adduction" ,size=8)
+        ax6.set_title("Hip Rotation" ,size=8)
+       
+        ax7.set_title("Knee Flexion" ,size=8)
+       
+        ax8.set_title("Ankle dorsiflexion" ,size=8)
+
+        ax9.set_title("Foot Progression " ,size=8)
+
+
+        for ax in self.fig.axes:
+            ax.tick_params(axis='x', which='major', labelsize=6)
+            ax.tick_params(axis='y', which='major', labelsize=6)
+
+            ax.set_ylabel("score (deg)",size=8)
+            ax.set_xlabel("",size=8)
+
+    def __setLegend(self,axisIndex):
+        """
+        Private method to set the legend for the plot.
+        
+        Configures and places the legend on the plot based on the provided axis index.
+
+        Args:
+            axisIndex (int): Index of the axis where the legend is to be placed.
+
+        Note:
+            This method is internally used by the class and not intended for external use.
+        """
+        self.fig.axes[axisIndex].legend(fontsize=6)
+        #self.fig.axes[axisIndex].legend(fontsize=6, bbox_to_anchor=(0,1.2,1,0.2), loc="lower left",
+        #    mode="None", borderaxespad=0, ncol=len(self.m_analysis))
+
+    def setNormativeDataset(self,iNormativeDataSet:NormativeData):
+        """
+        Set the normative dataset for comparison.
+
+        Args:
+            iNormativeDataSet (NormativeData): An instance of a normative dataset.
+        """
+        pass
+
+
+    def __setData(self):
+        """
+        Set the data for ground reaction force visualization.
+        """
+
+        data = []
+        labels = []
+        contexts = []
+        pointLabels = []
+        axes = []
+
+
+        for analysis, legend in zip(self.m_analysis, self.m_legends):
+
+            categories = ['Overall', 'Left', 'Right']
+            for cat in categories:
+                if cat == 'Overall':
+                    values = analysis.gps[cat]["values"]
+                else:
+                    values = analysis.gps["Context"][cat]["values"]
+
+
+                n = values.shape[0]
+                data.extend(values.tolist())
+                labels.extend([legend] * n)
+                contexts.extend([cat] * n)
+                pointLabels.extend(["GPS"] * n)
+                axes.extend([""] * n)
+
+
+            values = analysis.gvs["LPelvisAngles", "Left"]["values"][0]
+            n = values.shape[0]
+            data.extend(values.tolist())
+            labels.extend([legend] * n)
+            contexts.extend(["left"] * n)
+            pointLabels.extend(["LPelvisAngles"] * n)
+            axes.extend(["X"] * n)
+
+            values = analysis.gvs["LPelvisAngles", "Left"]["values"][1]
+            n = values.shape[0]
+            data.extend(values.tolist())
+            labels.extend([legend] * n)
+            contexts.extend(["left"] * n)
+            pointLabels.extend(["LPelvisAngles"] * n)
+            axes.extend(["Y"] * n)
+
+            values = analysis.gvs["LPelvisAngles", "Left"]["values"][2]
+            n = values.shape[0]
+            data.extend(values.tolist())
+            labels.extend([legend] * n)
+            contexts.extend(["left"] * n)
+            pointLabels.extend(["LPelvisAngles"] * n)
+            axes.extend(["Z"] * n)
+
+            
+            for it in [["LHipAngles", "Left"],["RHipAngles", "Right"] ]:
+                i=0
+                for axIt in ["X","Y","Z"]: 
+                    values = analysis.gvs[it[0], it[1]]["values"][i]
+                    n = values.shape[0]
+                    data.extend(values.tolist())
+                    labels.extend([legend] * n)
+                    contexts.extend([it[1].lower()] * n)
+                    pointLabels.extend([it[0][1:]] * n)
+                    axes.extend([axIt] * n)
+                    i+=1
+            
+            for it in [["LKneeAngles", "Left"],["RKneeAngles", "Right"] ]:
+                i=0
+                for axIt in ["X"]: 
+                    values = analysis.gvs[it[0], it[1]]["values"][i]
+                    n = values.shape[0]
+                    data.extend(values.tolist())
+                    labels.extend([legend] * n)
+                    contexts.extend([it[1].lower()] * n)
+                    pointLabels.extend([it[0][1:]] * n)
+                    axes.extend([axIt] * n)
+                    i+=1
+
+            for it in [["LAnkleAngles", "Left"],["RAnkleAngles", "Right"] ]:
+                i=0
+                for axIt in ["X"]: 
+                    values = analysis.gvs[it[0], it[1]]["values"][i]
+                    n = values.shape[0]
+                    data.extend(values.tolist())
+                    labels.extend([legend] * n)
+                    contexts.extend([it[1].lower()] * n)
+                    pointLabels.extend([it[0][1:]] * n)
+                    axes.extend([axIt] * n)
+                    i+=1
+
+            for it in [["LFootProgressAngles", "Left"],["RFootProgressAngles", "Right"] ]:
+                for axIt in ["Z"]: 
+                    if axIt == "Z": i=2
+                    values = analysis.gvs[it[0], it[1]]["values"][i]
+                    n = values.shape[0]
+                    data.extend(values.tolist())
+                    labels.extend([legend] * n)
+                    contexts.extend([it[1].lower()] * n)
+                    pointLabels.extend([it[0][1:]] * n)
+                    axes.extend([axIt] * n)
+                    
+
+        df = pd.DataFrame({
+            "Values": data,
+            "Legend": labels,
+            "Context": contexts,
+            "Label": pointLabels,
+            "Axis": axes
+        })
+        
+
+        sns.barplot(
+                data=df[df.Label=="GPS"], 
+                x="Legend", y="Values", hue="Context",
+                errorbar=None, palette=["black","red","blue"], alpha=.6,
+            ax=self.fig.axes[0])
+        
+        sns.barplot(
+                data=df[(df.Label=="LPelvisAngles") & (df.Axis=="X")], 
+                x="Legend", y="Values", hue="Context",
+                errorbar=None, palette=["red","blue"], alpha=.6,
+            ax=self.fig.axes[1])
+        
+        sns.barplot(
+                data=df[(df.Label=="LPelvisAngles") & (df.Axis=="Y")], 
+                x="Legend", y="Values", hue="Context",
+                errorbar=None, palette=["red"], alpha=.6,
+            ax=self.fig.axes[2])
+    
+        sns.barplot(
+                data=df[(df.Label=="LPelvisAngles") & (df.Axis=="Z")], 
+                x="Legend", y="Values", hue="Context",
+                errorbar=None, palette=["red"], alpha=.6,
+            ax=self.fig.axes[3])
+
+        sns.barplot(
+                data=df[(df.Label=="HipAngles") & (df.Axis=="X")], 
+                x="Legend", y="Values", hue="Context",
+                errorbar=None, palette=["red","blue"], alpha=.6,
+            ax=self.fig.axes[4])
+        sns.barplot(
+                data=df[(df.Label=="HipAngles") & (df.Axis=="Y")], 
+                x="Legend", y="Values", hue="Context",
+                errorbar=None, palette=["red","blue"], alpha=.6,
+            ax=self.fig.axes[5])
+        sns.barplot(
+                data=df[(df.Label=="HipAngles") & (df.Axis=="Z")], 
+                x="Legend", y="Values", hue="Context",
+                errorbar=None, palette=["red","blue"], alpha=.6,
+            ax=self.fig.axes[6])
+
+        sns.barplot(
+                data=df[(df.Label=="KneeAngles") & (df.Axis=="X")], 
+                x="Legend", y="Values", hue="Context",
+                errorbar=None, palette=["red","blue"], alpha=.6,
+            ax=self.fig.axes[7])
+
+        sns.barplot(
+                data=df[(df.Label=="AnkleAngles") & (df.Axis=="X")], 
+                x="Legend", y="Values", hue="Context",
+                errorbar=None, palette=["red","blue"], alpha=.6,
+            ax=self.fig.axes[8])
+
+        sns.barplot(
+                data=df[(df.Label=="FootProgressAngles") & (df.Axis=="Z")], 
+                x="Legend", y="Values", hue="Context",
+                errorbar=None, palette=["red","blue"], alpha=.6,
+            ax=self.fig.axes[9])
+
+            
+
+    def plotPanel(self):
+        """
+        Generates and plots the MAP comparison panel.
+
+        This method orchestrates the plotting process, including setting up the layers,
+        arranging data, and rendering the final plot.
+
+        Returns:
+            matplotlib.figure.Figure: The generated plot as a matplotlib figure object.
+            
+
+        """
+
+
+        self.__setLayer()
+        self.__setData()
+      
+        for it in self.fig.axes:
+            try:
+                it.get_legend().set_visible(False)
+                it.set_xlabel("",size=8)
+            except:
+                pass
+      
+        # self.fig.axes[0].legend(fontsize=6)
+        # self.fig.axes[3].legend(fontsize=6)
+        # self.__setLegend(0)        

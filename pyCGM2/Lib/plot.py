@@ -2031,3 +2031,64 @@ def plotSaggitalGagePanel(DATA_PATH:str,
 #         return fig,filenameOut+".png"
 #     else:
 #         return fig
+
+
+def compareMapScores(DATA_PATH:str,analyses:List[Analysis],legends:List,
+                     pointSuffixes=None,
+                    show:bool=True,title:Optional[str]=None,
+                    OUT_PATH = None,outputName:Optional[str]=None,exportPng:bool=False,exportPdf:bool=False,autoYlim:bool=False):
+    """
+    Plots MAP scores from different analysis instances for comparison.
+
+    Args:
+        DATA_PATH (str): Path to the data directory.
+        analyses (List[Analysis]): List of Analysis instances to compare.
+        legends (List[str]): Labels representing each analysis instance.
+                pointSuffixes (Optional[List[str]]): Suffixes previously added to model outputs. Defaults to None.
+        show (bool): If True, shows the plot using Matplotlib. Defaults to True.
+        title (Optional[str]): Title for the plot panel. Defaults to None.
+        OUT_PATH (Optional[str]): Path for saving exported files. Defaults to None.
+        outputName (Optional[str]): Name of the output file. Defaults to None.
+        exportPng (bool): If True, exports the plot as a PNG. Defaults to False.
+        exportPdf (bool): If True, exports the plot as a PDF. Defaults to False.
+        autoYlim (bool): If True, sets Y-axis limits automatically. Defaults to False.
+
+    Returns:
+        Union[matplotlib.figure.Figure, Tuple[matplotlib.figure.Figure, str]]: The Matplotlib figure object. 
+        If exporting as PNG, returns a tuple of the figure object and the filename.
+
+    Examples:
+        >>> fig = compareMapScores("/data/path", [analysis1, analysis2], ["pre", "post"], "Left", "LowerLimb", normativeDataset)
+    """
+
+    if OUT_PATH is None:
+        OUT_PATH = DATA_PATH
+
+    if outputName is None:
+        outputName = "pyCGM2-MAP Comparison"
+
+    if exportPdf or exportPng:
+        filenameOut =  outputName
+
+    i=0
+    for analysis in analyses:
+        if analysis.gps is None:
+            raise Exception("[pyCGM2]: MIP comparison aborted. Analysis [%i] has no gps data"%(i))
+        i+=1
+     
+    # # viewer
+    kv =comparisonPlotViewers.MapComparisonViewer(analyses, legends)
+
+    # filter
+    pf = plotFilters.PlottingFilter()
+    pf.setViewer(kv)
+    if title is not None: pf.setTitle(title+"-MAP comparison")
+    if exportPdf: pf.setExport(OUT_PATH,filenameOut,"pdf")
+    fig = pf.plot()
+    if show: plt.show()
+
+    if exportPng:
+        fig.savefig(OUT_PATH+filenameOut+".png")
+        return fig,filenameOut+".png"
+    else:
+        return fig

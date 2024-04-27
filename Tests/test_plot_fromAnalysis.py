@@ -20,6 +20,9 @@ from pyCGM2.Report.Viewers import  comparisonPlotViewers
 from pyCGM2.Report import normativeDatasets
 from pyCGM2.Utils import files
 
+from pyCGM2.Processing.Scores import scoreFilters
+from pyCGM2.Processing.Scores import scoreProcedures
+
 from pyCGM2.EMG import emgManager
 
 SHOW = False
@@ -160,6 +163,32 @@ class Test_lowLevel:
             kv.setNormativeDataset(normativeDataset)
 
             # filter
+            pf = plotFilters.PlottingFilter()
+            pf.setViewer(kv)
+            fig = pf.plot()
+
+            plt.show()
+
+    def test_lowLevel_ScoreComparisonPlotViewer(self):
+
+            DATA_PATH1,modelledFilenames1,analysisInstance1,DATA_PATH2,modelledFilenames2,analysisInstance2 = dataTest3()
+            normativeDataset = normativeDatasets.NormativeData("Schwartz2008","Free")
+
+            #compute
+            gps =scoreProcedures.CGM1_GPS(pointSuffix=None)
+            scf = scoreFilters.ScoreFilter(gps,analysisInstance1, normativeDataset)
+            scf.compute()
+
+            #compute
+            gps =scoreProcedures.CGM1_GPS(pointSuffix=None)
+            scf = scoreFilters.ScoreFilter(gps,analysisInstance2, normativeDataset)
+            scf.compute()
+
+            # # viewer
+            kv =comparisonPlotViewers.MapComparisonViewer([analysisInstance1,analysisInstance2], ["ana1","ana2"])
+            # kv.setNormativeDataset(normativeDataset)
+
+            # # filter
             pf = plotFilters.PlottingFilter()
             pf.setViewer(kv)
             fig = pf.plot()
@@ -327,6 +356,31 @@ class Test_highLevel:
             normativeDataset = normativeDatasets.NormativeData("Schwartz2008","Free")
 
             plot.plotSaggitalGagePanel(DATA_PATH,analysisInstance,normativeDataset,emgType="Raw")
+
+    def test_highLevel_ScoreComparisonPlotViewer(self):
+
+            DATA_PATH1,modelledFilenames1,analysisInstance1,DATA_PATH2,modelledFilenames2,analysisInstance2 = dataTest3()
+            normativeDataset = normativeDatasets.NormativeData("Schwartz2008","Free")
+
+            #compute
+            gps =scoreProcedures.CGM1_GPS(pointSuffix=None)
+            scf = scoreFilters.ScoreFilter(gps,analysisInstance1, normativeDataset)
+            scf.compute()
+
+            #compute
+            gps =scoreProcedures.CGM1_GPS(pointSuffix=None)
+            scf = scoreFilters.ScoreFilter(gps,analysisInstance2, normativeDataset)
+            scf.compute()
+
+
+            fig = plot.compareMapScores(DATA_PATH1,
+                                  [analysisInstance1,analysisInstance2],
+                                  ["ana1","ana2"])
+            
+            if SHOW: plt.show()
+            return fig
+
+
 
 
 

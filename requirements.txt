@@ -13,3 +13,4 @@ xlrd
 openpyxl
 xlwt
 lxml
+seaborn
