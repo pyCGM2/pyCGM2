@@ -111,3 +111,7 @@ Tests/baseline
 pyCGM2/Data/deepevent/DeepEventModel.json
 pyCGM2/Data/deepevent/DeepEventWeight.h5
 pyCGM2/Apps/ViconApps/Vicon official
+
+pyCGM2/External/opensim
+pyCGM2/External/lbmc
+Sandbox
