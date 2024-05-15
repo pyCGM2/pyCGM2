@@ -1,6 +1,6 @@
 import pyCGM2
 import pyCGM2; LOGGER = pyCGM2.LOGGER
-
+import re
 from typing import List, Tuple, Dict, Optional
 
 class FrameConverter():
@@ -150,3 +150,23 @@ def homogeneizeArguments(argv:Dict,kwargs:Dict):
                     LOGGER.logger.warning("The positional argument (%s) is already defined as keyword argument. Keyword argument value will be used")
                 else:
                     kwargs[argvKey] = arg[argvKey]
+
+
+
+
+def getNumberFromStr(input_string:str):
+    """
+    extract number from a string
+
+    Args:
+        input_string (str): input
+    """
+    
+    match = re.search(r'\d+', input_string)
+
+    if match:
+        number = int(match.group())  
+        return number
+    else:
+        LOGGER.logger.warning("No number found")
+        return None
