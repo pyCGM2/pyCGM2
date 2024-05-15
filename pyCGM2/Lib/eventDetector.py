@@ -58,3 +58,51 @@ def zeni(acqGait:btk.btkAcquisition,
     evf.detect()
     state = evf.getState()
     return acqGait, state
+
+
+def oconnor(acqGait:btk.btkAcquisition, 
+         **kwargs):
+    """
+    Kinematic-based gait event detection according to Oconnor et al. (2008).
+
+    This function detects gait events in a BTK acquisition instance using marker data. 
+    It requires the presence of specific markers and can apply a low-pass filter to marker data. 
+    The method is based on the approach described by O'Connor CM, et al. Gait Posture. 2007. doi: 10.1016/j.gaitpost.2006.05.016 
+
+    Args:
+        acqGait (btk.btkAcquisition): An acquisition instance with gait data.
+
+
+    Keyword Args:
+        fc_lowPass_marker (float): Cut-off frequency of the low-pass filter applied to markers. If not specified or 0, no filtering is applied.
+        order_lowPass_marker (int): Order of the low-pass filter applied to markers. Defaults to 4 if not specified.
+
+    Returns:
+        Tuple[btk.btkAcquisition, bool]: A tuple containing the updated acquisition instance with detected events, and a boolean indicating the state of the detector.
+
+    Example:
+        >>> updated_acq, detection_state = oconnor(acquisition)
+
+    Reference:
+        O'Connor CM, et al. Gait Posture. 2007. doi: 10.1016/j.gaitpost.2006.05.016 
+    """
+
+    acqGait.ClearEvents()
+
+    if "fc_lowPass_marker" in kwargs.keys() and kwargs["fc_lowPass_marker"] != 0:
+        fc = kwargs["fc_lowPass_marker"]
+        order = 4
+        if "order_lowPass_marker" in kwargs.keys():
+            order = kwargs["order_lowPass_marker"]
+        signal_processing.markerFiltering(
+            acqGait, ["LHEE", "LTOE", "RHEE", "RTOE"], order=order, fc=fc)
+
+    # ----------------------EVENT DETECTOR-------------------------------
+    evp = eventProcedures.OconnorProcedure()
+
+
+    # event filter
+    evf = eventFilters.EventFilter(evp, acqGait)
+    evf.detect()
+    state = evf.getState()
+    return acqGait, state

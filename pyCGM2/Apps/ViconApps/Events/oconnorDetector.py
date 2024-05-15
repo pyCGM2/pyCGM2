@@ -1,0 +1,64 @@
+
+from pyCGM2.Lib import eventDetector
+
+import argparse
+import pyCGM2
+LOGGER = pyCGM2.LOGGER
+
+
+def main(args=None):
+
+    if args  is None:
+        parser = argparse.ArgumentParser(description='Oconnor kinematic-based gait event Detector')
+        args = parser.parse_args()
+
+    try:
+        from viconnexusapi import ViconNexus
+        NEXUS = ViconNexus.ViconNexus()
+        from pyCGM2.Nexus import nexusFilters
+        from pyCGM2.Nexus import nexusTools
+        NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
+    except:
+        LOGGER.logger.error("Vicon nexus not connected")
+        NEXUS_PYTHON_CONNECTED = False
+
+
+    if NEXUS_PYTHON_CONNECTED: # run Operation
+        
+
+        # ----------------------INPUTS-------------------------------------------
+        # --- acquisition file and path----
+        DATA_PATH, reconstructFilenameLabelledNoExt = nexusTools.getTrialName(NEXUS)
+
+        reconstructFilenameLabelled = reconstructFilenameLabelledNoExt+".c3d"
+
+        LOGGER.logger.info("data Path: " + DATA_PATH)
+        LOGGER.logger.info("calibration file: " + reconstructFilenameLabelled)
+
+        #acqGait = btkTools.smartReader(str(DATA_PATH + reconstructFilenameLabelled))
+
+        # --------------------------SUBJECT -----------------------------------
+
+        # Notice : Work with ONE subject by session
+        subject = nexusTools.getActiveSubject(NEXUS)
+        LOGGER.logger.info("Subject name : " + subject)
+
+        # --- btk acquisition ----
+        nacf = nexusFilters.NexusConstructAcquisitionFilter(NEXUS,
+            DATA_PATH, reconstructFilenameLabelledNoExt, subject)
+        acqGait = nacf.build()
+
+        # ----------------------EVENT DETECTOR-------------------------------
+        eventDetector.oconnor(acqGait)
+
+        # ----------------------DISPLAY ON VICON-------------------------------
+        nexusTools.createEvents(NEXUS, subject, acqGait, [
+                                "Foot Strike", "Foot Off"])
+        # ========END of the nexus OPERATION if run from Nexus  =========
+
+    else:
+        return 0
+
+
+if __name__ == "__main__":
+    main(args=None)

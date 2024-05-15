@@ -25,6 +25,7 @@ from pyCGM2.Apps.ViconApps.CGM2_6 import CGM_Knee2DofCalibration, CGM_KneeSARA
 from pyCGM2.Apps.ViconApps.commands import deviceDetailsCommand
 
 from pyCGM2.Apps.ViconApps.Events import zeniDetector
+from pyCGM2.Apps.ViconApps.Events import oconnorDetector
 from pyCGM2.Apps.ViconApps.MoGapFill import KalmanGapFilling
 from pyCGM2.Apps.ViconApps.MoGapFill import GloersenGapFilling
 
@@ -461,6 +462,8 @@ class MainParser:
                 - 'Zeni': Zeni kinematic-based event detection.
                     - '-fso', '--footStrikeOffset': Systematic foot strike offset, type: int.
                     - '-foo', '--footOffOffset': Systematic foot off offset, type: int.
+                - 'Oconnor': Oconnor kinematic-based event detection.
+
             - 'Gaps' for gap filling commands.
                 - 'Kalman': Kalman gap filling, '--markers': list of markers.
                 - 'Gloersen': Gloersen gap filling, '--markers': list of markers.
@@ -544,6 +547,8 @@ class MainParser:
                         help='systenatic foot strike offset on both side')
         parser_zeni.add_argument('-foo', '--footOffOffset', type=int,
                         help='systenatic foot off offset on both side')
+        
+        parser_oconnor = event_subparsers.add_parser('Oconnor', help='Oconnor kinematic-based event detection')
 
 
         # gapFill--------------
@@ -721,7 +726,9 @@ class MainParser:
                 elif args.NEXUS == "Events":
                     if args.Events == "Zeni":
                         zeniDetector.main(args)
-
+                    if args.Events == "Oconnor":
+                        oconnorDetector.main(args)
+                
                 # -- Gaps---
                 elif args.NEXUS == "Gaps":
                     if args.Gaps == "Kalman":

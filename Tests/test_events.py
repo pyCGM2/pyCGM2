@@ -30,3 +30,19 @@ class Test_gaitEvents:
         evf.detect()
 
         #btkTools.smartWriter("testEvent0.c3d", acq)
+
+    def test_oconnor(self):
+
+
+        MAIN_PATH = pyCGM2.TEST_DATA_PATH + "LowLevel\\events\\gaitEvents\\"
+
+
+        gaitFilename="gait Trial 01.c3d"
+        acq = btkTools.smartReader(str(MAIN_PATH +  gaitFilename))
+
+        evp = eventProcedures.OconnorProcedure()
+
+        evf = eventFilters.EventFilter(evp,acq)
+        evf.detect()
+
+        # btkTools.smartWriter(acq, "testEvent0.c3d")
