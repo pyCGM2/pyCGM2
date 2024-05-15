@@ -888,3 +888,27 @@ def renameFile( fileToRename:str,renamedFile:str ):
     except FileExistsError:
         os.remove(renamedFile)
         os.rename(fileToRename,renamedFile)  
+
+def count_directories(data_directory:str):
+    """ count the number of directory in 'data_directory' 
+    
+    Args:
+        data_directory (str): directory
+    """
+    return sum(os.path.isdir(os.path.join(data_directory, name)) for name in os.listdir(data_directory))
+
+def count_directories_with_label(data_directory, label):
+    """ 
+    count the number of directory containing a specific label in 'data_directory' 
+    
+    Args:
+        data_directory (str): directory
+        label (str): label
+    """
+
+    count = 0
+    for root, dirs, files in os.walk(data_directory):
+        for dir in dirs:
+            if label in dir:
+                count += 1
+    return count
