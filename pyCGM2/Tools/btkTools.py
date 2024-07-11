@@ -279,6 +279,10 @@ def smartAppendPoint(acq:btk.btkAcquisition, label:str, values:np.ndarray, Point
 
     # TODO : deal with values containing only on line
 
+    if values.shape[0]==3:
+        LOGGER.logger.warning("[pyCGM2] : values duplicated over time. Input values of size 3 ")
+        values = values* np.ones((acq.GetPointFrameNumber(),3))
+    
     values = np.nan_to_num(values)
 
     if residuals is None:
@@ -1867,3 +1871,13 @@ def markersToArray(acq:btk.btkAcquisition,markers:Optional[List[str]]=None,gathe
 
     
     return array
+
+
+def barycentricPoint(acq:btk.btkAcquisition,label:str, targetPointLabels:List[str],desc:Optional[str]="" ):
+
+    values = np.zeros((acq.GetPointFrameNumber(),3))
+    for target in targetPointLabels:
+         values = values + acq.GetPoint(target).GetValues()
+    
+    values = values /len(targetPointLabels)
+    smartAppendPoint(acq,label,values,desc=desc)
