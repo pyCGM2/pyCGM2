@@ -478,6 +478,8 @@ class ModelCalibrationFilter(object):
         self.m_model=iMod
         self.m_options=options
         self.m_noAnatomicalCalibration = False
+        self.m_frameInit = None
+        self.m_frameEnd = None
 
     def setOption(self, label: str, value):
         """Set or update an option for the calibration.
@@ -504,8 +506,17 @@ class ModelCalibrationFilter(object):
         """
         self.m_noAnatomicalCalibration = boolFlag
 
+    def setFrames(self,frameInit,frameEnd):
+        """set frames of interest
 
-    def compute(self, firstFrameOnly: bool = True):
+        Args:
+            frameInit (int): starting frame
+            frameend (int): ending frame
+        """
+        self.m_frameInit = frameInit
+        self.m_frameEnd = frameEnd
+
+    def compute(self):
         """Run the calibration filter.
 
         Args:
@@ -513,13 +524,14 @@ class ModelCalibrationFilter(object):
         """
 
         ff=self.m_aqui.GetFirstFrame()
+        lf=self.m_aqui.GetLastFrame()
 
-        if firstFrameOnly :
-            frameInit=0
-            frameEnd=1
+        if self.m_frameInit is not None and self.m_frameEnd is not None:
+            frameInit = self.m_frameInit-ff
+            frameEnd = self.m_frameEnd-ff+1
         else :
-            frameInit=frameInit-ff
-            frameEnd=frameEnd-ff+1
+            frameInit=ff-ff
+            frameEnd=lf-ff+1
 
         if str(self.m_model) != "Basis Model":
             for segName in self.m_procedure.definition[0]:
@@ -820,7 +832,7 @@ class ModelMotionFilter(object):
                         cframe.setRotation(R)
                         cframe.setTranslation(ptOrigin)
 
-                        segPicked.getReferential("TF").addMotionFrame(copy.deepcopy(cframe) )
+                        segPicked.getReferential("TF").addMotionFrame(cframe )
 
                 if self.m_method == enums.motionMethod.Sodervisk :
 
@@ -850,7 +862,7 @@ class ModelMotionFilter(object):
                         cframe.m_axisY=R[:,1]
                         cframe.m_axisZ=R[:,2]
 
-                        segPicked.getReferential("TF").addMotionFrame(copy.deepcopy(cframe) )
+                        segPicked.getReferential("TF").addMotionFrame(cframe)
 
 
 
@@ -863,11 +875,11 @@ class ModelMotionFilter(object):
                     ndO = str(self.m_procedure.anatomicalDefinition[segName]['labels'][3])
                     ptO = segPicked.getReferential("TF").getNodeTrajectory(ndO)
 
-                    csFrame=frame.Frame()
                     for i in range(0,self.m_aqui.GetPointFrameNumber()):
+                        csFrame=frame.Frame()
                         R = np.dot(segPicked.getReferential("TF").motion[i].getRotation(), segPicked.getReferential("TF").relativeMatrixAnatomic)
                         csFrame.update(R,ptO[i])
-                        segPicked.anatomicalFrame.addMotionFrame(copy.deepcopy(csFrame))
+                        segPicked.anatomicalFrame.addMotionFrame(csFrame)
             else:
                 for segName in self.m_procedure.definition:
                     segPicked=self.m_model.getSegment(segName)
@@ -876,11 +888,11 @@ class ModelMotionFilter(object):
                     ndO = str(self.m_procedure.definition[segName]["TF"]['labels'][3])
                     ptO = segPicked.getReferential("TF").getNodeTrajectory(ndO)
 
-                    csFrame=frame.Frame()
                     for i in range(0,self.m_aqui.GetPointFrameNumber()):
+                        csFrame=frame.Frame()
                         R = np.dot(segPicked.getReferential("TF").motion[i].getRotation(), segPicked.getReferential("TF").relativeMatrixAnatomic)
                         csFrame.update(R,ptO[i])
-                        segPicked.anatomicalFrame.addMotionFrame(copy.deepcopy(csFrame))
+                        segPicked.anatomicalFrame.addMotionFrame(csFrame)
 
 
 
