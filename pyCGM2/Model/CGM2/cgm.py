@@ -1990,7 +1990,8 @@ class CGM1(CGM):
         # opensim
         ajc = seg.anatomicalFrame.static.getNode_byLabel(f"{prefix}AJC").getGlobal()
         csFrame=frame.Frame()
-        Rana_os = np.array([[1,0,0],[0,0,1],[0,-1,0]]) # anat in os
+        # Rana_os = np.array([[0,1,0],[0,0,-1],[-1,0,0]]) # anat in os
+        Rana_os = np.array([[0,0,-1],[1,0,0],[0,-1,0]]) # anat in os
         csFrame.update(np.dot(R,Rana_os.T),
                         ajc)
 
