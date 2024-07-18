@@ -82,6 +82,7 @@ class osimInterface(object):
 
 
 
+
 class osimCgmInterface(osimInterface):
     """
     Interface for interacting with OpenSim CGM models.
@@ -201,7 +202,7 @@ class opensimXmlInterface(object):
             if item.attrs[attrKey] == attrValue:
                 item.find(label).string = text
 
-    def update(self):
+    def update(self,outFullFilename=None):
         """
         Updates the XML file with changes made to the BeautifulSoup object.
 
@@ -209,6 +210,10 @@ class opensimXmlInterface(object):
         """
         ugly = self.m_soup.prettify()
         pretty = prettyfier.prettify_xml(ugly)
-        with open(self.m_out, "w") as f:
-            f.write(pretty)
-            pass
+
+        if outFullFilename is None:
+            with open(self.m_out, "w") as f:
+                f.write(pretty)
+        else:
+            with open(outFullFilename, "w") as f:
+                f.write(pretty)
