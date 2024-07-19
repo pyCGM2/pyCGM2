@@ -383,7 +383,11 @@ class CGMLowerlimbInverseDynamicProcedure(InverseDynamicProcedure):
             distSegMoment_momentDistalContribution = self._distalMomentContribution(distalWrench, Ti, scaleToMeter, source ="Moment")
 
         # Force
-        ai = model.getSegment(segmentLabel).getComAcceleration(btkAcq.GetPointFrequency(), order=4, fc=6 )
+        try:
+            ai = model.getSegment(segmentLabel).getComAcceleration(btkAcq.GetPointFrequency(), order=4, fc=6 )
+        except ValueError:
+            ai = model.getSegment(segmentLabel).getComAcceleration(btkAcq.GetPointFrequency(), method="spline fitting")
+
         force_accContr = self._forceAccelerationContribution(mi,ai,gravity,scaleToMeter)
         forceValues  = force_accContr - ( extForces) - ( - distSegForce)
 
