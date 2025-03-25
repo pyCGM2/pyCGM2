@@ -11,15 +11,16 @@ from pyCGM2 import enums
 
 
 class SingleBody():
-    def __init__(self,calibration_markers:List[str], tracking_markers:List[str]):
+    def __init__(self,calibration_markers:List[str], tracking_markers:List[str],sequence="XYZ"):
         self.m_calibration_markers = calibration_markers
         self.m_tracking_markers = tracking_markers
+        self.m_sequence = sequence
 
         self.m_model = None
         self.m_gcp=modelFilters.GeneralCalibrationProcedure()
         self.m_gcp.setDefinition('Body',
                           "TF",
-                          sequence="XYZ",
+                          sequence=self.m_sequence,
                           pointLabel1=self.m_calibration_markers[0],
                           pointLabel2=self.m_calibration_markers[1],
                           pointLabel3=self.m_calibration_markers[2],
