@@ -576,3 +576,24 @@ def appendAnalysisParameters(NEXUS, acq:btk.btkAcquisition):
 
     for parameter in parameters:
         NEXUS.CreateAnalysisParam(parameter["subject"],parameter["name"],parameter["value"], parameter["unit"])
+
+
+def checkEvents(NEXUS,subject:str,event_names:List):
+    """check the presence of events from nexus
+
+    Args:
+        NEXUS (ViconNexus.ViconNexus): The Nexus handle.
+        subject (str): Subject-VSK name.
+        event_names (List): List of event labels.
+    """
+    events = dict()
+    enableInteractorFlag = False
+    for event_name in event_names:
+        try:
+            event = NEXUS.GetEvents(subject, "General", event_name)[0][0]
+            events[event_name] = event
+        except IndexError:
+            enableInteractorFlag = True
+            events[event_name] = False
+    return enableInteractorFlag, events
+        
