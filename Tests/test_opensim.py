@@ -115,7 +115,22 @@ class Test_IO:
         imuStorage.setData("Pelvis",imu1.getQuaternions())
         imuStorage.setData("Thigh",imu2.getQuaternions())
         imuStorage.construct(static=False)
+        
+
+    def test_markerSetXml(self):
+
+        markersetFile = pyCGM2.TEST_DATA_PATH + "OpenSim/IO/CGM23-markerset.xml"
+        
+
+        updates = {
+            'midASIS': '1 1 1',
+            'LASI': '1 2 3'
+        }
+
+        opensimTools.constructMarkersetXml(markersetFile,updates)
         import ipdb; ipdb.set_trace()
+
+    
 
 class Test_preparation:
 

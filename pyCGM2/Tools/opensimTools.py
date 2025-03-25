@@ -9,9 +9,12 @@ import numpy as np
 import pandas as pd
 
 import btk
-
+from bs4 import BeautifulSoup
 
 import opensim
+
+import numpy as np
+
 
 from typing import List, Tuple, Dict, Optional, Union, Callable
 
@@ -320,3 +323,65 @@ def export_CgmToMot(acq:btk.btkAcquisition,datapath:str,filename:str,osimModelIn
         modified.write("nColumns=%i\n"%(dataFrame.shape[1]))
         modified.write("inDegrees=yes\n")
         modified.write("endheader\n" + data)
+
+
+def constructMarkerSetXml(markersetFile, updates,output_file=None):
+
+    soup = BeautifulSoup(open(markersetFile), "xml")
+    
+    # Parcourir chaque élément du dictionnaire des mises à jour
+    for marker_name, new_location in updates.items():
+        # Trouver le Marker par son nom
+        marker = soup.find('Marker', {'name': marker_name})
+        if marker:
+            # Trouver la balise <location> et mettre à jour son contenu
+            location_tag = marker.find('location')
+            if location_tag:
+                location_tag.string = new_location
+            else:
+                # Si la balise <location> n'existe pas, en créer une nouvelle
+                new_location_tag = soup.new_tag('location')
+                new_location_tag.string = new_location
+                marker.append(new_location_tag)
+
+    if output_file is None: output_file = markersetFile
+    with open(output_file, 'w', encoding='utf-8') as file:
+        file.write(str(soup.prettify()))
+    
+    return soup
+
+def calculateSegmentLength(model, jointLabel1, jointLabel2):
+        
+        state= model.initSystem()
+
+        zero_vec = opensim.Vec3(0, 0, 0)
+
+        if isinstance(jointLabel1,str):
+            # Identifier les repères (par exemple, hanche et genou)
+            joint1 = model.getJointSet().get(jointLabel1)
+            joint1_location = joint1.getParentFrame().findStationLocationInGround(state, zero_vec)
+            # Convertir les SimTK::Vec3 en numpy arrays
+            joint1_location_np = np.array([joint1_location.get(i) for i in range(3)])
+
+
+        else: 
+            joint1_1 = model.getJointSet().get(jointLabel1[0])
+            joint1_2 = model.getJointSet().get(jointLabel1[1])
+
+            joint1_1_location = joint1_1.getParentFrame().findStationLocationInGround(state, zero_vec)
+            joint1_2_location = joint1_2.getParentFrame().findStationLocationInGround(state, zero_vec)
+
+            joint1_1_location_np = np.array([joint1_1_location.get(i) for i in range(3)])
+            joint1_2_location_np = np.array([joint1_2_location.get(i) for i in range(3)])
+
+            joint1_location_np = (joint1_1_location_np+joint1_2_location_np)/2
+
+        
+        joint2 = model.getJointSet().get(jointLabel2)
+        joint2_location = joint2.getParentFrame().findStationLocationInGround(state, zero_vec)
+        joint2_location_np = np.array([joint2_location.get(i) for i in range(3)])
+
+        # Calculer la distance entre les positions
+        length = np.linalg.norm(joint1_location_np - joint2_location_np)
+
+        return length        
