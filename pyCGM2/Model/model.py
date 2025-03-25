@@ -529,6 +529,34 @@ class Segment(object):
 
         values = derivation.firstOrderFiniteDifference(self.getAngularVelocity(sampleFrequency),sampleFrequency)
         return values
+    
+    def getMotionValues(self,type = "rotationMatrix" , referentialLabel=None) -> np.ndarray:
+        """
+        """
+
+        if referentialLabel is not None:
+            ref = self.getReferential(referentialLabel)
+        else:
+            ref = self.anatomicalFrame
+
+        frameNumber = len(ref.motion)
+
+        if type == "rotationMatrix":
+            values = np.zeros((frameNumber,9))       
+            for i in range(0,frameNumber):
+                values[i,:] = ref.motion[i].getRotation().reshape(9)
+
+        if type == "quaternion":
+            values = np.zeros((frameNumber,4))       
+            for i in range(0,frameNumber):
+                values[i,:] = ref.motion[i].getQuaternion() 
+
+        if type == "angleAxis":
+            values = np.zeros((frameNumber,4))       
+            for i in range(0,frameNumber):
+                values[i,:] = ref.motion[i].getAngleAxis() 
+ 
+        return values
 
 # -------- ABSTRACT MODEL ---------
 
