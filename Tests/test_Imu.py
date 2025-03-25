@@ -1,9 +1,5 @@
 # coding: utf-8
-#pytest -s --disable-pytest-warnings  test_BlueTrident.py::Test_BlueTrident::test_reader_csv
-#pytest -s --disable-pytest-warnings  test_BlueTrident.py::Test_BlueTridentOrientation::test_relativeAngles
-#pytest -s --disable-pytest-warnings  test_BlueTrident.py::Test_Garches::test_reader
-#pytest -s --disable-pytest-warnings  test_BlueTrident.py::Test_captureU::test_captureUscript
-# from __future__ import unicode_literals
+#pytest -s --disable-pytest-warnings  test_Imu.py::Test_ImuMotion::test_relativeAngles
 
 import pandas as pd
 import numpy as np
@@ -23,7 +19,6 @@ from pyCGM2.IMU.Procedures import imuReaderProcedures
 from pyCGM2.IMU.Procedures import relativeImuAngleProcedures
 from pyCGM2.IMU.Procedures import imuMotionProcedure
 
-from pyCGM2.Math import pose
 
 from viconnexusapi import ViconUtils
 

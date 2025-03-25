@@ -66,9 +66,10 @@ class RealignedMotionProcedure(ImuMotionProcedure):
     """
     Realigned IMU motion relative to the first frame.
     """
-    def __init__(self):
+    def __init__(self,initialRotation=None):
         super(RealignedMotionProcedure, self).__init__()
 
+        self.m_initialRotation=initialRotation
 
     def compute(self,imuInstance:imu.Imu):
         """
@@ -77,11 +78,18 @@ class RealignedMotionProcedure(ImuMotionProcedure):
         Args:
             imuInstance (imu.Imu): An IMU instance whose motion frames will be realigned.
         """
-        trial_initial_DCM = np.linalg.inv(imuInstance.m_motion[0].getRotation())
+
+        if self.m_initialRotation is None:
+            trial_initial_DCM = imuInstance.m_motion[0].getRotation().T
+        else:
+            trial_initial_DCM = self.m_initialRotation.T
+
 
         for i in range(0,len(imuInstance.getMotion())):
             rot = np.dot(trial_initial_DCM,imuInstance.m_motion[i].getRotation())
             imuInstance.m_motion[i].setRotation(rot) 
+
+
 
 
 
