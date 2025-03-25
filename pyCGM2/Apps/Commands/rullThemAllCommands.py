@@ -239,13 +239,14 @@ class NEXUS_PlotsParser(object):
         parser_emgNormalized.add_argument('-bpf', '--BandpassFrequencies', nargs='+',help='bandpass filter')
         parser_emgNormalized.add_argument('-elf','--EnvelopLowpassFrequency', type=int, help='cutoff frequency for emg envelops')
         parser_emgNormalized.add_argument('-c','--consistency', action='store_true', help='consistency plots')
+        parser_emgNormalized.add_argument('-ige','--ignoreGaitEvent', action='store_true', help='ignore gait event')
 
 
         parser_emgComparison = emg_sub_parsers.add_parser('Comparison', help='time-normalized comparison')
         parser_emgComparison.add_argument('-bpf', '--BandpassFrequencies', nargs='+',help='bandpass filter')
         parser_emgComparison.add_argument('-elf','--EnvelopLowpassFrequency', type=int, help='cutoff frequency for emg envelops')
         parser_emgComparison.add_argument('-c','--consistency', action='store_true', help='consistency plots')
-
+        parser_emgComparison.add_argument('-ige','--ignoreGaitEvent', action='store_true', help='ignore gait event')
 
 class NEXUS_CGMparser(object):
     """
@@ -346,7 +347,7 @@ class NEXUS_CGMparser(object):
         if self.cgmVersion in ["CGM2.2","CGM2.3"]:
             calibrationParser.add_argument('-msm','--musculoSkeletalModel', action='store_true', help='musculoskeletal model')
 
-        if self.cgmVersion in ["CGM2.3","CGM2.4","CGM2.5"]:
+        if self.cgmVersion in ["CGM2.2","CGM2.3","CGM2.4","CGM2.5"]:
             calibrationParser.add_argument('--noIk', action='store_true', help='cancel inverse kinematic')
     
         return calibrationParser
