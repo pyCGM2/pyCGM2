@@ -134,6 +134,16 @@ def getSimilarElement(listData:List):
         out = it
     return out
 
+def removeDuplicate(listData:List):
+    """
+    remove duplicated item from a list
+
+    Args:
+        listData (List): The list to extract the similar element from.
+
+    """
+    return list(set(listData))
+
 
 def homogeneizeArguments(argv:Dict,kwargs:Dict):
     """
