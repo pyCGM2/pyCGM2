@@ -173,6 +173,30 @@ class Imu(object):
         else:
             return self.m_motion[index]
 
+    def getMotionValues(self,type = "rotationMatrix" ) -> np.ndarray:
+        """
+        """
+
+        frameNumber = len(self.m_motion)
+        
+        if type == "rotationMatrix":
+            values = np.zeros((frameNumber,9))       
+            for i in range(0,frameNumber):
+                values[i,:] = self.m_motion[i].getRotation().reshape(9)
+
+        if type == "quaternion":
+            values = np.zeros((frameNumber,4))       
+            for i in range(0,frameNumber):
+                values[i,:] = self.m_motion[i].getQuaternion() 
+
+        if type == "angleAxis":
+            values = np.zeros((frameNumber,4))       
+            for i in range(0,frameNumber):
+                values[i,:] = self.m_motion[i].getAngleAxis() 
+ 
+        return values
+
+
     def getAngleAxis(self,axis=None):
         """
         Returns angle axis (equivalent to global angle) data.
