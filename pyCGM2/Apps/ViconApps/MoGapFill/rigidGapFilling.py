@@ -136,9 +136,12 @@ def main():
             val_final[selectInitialFrame-ff:selectLastFrame+1-ff,:] = valReconstruct[selectInitialFrame-ff:selectLastFrame+1-ff,:]
         else:
             val_final = valReconstruct
+        
+        #btkTools.smartAppendPoint(acqGait,targetMarker,val_final)
 
         # nexus display
         nexusTools.setTrajectoryFromArray(NEXUS,subject,targetMarker,val_final,firstFrame = ff)
+        # nexusTools.appendModelledMarkerFromAcq(NEXUS,subject,targetMarker, acqGait,suffix = "")
     else:
         return parser
 
