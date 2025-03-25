@@ -120,6 +120,7 @@ def normalized(args):
         LOGGER.logger.info("Cut-off frequency set to %i instead of 6Hz ",envelopCutOffFrequency)
 
     consistencyFlag = True if args.consistency else False
+    eventType = "noEvents" if args.ignoreGaitEvent else "Gait"
 
     # --------------emg Processing--------------
 
@@ -141,7 +142,7 @@ def normalized(args):
 
         emgAnalysis = analysis.makeAnalysis(DATA_PATH,
                             [inputFile],
-                            type="Gait",
+                            eventType=eventType,
                             kinematicLabelsDict=None,
                             kineticLabelsDict=None,
                             emgChannels = emgChannels,
@@ -159,7 +160,7 @@ def normalized(args):
 
         emgAnalysis = analysis.makeAnalysis(DATA_PATH,
                             [inputFile],
-                            type="Gait",
+                            eventType=eventType,
                             kinematicLabelsDict=None,
                             kineticLabelsDict=None,
                             emgChannels = emgChannels,
@@ -232,6 +233,7 @@ def normalizedComparison(args):
 
     consistencyFlag = True if args.consistency else False
     plotType = "Consistency" if consistencyFlag else "Descriptive"
+    eventType = "noEvents" if args.ignoreGaitEvent else "Gait"
     # --------------emg Processing--------------
 
 
@@ -243,7 +245,7 @@ def normalizedComparison(args):
         if len(inputFiles) == 2:
             analysisInstance1 = analysis.makeAnalysis(DATA_PATH,
                                 [inputFiles[0]],
-                                type="Gait",
+                                eventType=eventType,
                                 kinematicLabelsDict=None,
                                 kineticLabelsDict=None,
                                 emgChannels = emgChannels,
@@ -255,7 +257,7 @@ def normalizedComparison(args):
 
             analysisInstance2 = analysis.makeAnalysis(DATA_PATH,
                                 [inputFiles[1]],
-                                type="Gait",
+                                eventType=eventType,
                                 kinematicLabelsDict=None,
                                 kineticLabelsDict=None,
                                 emgChannels = emgChannels,
@@ -272,6 +274,7 @@ def normalizedComparison(args):
 
         plot.compareEmgEnvelops(DATA_PATH,analysesToCompare,
                                 legends,
+                              eventType="other",
                               normalized=True,
                               plotType=plotType,show=True,
                               outputName=comparisonDetails,exportPng=False)
