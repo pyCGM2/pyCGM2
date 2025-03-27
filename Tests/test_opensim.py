@@ -127,8 +127,7 @@ class Test_IO:
             'LASI': '1 2 3'
         }
 
-        opensimTools.constructMarkersetXml(markersetFile,updates)
-        import ipdb; ipdb.set_trace()
+        opensimTools.constructMarkerSetXml(markersetFile,updates)
 
     
 
