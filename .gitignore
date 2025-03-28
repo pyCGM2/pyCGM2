@@ -24,6 +24,7 @@ var/
 *.egg-info/
 .installed.cfg
 *.egg
+*.ini
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
@@ -115,3 +116,4 @@ pyCGM2/Apps/ViconApps/Vicon official
 pyCGM2/External/opensim
 pyCGM2/External/lbmc
 Sandbox
+build_artifacts
