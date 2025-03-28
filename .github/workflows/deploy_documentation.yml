@@ -16,9 +16,9 @@ jobs:
       with:
         auto-update-conda: true
         miniconda-version: "latest"
-        python-version: 3.9
-        environment-file: ./virtualEnvs/environment_py39.yml
-        activate-environment: pycgm39
+        python-version: 3.10
+        environment-file: ./virtualEnvs/environment310_stable.yml
+        activate-environment: pycgm310
 
 
     - name: Verify Conda Environment

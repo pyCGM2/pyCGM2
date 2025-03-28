@@ -6,6 +6,8 @@ from . import log
 import yaml
 import yamlordereddictloader
 
+__version__= "4.4rc1"
+
 
 LOGGER = log.pyCGM2_Logger(__name__)
 NEXUS_VERSION = None
@@ -39,6 +41,8 @@ except Exception:
     # integration on Linux not needed
     # LOGGER.logger.error ("Nexus Integration failed")
     pass
+
+
 
 
 ENCODER = "latin-1"
