@@ -246,3 +246,28 @@ def downsample(array:np.ndarray, initFreq:float, targetedFreq:float):
     
     return newarray
 
+def upsample(array: np.ndarray, initFreq: float, targetedFreq: float):
+    """
+    Upsampling a signal from an initial frequency to a targeted frequency.
+
+    Args:
+        array (np.ndarray): Array of values representing the signal (1D or 2D).
+        initFreq (float): Initial sampling frequency of the signal.
+        targetedFreq (float): Targeted sampling frequency after upsampling.
+
+    Returns:
+        np.ndarray: The upsampled signal array.
+
+    Raises:
+        ValueError: If the targeted frequency is lower than the initial frequency.
+    """
+    if targetedFreq <= initFreq:
+        raise ValueError("targeted frequency must be higher than the initial frequency")
+        
+    time = np.linspace(0, (array.shape[0] - 1) / initFreq, array.shape[0])
+    newTime = np.linspace(0, time[-1], int(array.shape[0] * targetedFreq / initFreq))
+
+    f = interp1d(time, array, axis=0, fill_value="extrapolate")
+    newarray = f(newTime)
+    
+    return newarray
