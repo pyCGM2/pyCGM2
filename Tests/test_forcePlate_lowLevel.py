@@ -5,7 +5,10 @@
 import numpy as np
 import pyCGM2
 from pyCGM2.Tools import btkTools
+from pyCGM2.Signal import signal_processing
+import btk
 
+import matplotlib.pyplot as plt
 
 
 class Test_ForcePlateTypeReader():
@@ -28,3 +31,72 @@ class Test_ForcePlateTypeReader():
 
         for label in mlabels:
             np.testing.assert_almost_equal(btkAcq.GetAnalog(label).GetValues(),btkAcq_correct.GetAnalog(label).GetValues(),decimal = 2)
+
+
+class Test_ForcePlateFiltering():
+
+    def test_type2(self):
+
+        DATA_PATH = pyCGM2.TEST_DATA_PATH + "LowLevel\\ForcePlate\\ForcePlateTypeManagement\\"
+        btkAcq = btkTools.smartReader(DATA_PATH + "HUG_gait_type5_convert.c3d")
+
+        acqClone = btk.btkAcquisition.Clone(btkAcq)
+
+        pfe0 = btk.btkForcePlatformsExtractor()
+        grwf0 = btk.btkGroundReactionWrenchFilter()
+        pfe0.SetInput(acqClone)
+        pfc0 = pfe0.GetOutput()
+        grwf0.SetInput(pfc0)
+        grwc0 = grwf0.GetOutput()
+        grwc0.Update()
+
+        signal_processing.forcePlateFiltering(btkAcq,order=4, fc =5)
+
+
+        pfe = btk.btkForcePlatformsExtractor()
+        grwf = btk.btkGroundReactionWrenchFilter()
+        pfe.SetInput(btkAcq)
+        pfc = pfe.GetOutput()
+        grwf.SetInput(pfc)
+        grwc = grwf.GetOutput()
+        grwc.Update()
+
+        plt.plot(grwc0.GetItem(0).GetForce().GetValues()[:,2])
+        plt.plot(grwc.GetItem(0).GetForce().GetValues()[:,2],"-g")
+        plt.show()
+
+
+    def test_bertecType3(self):
+        DATA_PATH = pyCGM2.TEST_DATA_PATH + "Issues\\qualisys\\issue_digitalBertec_3FP\\Bertec data\\"
+        staticFilename = "Static LB - CGM2 2-fromQTM.c3d"
+        reconstructFilenameLabelled= "Gait LB-CGM21-fromVincent.c3d"
+        btkAcq = btkTools.smartReader(str(DATA_PATH +  reconstructFilenameLabelled))
+
+        DATA_PATH = pyCGM2.TEST_DATA_PATH + "LowLevel\\ForcePlate\\ForcePlateTypeManagement\\"
+        btkAcq = btkTools.smartReader(DATA_PATH + "HUG_gait_type5_convert.c3d")
+
+        acqClone = btk.btkAcquisition.Clone(btkAcq)
+
+        pfe0 = btk.btkForcePlatformsExtractor()
+        grwf0 = btk.btkGroundReactionWrenchFilter()
+        pfe0.SetInput(acqClone)
+        pfc0 = pfe0.GetOutput()
+        grwf0.SetInput(pfc0)
+        grwc0 = grwf0.GetOutput()
+        grwc0.Update()
+
+        signal_processing.forcePlateFiltering(btkAcq,order=4, fc =5)
+
+
+        pfe = btk.btkForcePlatformsExtractor()
+        grwf = btk.btkGroundReactionWrenchFilter()
+        pfe.SetInput(btkAcq)
+        pfc = pfe.GetOutput()
+        grwf.SetInput(pfc)
+        grwc = grwf.GetOutput()
+        grwc.Update()
+
+        plt.plot(grwc0.GetItem(0).GetForce().GetValues()[:,2])
+        plt.plot(grwc.GetItem(0).GetForce().GetValues()[:,2],"-g")
+        plt.show()
+ 
