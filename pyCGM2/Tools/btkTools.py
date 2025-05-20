@@ -13,8 +13,6 @@ LOGGER = pyCGM2.LOGGER
 
 import btk
 
-from pyCGM2.External.ktk.kineticstoolkit import timeseries
-
 from typing import List, Tuple, Dict, Optional, Union, Callable
 
 # --- acquisition -----
@@ -1735,50 +1733,6 @@ def getScalar(acq:btk.btkAcquisition,label:str):
     return out
 
 
-
-def btkPointToKtkTimeseries(acq:btk.btkAcquisition, type:btk.btkPoint=btk.btkPoint.Marker):
-    """
-    Converts BTK points of a specified type from a BTK acquisition to a Kinetics Toolkit timeseries.
-
-    Args:
-        acq (btk.btkAcquisition): BTK acquisition instance.
-        type (btk.btkPoint, optional): Type of BTK points to convert (e.g., Marker, Angle). Defaults to btk.btkPoint.Marker.
-
-    Returns:
-        ktk.kineticstoolkit.timeseries.TimeSeries: A timeseries object containing the converted data.
-    """
-     
-    freq = acq.GetPointFrequency()
-    frames = np.arange(0, acq.GetPointFrameNumber())
-
-    ts = timeseries.TimeSeries()
-    ts.time = frames*1/freq
-    for point in btk.Iterate(acq.GetPoints()):
-        if point.GetType() == type:
-            ts.data[point.GetLabel()] = point.GetValues()
-    
-    return ts
-
-
-def btkAnalogToKtkTimeseries(acq:btk.btkAcquisition):
-    """
-    Converts all BTK analog data from a BTK acquisition to a Kinetics Toolkit timeseries.
-
-    Args:
-        acq (btk.btkAcquisition): BTK acquisition instance.
-
-    Returns:
-        ktk.kineticstoolkit.timeseries.TimeSeries: A timeseries object containing the converted analog data.
-    """     
-    freq = acq.GetAnalogFrequency()
-    frames = np.arange(0, acq.GetAnalogFrameNumber())
-
-    ts = timeseries.TimeSeries()
-    ts.time = frames*1/freq
-    for analog in btk.Iterate(acq.GetAnalogs()):
-        ts.data[analog.GetLabel()] = analog.GetValues()
-    
-    return ts
 
 
 def calculateAngleFrom3points( acq:btk.btkAcquisition,pt1:str,pt2:str,pt3:str):
