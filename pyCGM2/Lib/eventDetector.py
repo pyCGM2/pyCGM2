@@ -3,7 +3,10 @@ from pyCGM2.Events import eventProcedures
 from pyCGM2.Signal import signal_processing
 import btk
 
+import pyCGM2
+from pyCGM2.Lib.Processing import progression
 from typing import List, Tuple, Dict, Optional,Union
+from pyCGM2.Events.procedures import intellEventProcedures
 
 def zeni(acqGait:btk.btkAcquisition, 
          footStrikeOffset:int=0, 
@@ -106,3 +109,20 @@ def oconnor(acqGait:btk.btkAcquisition,
     evf.detect()
     state = evf.getState()
     return acqGait, state
+
+
+def intellEvent(acqGait:btk.btkAcquisition):
+    
+    progressionAxis, forwardProgression, globalFrame = progression.detectProgressionFrame(acqGait, staticFlag=False)
+    initialContactModelFile = pyCGM2.PYCGM2_APPDATA_PATH+"intellEventModels\\version0\\ic_intellevent.onnx"
+    footOffModelFile = pyCGM2.PYCGM2_APPDATA_PATH+"intellEventModels\\version0\\fo_intellevent.onnx"
+
+    evp = intellEventProcedures.IntellEventProcedure(progressionAxis,forwardProgression)
+    evp.setModels(initialContactModelFile,footOffModelFile)
+
+    evf = eventFilters.EventFilter(evp,acqGait)
+    evf.detect()
+    
+    state = evf.getState()
+    return acqGait, state
+

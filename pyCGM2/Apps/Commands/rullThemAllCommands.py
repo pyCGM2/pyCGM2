@@ -26,6 +26,8 @@ from pyCGM2.Apps.ViconApps.commands import deviceDetailsCommand
 
 from pyCGM2.Apps.ViconApps.Events import zeniDetector
 from pyCGM2.Apps.ViconApps.Events import oconnorDetector
+from pyCGM2.Apps.ViconApps.Events import intelleventDetector
+
 from pyCGM2.Apps.ViconApps.MoGapFill import KalmanGapFilling
 from pyCGM2.Apps.ViconApps.MoGapFill import GloersenGapFilling
 
@@ -729,6 +731,8 @@ class MainParser:
                         zeniDetector.main(args)
                     if args.Events == "Oconnor":
                         oconnorDetector.main(args)
+                    if args.Events == "Intellevent":
+                        intelleventDetector.main(args)
                 
                 # -- Gaps---
                 elif args.NEXUS == "Gaps":

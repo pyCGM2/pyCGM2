@@ -309,3 +309,4 @@ class OconnorProcedure(EventProcedure):
         else:
             LOGGER.logger.error("[pyCGM2]: Oconnor event detector impossible to run.  foot markers(HEE or TOE) are missing ")
             return 0
+        
