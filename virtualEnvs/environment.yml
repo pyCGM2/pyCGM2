@@ -25,3 +25,4 @@ dependencies:
     - sphinx-argparse
     - sphinxcontrib-mermaid
     - pydata-sphinx-theme
+    - onnxruntime
