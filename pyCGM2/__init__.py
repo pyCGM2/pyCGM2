@@ -67,14 +67,14 @@ try:
 except:
     LOGGER.logger.error ("EMG_CHANNELS is empty ")
 
+PYCGM2_APPDATA_PATH = MAIN_PYCGM2_PATH +"Data\\" 
 
-
-#  [Optional]programData
-if (os.getenv("PROGRAMDATA") is not None) and \
-   os.path.isdir(os.getenv("PROGRAMDATA")+"\\pyCGM2"):
-    PYCGM2_APPDATA_PATH = os.getenv("PROGRAMDATA")+"\\pyCGM2\\"
-else:
-    PYCGM2_APPDATA_PATH = PYCGM2_SETTINGS_FOLDER
+# #  [Optional]programData
+# if (os.getenv("PROGRAMDATA") is not None) and \
+#    os.path.isdir(os.getenv("PROGRAMDATA")+"\\pyCGM2"):
+#     PYCGM2_APPDATA_PATH = os.getenv("PROGRAMDATA")+"\\pyCGM2\\"
+# else:
+#     PYCGM2_APPDATA_PATH = PYCGM2_SETTINGS_FOLDER
 
 
 
@@ -83,10 +83,10 @@ else:
 MAIN_PYCGM2_APPS_PATH = MAIN_PYCGM2_PATH+"Apps\\"
 
 # [Optional] path to embbbed Normative data base.
-NORMATIVE_DATABASE_PATH = MAIN_PYCGM2_PATH +"pyCGM2\\Data\\normativeData\\"  # By default, use pyCGM2-embedded normative data ( Schartz - Pinzone )
+NORMATIVE_DATABASE_PATH = MAIN_PYCGM2_PATH +"Data\\normativeData\\"  # By default, use pyCGM2-embedded normative data ( Schartz - Pinzone )
 
 # [Optional] main folder containing osim model
-OPENSIM_PREBUILD_MODEL_PATH = PYCGM2_APPDATA_PATH + "opensim\\"
+OPENSIM_PREBUILD_MODEL_PATH = PYCGM2_SETTINGS_FOLDER + "opensim\\"
 
 # [Optional] path pointing at Data Folders used for Tests
 
