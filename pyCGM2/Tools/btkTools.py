@@ -277,6 +277,14 @@ def smartAppendPoint(acq:btk.btkAcquisition, label:str, values:np.ndarray, Point
 
     # TODO : deal with values containing only on line
 
+    if PointType == btk.btkPoint.Scalar:
+        if values.ndim == 1:
+            LOGGER.logger.debug("[pyCGM2] : input array is not a 2D array.  ")
+            valuesTransform = np.zeros((acq.GetPointFrameNumber(), 3))
+            valuesTransform[:, 0] = values
+            values = valuesTransform
+
+    
     if values.shape[0]==3:
         LOGGER.logger.warning("[pyCGM2] : values duplicated over time. Input values of size 3 ")
         values = values* np.ones((acq.GetPointFrameNumber(),3))
