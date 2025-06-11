@@ -49,6 +49,7 @@ def calibrate(DATA_PATH:str,calibrateFilenameLabelled:str,translators:Dict,
         displayCoordinateSystem (bool): return virtual markers for visualisation of the anatomical refentials
         noKinematicsCalculation (bool) : disable computation of joint kinematics
         forceMP (bool) : force the use of mp offset to compute the knee and ankle joint centres
+        frames (list): frame ranges used for calibration
 
     Returns:
         model (pyCGM2.Model): the calibrated Model
@@ -149,13 +150,21 @@ def calibrate(DATA_PATH:str,calibrateFilenameLabelled:str,translators:Dict,
     scp=modelFilters.StaticCalibrationProcedure(model) # load calibration procedure
 
     # ---initial calibration filter----
-    modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
+    modelCalibFilter = modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
                                         leftFlatFoot = leftFlatFoot,
                                         rightFlatFoot = rightFlatFoot,
                                         markerDiameter = markerDiameter,
                                         headFlat= headFlat,
                                         viconCGM1compatible=True
-                                        ).compute()
+                                        )
+    if "frames" in kwargs.keys(): 
+        selectedFrames = kwargs["frames"]
+        if selectedFrames[0]>selectedFrames[1] or selectedFrames[0] < acqStatic.GetFirstFrame() or selectedFrames[1] < acqStatic.GetFirstFrame() :
+            
+            raise Exception("[pyCGM2] - incorrect selected frames")
+        modelCalibFilter.setFrames(selectedFrames[0],selectedFrames[1])
+    modelCalibFilter.compute()
+
     # ---- Decorators -----
     forceMP = False if not "forceMP" in kwargs else kwargs["forceMP"]
     decorators.applyKJC_AJCDecorators(dcm, model,acqStatic,optional_mp,markerDiameter,cgm1only=True,forceMP=forceMP)
@@ -166,11 +175,15 @@ def calibrate(DATA_PATH:str,calibrateFilenameLabelled:str,translators:Dict,
     # ----Final Calibration filter if model previously decorated -----
     if model.decoratedModel:
         # initial static filter
-        modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
+        modelCalibFilter = modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
                            leftFlatFoot = leftFlatFoot, rightFlatFoot = rightFlatFoot,
                            headFlat= headFlat,
                            markerDiameter=markerDiameter,
-                           viconCGM1compatible=True).compute()
+                           viconCGM1compatible=True)
+        if "frames" in kwargs.keys(): 
+            selectedFrames = kwargs["frames"]
+            modelCalibFilter.setFrames(selectedFrames[0],selectedFrames[1])
+        modelCalibFilter.compute()
 
 
     # ----------------------CGM MODELLING----------------------------------

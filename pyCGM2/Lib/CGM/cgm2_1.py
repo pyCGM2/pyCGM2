@@ -53,6 +53,7 @@ def calibrate(DATA_PATH:str,calibrateFilenameLabelled:str,translators:Dict,
         displayCoordinateSystem (bool): return virtual markers for visualisation of the anatomical refentials
         noKinematicsCalculation (bool) : disable computation of joint kinematics
         forceMP (bool) : force the use of mp offset to compute the knee and ankle joint centres
+        frames (list): frame ranges used for calibration
 
     Returns:
         model (pyCGM2.Model): the calibrated Model
@@ -153,11 +154,18 @@ def calibrate(DATA_PATH:str,calibrateFilenameLabelled:str,translators:Dict,
 
     # ---initial calibration filter----
     # use if all optional mp are zero
-    modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
+    modelCalibFilter = modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
                                         leftFlatFoot = leftFlatFoot, rightFlatFoot = rightFlatFoot,
                                         headFlat= headFlat,
                                         markerDiameter=markerDiameter,
-                                        ).compute()
+                                        )
+    if "frames" in kwargs.keys(): 
+        selectedFrames = kwargs["frames"]
+        if selectedFrames[0]>selectedFrames[1] or selectedFrames[0] < acqStatic.GetFirstFrame() or selectedFrames[1] < acqStatic.GetFirstFrame() :
+            
+            raise Exception("[pyCGM2] - incorrect selected frames")
+        modelCalibFilter.setFrames(selectedFrames[0],selectedFrames[1])
+    modelCalibFilter.compute()
 
     # ---- Decorators -----
     forceMP = False if not "forceMP" in kwargs else kwargs["forceMP"]
@@ -168,12 +176,17 @@ def calibrate(DATA_PATH:str,calibrateFilenameLabelled:str,translators:Dict,
     # ----Final Calibration filter if model previously decorated -----
     if model.decoratedModel:
         # initial static filter
-        modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
+        modelCalibFilter = modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
                                             leftFlatFoot = leftFlatFoot,
                                             rightFlatFoot = rightFlatFoot,
                                             markerDiameter=markerDiameter,
                                             headFlat= headFlat,
-                                            ).compute()
+                                            )
+        if "frames" in kwargs.keys(): 
+            selectedFrames = kwargs["frames"]
+            modelCalibFilter.setFrames(selectedFrames[0],selectedFrames[1])
+        modelCalibFilter.compute()
+        
 
     modMotion=modelFilters.ModelMotionFilter(scp,acqStatic,model,enums.motionMethod.Determinist,
                                               markerDiameter=markerDiameter)
