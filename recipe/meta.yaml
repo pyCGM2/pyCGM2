@@ -60,3 +60,6 @@ about:
 extra:
   recipe-maintainers:
     - fleboeuf
+  channels:
+    - opensim-org
+    - conda-forge
