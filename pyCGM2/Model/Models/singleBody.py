@@ -52,3 +52,11 @@ class SingleBody():
 
     def getBody(self):
         return self.m_model.getSegment("Body")
+ 
+    def addNode(self,label,values,positionType):
+        self.getBody().getReferential("TF").static.addNode(label,values,positionType=positionType)
+
+    def getTrajectory(self,label):
+        traj = self.getBody().getReferential("TF").getNodeTrajectory(label)
+
+        return traj
