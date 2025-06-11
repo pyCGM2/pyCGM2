@@ -10,6 +10,7 @@ def main(args=None):
     if args  is None:
         parser = argparse.ArgumentParser(description='Gloersen PCA-based Gap filling')
         parser.add_argument('--markers', nargs='*', help='list of markers',required=False)
+        args = parser.parse_args()
 
 
     try:
