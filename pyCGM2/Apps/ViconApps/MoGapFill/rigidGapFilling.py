@@ -5,20 +5,21 @@ import pyCGM2; LOGGER = pyCGM2.LOGGER
 
 
 # pyCGM2 libraries
-from pyCGM2.Model import model
-from pyCGM2.Model import modelFilters
+
 from pyCGM2.Tools import btkTools
 
-from pyCGM2 import enums
+from pyCGM2.Model.Models import singleBody
 
-def main():
+def main(args=None):
 
-    parser = argparse.ArgumentParser(description='rigid gap Labeling')
-    parser.add_argument('--static', type=str, help='filename of the static',required=False)
-    parser.add_argument('--target', type=str, help='marker to reconstruct',required=True)
-    parser.add_argument('--trackingMarkers', nargs='*', help='list of tracking markers',required=True)
-    parser.add_argument('--begin', type=int, help='initial Frame')
-    parser.add_argument('--last', type=int, help='last Frame')
+    if args  is None:
+        parser = argparse.ArgumentParser(description='rigid gap Labeling')
+        parser.add_argument('--static', type=str, help='filename of the static',required=False)
+        parser.add_argument('--target', type=str, help='marker to reconstruct',required=True)
+        parser.add_argument('--trackingMarkers', nargs='*', help='list of tracking markers',required=True)
+        parser.add_argument('--begin', type=int, help='initial Frame')
+        parser.add_argument('--last', type=int, help='last Frame')
+        args = parser.parse_args()
 
     try:
         from viconnexusapi import ViconNexus
@@ -34,7 +35,6 @@ def main():
 
 
     if NEXUS_PYTHON_CONNECTED: # run Operation
-        args = parser.parse_args()
         DATA_PATH, reconstructFilenameLabelledNoExt = nexusTools.getTrialName(NEXUS)
 
         # enfFiles = eclipse.getEnfTrials(DATA_PATH)
@@ -88,7 +88,6 @@ def main():
 
         targetMarker = args.target
         trackingMarkers = args.trackingMarkers
-        # trackingMarkers.append(targetMarker)
 
         if args.begin is None and args.last is None: # reconstrution on full frames
             selectInitialFrame = ff
@@ -103,32 +102,18 @@ def main():
             selectInitialFrame = ff
             selectLastFrame = args.last-1
 
-        mod=model.Model()
-        mod.addSegment("segment",0,enums.SegmentSide.Central,calibration_markers=[targetMarker], tracking_markers = trackingMarkers)
+       
+        rigidBody = singleBody.SingleBody([trackingMarkers[0],trackingMarkers[1],trackingMarkers[2],trackingMarkers[0],targetMarker],
+                                    [trackingMarkers[0],trackingMarkers[1],trackingMarkers[2]])
+        rigidBody.calibrate(acqStatic) #,calibFramesOfInterest=[66,66])
+        rigidBody.fit(acqGait)
 
+        # exemple to add Node
+        # globalpos = acqStatic.GetPoint("rigidZ").GetValues().mean(axis=0)
+        # rigidBody.addNode("new",globalpos,positionType="Global")
 
-        gcp=modelFilters.GeneralCalibrationProcedure()
-        gcp.setDefinition('segment',
-                          "TF",
-                          sequence='XYZ',
-                          pointLabel1=trackingMarkers[0],
-                          pointLabel2=trackingMarkers[1],
-                          pointLabel3=trackingMarkers[2],
-                          pointLabelOrigin=trackingMarkers[0])
+        valReconstruct = rigidBody.getTrajectory(targetMarker)
 
-        modCal=modelFilters.ModelCalibrationFilter(gcp,acqStatic,mod)
-        modCal.compute()
-
-        # if not btkTools.isPointExist(acqGait,targetMarker):
-        #     # print "targer Marker not in the c3d"
-        #     mod.getSegment("segment").m_tracking_markers.remove(targetMarker)
-
-        modMotion=modelFilters.ModelMotionFilter(gcp,acqGait,mod,enums.motionMethod.Sodervisk)
-        modMotion.compute()
-
-
-        #populate values
-        valReconstruct=mod.getSegment('segment').getReferential('TF').getNodeTrajectory(targetMarker)
 
         if btkTools.isPointExist(acqGait,targetMarker):
             val0 = acqGait.GetPoint(targetMarker).GetValues()
@@ -137,13 +122,17 @@ def main():
         else:
             val_final = valReconstruct
         
-        #btkTools.smartAppendPoint(acqGait,targetMarker,val_final)
+        btkTools.smartAppendPoint(acqGait,targetMarker,val_final)
 
         # nexus display
-        nexusTools.setTrajectoryFromArray(NEXUS,subject,targetMarker,val_final,firstFrame = ff)
-        # nexusTools.appendModelledMarkerFromAcq(NEXUS,subject,targetMarker, acqGait,suffix = "")
+        if targetMarker in NEXUS.GetMarkerNames(subject):
+            LOGGER.logger.info(f"[pyCGM2] {targetMarker} added as a marker")
+            nexusTools.setTrajectoryFromArray(NEXUS,subject,targetMarker,val_final,firstFrame = ff)
+        else:
+            LOGGER.logger.info(f"[pyCGM2] {targetMarker} added as a modelled marker. Update your vsk with a new marker to add it as a marker")
+            nexusTools.appendModelledMarkerFromAcq(NEXUS,subject,targetMarker, acqGait,suffix = "")
     else:
         return parser
 
 if __name__ == "__main__":
-    main()
+    main(args=None)

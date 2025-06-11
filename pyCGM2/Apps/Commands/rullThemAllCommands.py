@@ -30,6 +30,7 @@ from pyCGM2.Apps.ViconApps.Events import intelleventDetector
 
 from pyCGM2.Apps.ViconApps.MoGapFill import KalmanGapFilling
 from pyCGM2.Apps.ViconApps.MoGapFill import GloersenGapFilling
+from pyCGM2.Apps.ViconApps.MoGapFill import rigidGapFilling
 
 from pyCGM2.Apps.ViconApps.Plot import spatioTemporalParameters
 from pyCGM2.Apps.ViconApps.Plot import kinematics
@@ -563,6 +564,12 @@ class MainParser:
         parser_gloersen = gap_subparsers.add_parser('Gloersen', help='Gloersen gap filling')
         parser_gloersen.add_argument('--markers', nargs='*', help='list of markers',required=False)
         
+        parser_rigid = gap_subparsers.add_parser('Rigid', help='Rigid gap filling')
+        parser_rigid.add_argument('--static', type=str, help='filename of the static',required=False)
+        parser_rigid.add_argument('--target', type=str, help='marker to reconstruct',required=True)
+        parser_rigid.add_argument('--trackingMarkers', nargs='*', help='list of tracking markers',required=True)
+        parser_rigid.add_argument('--begin', type=int, help='initial Frame')
+        parser_rigid.add_argument('--last', type=int, help='last Frame')
 
         # plot--------------
 
@@ -740,7 +747,9 @@ class MainParser:
                         KalmanGapFilling.main(args)
                     if args.Gaps == "Gloersen":
                         GloersenGapFilling.main(args)
-                
+                    if args.Gaps == "Rigid":
+                        rigidGapFilling.main(args)
+
                 #--Plots---
                 elif args.NEXUS == "Plots":
                     if args.Plots == "STP":
