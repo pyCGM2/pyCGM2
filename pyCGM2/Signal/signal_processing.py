@@ -170,28 +170,16 @@ def forcePlateFiltering(btkAcq:btk.btkAcquisition, order:int=4, fc:float=5):
     bPoint, aPoint = signal.butter(order, fc / (fp*0.5), btype='lowpass')
 
     # --- ground reaction force wrench ---
-    pfe = btk.btkForcePlatformsExtractor()
-    pfe.SetInput(btkAcq)
-    pfc = pfe.GetOutput()
-    pfc.Update()
+    mdChannels = btkAcq.GetMetaData().FindChild(str("FORCE_PLATFORM")).value().FindChild(str("CHANNEL")).value()
+    infos = mdChannels.GetInfo()
 
-    for i in range(0, pfc.GetItemNumber()):
+    dimensions = infos.GetDimensions()
+    analogsIndexes = infos.ToInt()
 
-        for j in range(0, pfc.GetItem(i).GetChannelNumber()):
-
-            values = pfc.GetItem(i).GetChannel(j).GetValues()[:, 0]
-
-            values_filt = signal.filtfilt(bPoint, aPoint, values, axis=0)
-
-            # SetValues on channel not store new values
-            label = pfc.GetItem(i).GetChannel(j).GetLabel()
-            try:
-                btkAcq.GetAnalog(label).SetValues(values_filt)
-            except RuntimeError:
-                LOGGER.logger.error(
-                    "[pyCGM2] filtering of the force place %i impossible - label %s not found" % (i, label))
-
-# ----- methods ---------
+    for it in analogsIndexes:
+        values = btkAcq.GetAnalog(it-1).GetValues()        
+        values_filt = signal.filtfilt(bPoint, aPoint, values, axis=0)
+        btkAcq.GetAnalog(it-1).SetValues(values_filt)
 
 
 def arrayLowPassFiltering(valuesArray:np.ndarray, freq:float, order:int=2, fc:float=6):
