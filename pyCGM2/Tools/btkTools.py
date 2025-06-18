@@ -655,6 +655,24 @@ def clearEvents(acq:btk.btkAcquisition, labels:List[str]):
     acq.ClearEvents()
     acq.SetEvents(newEvents)
 
+def clearEventsOutside(acq:btk.btkAcquisition, frameRange:List[int]):
+    """
+    Removes events outside the specified frame range.
+
+    Args:
+        acq (btk.btkAcquisition): BTK acquisition instance.
+        frameRange (list): List containing the start and end frames.
+    """
+
+    events = acq.GetEvents()
+    newEvents = btk.btkEventCollection()
+    for ev in btk.Iterate(events):
+        if ev.GetFrame() < frameRange[1] and ev.GetFrame() > frameRange[0]:
+            LOGGER.logger.info(f"[pyCGM2] {ev.GetLabel()} - {ev.GetContext()} - {ev.GetFrame()} removed")
+            newEvents.InsertItem(ev)
+
+    acq.ClearEvents()
+    acq.SetEvents(newEvents)
 
 def deleteContextEvents(acq:btk.btkAcquisition, context:str):
     """
