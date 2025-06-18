@@ -1,5 +1,5 @@
 import pyCGM2; LOGGER = pyCGM2.LOGGER
-
+import copy
 
 def getPhases(dataStats,context="Both"):
     """get phases
@@ -154,27 +154,35 @@ def getAnalysisSection(analysisInstance,label,context):
         raise Exception ("[pyCGM2] label [%s] - context [%s] doesn t find in the analysis instance"%(label,context))
 
 def normalizedMuscleLength_withPose(analysisInstance, referenceDataframe):
+    # remove previous normalized versions
+    keys_to_remove = [key for key in analysisInstance.muscleGeometryStats.data if "_PoseNormalized" in key[0]]
+    for key in keys_to_remove:
+        del analysisInstance.muscleGeometryStats.data[key]
 
-    for keys in list(analysisInstance.muscleGeometryStats.data):
-        if "MuscleLength" in keys[0]:
-            muscle =  keys[0][0:keys[0].find("[")]
-            value0 = referenceDataframe[muscle][0]
-            newLabel = keys[0]+"_PoseNormalized" 
-            
-            toCopy = analysisInstance.muscleGeometryStats.data[keys[0],keys[1]]
-            ncycle = len(toCopy["values"])
-
-            analysisInstance.muscleGeometryStats.data[newLabel,keys[1]] = toCopy
     
+    for key in list(analysisInstance.muscleGeometryStats.data):
+        muscle_name = key[0].split("[")[0]
+        side = key[1]
+        normalization_value = referenceDataframe[muscle_name][0]
+        new_key = (key[0] + "_PoseNormalized", side)
 
-            for cycle in range(0,ncycle):
-                cycleValue = toCopy["values"][cycle][:,0]
-                analysisInstance.muscleGeometryStats.data[newLabel,keys[1]]["values"][cycle][:,0] = cycleValue/value0
-            
-            meanValue = toCopy["mean"][:,0]
-            meanStd = toCopy["std"][:,0]
-            medianValue = toCopy["median"][:,0]
+        original = analysisInstance.muscleGeometryStats.data[key]
 
-            analysisInstance.muscleGeometryStats.data[newLabel,keys[1]]["mean"][:,0] = meanValue/value0
-            analysisInstance.muscleGeometryStats.data[newLabel,keys[1]]["std"][:,0] = meanStd/value0
-            analysisInstance.muscleGeometryStats.data[newLabel,keys[1]]["median"][:,0] = medianValue/value0
+        # replicate the original structure
+        new_entry = {
+            "values": [v.copy() for v in original["values"]],
+            "mean": original["mean"].copy(),
+            "std": original["std"].copy(),
+            "median": original["median"].copy()
+        }
+
+        # Normalize
+        for cycle in range(len(new_entry["values"])):
+            new_entry["values"][cycle][:, 0] /= normalization_value
+
+        new_entry["mean"][:, 0]   /= normalization_value
+        new_entry["std"][:, 0]    /= normalization_value
+        new_entry["median"][:, 0] /= normalization_value
+
+        # insert in the dict
+        analysisInstance.muscleGeometryStats.data[new_key] = new_entry

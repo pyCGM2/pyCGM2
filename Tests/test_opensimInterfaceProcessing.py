@@ -117,7 +117,12 @@ class Test_opensimModelOuputprocessing_fromNexus:
                         dynamicMuscleLabelsDict = None)
         
         referenceLengths = opensimIO.OpensimDataFrame(DATA_PATH, "CGM23-Pose[standstill]_MuscleAnalysis_Length.sto")
+        
+        analysis.exportAnalysis(analysisInstance,DATA_PATH,"analysisVerifAvantExported.xlsx")    
+
         analysisHandler.normalizedMuscleLength_withPose(analysisInstance,referenceLengths.getDataFrame())
+
+        analysis.exportAnalysis(analysisInstance,DATA_PATH,"analysisVerifExported.xlsx")
 
 
         # gigh-level function
