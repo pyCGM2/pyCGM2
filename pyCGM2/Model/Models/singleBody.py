@@ -1,13 +1,15 @@
-import btk
+
+import numpy as np
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 from typing import List, Tuple, Dict, Optional,Union
 
 # pyCGM2 libraries
 from pyCGM2.Model import model
 from pyCGM2.Model import modelFilters
-
+from pyCGM2.Tools import btkTools
 
 from pyCGM2 import enums
+
 
 
 class SingleBody():
@@ -60,3 +62,23 @@ class SingleBody():
         traj = self.getBody().getReferential("TF").getNodeTrajectory(label)
 
         return traj
+    
+    def displayAxis(self,acq,label):
+        X = np.array([100,0,0])
+        Y = np.array([0,100,0])
+        Z = np.array([0,0,100])
+
+
+        valuesX = np.zeros((len(self.getBody().getReferential("TF").motion), 3))
+        valuesY = np.zeros((len(self.getBody().getReferential("TF").motion), 3))
+        valuesZ = np.zeros((len(self.getBody().getReferential("TF").motion), 3))
+
+        for i in range(0, len(self.getBody().getReferential("TF").motion)):
+            valuesX[i, :] = np.dot(self.getBody().getReferential("TF").motion[i].getRotation(),X) +  self.getBody().getReferential("TF").motion[i].getTranslation()
+            valuesY[i, :] = np.dot(self.getBody().getReferential("TF").motion[i].getRotation(),Y) +  self.getBody().getReferential("TF").motion[i].getTranslation()
+            valuesZ[i, :] = np.dot(self.getBody().getReferential("TF").motion[i].getRotation(),Z) +  self.getBody().getReferential("TF").motion[i].getTranslation()
+
+        btkTools.smartAppendPoint(acq,label + "_X", valuesX)
+        btkTools.smartAppendPoint(acq,label + "_Y", valuesY)
+        btkTools.smartAppendPoint(acq,label + "_Z", valuesZ)
+
