@@ -55,18 +55,24 @@ class mekNormalizeFilter(object):
         normalizeGrp = self.m_storage.create_group("Normalize")
 
 
-        for attr_name, attr_value in scheme.__dict__.items():
-            if attr_value != []:
-                for item in attr_value:
-                    pathfilename = item[0]
+        for key in scheme:
+            normalizeGrp.create_group(key)
+
+            if scheme[key] != []:
+
+                pathfilenames = scheme[key][0]
+                targets = scheme[key][1]
+
+                for pathfilename in pathfilenames:
+
                     filename = pathfilename.split("\\")[-1]
-                    targets = item[1]
-                    eventGr = extractGrp.retrieve_group(f"{attr_name}/{filename}/events")  
+
+                    eventGr = extractGrp.retrieve_group(f"{key}/{filename}/events")  
 
                     for target in targets:
                         variableName = target.split(".")[0]
                         eventContext = target.split(".")[1]
-                        set_name = f"{attr_name}/{filename}/{variableName}"
+                        set_name = f"{key}/{filename}/{variableName}"
                         data = extractGrp.retrieve_set(set_name)
                         attrs = mekTools.mekAttributesToDict(data)
 
@@ -79,7 +85,13 @@ class mekNormalizeFilter(object):
 
                         for i in range(ncycles):
                             cycleValues = normalize(data.read(),attrs,events[i],events[i+1])
-                            group_name = f"{attr_name}/{filename}/{variableName}/Cycle{i}"
+                            group_name = f"{key}/{filename}/{variableName}/Cycle{i}"
                             normalizeGrp.create_set(group_name ,cycleValues )
                             normalizeGrp.retrieve_set(group_name).create_attribute("Valid",  True)
+
+
+
+
+
+        
 
