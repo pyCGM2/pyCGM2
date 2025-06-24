@@ -45,7 +45,7 @@ def dataTest1():
     modelledFilenames = ["gait Trial 01.c3d", "gait Trial 02.c3d"]
     analysisInstance = analysis.makeAnalysis(DATA_PATH,
                         modelledFilenames,
-                        type="Gait")
+                        eventType="Gait")
     return DATA_PATH,analysisInstance
 
 
@@ -57,7 +57,7 @@ def dataTest2():
 
     analysisInstance = analysis.makeAnalysis(DATA_PATH,
                         modelledFilenames,
-                        type="Gait",
+                        eventType="Gait",
                         emgChannels = emgChannels,
                         pointLabelSuffix=None,
                         subjectInfo=None, experimentalInfo=None,modelInfo=None,
@@ -75,7 +75,7 @@ def dataTest3():
 
     analysisInstance1 = analysis.makeAnalysis(DATA_PATH1,
                         modelledFilenames1,
-                        type="Gait",
+                        eventType="Gait",
                         emgChannels = emgChannels,
                         pointLabelSuffix=None,
                         subjectInfo=None, experimentalInfo=None,modelInfo=None,
@@ -87,7 +87,7 @@ def dataTest3():
 
     analysisInstance2 = analysis.makeAnalysis(DATA_PATH2,
                         modelledFilenames2,
-                        type="Gait",
+                        eventType="Gait",
                         emgChannels = emgChannels,
                         pointLabelSuffix=None,
                         subjectInfo=None, experimentalInfo=None,modelInfo=None,
@@ -231,7 +231,7 @@ class Test_highLevel:
         normativeDataset = normativeDatasets.NormativeData("Schwartz2008","Free")
 
         fig = plot.plot_DescriptiveKinematic(DATA_PATH,analysisInstance,"LowerLimb",normativeDataset,
-            pointLabelSuffix=None,type="Gait",exportPdf=False,outputName=None,show=False,title=None)
+            pointLabelSuffix=None,eventType="Gait",exportPdf=False,outputName=None,show=False,title=None)
         if SHOW: plt.show()
         return fig
 
@@ -242,7 +242,7 @@ class Test_highLevel:
         normativeDataset = normativeDatasets.NormativeData("Schwartz2008","Free")
 
         fig = plot.plot_ConsistencyKinematic(DATA_PATH,analysisInstance,"LowerLimb",normativeDataset,
-            pointLabelSuffix=None,type="Gait",exportPdf=False,outputName=None,show=False,title=None)
+            pointLabelSuffix=None,eventType="Gait",exportPdf=False,outputName=None,show=False,title=None)
 
         if SHOW: plt.show()
         return fig
@@ -254,7 +254,7 @@ class Test_highLevel:
         normativeDataset = normativeDatasets.NormativeData("Schwartz2008","Free")
 
         fig = plot.plot_DescriptiveKinetic(DATA_PATH,analysisInstance,"LowerLimb",normativeDataset,
-            pointLabelSuffix=None,type="Gait",exportPdf=False,outputName=None,show=False,title=None)
+            pointLabelSuffix=None,eventType="Gait",exportPdf=False,outputName=None,show=False,title=None)
 
         return fig
 
@@ -264,7 +264,7 @@ class Test_highLevel:
         normativeDataset = normativeDatasets.NormativeData("Schwartz2008","Free")
 
         fig = plot.plot_ConsistencyKinetic(DATA_PATH,analysisInstance,"LowerLimb",normativeDataset,
-            pointLabelSuffix=None,type="Gait",exportPdf=False,outputName=None,show=False,title=None)
+            pointLabelSuffix=None,eventType="Gait",exportPdf=False,outputName=None,show=False,title=None)
 
         if SHOW: plt.show()
         return fig
@@ -284,7 +284,7 @@ class Test_highLevel:
 
         fig = plot.plotDescriptiveEnvelopEMGpanel(DATA_PATH,analysisInstance,
                 normalized=False,
-                type="Gait",exportPdf=False,outputName=None,show=False,
+                eventeventType="Gait",exportPdf=False,outputName=None,show=False,
                 title=None)
 
         if SHOW: plt.show()
@@ -302,7 +302,7 @@ class Test_highLevel:
 
         fig = plot.plotConsistencyEnvelopEMGpanel(DATA_PATH,analysisInstance,
                 normalized=False,
-                type="Gait",exportPdf=False,outputName=None,show=False,
+                eventeventType="Gait",exportPdf=False,outputName=None,show=False,
                 title=None)
 
         if SHOW: plt.show()
@@ -325,7 +325,7 @@ class Test_highLevel:
 
         fig = plot.compareEmgEnvelops(DATA_PATH1,[analysisInstance1,analysisInstance2], ["Session1", "Session2"],
             normalized=True,
-            plotType="Descriptive",show=False,title=None,type="Gait")
+            plotType="Descriptive",show=False,title=None,eventeventType="Gait")
 
         if SHOW: plt.show()
         return fig
@@ -344,7 +344,7 @@ class Test_highLevel:
 
         fig = plot.compareSelectedEmgEvelops(DATA_PATH1,[analysisInstance1,analysisInstance2], ["Session1", "Session2"],
                 ["Voltage.EMG1","Voltage.EMG1"],["Left","Left"],normalized=True,
-                plotType="Descriptive",type="Gait",show=False,title=None)
+                plotType="Descriptive",eventType="Gait",show=False,title=None)
 
         if SHOW: plt.show()
         return fig
@@ -408,7 +408,7 @@ class Test_highLevel_customNormative:
         normativeDataset = normativeDatasets.NormativeData("CGM23-msm","Spont")
 
         fig = plot.plot_DescriptiveKinematic(DATA_PATH,analysisInstance,"LowerLimb",normativeDataset,
-            pointLabelSuffix=None,type="Gait",exportPdf=False,outputName=None,show=False,title=None)
+            pointLabelSuffix=None,eventType="Gait",exportPdf=False,outputName=None,show=False,title=None)
 
 
         if SHOW: plt.show()
@@ -422,7 +422,7 @@ class Test_highLevel_customNormative:
         normativeDataset = normativeDatasets.NormativeData("CGM23-msm","Spont")
 
         fig = plot.plot_DescriptiveKinetic(DATA_PATH,analysisInstance,"LowerLimb",normativeDataset,
-            pointLabelSuffix=None,type="Gait",exportPdf=False,outputName=None,show=False,title=None)
+            pointLabelSuffix=None,eventType="Gait",exportPdf=False,outputName=None,show=False,title=None)
 
         if SHOW: plt.show()
         return fig
