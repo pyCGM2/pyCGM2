@@ -6,8 +6,6 @@ from scipy.interpolate import interp1d
 from pyCGM2.Mek import mekTools
 
 
-
-
 def normalize(values, attrs,eventStartTime, eventEndTime):
     
     initial_time = attrs["StartTime"]
@@ -45,15 +43,18 @@ class mekNormalizeFilter(object):
 
     """
 
-    def __init__(self,mekStorage):
+    def __init__(self,mekStorage, group):
         self.m_storage = mekStorage.root()
-        
+        self.m_group = group
 
     def run(self,scheme):
         
-        extractGrp = self.m_storage.retrieve_group("Extraction")
-        normalizeGrp = self.m_storage.create_group("Normalize")
-
+        if self.m_group is None:
+            extractGrp = self.m_storage.retrieve_group("Extraction")
+            normalizeGrp = self.m_storage.create_group("Normalize")
+        else: 
+            extractGrp = self.m_storage.retrieve_group(f"{self.m_group}/Extraction")
+            normalizeGrp = self.m_storage.create_group(f"{self.m_group}/Normalize")
 
         for key in scheme:
             normalizeGrp.create_group(key)
@@ -73,21 +74,22 @@ class mekNormalizeFilter(object):
                         variableName = target.split(".")[0]
                         eventContext = target.split(".")[1]
                         set_name = f"{key}/{filename}/{variableName}"
-                        data = extractGrp.retrieve_set(set_name)
-                        attrs = mekTools.mekAttributesToDict(data)
+                        if extractGrp.exists_set(set_name):
+                            data = extractGrp.retrieve_set(set_name)
+                            attrs = mekTools.mekAttributesToDict(data)
 
-                        if eventContext == "Left":
-                            events = eventGr.retrieve_set("Foot Strike/Left").read()
-                        elif eventContext == "Right":
-                            events = eventGr.retrieve_set("Foot Strike/Right").read()
+                            if eventContext == "Left":
+                                events = eventGr.retrieve_set("Foot Strike/Left").read()
+                            elif eventContext == "Right":
+                                events = eventGr.retrieve_set("Foot Strike/Right").read()
 
-                        ncycles = len(events)-1
+                            ncycles = len(events)-1
 
-                        for i in range(ncycles):
-                            cycleValues = normalize(data.read(),attrs,events[i],events[i+1])
-                            group_name = f"{key}/{filename}/{variableName}/Cycle{i}"
-                            normalizeGrp.create_set(group_name ,cycleValues )
-                            normalizeGrp.retrieve_set(group_name).create_attribute("Valid",  True)
+                            for i in range(ncycles):
+                                cycleValues = normalize(data.read(),attrs,events[i],events[i+1])
+                                group_name = f"{key}/{filename}/{variableName}/Cycle{i}"
+                                normalizeGrp.create_set(group_name ,cycleValues )
+                                normalizeGrp.retrieve_set(group_name).create_attribute("Valid",  True)
 
 
 
