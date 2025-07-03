@@ -56,7 +56,7 @@ def main(args=None):
                     staticFilenames.append(filename)
 
             if len(staticFilenames) == 1:
-                LOGGER.logger.info("A single static file ( Cal file) has been detected")
+                LOGGER.logger.info(f"A single static file ( Cal file : {staticFilenames[0]}) has been detected")
                 acqStatic = btkTools.smartReader(str(DATA_PATH+staticFilenames[0]))
             elif len(staticFilenames) > 1:
                 text = "Mutiple cal file detected, select your file[0]\n"
