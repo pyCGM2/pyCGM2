@@ -215,6 +215,28 @@ class NexusConstructAcquisitionFilter(object):
                     ev.SetSubject(self.m_subject)
                     self.m_acq.AppendEvent(ev)
 
+        eventType = "Start"
+        eventContext = "General"
+        if self.NEXUS.GetEvents(self.m_subject, eventContext, eventType)[0] != []:
+            for frame in self.NEXUS.GetEvents(self.m_subject, eventContext, eventType)[0]:
+                if frame >= self.m_firstFrame and frame <= self.m_lastFrame:
+                    time = (frame-1)/self.m_framerate
+                    ev = btk.btkEvent(eventType, time, int(
+                        frame), eventContext, btk.btkEvent.Manual)
+                    ev.SetSubject(self.m_subject)
+                    self.m_acq.AppendEvent(ev)
+
+        eventType = "End"
+        eventContext = "General"
+        if self.NEXUS.GetEvents(self.m_subject, eventContext, eventType)[0] != []:
+            for frame in self.NEXUS.GetEvents(self.m_subject, eventContext, eventType)[0]:
+                if frame >= self.m_firstFrame and frame <= self.m_lastFrame:
+                    time = (frame-1)/self.m_framerate
+                    ev = btk.btkEvent(eventType, time, int(
+                        frame), eventContext, btk.btkEvent.Manual)
+                    ev.SetSubject(self.m_subject)
+                    self.m_acq.AppendEvent(ev)
+
     def appendMarkers(self):
         """ Appends markers to the acquisition object."""
 
