@@ -13,6 +13,7 @@ def normalize(values, attrs,eventStartTime, eventEndTime):
     start_time = eventStartTime
     end_time = eventEndTime
 
+    
     ncol = values.shape[1]
    
     # Convertir temps en indices
@@ -32,7 +33,10 @@ def normalize(values, attrs,eventStartTime, eventEndTime):
     # Interpolation colonne par colonne
     segment_normalized = np.zeros((101, ncol))
     for i in range(ncol):
-        f = interp1d(t_original, segment[:, i], kind='linear')
+        try:
+            f = interp1d(t_original, segment[:, i], kind='linear')
+        except:
+            import ipdb; ipdb.set_trace()
         segment_normalized[:, i] = f(t_normalized)
 
     return segment_normalized
@@ -47,7 +51,9 @@ class mekNormalizeFilter(object):
         self.m_storage = mekStorage.root()
         self.m_group = group
 
-    def run(self,scheme):
+
+
+    def run(self,scheme,cropToForcePlateGroups=[]):
         
         if self.m_group is None:
             extractGrp = self.m_storage.retrieve_group("Extraction")
@@ -71,25 +77,47 @@ class mekNormalizeFilter(object):
                     eventGr = extractGrp.retrieve_group(f"{key}/{filename}/events")  
 
                     for target in targets:
-                        variableName = target.split(".")[0]
-                        eventContext = target.split(".")[1]
+                        variableName = target.split(":")[0]
+                        eventContext = target.split(":")[1]
                         set_name = f"{key}/{filename}/{variableName}"
                         if extractGrp.exists_set(set_name):
                             data = extractGrp.retrieve_set(set_name)
                             attrs = mekTools.mekAttributesToDict(data)
 
+
                             if eventContext == "Left":
                                 events = eventGr.retrieve_set("Foot Strike/Left").read()
+                                try:
+                                    fp_events = eventGr.retrieve_set("ForcePlateEvents/Left").read()
+                                except:
+                                    fp_events = None
+
+
                             elif eventContext == "Right":
+    
                                 events = eventGr.retrieve_set("Foot Strike/Right").read()
+                                try:
+                                    fp_events = eventGr.retrieve_set("ForcePlateEvents/Right").read()
+                                except:
+                                    fp_events = None
 
                             ncycles = len(events)-1
 
-                            for i in range(ncycles):
-                                cycleValues = normalize(data.read(),attrs,events[i],events[i+1])
-                                group_name = f"{key}/{filename}/{variableName}/Cycle{i}"
-                                normalizeGrp.create_set(group_name ,cycleValues )
-                                normalizeGrp.retrieve_set(group_name).create_attribute("Valid",  True)
+
+                            if any(name in key for name in cropToForcePlateGroups) and fp_events is not None:
+                                for fpevent in fp_events:
+                                    for i in range(ncycles):
+                                        if fpevent >= events[i] and fpevent <= events[i+1]:
+                                            cycleValues = normalize(data.read(),attrs,events[i],events[i+1])
+                                            group_name = f"{key}/{filename}/{variableName}/Cycle{i}"
+                                            normalizeGrp.create_set(group_name ,cycleValues )
+                                            normalizeGrp.retrieve_set(group_name).create_attribute("Valid",  True)
+                            else:
+                                for i in range(ncycles):
+                                    cycleValues = normalize(data.read(),attrs,events[i],events[i+1])
+                                    group_name = f"{key}/{filename}/{variableName}/Cycle{i}"
+                                    normalizeGrp.create_set(group_name ,cycleValues )
+                                    normalizeGrp.retrieve_set(group_name).create_attribute("Valid",  True)
 
 
 

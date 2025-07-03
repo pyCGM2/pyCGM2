@@ -11,9 +11,11 @@ CGM_KINEMATICS_ANGLES ={
                                 "RShoulderAngles","RElbowAngles","RWristAngles"]}
 
 CGM_KINETICS_MOMENTS ={
-                        'Left': ["LHipMoment","LKneeMoment","LAnkleMoment","LHipPower","LKneePower","LAnklePower","LStanGroundReactionForce","LGroundReactionForce"],
-                        'Right': ["RHipMoment","RKneeMoment","RAnkleMoment","RHipPower","RKneePower","RAnklePower","RStanGroundReactionForce","RGroundReactionForce"]}
+                        'Left': ["LHipMoment","LKneeMoment","LAnkleMoment","LHipPower","LKneePower","LAnklePower"],
+                        'Right': ["RHipMoment","RKneeMoment","RAnkleMoment","RHipPower","RKneePower","RAnklePower"]}
 
 CGM_KINETICS_FORCES ={
-                        'Left': ["LHipMoment","LKneeMoment","LAnkleMoment","LHipPower","LKneePower","LAnklePower","LStanGroundReactionForce","LGroundReactionForce"],
-                        'Right': ["RHipMoment","RKneeMoment","RAnkleMoment","RHipPower","RKneePower","RAnklePower","RStanGroundReactionForce","RGroundReactionForce"]}
+                        'Left': ["LStanGroundReactionForce","LGroundReactionForce"],
+                        'Right': ["RStanGroundReactionForce","RGroundReactionForce"]}
+
+

@@ -12,13 +12,13 @@ class mekInitStorageFilter(object):
 
     """
 
-    def __init__(self,group):
-        self.m_group = group
+    def __init__(self):
+        self.ds = moveck.data_store()
+        
         
 
-    def run(self):
-
-        ds = moveck.data_store()
-        root = ds.root()
-        root.create_group(self.m_group)
-        return ds
+    def createGroup(self, group):
+        self.ds.root().create_group(group)
+    
+    def getStorage(self):
+        return self.ds

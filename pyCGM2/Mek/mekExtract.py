@@ -35,19 +35,41 @@ class mekExtractFilter(object):
                     filename = pathfilename.split("\\")[-1]
                     acq = btkTools.smartReader(pathfilename)
 
+                    
                     extractGrp.create_set(f"{key}/{filename}/events/Foot Strike/Left" ,[frame/acq.GetPointFrequency() for frame in btkTools.smartGetEvents(acq,"Foot Strike","Left") ] )
                     extractGrp.create_set(f"{key}/{filename}/events/Foot Off/Left" ,[frame/acq.GetPointFrequency() for frame in btkTools.smartGetEvents(acq,"Foot Off","Left") ] )
                     extractGrp.create_set(f"{key}/{filename}/events/Foot Strike/Right" ,[frame/acq.GetPointFrequency() for frame in btkTools.smartGetEvents(acq,"Foot Strike","Right") ] )
                     extractGrp.create_set(f"{key}/{filename}/events/Foot Off/Right" ,[frame/acq.GetPointFrequency() for frame in btkTools.smartGetEvents(acq,"Foot Off","Right") ] )
+ 
+                    try:
+                        extractGrp.create_set(f"{key}/{filename}/events/ForcePlateEvents/Left" ,[frame/acq.GetPointFrequency() for frame in btkTools.smartGetEvents(acq,"Left-FP","General") ] )
+                    except:
+                        pass
+                    try:
+                        extractGrp.create_set(f"{key}/{filename}/events/ForcePlateEvents/Right" ,[frame/acq.GetPointFrequency() for frame in btkTools.smartGetEvents(acq,"Right-FP","General") ] )
+                    except:
+                        pass
+
 
                     for target in targets:
-                        variableName = target.split(".")[0]
+                        variableName = target.split(":")[0]
                         group_name = f"{key}/{filename}/{variableName}"
+
+
+                        values = None
+                        frequency = None
+
                         try:
                             values = acq.GetPoint(variableName).GetValues()
+                            frequency = acq.GetPointFrequency()
                         except RuntimeError:
-                            LOGGER.logger.warning(f"[pyCGM2] - {variableName} not detected in {filename}")
-                        else:
-                            extractGrp.create_set(group_name ,values )
-                            extractGrp.retrieve_set(group_name).create_attribute("StartTime",  acq.GetFirstFrame()/acq.GetPointFrequency())
-                            extractGrp.retrieve_set(group_name).create_attribute("SampleRate",  acq.GetPointFrequency())
+                            try:
+                                values = acq.GetAnalog(variableName).GetValues()
+                                frequency = acq.GetAnalogFrequency()
+                            except RuntimeError:
+                                LOGGER.logger.warning(f"[pyCGM2] - {variableName} not detected in {filename}")
+
+                        if values is not None:
+                            extractGrp.create_set(group_name, values)
+                            extractGrp.retrieve_set(group_name).create_attribute("StartTime", acq.GetFirstFrame() / acq.GetPointFrequency())
+                            extractGrp.retrieve_set(group_name).create_attribute("SampleRate", frequency )
