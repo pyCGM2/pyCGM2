@@ -1366,7 +1366,8 @@ def smartGetEvents(acq:btk.btkAcquisition, label:str, context:str):
     out = []
     for it in btk.Iterate(evs):
         if it.GetContext() == context and it.GetLabel() == label:
-            out.append(it.GetFrame())
+            if it.GetFrame() not in out:
+                out.append(it.GetFrame())
 
     return out
 
