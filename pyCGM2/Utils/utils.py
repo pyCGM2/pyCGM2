@@ -99,7 +99,7 @@ def str(unicodeVariable):
     Returns:
         Encoded string in the specified encoding format of pyCGM2.
     """
-    return unicodeVariable.encode(pyCGM2.ENCODER)
+    return unicodeVariable.encode("latin-1")
 
 def checkSimilarElement(listData:List):
     """

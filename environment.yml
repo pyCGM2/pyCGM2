@@ -1,4 +1,4 @@
-name: pyCGM2-env310
+name: pyCGM310
 channels:
   - conda-forge
   - opensim-org
