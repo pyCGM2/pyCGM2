@@ -75,12 +75,8 @@ def get_install_path(pkg):
 
 
 def main_install_pyCGM2_NexusFiles():
-    #from pyCGM2.__version__ import __version__  # ou importe VERSION de manière cohérente
+    from pyCGM2.__version__ import __version__  # ou importe VERSION de manière cohérente
     
-    __version__="test"
-
-
-
     pyversion = f"{sys.version_info.major}.{sys.version_info.minor}"
     env_name = os.environ.get("CONDA_DEFAULT_ENV", os.path.basename(sys.prefix))
     conda_prefix = os.environ.get("CONDA_PREFIX", sys.prefix)
@@ -116,7 +112,7 @@ def main_install_pyCGM2_NexusFiles():
     }
     jinja2_template_string = open(template, 'rb').read()
     template = Template(jinja2_template_string.decode("utf-8"))
-    template.stream(data=data).dump(target_dir +"\\" +"pyCGM2-CGM23.Pipeline")
+    template.stream(data=data).dump(target_dir +"\\" + f"pyCGM2-{__version__}-py{pyversion}-{env_name}-CGM23.Pipeline")
 
     print(f"[pyCGM2] CGM23 vicon Pipeline generated : {script_path}")
 
