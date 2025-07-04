@@ -40,6 +40,8 @@ requirements:
     - sphinx-argparse
     - sphinxcontrib-mermaid
     - pydata-sphinx-theme
+    - jinja2
+    - onnxruntime
 
 test:
   imports:

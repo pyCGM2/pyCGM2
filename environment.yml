@@ -1,4 +1,4 @@
-name: pyCGM3
+name: pyCGM2-env310
 channels:
   - conda-forge
   - opensim-org
@@ -26,3 +26,4 @@ dependencies:
     - sphinxcontrib-mermaid
     - pydata-sphinx-theme
     - onnxruntime
+    - jinja2
