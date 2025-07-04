@@ -1,21 +1,20 @@
 # -*- coding: utf-8 -*-
 
-import warnings
-from pyCGM2.Report import normativeDatasets
-from pyCGM2.Lib import eventDetector
-from pyCGM2.Lib import report
-from pyCGM2.Tools import btkTools
-from pyCGM2 import enums
-from pyCGM2.QTM import qtmTools
-from pyCGM2.Utils import utils
-from pyCGM2.Utils import files
-from pyCGM2.Lib.CGM import cgm1
-import shutil
-import os
-from pyCGM2.Anomaly import anomalyFilters
-from pyCGM2.Anomaly import anomalyDetectionProcedures
 import argparse
+import os
+import shutil
+import warnings
+
 import pyCGM2
+from pyCGM2 import enums
+from pyCGM2.Anomaly import anomalyDetectionProcedures, anomalyFilters
+from pyCGM2.Lib import eventDetector, report
+from pyCGM2.Lib.CGM import cgm1
+from pyCGM2.QTM import qtmTools
+from pyCGM2.Report import normativeDatasets
+from pyCGM2.Tools import btkTools
+from pyCGM2.Utils import files, utils
+
 LOGGER = pyCGM2.LOGGER
 
 warnings.simplefilter(action='ignore', category=FutureWarning)
@@ -23,8 +22,7 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 
 def main(args=None):
 
-    LOGFILE = "pyCGM2-QTM-CGM2-Processing.log"
-    LOGGER.set_file_handler(LOGFILE)
+    
 
     if args is None:
         parser = argparse.ArgumentParser(description='QTM processing')
@@ -33,32 +31,30 @@ def main(args=None):
         args = parser.parse_args()
         sessionFilename = args.sessionFile
     else:
-        sessionFilename="session.xml"
+        sessionFilename = args.sessionFile
+        sessionFolder = args.session_path
     
     detectAnomaly = False
+    LOGFILE = sessionFolder /  "pyCGM2-QTM-CGM2-Processing.log"
+    LOGGER.set_file_handler(LOGFILE)
 
 
     LOGGER.logger.info("------------QTM - pyCGM2 CGM Processing---------------")
 
-    sessionXML = files.readXml(os.getcwd()+"\\", sessionFilename)
-    sessionDate = files.getFileCreationDate(os.getcwd()+"\\"+sessionFilename)
+    DATA_PATH = str(sessionFolder)+"\\"
+    sessionXML = files.readXml(DATA_PATH, sessionFilename)
     CGM2_Model = sessionXML.Subsession.CGM2_Model.text
-
 
     LOGGER.logger.info(f"----> {CGM2_Model} <------")
     LOGGER.logger.info(f"--------------------------")
 
-    checkEventsInMokka = bool(sessionXML.Subsession.Check_Events_In_Mokka.text)
-    createPDFReport = bool(sessionXML.Subsession.Create_PDF_report.text)
-    anomalyException = bool(sessionXML.Subsession.Anomaly_Exception.text)
+    # checkEventsInMokka = bool(sessionXML.Subsession.Check_Events_In_Mokka.text)
+    createPDFReport = args.pdf_report # bool(sessionXML.Subsession.Create_PDF_report.text)
+    # anomalyException = bool(sessionXML.Subsession.Anomaly_Exception.text)
 
 
     #---------------------------------------------------------------------------
-    #management of the Processed foldercd
-    DATA_PATH = os.getcwd()+"\\"
-
-    staticMeasurement = qtmTools.findStatic(sessionXML)
-    calibrateFilenameLabelled = qtmTools.getFilename(staticMeasurement)
+    # management of the Processed folder
 
     dynamicMeasurements = qtmTools.findDynamic(sessionXML)
     for dynamicMeasurement in dynamicMeasurements:
@@ -72,7 +68,7 @@ def main(args=None):
         rfs =  btkTools.smartGetEvents (acq,"Right Foot Strike","")
         rfo =  btkTools.smartGetEvents (acq,"Right Foot Off","")
 
-        acq.ClearEvents()
+        # acq.ClearEvents() # why clear????
 
         if lfs !=[]:
             for it in lfs:
@@ -120,8 +116,9 @@ def main(args=None):
                 report.pdfGaitReport(
                     DATA_PATH, modelledTrials, nds, pointSuffix, title=type)
                 LOGGER.logger.info("Generation of Gait report complete")
-            except:
+            except Exception as e:
                 LOGGER.logger.error("Generation of Gait report failed")
+                LOGGER.logger.error(e)
 
     LOGGER.logger.info(
         "-------------------------------------------------------")
@@ -131,7 +128,7 @@ def main(args=None):
     else:
         LOGGER.logger.info("workflow return with NO detected anomalies")
     
-    os.startfile( os.getcwd()+"\\"+LOGFILE)
+    # os.startfile( os.getcwd()+"\\"+LOGFILE)
 
 
 if __name__ == '__main__':

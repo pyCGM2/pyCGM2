@@ -1,33 +1,28 @@
 # -*- coding: utf-8 -*-
 
-import warnings
-from pyCGM2.Report import normativeDatasets
-from pyCGM2.Lib import eventDetector
-from pyCGM2.Lib import report
-from pyCGM2.Tools import btkTools
-from pyCGM2 import enums
-from pyCGM2.QTM import qtmTools
-from pyCGM2.Utils import utils
-from pyCGM2.Utils import files
-from pyCGM2.Lib.CGM import cgm1
-import shutil
-import os
-from pyCGM2.Anomaly import anomalyFilters
-from pyCGM2.Anomaly import anomalyDetectionProcedures
 import argparse
+import os
+import shutil
+import warnings
+
 import pyCGM2
+from pyCGM2 import enums
+from pyCGM2.Anomaly import anomalyDetectionProcedures, anomalyFilters
+from pyCGM2.Lib import eventDetector, report
+from pyCGM2.Lib.CGM import cgm1
+from pyCGM2.QTM import qtmTools
+from pyCGM2.Report import normativeDatasets
+from pyCGM2.Tools import btkTools
+from pyCGM2.Utils import files, utils
+
 LOGGER = pyCGM2.LOGGER
 
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
 
 
-
 def main(args=None):
 
-    LOGFILE = "pyCGM2-QTM-CGM2-Events.log"
-    LOGGER.setLevel("info")
-    LOGGER.set_file_handler(LOGFILE)
 
     if args is None:
         parser = argparse.ArgumentParser(description='QEvents')
@@ -36,29 +31,33 @@ def main(args=None):
         args = parser.parse_args()
         sessionFilename = args.sessionFile
     else:
-        sessionFilename="session.xml"
+        sessionFilename = args.sessionFile
+        sessionFolder = args.session_path
     
+    LOGFILE = sessionFolder / "pyCGM2-QTM-CGM2-Events.log"
+    LOGGER.setLevel("info")
+    LOGGER.set_file_handler(LOGFILE)
 
     detectAnomaly = False
+    qtmFilesWithEvents = args.qtm_files_with_events
 
 
     LOGGER.logger.info("------------QTM - pyCGM2 EVENTS---------------")
 
-    DATA_PATH = os.getcwd()+"\\"
+    DATA_PATH = str(sessionFolder) + "//"
 
 
     sessionXML = files.readXml(DATA_PATH, sessionFilename)
-    sessionDate = files.getFileCreationDate(DATA_PATH+sessionFilename)
-
-    checkEventsInMokka = bool(sessionXML.Subsession.Check_Events_In_Mokka.text)
-    createPDFReport = bool(sessionXML.Subsession.Create_PDF_report.text)
-    anomalyException = bool(sessionXML.Subsession.Anomaly_Exception.text)
-
+    
     dynamicMeasurements = qtmTools.findDynamic(sessionXML)
     for dynamicMeasurement in dynamicMeasurements:
         
         reconstructFilenameLabelled = qtmTools.getFilename(dynamicMeasurement)
         filenameNoExt = reconstructFilenameLabelled[:-4]
+
+        if filenameNoExt in qtmFilesWithEvents:
+            LOGGER.logger.info(f"Skipping {filenameNoExt} as it already has events")
+            continue
         
         LOGGER.logger.info(f"---File : {reconstructFilenameLabelled}----")
 
@@ -106,7 +105,8 @@ def main(args=None):
                    "LeftFootOff":[x / acq.GetPointFrequency() for x in lfo],
                    "RightFootStrike":[x / acq.GetPointFrequency() for x in rfs],
                    "RightFootOff":[x / acq.GetPointFrequency() for x in rfo]}
-
+            # also save to c3d
+            btkTools.smartWriter(acq, str(DATA_PATH + reconstructFilenameLabelled))
             files.saveJson( DATA_PATH, reconstructFilenameLabelled[:-4]+"-events.json", out)
             
             LOGGER.logger.warning (f"file [{filenameNoExt}]- Update your gait events in QTM and check them")     
@@ -146,7 +146,7 @@ def main(args=None):
         
         LOGGER.logger.info("[QTM GAIT EVENT---> OK ]- Command *CGM2 processing* can be executed")
 
-    os.startfile( os.getcwd()+"\\"+LOGFILE)
+    # os.startfile( os.getcwd()+"\\"+LOGFILE)
 
 
             

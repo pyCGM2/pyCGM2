@@ -1,21 +1,18 @@
 # -*- coding: utf-8 -*-
 
-import warnings
-from pyCGM2.Tools import btkTools
-from pyCGM2 import enums
-from pyCGM2.QTM import qtmTools
-from pyCGM2.Utils import utils
-from pyCGM2.Utils import files
-from pyCGM2.Lib.CGM import cgm1, cgm1_1
-from pyCGM2.Lib.CGM import cgm2_1
-from pyCGM2.Lib.CGM.musculoskeletal import cgm2_2,cgm2_3 
-from pyCGM2.Lib.CGM import  cgm2_4, cgm2_5
-from pyCGM2.Lib.CGM import  kneeCalibration
-import shutil
-import os
-
 import argparse
+import os
+import shutil
+import warnings
+
 import pyCGM2
+from pyCGM2 import enums
+from pyCGM2.Lib.CGM import cgm1, cgm1_1, cgm2_1, cgm2_4, cgm2_5, kneeCalibration
+from pyCGM2.Lib.CGM.musculoskeletal import cgm2_2, cgm2_3
+from pyCGM2.QTM import qtmTools
+from pyCGM2.Tools import btkTools
+from pyCGM2.Utils import files, utils
+
 LOGGER = pyCGM2.LOGGER
 
 warnings.simplefilter(action='ignore', category=FutureWarning)
@@ -25,10 +22,6 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 
 def main(args=None):
 
-    LOGFILE = "pyCGM2-QTM-CGM2-Modelling.log"
-    LOGGER.set_file_handler(LOGFILE)
-
-
     if args is None:
         parser = argparse.ArgumentParser(description='QTM CGM Modelling')
         parser.add_argument('--sessionFile', type=str,
@@ -36,8 +29,12 @@ def main(args=None):
         args = parser.parse_args()
         sessionFilename = args.sessionFile
     else:
-        sessionFilename="session.xml"
+        sessionFilename = args.sessionFile
+        sessionFolder = args.session_path
     
+    LOGFILE = sessionFolder / "pyCGM2-QTM-CGM2-Modelling.log"
+    LOGGER.set_file_handler(LOGFILE)
+
     if args.debug:
         LOGGER.setLevel("debug")
 
@@ -47,22 +44,18 @@ def main(args=None):
 
     LOGGER.logger.info("------------QTM - pyCGM2 Modelling---------------")
 
-    sessionXML = files.readXml(os.getcwd()+"\\", sessionFilename)
-    sessionDate = files.getFileCreationDate(os.getcwd()+"\\"+sessionFilename)
+    
+    #---------------------------------------------------------------------------
+    DATA_PATH = str(sessionFolder)+"\\"
+    sessionXML = files.readXml(DATA_PATH, sessionFilename)
     CGM2_Model = sessionXML.Subsession.CGM2_Model.text
-
+    if "CGM2.6" in CGM2_Model:
+        CGM2_Model = "CGM2.6-Knee Calibration" # change name to the expected one here
 
     LOGGER.logger.info(f"----> {CGM2_Model} <------")
     LOGGER.logger.info(f"--------------------------")
 
-
-
-    checkEventsInMokka = bool(sessionXML.Subsession.Check_Events_In_Mokka.text)
-    createPDFReport = bool(sessionXML.Subsession.Create_PDF_report.text)
-    anomalyException = bool(sessionXML.Subsession.Anomaly_Exception.text)
-
-    #---------------------------------------------------------------------------
-    DATA_PATH = os.getcwd()+"\\"
+    anomalyException = False # bool(sessionXML.Subsession.Anomaly_Exception.text)
 
     staticMeasurement = qtmTools.findStatic(sessionXML)
     calibrateFilenameLabelled = qtmTools.getFilename(staticMeasurement)
@@ -261,12 +254,13 @@ def main(args=None):
 
         LOGGER.logger.info("--------------------------Knee Calibration ----------------------------------")
 
-        if leftKneeFuncMeasurement is not None:
-            shutil.copyfile(os.getcwd()+"\\"+qtmTools.getFilename(leftKneeFuncMeasurement),
-                            DATA_PATH+qtmTools.getFilename(leftKneeFuncMeasurement))
-        if rightKneeFuncMeasurement is not None:
-            shutil.copyfile(os.getcwd()+"\\"+qtmTools.getFilename(rightKneeFuncMeasurement),
-                            DATA_PATH+qtmTools.getFilename(rightKneeFuncMeasurement))
+        # if os.getcwd() + "\\" != DATA_PATH: # since cwd and data path are not related anymore, this is obsolete
+        #     if leftKneeFuncMeasurement is not None:
+        #         shutil.copyfile(os.getcwd()+"\\"+qtmTools.getFilename(leftKneeFuncMeasurement),
+        #                         DATA_PATH+qtmTools.getFilename(leftKneeFuncMeasurement))
+        #     if rightKneeFuncMeasurement is not None:
+        #         shutil.copyfile(os.getcwd()+"\\"+qtmTools.getFilename(rightKneeFuncMeasurement),
+        #                         DATA_PATH+qtmTools.getFilename(rightKneeFuncMeasurement))
 
         if leftKneeFuncMeasurement is not None:
             reconstructFilenameLabelled = qtmTools.getFilename(leftKneeFuncMeasurement)
@@ -524,7 +518,7 @@ def main(args=None):
     else:
         LOGGER.logger.info("workflow return with no detected anomalies")
 
-    os.startfile( os.getcwd()+"\\"+ LOGFILE)
+    # os.startfile( os.getcwd()+"\\"+ LOGFILE)
 
 
 if __name__ == '__main__':
