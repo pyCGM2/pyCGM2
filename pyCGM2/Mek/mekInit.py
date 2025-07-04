@@ -3,22 +3,30 @@ import pyCGM2
 LOGGER = pyCGM2.LOGGER
 from pyCGM2.Tools import btkTools
 
-MOVECKPATH = "C:\\Users\\fleboeuf\\Documents\\2. AREA OF RESPONSABILITY\\Programmation\\moveck\\"
-sys.path.append(MOVECKPATH+"Moveck_pipe-2024.1.0-win64-pipeline_install\\packages")
-import moveck
+import pyCGM2
 
-class mekInitStorageFilter(object):
-    """
+# Import optionnel de moveck
+try:
+    import moveck
+    MOVECK_AVAILABLE = True
+except ImportError:
+    MOVECK_AVAILABLE = False
+    moveck = None  # pour éviter un NameError plus tard
+    LOGGER.warning("moveck pipe is not installed")
 
-    """
+if MOVECK_AVAILABLE:
+    class mekInitStorageFilter(object):
+        """
 
-    def __init__(self):
-        self.ds = moveck.data_store()
+        """
+
+        def __init__(self):
+            self.ds = moveck.data_store()
+            
+            
+
+        def createGroup(self, group):
+            self.ds.root().create_group(group)
         
-        
-
-    def createGroup(self, group):
-        self.ds.root().create_group(group)
-    
-    def getStorage(self):
-        return self.ds
+        def getStorage(self):
+            return self.ds
