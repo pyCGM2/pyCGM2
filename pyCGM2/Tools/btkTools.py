@@ -804,6 +804,7 @@ def isAnalogExist(acq:btk.btkAcquisition, label:str):
         bool: True if the analog label exists, False otherwise.
     """
     #TODO : replace by btkIterate
+    flag = False
     i = acq.GetAnalogs().Begin()
     while i != acq.GetAnalogs().End():
         if i.value().GetLabel() == label:
