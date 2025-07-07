@@ -44,7 +44,7 @@ def find_latest_nexus_sdk():
 
 def install_vicon_packages(sdk_path):
 
-    print(f"[pyCGM2] Détection of Vicon SDK : {sdk_path}")
+    print(f"[pyCGM2] Detection of the Vicon SDK : {sdk_path}")
 
     packages = ["viconnexusapi", "viconnexusutils"]
     for pkg in packages:
@@ -52,9 +52,9 @@ def install_vicon_packages(sdk_path):
         if wheel.exists():
             print(f"[pyCGM2]  package install : {pkg}")
             try:
-                subprocess.check_call([sys.executable, "-m", "pip", "install -e", str(wheel)])
+                subprocess.check_call([sys.executable, "-m", "pip", "install", "-e", str(wheel)])
             except subprocess.CalledProcessError:
-                print(f"[pyCGM2] ERREUR : 'install of {pkg} failed. please run from a terminal in administrator mode ")
+                print(f"[pyCGM2] ERROR : 'install of {pkg} failed. please run from a terminal in administrator mode ")
         else:
             print(f"[pyCGM2] Package {pkg} not found in  {sdk_path}")
 
@@ -75,8 +75,8 @@ def get_install_path(pkg):
 
 
 def main_install_pyCGM2_NexusFiles():
-    from pyCGM2.__version__ import __version__  # ou importe VERSION de manière cohérente
     
+    __version__ = pyCGM2.__version__
     pyversion = f"{sys.version_info.major}.{sys.version_info.minor}"
     env_name = os.environ.get("CONDA_DEFAULT_ENV", os.path.basename(sys.prefix))
     conda_prefix = os.environ.get("CONDA_PREFIX", sys.prefix)
@@ -89,6 +89,8 @@ def main_install_pyCGM2_NexusFiles():
     appdata_path = os.environ.get("APPDATA")
     target_dir = os.path.join(appdata_path, "pyCGM2")
     os.makedirs(target_dir, exist_ok=True)
+
+    nexus_pipeline_folder = os.environ.get("PUBLIC") + r"\Documents\Vicon\Nexus2.x\Configurations\Pipelines"
 
     filename = f"pyCGM2-{__version__}-py{pyversion}-{env_name}-NEXUS_activate.bat"
     script_path = os.path.join(target_dir, filename)
@@ -107,16 +109,15 @@ def main_install_pyCGM2_NexusFiles():
     template = path+"\\vicon\\pipeline template\\pyCGM2-CGM23-Pipeline.tpl"
     data = {
         "path": path,
-        "commands_path": path+"\\Apps\\Commands\\rullThemAllCommands.py",
+        "commands_path": path+"\\pyCGM2\\Apps\\Commands\\rullThemAllCommands.py",
         "activate_path": script_path
     }
     jinja2_template_string = open(template, 'rb').read()
     template = Template(jinja2_template_string.decode("utf-8"))
-    template.stream(data=data).dump(target_dir +"\\" + f"pyCGM2-{__version__}-py{pyversion}-{env_name}-CGM23.Pipeline")
+    template.stream(data=data).dump(nexus_pipeline_folder +"\\" + f"pyCGM2-{env_name}-CGM23.Pipeline")
 
-    print(f"[pyCGM2] CGM23 vicon Pipeline generated : {script_path}")
-
-
+    print(f"[pyCGM2] CGM23 vicon Pipeline generated : {nexus_pipeline_folder}")
 
 
-main_installViconPackages()
+
+main_install_pyCGM2_NexusFiles()

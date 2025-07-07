@@ -6,7 +6,7 @@ from . import log
 import yaml
 import yamlordereddictloader
 
-__version__= "4.4rc2"
+__version__= "4.4rc1"
 
 
 LOGGER = log.pyCGM2_Logger(__name__)
