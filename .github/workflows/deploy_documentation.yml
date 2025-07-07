@@ -22,18 +22,11 @@ jobs:
           environment-file: environment.yml
           auto-activate-base: false
 
-      - name: Create Conda environment
-        shell: cmd
-        run: |
-          conda env remove --name pycgm310 --yes || echo "env does not exist"
-          conda env create --file environment.yml --name pycgm310
-
-      - name: Build documentation with script
+      - name: Build documentation
         shell: cmd
         run: |
           conda run -n pycgm310 sphinx-build -b html docs docs/_build/html
 
-      
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
