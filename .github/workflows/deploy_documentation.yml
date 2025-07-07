@@ -28,11 +28,10 @@ jobs:
           conda env remove --name pycgm310 --yes || echo "env does not exist"
           conda env create --file environment.yml --name pycgm310
 
-      - name: Activate Conda and build docs
+      - name: Build documentation with script
         shell: cmd
         run: |
-          call activate pycgm310
-          sphinx-build -b html docs/ docs/_build/html
+          conda run -n pycgm310 sphinx-build -b html docs docs/_build/html
 
       
       - name: Deploy to GitHub Pages
