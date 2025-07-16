@@ -1863,3 +1863,41 @@ def barycentricPoint(acq:btk.btkAcquisition,label:str, targetPointLabels:List[st
     
     values = values /len(targetPointLabels)
     smartAppendPoint(acq,label,values,desc=desc)
+
+def alignExternalData(acq, valuesToIncorporate, triggerFrame, type="Point"):
+    """
+    Aligns external data (e.g., ultrasound or analog signals) to a BTK acquisition based on a trigger frame.
+
+    Args:
+        acq (btk.btkAcquisition): The target BTK acquisition.
+        valuesToIncorporate (np.ndarray): Array of external data to align (n_frames, n_columns).
+        triggerFrame (int): The frame (or sample) in the acquisition where alignment should start.
+        type (str, optional): Alignment type, "Point" (default) for point data (video frequency) or "Analog" for analog signals (high frequency).
+
+    Returns:
+        np.ndarray: Array of the aligned external data, matching the length of the acquisition (in frames or analog samples).
+    """
+
+    ff = acq.GetFirstFrame()
+    lf = acq.GetLastFrame()
+
+    napf = acq.GetNumberAnalogSamplePerFrame()   
+    lastExternalFrame = triggerFrame + valuesToIncorporate.shape[0]
+
+
+    lastFrame  = lf*napf if type=="Analog" else lf
+
+    alignedData = np.zeros((lastFrame,valuesToIncorporate.shape[1]))
+
+    if lastExternalFrame < lastFrame:
+        alignedData[int(triggerFrame): int(lastExternalFrame),:] =  valuesToIncorporate
+    else:
+        alignedData[int(triggerFrame):,:] =  valuesToIncorporate[0:int(lastFrame-triggerFrame)]
+
+
+    alignedData = alignedData[(ff-1)*napf:,:] if type=="Analog" else alignedData[ff-1:,:]
+
+
+    return alignedData
+
+
