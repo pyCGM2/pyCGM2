@@ -77,8 +77,16 @@ class mekNormalizeFilter(object):
                     eventGr = extractGrp.retrieve_group(f"{key}/{filename}/events")  
 
                     for target in targets:
-                        variableName = target.split(":")[0]
-                        eventContext = target.split(":")[1]
+                        if "=" in target:
+                            targetName = target.split("=")[0].split(":")[0]
+                            eventContext = target.split("=")[0].split(":")[1]
+                            variableName = target.split("=")[1]
+                        else:
+                            targetName = target.split(":")[0]
+                            eventContext = target.split(":")[1]
+                            variableName = targetName 
+
+                        
                         set_name = f"{key}/{filename}/{variableName}"
                         if extractGrp.exists_set(set_name):
                             data = extractGrp.retrieve_set(set_name)

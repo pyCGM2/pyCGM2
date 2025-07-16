@@ -2,26 +2,41 @@ rows: 6
 cols: 3
 
 plots:
-  - title: Graphique A
-    data : LAnkleAngles.0
-    position: [0, 0]   # ligne 0, colonne 0
+  - title: Pelvis Tilt
+    position: [0, 0]
     ylabel: Amplitude
     ylim: [0, 100]
+    curves:
+      - data: LPelvisAngles.0
+        label: "Gauche"
+        color: red
+      - data: RPelvisAngles.0
+        label: "Droite"
+        color: blue
 
   - title: Graphique B
-    data : LAnkleAngles.0
-    position: [0, 1]   # ligne 0, colonne 1
+    position: [0, 1]
     ylabel: Force
     ylim: [-50, 50]
+    curves:
+      - data: LAnkleAngles.0
+        label: "Gauche"
+        color: green
 
   - title: Graphique C
-    data : LAnkleAngles.0
-    position: [1, 0]   # ligne 1, colonne 0
+    position: [1, 0]
     ylabel: Angle
     ylim: [0, 180]
+    curves:
+      - data: LAnkleAngles.0
+        label: "Gauche"
+        color: black
 
   - title: Graphique D
-    data : LAnkleAngles.0
-    position: [1, 1]   # ligne 1, colonne 1
+    position: [1, 1]
     ylabel: Vitesse
     ylim: [-10, 10]
+    curves:
+      - data: LAnkleAngles.0
+        label: "Gauche"
+        color: purple

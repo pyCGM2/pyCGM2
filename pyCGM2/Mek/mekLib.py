@@ -45,18 +45,34 @@ def plot(rootGroup, layoutPathFile):
 
     for i, plot_cfg in enumerate(config['plots']):
         row, col = plot_cfg['position']
-        ax = axes[row][col] if rows > 1 and cols > 1 else axes[max(row, col)]
+        if rows == 1 and cols == 1:
+            ax = axes
+        elif rows == 1 or cols == 1:
+            ax = axes[max(row, col)]
+        else:
+            ax = axes[row][col]
 
-        label = plot_cfg["data"].split(".")[0]
-        axis = int(plot_cfg["data"].split(".")[1])
-        values = gather(rootGroup,label)
-        data = values[:, :, axis].mean(axis=0) 
+        for curve in plot_cfg.get('curves', []):
+            label_data = curve['data']
+            label, axis_str = label_data.split(".")
+            axis = int(axis_str)
+            color = curve.get('color')
+            legend_label = curve.get('label')
 
+            values = gather(rootGroup, label)
+            data = values[:, :, axis].mean(axis=0)
 
-        ax.plot(data)
+            ax.plot(data, label=legend_label, color=color)
+        
         ax.set_title(plot_cfg['title'],size=8)
         ax.set_ylabel(plot_cfg['ylabel'],size=8)
         ax.set_ylim(plot_cfg['ylim'])
+        ax.legend(fontsize=6, loc="upper right")
+
 
     plt.tight_layout()
     plt.show()
+
+
+
+

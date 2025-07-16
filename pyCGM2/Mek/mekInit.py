@@ -20,11 +20,12 @@ if MOVECK_AVAILABLE:
 
         """
 
-        def __init__(self):
-            self.ds = moveck.data_store()
+        def __init__(self, storagePathFile = None):
+            if storagePathFile is None:
+                self.ds = moveck.data_store()
+            else:
+                self.ds = moveck.data_store(storagePathFile)
             
-            
-
         def createGroup(self, group):
             self.ds.root().create_group(group)
         

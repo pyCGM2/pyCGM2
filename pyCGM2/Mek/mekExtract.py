@@ -52,24 +52,32 @@ class mekExtractFilter(object):
 
 
                     for target in targets:
-                        variableName = target.split(":")[0]
-                        group_name = f"{key}/{filename}/{variableName}"
-
+                        if "=" in target:
+                            targetName = target.split("=")[0].split(":")[0]
+                            variableName = target.split("=")[1]
+                        else:
+                            targetName = target.split(":")[0]
+                            variableName = targetName
+                        
+                        
+                        
 
                         values = None
                         frequency = None
 
                         try:
-                            values = acq.GetPoint(variableName).GetValues()
+                            values = acq.GetPoint(targetName).GetValues()
                             frequency = acq.GetPointFrequency()
                         except RuntimeError:
                             try:
-                                values = acq.GetAnalog(variableName).GetValues()
+                                values = acq.GetAnalog(targetName).GetValues()
                                 frequency = acq.GetAnalogFrequency()
                             except RuntimeError:
-                                LOGGER.logger.warning(f"[pyCGM2] - {variableName} not detected in {filename}")
+                                LOGGER.logger.warning(f"[pyCGM2] - {targetName} not detected in {filename}")
 
                         if values is not None:
-                            extractGrp.create_set(group_name, values)
-                            extractGrp.retrieve_set(group_name).create_attribute("StartTime", acq.GetFirstFrame() / acq.GetPointFrequency())
-                            extractGrp.retrieve_set(group_name).create_attribute("SampleRate", frequency )
+                            groupSet_name = f"{key}/{filename}/{variableName}"
+                            LOGGER.logger.info(f"[pyCGM2] - Extracting {groupSet_name}")
+                            extractGrp.create_set(groupSet_name, values)
+                            extractGrp.retrieve_set(groupSet_name).create_attribute("StartTime", acq.GetFirstFrame() / acq.GetPointFrequency())
+                            extractGrp.retrieve_set(groupSet_name).create_attribute("SampleRate", frequency )
