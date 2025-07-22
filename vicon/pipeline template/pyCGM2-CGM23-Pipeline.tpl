@@ -292,7 +292,7 @@
 
   <Entry DisplayName="pyCGM2-Intell-Events" Enabled="0" OperationId="110" OperationName="Python">
     <ParamList name="" version="1">
-      <Param name="Script" value="{{ data.path }}pyCGM2\Apps\ViconApps\Events\intelleventDetector.py"/>
+      <Param name="Script" value="{{ data.path }}\\pyCGM2\Apps\ViconApps\Events\intelleventDetector.py"/>
       <Param name="ScriptArgs" value=""/>
       <Param name="PythonCommand" value="python.exe"/>
       <Param name="PythonPreScript" value="{{ data.activate_path }}"/>
