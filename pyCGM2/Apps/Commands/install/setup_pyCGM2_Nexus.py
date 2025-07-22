@@ -118,6 +118,8 @@ def main_install_pyCGM2_NexusFiles():
 
     print(f"[pyCGM2] CGM23 vicon Pipeline generated : {nexus_pipeline_folder}")
 
-
-
-main_install_pyCGM2_NexusFiles()
+if __name__ == "__main__":
+    main_installViconPackages()
+    main_install_pyCGM2_NexusFiles()
+    print("[pyCGM2] Installation of Nexus files completed successfully.")
+    print("[pyCGM2] Please restart Vicon Nexus to apply the changes.")
