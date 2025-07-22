@@ -1,19 +1,31 @@
+Global:
+    {%- if data["ModelVersion"] == "CGM1.1" %} 
+    ModelVersion: CGM1.1
+    {% elif data["ModelVersion"] == "CGM2.1" %} 
+    ModelVersion: CGM2.1
+    {% elif data["ModelVersion"] == "CGM2.2" %} 
+    ModelVersion: CGM2.2
+    {% elif data["ModelVersion"] == "CGM2.3" %} 
+    ModelVersion: CGM2.3
+    {% elif data["ModelVersion"] == "CGM2.4" %} 
+    ModelVersion: CGM2.4
+    {% elif data["ModelVersion"] == "CGM2.5" %} 
+    ModelVersion: CGM2.5
+    {%- else %} 
+    ModelVersion: CGM1.0
+    {%- endif %}
+    MarkerDiameter: 14
+    PointSuffix:
+    {%- if data["ModelVersion"] != "CGM1.0" %}
+    Moment Projection: JSC #[string](choice: Proximal, Global, Distal)
+    {%- else %}
+    Moment Projection: Distal #[string](choice: Proximal, Global, Distal)
+    {%- endif %}
+    {%- if data["ModelVersion"] in ["CGM2.2", "CGM2.3", "CGM2.4","CGM2.5"] %}
+    EnableIK: 1
+    IkAccuracy: 1e-8
+    {%- endif %}
 
-{%- if data["ModelVersion"] == "CGM1.1" %} 
-ModelVersion: CGM1.1
-{% elif data["ModelVersion"] == "CGM2.1" %} 
-ModelVersion: CGM2.1
-{% elif data["ModelVersion"] == "CGM2.2" %} 
-ModelVersion: CGM2.2
-{% elif data["ModelVersion"] == "CGM2.3" %} 
-ModelVersion: CGM2.3
-{% elif data["ModelVersion"] == "CGM2.4" %} 
-ModelVersion: CGM2.4
-{% elif data["ModelVersion"] == "CGM2.5" %} 
-ModelVersion: CGM2.5
-{%- else %} 
-ModelVersion: CGM1.0
-{%- endif %}
 
 
 #-------------------------------------------------------------------------------
@@ -22,6 +34,7 @@ SubjectInfo:
   Name:
   FirstName:
   Dob:
+  InjuredLeg:
 
 #-------------------------------------------------------------------------------
 VisitInfo:
@@ -69,18 +82,6 @@ MP:
         RightKneeFuncCalibrationOffset: 0
 
 
-Global:
-    MarkerDiameter: 14
-    PointSuffix:
-    {%- if data["ModelVersion"] != "CGM1.0" %}
-    Moment Projection: JSC #[string](choice: Proximal, Global, Distal)
-    {%- else %}
-    Moment Projection: Distal #[string](choice: Proximal, Global, Distal)
-    {%- endif %}
-    {%- if data["ModelVersion"] in ["CGM2.2", "CGM2.3", "CGM2.4","CGM2.5"] %}
-    EnableIK: 1
-    IkAccuracy: 1e-8
-    {%- endif %}
 
 Calibration:
   {%- if data.Calibration %}
