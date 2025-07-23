@@ -553,6 +553,8 @@ class MainParser:
                         help='systenatic foot off offset on both side')
         
         parser_oconnor = event_subparsers.add_parser('Oconnor', help='Oconnor kinematic-based event detection')
+        parser_Intellevent = event_subparsers.add_parser('Intellevent', help='Intellevent Deep learning kinematic-based event detection')
+
 
 
         # gapFill--------------
