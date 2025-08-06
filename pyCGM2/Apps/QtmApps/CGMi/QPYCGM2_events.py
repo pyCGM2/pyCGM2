@@ -77,8 +77,10 @@ def main(args=None):
         qlfo =  btkTools.smartGetEvents (acq,"Left Foot Off","")
         qrfs =  btkTools.smartGetEvents (acq,"Right Foot Strike","")
         qrfo =  btkTools.smartGetEvents (acq,"Right Foot Off","")
-
-
+        
+        # Extract General FP events if present
+        glfp = btkTools.smartGetEvents (acq,"Left-FP","General")
+        grfp = btkTools.smartGetEvents (acq,"Right-FP","General")
 
         if not all([qlfs, qlfo, qrfs, qrfo]):
             detectAnomaly = True
@@ -88,11 +90,19 @@ def main(args=None):
             acq, zeniState = eventDetector.zeni(acq,
                                                  fc_lowPass_marker=fc_marker,
                                                  order_lowPass_marker=order_marker)
+            
+            # Append General FP events if present (eventDetector.zeni clears all events)
+            if glfp !=[]:
+                for it in glfp:
+                    btkTools.smartCreateEvent(acq, "Left-FP", "General", it, type="Automatic", subject="", desc="", id=0)
+            if grfp !=[]:
+                for it in grfp:
+                    btkTools.smartCreateEvent(acq, "Right-FP", "General", it, type="Automatic", subject="", desc="", id=0)
+
             lfs =  btkTools.smartGetEvents (acq,"Foot Strike","Left")
             lfo =  btkTools.smartGetEvents (acq,"Foot Off","Left")
             rfs =  btkTools.smartGetEvents (acq,"Foot Strike","Right")
             rfo =  btkTools.smartGetEvents (acq,"Foot Off","Right")
-
 
             # checking
             geap = anomalyDetectionProcedures.GaitEventAnomalyProcedure()
