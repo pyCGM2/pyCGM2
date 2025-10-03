@@ -54,7 +54,7 @@ def map(args):
     if eclipse.getCurrentMarkedNodes() is not None:
         LOGGER.logger.info("[pyCGM2] - Script worked with marked node of Vicon Eclipse")
         # --- acquisition file and path----
-        DATA_PATH, modelledFilenames =eclipse.getCurrentMarkedNodes()
+        markedNodes = eclipse.getCurrentMarkedNodes()
         ECLIPSE_MODE = True
 
     if not ECLIPSE_MODE:
@@ -67,12 +67,14 @@ def map(args):
         LOGGER.logger.info( "file: "+ modelledFilename)
 
 
-    # ----- Subject -----
-    # need subject to find input files
-    subject = nexusTools.getActiveSubject(NEXUS)
-    LOGGER.logger.info(  "Subject name : " + subject  )
+
 
     if not ECLIPSE_MODE:
+        # ----- Subject -----
+        # need subject to find input files
+        subject = nexusTools.getActiveSubject(NEXUS)
+        LOGGER.logger.info(  "Subject name : " + subject  )
+
         # btkAcq builder
         nacf = nexusFilters.NexusConstructAcquisitionFilter(NEXUS,DATA_PATH,modelledFilenameNoExt,subject)
         acq = nacf.build()
@@ -89,12 +91,26 @@ def map(args):
 
         outputName = modelledFilename
     else:
+        modelledFilenames = []
+        paths=[]
+        count=0
+        for node in markedNodes:
+            modelledFilenames.append(node[1].replace(".Trial.enf", ".c3d"))
+            if count ==0: 
+                DATA_PATH=node[0]
+            else:
+                if node[0] != DATA_PATH:
+                    raise  Exception("marked nodes must be from the same folder")
+
+
         analysisInstance = analysis.makeAnalysis(DATA_PATH,
-                            type="Gait",
+                            modelledFilenames,
+                            eventType="Gait",
                             kineticLabelsDict = None,
                             emgChannels = None,
                             pointLabelSuffix=pointSuffix,
                             subjectInfo=None, experimentalInfo=None,modelInfo=None)
+
 
         outputName = "Eclipse-MAP"
 

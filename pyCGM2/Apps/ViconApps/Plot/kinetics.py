@@ -100,7 +100,7 @@ def normalized(args):
     if eclipse.getCurrentMarkedNodes() is not None:
         LOGGER.logger.info("[pyCGM2] - Script worked with marked node of Vicon Eclipse")
         # --- acquisition file and path----
-        DATA_PATH, modelledFilenames =eclipse.getCurrentMarkedNodes()
+        markedNodes = eclipse.getCurrentMarkedNodes()
         ECLIPSE_MODE = True
 
     if not ECLIPSE_MODE:
@@ -112,13 +112,11 @@ def normalized(args):
         LOGGER.logger.info( "data Path: "+ DATA_PATH )
         LOGGER.logger.info( "file: "+ modelledFilename)
 
-    # subjects = NEXUS.GetSubjectNames()
-    subject = nexusTools.getActiveSubject(NEXUS)
-    LOGGER.logger.info(  "Subject name : " + subject  )
 
 
     if not ECLIPSE_MODE:
-        # btkAcq builder
+        subject = nexusTools.getActiveSubject(NEXUS)
+        LOGGER.logger.info(  "Subject name : " + subject  )
         
         nacf = nexusFilters.NexusConstructAcquisitionFilter(NEXUS,DATA_PATH,modelledFilenameNoExt,subject)
         acq = nacf.build()
@@ -146,7 +144,19 @@ def normalized(args):
                             subjectInfo=None, experimentalInfo=None,modelInfo=None)
 
     else:
-        # --------------------------PROCESSING --------------------------------
+
+        
+        modelledFilenames = []
+        paths=[]
+        count=0
+        for node in markedNodes:
+            modelledFilenames.append(node[1].replace(".Trial.enf", ".c3d"))
+            if count ==0: 
+                DATA_PATH=node[0]
+            else:
+                if node[0] != DATA_PATH:
+                    raise  Exception("marked nodes must be from the same folder")
+                
 
         analysisInstance = analysis.makeAnalysis(DATA_PATH,
                             modelledFilenames,
@@ -172,8 +182,6 @@ def normalizedComparison(args):
 
     try:
         from viconnexusapi import ViconNexus
-        from pyCGM2.Nexus import nexusFilters
-        from pyCGM2.Nexus import nexusUtils
         from pyCGM2.Nexus import nexusTools
         from pyCGM2.Nexus import eclipse
         NEXUS = ViconNexus.ViconNexus()
@@ -182,7 +190,6 @@ def normalizedComparison(args):
         LOGGER.logger.error("Vicon nexus not connected")
         NEXUS_PYTHON_CONNECTED = False
 
-    ECLIPSE_MODE = False
 
     if not NEXUS_PYTHON_CONNECTED:
         return 0
@@ -192,16 +199,11 @@ def normalizedComparison(args):
     if eclipse.getCurrentMarkedNodes() is None:
         raise Exception("No nodes marked")
     else:
+        DATA_PATH, calibrateFilenameLabelledNoExt = nexusTools.getTrialName(NEXUS) 
         LOGGER.logger.info("[pyCGM2] - Script worked with marked node of Vicon Eclipse")
-        DATA_PATH = os.getcwd()+"\\"
-        # --- acquisition file and path----
-        DATA_PATHS, modelledFilenames =eclipse.getCurrentMarkedNodes()
-        ECLIPSE_MODE = True
-        if len(modelledFilenames)== 1:   raise Exception("Only one node marked")
+        markedNodes =eclipse.getCurrentMarkedNodes()
+        if len(markedNodes)== 1:   raise Exception("Only one node marked")
 
-
-    subject = nexusTools.getActiveSubject(NEXUS)
-    LOGGER.logger.info(  "Subject name : " + subject  )
 
     #-----------------------SETTINGS---------------------------------------
     normativeData = {"Author" : args.normativeData, "Modality" : args.normativeDataModality}
@@ -217,47 +219,30 @@ def normalizedComparison(args):
 
     pointSuffix = args.pointSuffix
 
-    if  ECLIPSE_MODE:
-
-        if isinstance(DATA_PATHS,list):
-            path0 =DATA_PATHS[0]
-            path1 =DATA_PATHS[1]
-        if isinstance(DATA_PATHS,str):
-            path0 = DATA_PATHS
-            path1 =DATA_PATHS
-
-
-        if len(modelledFilenames) == 2:
-
-            analysisInstance1 = analysis.makeAnalysis(path0,
-                                [modelledFilenames[0]],
+    analysisInstances=[]
+    legends =[]
+    comparisonDetails =  "Kinetic comparison plots"
+    for node in markedNodes:
+        filename = node[1].replace(".Trial.enf", ".c3d")
+        analysisInstances.append( analysis.makeAnalysis(node[0],
+                                [filename],
                                 eventType="Gait",
                                 kinematicLabelsDict=None,
                                 emgChannels = None,
                                 pointLabelSuffix=pointSuffix,
-                                subjectInfo=None, experimentalInfo=None,modelInfo=None,
+                                subjectInfo=None, experimentalInfo=None,modelInfo=None)
                                 )
-
-            analysisInstance2  = analysis.makeAnalysis(path1,
-                                [modelledFilenames[1]],
-                                eventType="Gait",
-                                kinematicLabelsDict=None,
-                                emgChannels = None,
-                                pointLabelSuffix=pointSuffix,
-                                subjectInfo=None, experimentalInfo=None,modelInfo=None,
-                                )
-
-            # outputName = "Eclipse - CompareNormalizedKinematics"
-        #
-        analysesToCompare = [analysisInstance1, analysisInstance2]
-        comparisonDetails =  modelledFilenames[0] + " Vs " + modelledFilenames[1]
-        legends =[modelledFilenames[0],modelledFilenames[1]]
-
-
-        plot.compareKinetic(DATA_PATH,analysesToCompare,legends,"Left","LowerLimb",nds,plotType=plotType,eventType="Gait",pointSuffixes=None,
+        
+        legends.append(filename)
+    
+    plot.compareKinetic(DATA_PATH,analysisInstances,legends,"Left","LowerLimb",nds,plotType=plotType,eventType="Gait",pointSuffixes=None,
                 show=False, outputName=comparisonDetails,exportPdf=True)
 
-        plot.compareKinetic(DATA_PATH,analysesToCompare,legends,"Right","LowerLimb",nds,plotType=plotType,eventType="Gait",pointSuffixes=None,
-                show=False, outputName=comparisonDetails,exportPdf=True)
+    plot.compareKinetic(DATA_PATH,analysisInstances,legends,"Right","LowerLimb",nds,plotType=plotType,eventType="Gait",pointSuffixes=None,
+            show=False, outputName=comparisonDetails,exportPdf=True)
 
-        plt.show()
+    plt.show()
+
+
+
+    

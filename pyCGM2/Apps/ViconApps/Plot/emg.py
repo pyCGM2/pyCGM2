@@ -1,7 +1,7 @@
 import os
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 import argparse
-
+import matplotlib.pyplot as plt
 import pyCGM2
 
 from pyCGM2.Lib import plot
@@ -91,7 +91,7 @@ def normalized(args):
     if eclipse.getCurrentMarkedNodes() is not None:
         LOGGER.logger.info("[pyCGM2] - Script worked with marked node of Vicon Eclipse")
         # --- acquisition file and path----
-        DATA_PATH, inputFiles =eclipse.getCurrentMarkedNodes()
+        markedNodes = eclipse.getCurrentMarkedNodes()
         ECLIPSE_MODE = True
 
     if not ECLIPSE_MODE:
@@ -127,6 +127,7 @@ def normalized(args):
     if not ECLIPSE_MODE:
         # --------------------------SUBJECT ------------------------------------
         subject = nexusTools.getActiveSubject(NEXUS)
+        LOGGER.logger.info(  "Subject name : " + subject  )
 
         # btkAcq builder
         nacf = nexusFilters.NexusConstructAcquisitionFilter(NEXUS,DATA_PATH,inputFileNoExt,subject)
@@ -154,12 +155,22 @@ def normalized(args):
         outputName = inputFile
     else:
 
+        inputFiles = []
+        count=0
+        for node in markedNodes:
+            inputFiles.append(node[1].replace(".Trial.enf", ".c3d"))
+            if count ==0: 
+                DATA_PATH=node[0]
+            else:
+                if node[0] != DATA_PATH:
+                    raise  Exception("marked nodes must be from the same folder")
+
         emg.processEMG(DATA_PATH, inputFiles, emgChannels,
             highPassFrequencies=bandPassFilterFrequencies,
             envelopFrequency=envelopCutOffFrequency)
 
         emgAnalysis = analysis.makeAnalysis(DATA_PATH,
-                            [inputFile],
+                            inputFiles,
                             eventType=eventType,
                             kinematicLabelsDict=None,
                             kineticLabelsDict=None,
@@ -179,35 +190,35 @@ def normalized(args):
 
 def normalizedComparison(args):
 
+    plt.close("all")
+
     try:
         from viconnexusapi import ViconNexus
-        from pyCGM2.Nexus import nexusFilters
-        from pyCGM2.Nexus import nexusUtils
-        from pyCGM2.Nexus import nexusTools    
+        from pyCGM2.Nexus import nexusTools
+        from pyCGM2.Nexus import eclipse
         NEXUS = ViconNexus.ViconNexus()
         NEXUS_PYTHON_CONNECTED = NEXUS.Client.IsConnected()
     except:
         LOGGER.logger.error("Vicon nexus not connected")
         NEXUS_PYTHON_CONNECTED = False
 
-    ECLIPSE_MODE = False
     if not NEXUS_PYTHON_CONNECTED:
         return 0
+
 
     #--------------------------Data Location and subject-------------------------------------
     if eclipse.getCurrentMarkedNodes() is None:
         raise Exception("No nodes marked")
     else:
-        
         LOGGER.logger.info("[pyCGM2] - Script worked with marked node of Vicon Eclipse")
-        # --- acquisition file and path----
-        DATA_PATH, inputFiles =eclipse.getCurrentMarkedNodes()
-        if isinstance(DATA_PATH,list):
-            LOGGER.logger.error("[pyCGM2] - comparison of EMG from two distinct sessions is not allowed")
-            raise
+        DATA_PATH, calibrateFilenameLabelledNoExt = nexusTools.getTrialName(NEXUS) 
 
-        ECLIPSE_MODE = True
-        if len(inputFiles)== 1:   raise Exception("Only one node marked")
+        # --- acquisition file and path----
+        markedNodes = eclipse.getCurrentMarkedNodes()
+        if len(markedNodes)== 1:   raise Exception("Only one node marked")
+
+
+
 
 
 
@@ -237,10 +248,39 @@ def normalizedComparison(args):
     # --------------emg Processing--------------
 
 
-    if  ECLIPSE_MODE:
+    inputFiles = []
+    for node in markedNodes:
+        inputFiles.append( node[1].replace(".Trial.enf", ".c3d"))
 
-        emg.processEMG(DATA_PATH, inputFiles, emgChannels, highPassFrequencies=bandPassFilterFrequencies,
+
+    emg.processEMG(DATA_PATH, inputFiles, emgChannels, highPassFrequencies=bandPassFilterFrequencies,
                 envelopFrequency=envelopCutOffFrequency)
+
+    analysisInstances=[]
+    legends =[]
+    comparisonDetails =  "comparison plots"
+    
+    count=0
+    for node in markedNodes:
+        filename = node[1].replace(".Trial.enf", ".c3d")
+        analysisInstances.append( analysis.makeAnalysis(node[0],
+                                [filename],
+                                eventType=eventType,
+                                kinematicLabelsDict=None,
+                                kineticLabelsDict=None,
+                                emgChannels = emgChannels,
+                                pointLabelSuffix=None,
+                                subjectInfo=None, experimentalInfo=None,modelInfo=None,
+                                ))
+        
+        legends.append(filename)
+
+        if count==0:
+            emg.normalizedEMG(DATA_PATH,analysisInstances[0],method="MeanMax", fromOtherAnalysis=None)
+        else:
+            emg.normalizedEMG(DATA_PATH,analysisInstances[count],method="MeanMax", fromOtherAnalysis=analysisInstances[0])
+        count+=1
+
 
         if len(inputFiles) == 2:
             analysisInstance1 = analysis.makeAnalysis(DATA_PATH,
@@ -268,13 +308,10 @@ def normalizedComparison(args):
 
             # outputName = "Eclipse - CompareNormalizedKinematics"
         #
-        analysesToCompare = [analysisInstance1, analysisInstance2]
-        comparisonDetails =  inputFiles[0] + " Vs " + inputFiles[1]
-        legends =[inputFiles[0],inputFiles[1]]
 
-        plot.compareEmgEnvelops(DATA_PATH,analysesToCompare,
-                                legends,
-                              eventType="other",
-                              normalized=True,
-                              plotType=plotType,show=True,
-                              outputName=comparisonDetails,exportPng=False)
+    plot.compareEmgEnvelops(DATA_PATH,analysisInstances,
+                            legends,
+                            eventType="other",
+                            normalized=True,
+                            plotType=plotType,show=True,
+                            outputName=comparisonDetails,exportPng=False)

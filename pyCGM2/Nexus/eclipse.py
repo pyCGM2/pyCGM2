@@ -73,22 +73,18 @@ def getCurrentMarkedNodes(fileType:str="c3d"):
     outFiles = []
     nodes = soup.find_all("MarkedNode")
 
+    out = []
+
     for node in nodes:
         fullFilename = node.get("MarkedNodePath")
         nodepath = fullFilename[0:fullFilename.rfind("\\")+1]
+        filename = fullFilename.split("\\")[-1]
 
-        if fileType == "c3d":
-            fullFilename = fullFilename.replace(".Trial.enf", "."+fileType)
-        outFiles.append(fullFilename.split("\\")[-1])
-        if nodepath not in path:
-            path.append(nodepath)
-
-    if outFiles == []:
-        return None
-    else:
-        if len(path) == 1:
-            path = path[0]
-        return path, outFiles
+        out.append([nodepath, filename])
+    
+    
+    return out if out !=[] else None
+       
 
 
 def getEnfFiles(path:str, type:enums.EclipseType):

@@ -46,7 +46,7 @@ def horizontalHistogram(args):
     if eclipse.getCurrentMarkedNodes() is not None:
         LOGGER.logger.info("[pyCGM2] - Script worked with marked node of Vicon Eclipse")
         # --- acquisition file and path----
-        DATA_PATH, modelledFilenames =eclipse.getCurrentMarkedNodes()
+        markedNodes = eclipse.getCurrentMarkedNodes()
         ECLIPSE_MODE = True
 
     if not ECLIPSE_MODE:
@@ -86,6 +86,25 @@ def horizontalHistogram(args):
 
         outputName = modelledFilename
     else:
+        modelledFilenames = []
+        paths=[]
+        count=0
+        for node in markedNodes:
+            modelledFilenames.append(node[1].replace(".Trial.enf", ".c3d"))
+            if count ==0: 
+                DATA_PATH=node[0]
+            else:
+                if node[0] != DATA_PATH:
+                    raise  Exception("marked nodes must be from the same folder")
+
+
+        analysisInstance = analysis.makeAnalysis(DATA_PATH,
+                            modelledFilenames,
+                            eventType="Gait",
+                            kineticLabelsDict = None,
+                            emgChannels = None,
+                            pointLabelSuffix=pointSuffix,
+                            subjectInfo=None, experimentalInfo=None,modelInfo=None)
         # --------------------------PROCESSING --------------------------------
         analysisInstance = analysis.makeAnalysis(DATA_PATH,
                             modelledFilenames,
