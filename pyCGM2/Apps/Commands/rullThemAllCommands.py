@@ -22,7 +22,7 @@ from pyCGM2.Apps.ViconApps.CGM2_3 import CGM2_3_Calibration, CGM2_3_Fitting
 from pyCGM2.Apps.ViconApps.CGM2_4 import CGM2_4_Calibration, CGM2_4_Fitting
 from pyCGM2.Apps.ViconApps.CGM2_5 import CGM2_5_Calibration, CGM2_5_Fitting
 from pyCGM2.Apps.ViconApps.CGM2_6 import CGM_Knee2DofCalibration, CGM_KneeSARA
-from pyCGM2.Apps.ViconApps.commands import deviceDetailsCommand
+from pyCGM2.Apps.ViconApps.commands import deviceDetailsCommand, remoteSettings
 
 from pyCGM2.Apps.ViconApps.Events import zeniDetector
 from pyCGM2.Apps.ViconApps.Events import oconnorDetector
@@ -484,24 +484,23 @@ class MainParser:
         self.parser = argparse.ArgumentParser()
         self.subparsers = self.parser.add_subparsers(help='sub-command help', dest='subparser')
 
-        self.Settings()
         self.Nexus()
         self.QTM()
 
-    def Settings(self):
-        """
-        Sets up the parser for SETTINGS related commands.
+    # def Settings(self):
+    #     """
+    #     Sets up the parser for SETTINGS related commands.
 
-        Creates a sub-parser for SETTINGS with options for editing folder initialization and EMG settings.
-        """
+    #     Creates a sub-parser for SETTINGS with options for editing folder initialization and EMG settings.
+    #     """
 
-        nexusparser = self.subparsers.add_parser('SETTINGS', help='pyCGM2 settings')
-        nexus_subparser = nexusparser.add_subparsers(help='', dest='SETTINGS')
+    #     nexusparser = self.subparsers.add_parser('SETTINGS', help='pyCGM2 settings')
+    #     nexus_subparser = nexusparser.add_subparsers(help='', dest='SETTINGS')
 
-        # folder init
-        parser_init = nexus_subparser.add_parser("Edit", help= "folder initialisation commands")
-        parser_init.add_argument('-m', '--model', type=str,  help='copy CGM settings')
-        parser_init.add_argument('-e', '--emg', action='store_true',  help='copy emg settings')
+    #     # folder init
+    #     parser_init = nexus_subparser.add_parser("Remote", help= "Remote default settings")
+    #     parser_init.add_argument('-m', '--model', type=str,  help='copy CGM settings')
+    #     parser_init.add_argument('-e', '--emg', action='store_true',  help='copy emg settings')
 
 
 
@@ -582,8 +581,11 @@ class MainParser:
         system_subparsers = system_parser.add_subparsers(help='', dest="System")
         parser_deviceDetails = system_subparsers.add_parser('DeviceDetails', help='command to get device details')
         
-
-
+        settings_parser = nexus_subparser.add_parser("Settings", help= "Nexus settings commands")
+        settings_subparsers = settings_parser.add_subparsers(help='', dest="Settings")
+        parser_settings = settings_subparsers.add_parser('Remote', help='command to get device details')
+        parser_settings.add_argument('-m', '--model', type=str,  help='copy CGM settings')
+        parser_settings.add_argument('-e', '--emg', action='store_true',  help='copy emg settings')
 
     def QTM(self):
         """
@@ -624,65 +626,7 @@ class MainParser:
         print(args)
 
         if not debug:
-            if "SETTINGS" in args:
-                if args.SETTINGS == "Edit":
-                    if args.emg:
-                        files.copyPaste(pyCGM2.PYCGM2_SETTINGS_FOLDER+"emg.settings",
-                                            os.getcwd()+"\\"+"emg.settings")
-                        LOGGER.logger.info("[pyCGM2] file [emg.settings] copied in your data folder")
-                        os.startfile(os.getcwd()+"\\"+"emg.settings")
-
-                    if args.model is not None:
-                        if args.model == "CGM1" or args.model == "CGM1.0":
-                            files.copyPaste(pyCGM2.PYCGM2_SETTINGS_FOLDER
-                                            + "CGM1-pyCGM2.settings", os.getcwd()+"\\"+"CGM1-pyCGM2.settings")
-                            LOGGER.logger.info("[pyCGM2] file [CGM1-pyCGM2.settings] copied in your data folder")
-                            os.startfile(os.getcwd()+"\\"+"CGM1-pyCGM2.settings")
-                        if args.model == "CGM1.1":
-                            files.copyPaste(pyCGM2.PYCGM2_SETTINGS_FOLDER+"CGM1_1-pyCGM2.settings",
-                                            os.getcwd()+"\\"+"CGM1_1-pyCGM2.settings")
-                            LOGGER.logger.info("[pyCGM2] file [CGM1_1-pyCGM2.settings] copied in your data folder")
-                            os.startfile(os.getcwd()+"\\"+"CGM1_1-pyCGM2.settings")
-                        elif args.model == "CGM2.1":
-                            files.copyPaste(pyCGM2.PYCGM2_SETTINGS_FOLDER+"CGM2_1-pyCGM2.settings",
-                                            os.getcwd()+"\\"+"CGM2_1-pyCGM2.settings")
-                            LOGGER.logger.info("[pyCGM2] file [CGM2_1-pyCGM2.settings] copied in your data folder")
-                            os.startfile(os.getcwd()+"\\"+"CGM2_1-pyCGM2.settings")
-                        elif args.model == "CGM2.2":
-                            files.copyPaste(pyCGM2.PYCGM2_SETTINGS_FOLDER+"CGM2_2-pyCGM2.settings",
-                                            os.getcwd()+"\\"+"CGM2_2-pyCGM2.settings")
-                            LOGGER.logger.info("[pyCGM2] file [CGM2_2-pyCGM2.settings] copied in your data folder")
-                            os.startfile(os.getcwd()+"\\"+"CGM2_2-pyCGM2.settings")
-                        elif args.model == "CGM2.3":
-                            files.copyPaste(pyCGM2.PYCGM2_SETTINGS_FOLDER+"CGM2_3-pyCGM2.settings",
-                                            os.getcwd()+"\\"+"CGM2_3-pyCGM2.settings")
-                            LOGGER.logger.info("[pyCGM2] file [CGM2_3-pyCGM2.settings] copied in your data folder")
-                            os.startfile(os.getcwd()+"\\"+"CGM2_3-pyCGM2.settings")
-
-                        elif args.model == "CGM2.4":
-                            files.copyPaste(pyCGM2.PYCGM2_SETTINGS_FOLDER+"CGM2_4-pyCGM2.settings",
-                                            os.getcwd()+"\\"+"CGM2_4-pyCGM2.settings")
-                            LOGGER.logger.info("[pyCGM2] file [CGM2_4-pyCGM2.settings] copied in your data folder")
-                            os.startfile(os.getcwd()+"\\"+"CGM2_4-pyCGM2.settings")
-
-                        elif args.model == "CGM2.5":
-                            files.copyPaste(pyCGM2.PYCGM2_SETTINGS_FOLDER+"CGM2_5-pyCGM2.settings",
-                                            os.getcwd()+"\\"+"CGM2_5-pyCGM2.settings")
-                            LOGGER.logger.info("[pyCGM2] file [CGM2_5-pyCGM2.settings] copied in your data folder")
-                            os.startfile(os.getcwd()+"\\"+"CGM2_5-pyCGM2.settings")
-
-                        elif args.model == "CGM2.6":
-                            files.copyPaste(pyCGM2.PYCGM2_SETTINGS_FOLDER+"CGM2_5-pyCGM2.settings",
-                                            os.getcwd()+"\\"+"CGM2_5-pyCGM2.settings")
-                            LOGGER.logger.info("[pyCGM2] file [CGM2_5-pyCGM2.settings] copied in your data folder")
-                            os.startfile(os.getcwd()+"\\"+"CGM2_5-pyCGM2.settings")
-
-                        else:
-                            LOGGER.logger.error("[pyCGM2] model version not know (CGM1, CGM1.1 ... CGM2.5)")
-                            raise
-
-
-            elif "NEXUS" in args:
+            if "NEXUS" in args:
 
                 if args.NEXUS == "CGM1.0":
                     if args.CGM10 == "Calibration":
@@ -794,6 +738,11 @@ class MainParser:
                 elif args.NEXUS == "System":
                     if args.System == "DeviceDetails":
                         deviceDetailsCommand.main(args)
+ 
+                elif args.NEXUS == "Settings":
+                    if args.Settings == "Remote":
+                        remoteSettings.main(args)
+
 
             elif "QTM" in args:
                 if args.QTM == "CGM" and args.CGM == "Modelling":
