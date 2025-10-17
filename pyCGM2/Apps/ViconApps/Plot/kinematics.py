@@ -127,7 +127,6 @@ def normalized(args):
 
 
     if not ECLIPSE_MODE:
-        subjects = NEXUS.GetSubjectNames()
         subject = nexusTools.getActiveSubject(NEXUS)
         LOGGER.logger.info(  "Subject name : " + subject  )
 
