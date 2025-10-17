@@ -44,6 +44,7 @@ def list_conditions(data):
 def get_trials_by_condition(data, condition_id):
     """Retourne la liste des fichiers de trial associés à une condition"""
     trials = data.get("Fitting", {}).get("Trials", [])
+    
     return [trial["File"] for trial in trials if trial.get("ConditionID") == condition_id]
 
 def get_condition_details(data, condition_id):
