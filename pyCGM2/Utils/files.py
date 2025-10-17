@@ -577,7 +577,7 @@ def saveMp(mpInfo:Dict,model:Model,DATA_PATH:str,mpFilename:str):
 
 
 
-def getFiles(path:str, extension:str, ignore:Optional[bool]=None,raiseFlag:bool=False):
+def getFiles(path:str, extension:str, ignore:Optional[bool]=None,raiseFlag:bool=False,contain=None):
     """
     Retrieve all files with a specific extension from a directory.
 
@@ -604,6 +604,8 @@ def getFiles(path:str, extension:str, ignore:Optional[bool]=None,raiseFlag:bool=
         LOGGER.logger.error(str(e))
         if raiseFlag: raise
 
+    if contain is not None:
+        out = [file for file in out if contain in file]
 
     return out
 
@@ -689,7 +691,7 @@ def createDir(fullPathName:str):
         LOGGER.logger.info("directory already exists")
     return pathOut+"\\"
 
-def getDirs(folderPath:str):
+def getDirs(folderPath:str, contain:Optional[str]=None):
     """
     Get all subdirectories within a folder.
 
@@ -702,6 +704,10 @@ def getDirs(folderPath:str):
     folderPath = folderPath
     pathOut = folderPath[:-1] if folderPath[-1:]=="\\" else folderPath
     dirs = [ name for name in os.listdir(pathOut) if os.path.isdir(os.path.join(pathOut, name)) ]
+
+    if contain is not None:
+        dirs = [name for name in dirs if contain in name]
+
     return ( dirs)
 
 def try_as(loader, s, on_error):
@@ -760,7 +766,20 @@ def copyPaste(src:str, dst:str):
     except shutil.SameFileError:
         LOGGER.logger.debug(" source [%s] and destination [%s] are similar" %(src,dst))
 
-    
+def moveFile(src:str, dst:str):
+    """
+    Move a file from a source to a destination.
+
+    Args:
+        src (str): The source file path.
+        dst (str): The destination file path.
+    """
+    try:
+        shutil.move(src, dst)
+    except FileNotFoundError:
+        LOGGER.logger.warning("File not found: [%s]" % src)
+    except Exception as e:
+        LOGGER.logger.error("Error moving file from [%s] to [%s]: %s" % (src, dst, e))
 
 def copyPasteDirectory(src:str, dst:str):
     """
@@ -786,6 +805,35 @@ def deleteDirectory(dir:str):
         dir (str): The path of the directory to be deleted.
     """
     shutil.rmtree(dir)
+
+
+def moveDirectory(src: str, dst: str) -> None:
+    """
+    Move a directory 'src' into the directory 'dst'.
+    If 'dst' exists, 'src' will be added as a subdirectory of 'dst'.
+    If a directory with the same name already exists in 'dst', it will be replaced.
+
+    Args:
+        src (str): The source directory path.
+        dst (str): The destination directory path.
+    """
+    import os
+    import shutil
+
+    if not os.path.isdir(src):
+        raise FileNotFoundError(f"Source directory '{src}' does not exist.")
+    if not os.path.isdir(dst):
+        os.makedirs(dst)
+
+    src_basename = os.path.basename(os.path.normpath(src))
+    dst_subdir = os.path.join(dst, src_basename)
+
+    # If src already exists in dst, remove it
+    if os.path.exists(dst_subdir):
+        shutil.rmtree(dst_subdir)
+
+    # Move src into dst
+    shutil.move(src, dst_subdir)
 
 
 def readXml(DATA_PATH:str,filename:str):
