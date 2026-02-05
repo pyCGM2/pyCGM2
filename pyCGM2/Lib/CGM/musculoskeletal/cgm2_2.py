@@ -222,6 +222,29 @@ def calibrate(DATA_PATH:str,calibrateFilenameLabelled:str,
             ikTargets.append(target)
     model.setStaticIkTargets(ikTargets)
 
+
+    # virtual medial joint markers required for scaling 
+    
+    if not btkTools.isPointExist(acqStatic,"LKNM"):
+        values = acqStatic.GetPoint("LKNE").GetValues()-acqStatic.GetPoint("LKJC").GetValues()
+        btkTools.smartAppendPoint(acqStatic,"LKNM",acqStatic.GetPoint("LKJC").GetValues()-values)
+        LOGGER.logger.info("[pyCGM2] - no LKNM marker detected. Virtual marker created for scaling purpose")    
+
+    if not btkTools.isPointExist(acqStatic,"RKNM"):
+        values = acqStatic.GetPoint("RKNE").GetValues()-acqStatic.GetPoint("RKJC").GetValues()
+        btkTools.smartAppendPoint(acqStatic,"RKNM",acqStatic.GetPoint("RKJC").GetValues()-values) 
+        LOGGER.logger.info("[pyCGM2] - no RKNM marker detected. Virtual marker created for scaling purpose")   
+
+    if not btkTools.isPointExist(acqStatic,"LMED"):
+        values = acqStatic.GetPoint("LANK").GetValues()-acqStatic.GetPoint("LAJC").GetValues()
+        btkTools.smartAppendPoint(acqStatic,"LMED",acqStatic.GetPoint("LAJC").GetValues()-values) 
+        LOGGER.logger.info("[pyCGM2] - no LMED marker detected. Virtual marker created for scaling purpose")   
+
+    if not btkTools.isPointExist(acqStatic,"RMED"):
+        values = acqStatic.GetPoint("RANK").GetValues()-acqStatic.GetPoint("RAJC").GetValues()
+        btkTools.smartAppendPoint(acqStatic,"RMED",acqStatic.GetPoint("RAJC").GetValues()-values) 
+        LOGGER.logger.info("[pyCGM2] - no RMED marker detected. Virtual marker created for scaling purpose")   
+
     # scaling
     proc = opensimScalingInterfaceProcedure.ScalingXmlCgmProcedure(DATA_PATH,"CGM2.2",required_mp["Bodymass"],required_mp["Height"])
     proc.prepareStaticTrial_fromBtkAcq( acqStatic, calibrateFilenameLabelled[:-4])
@@ -236,7 +259,7 @@ def calibrate(DATA_PATH:str,calibrateFilenameLabelled:str,
 
 
     # virtual standstill
-    procAnaDriven = opensimAnalysesInterfaceProcedure.AnalysesXmlCgmDrivenModelProcedure(DATA_PATH,scaledOsimName,"musculoskeletal_modelling/pose_standstill","CGM2.3")
+    procAnaDriven = opensimAnalysesInterfaceProcedure.AnalysesXmlCgmDrivenModelProcedure(DATA_PATH,scaledOsimName,"musculoskeletal_modelling/pose_standstill","CGM2.2")
     procAnaDriven.setPose("standstill")
     procAnaDriven.prepareXml()
     oiamf = opensimInterfaceFilters.opensimInterfaceAnalysesFilter(procAnaDriven)
@@ -250,7 +273,7 @@ def calibrate(DATA_PATH:str,calibrateFilenameLabelled:str,
 
         if ik_flag:
 
-            procIK = opensimInverseKinematicsInterfaceProcedure.InverseKinematicXmlCgmProcedure(DATA_PATH,scaledOsimName,"musculoskeletal_modelling","CGM2.3")
+            procIK = opensimInverseKinematicsInterfaceProcedure.InverseKinematicXmlCgmProcedure(DATA_PATH,scaledOsimName,"musculoskeletal_modelling","CGM2.2")
             procIK.prepareTrial_fromBtkAcq(acqStatic,calibrateFilenameLabelled[:-4],progressionAxis,forwardProgression)
             procIK.setAccuracy(1e-5)
             procIK.prepareWeights(weights)

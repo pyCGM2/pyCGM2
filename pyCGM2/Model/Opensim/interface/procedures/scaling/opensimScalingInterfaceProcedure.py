@@ -10,7 +10,7 @@ LOGGER = pyCGM2.LOGGER
 import btk
 
 import opensim
-
+from pyCGM2.Model.Opensim import opensimIO
 
 class ScalingXmlProcedure(opensimProcedures.OpensimInterfaceXmlProcedure):
     """
@@ -42,6 +42,13 @@ class ScalingXmlProcedure(opensimProcedures.OpensimInterfaceXmlProcedure):
         """
         self.m_staticFile = staticFileNoExt
         self._staticTrc = btkTools.smartWriter( acq, self.m_DATA_PATH + staticFileNoExt, extension="trc")
+
+        if acq.GetPointFrameNumber() == 1:
+            LOGGER.logger.warning(f"Acquisition has only one frame. Duplicating the last frame of the trc to create a static trial for scaling.")
+            trcFile = opensimIO.TrcDataFrame(self.m_DATA_PATH, staticFileNoExt+".trc")
+            trcFile.duplicateLastRow(dt=0.01)
+            trcFile.save()
+
 
         static = opensim.MarkerData(self._staticTrc)
         self.m_initial_time = static.getStartFrameTime()
@@ -159,6 +166,7 @@ class ScalingXmlCgmProcedure(ScalingXmlProcedure):
         self.xml.getSoup().find("ScaleTool").attrs["name"] = self.m_modelVersion+"-Scale"
         self.xml.set_one(["GenericModelMaker","model_file"],self.m_osim)
         self.xml.set_one(["GenericModelMaker","marker_set_file"],self.m_markerset)
+
         self.xml.set_many("time_range", str(self.m_initial_time) + " " + str(self.m_final_time))
         self.xml.set_many("marker_file", files.getFilename(self._staticTrc))
         self.xml.set_one(["MarkerPlacer","output_model_file"],self.m_staticFile+ "-"+ self.m_modelVersion+"-ScaledModel.osim")

@@ -3,7 +3,7 @@
 # pytest -s --disable-pytest-warnings  test_opensimInterface.py::Test_CGM_XmlProcedures::test_cgm23_scaling_ik_muscle
 # pytest -s --disable-pytest-warnings  test_opensimInterface.py::Test_CGM_XmlProcedures::test_cgm22_scaling_ik_muscle
 
-# pytest -s --disable-pytest-warnings  test_opensimInterface.py::Test_CGM_XmlProcedures::test_cgm23_scaling_ik_muscle_noForcePlate
+# pytest -s --disable-pytest-warnings  test_opensimInterface.py::Test_CGM_XmlProcedures::test_cgm22_scaling_ISSUE_oneFrame
 
 from pickle import NONE
 import os
@@ -28,6 +28,7 @@ from pyCGM2.ForcePlates import forceplates
 from pyCGM2.Nexus import vskTools
 from pyCGM2.Lib.CGM import  cgm2_3
 from pyCGM2.Lib.CGM.musculoskeletal import  cgm2_3 as cgm2_3msm
+from pyCGM2.Lib.CGM.musculoskeletal import  cgm2_2 as cgm2_2msm
 
 from pyCGM2.Model.Opensim.interface import opensimInterfaceFilters
 from pyCGM2.Model.Opensim.interface.procedures.scaling import opensimScalingInterfaceProcedure
@@ -1256,6 +1257,36 @@ class Test_CGM_XmlProcedures:
 
         outFilename = "verifNoFP.c3d"
         btkTools.smartWriter(acqGait, str(DATA_PATH + outFilename))
+
+    def test_cgm22_scaling_ISSUE_oneFrame(self):
+        DATA_PATH = pyCGM2.TEST_DATA_PATH + "OpenSim\\issue-oneStaticFrame\\"
+
+        staticFilename = "ARNOU Marina Cal 01.c3d"
+
+        markerDiameter=14
+
+        vsk = vskTools.Vsk(DATA_PATH + "ARNOU Marina.vsk")
+        required_mp,optional_mp = vskTools.getFromVskSubjectMp(vsk, resetFlag=True)
+
+        settings = files.openFile(pyCGM2.PYCGM2_SETTINGS_FOLDER,"CGM2_2-pyCGM2.settings")
+
+        model,finalAcqStatic,error = cgm2_2msm.calibrate(DATA_PATH,
+            staticFilename,
+            settings["Translators"],
+            settings["Fitting"]["Weight"],
+            required_mp,
+            optional_mp,
+            True,
+            True,
+            True,
+            True,
+            14,
+            settings["Calibration"]["HJC"],
+            None,
+            displayCoordinateSystem=True,
+            noKinematicsCalculation=False)
+
+
 
 class Test_Generic_DrivenPose:
 

@@ -110,8 +110,9 @@ class opensimInterfaceInverseKinematicsFilter(object):
 
         # TODO : worl with storage datframe instead of the opensim sorage instance
 
-        storageDataframe = opensimIO.OpensimDataFrame(
-            self.m_procedure.m_DATA_PATH+self.m_procedure.m_resultsDir+"\\", self.m_procedure.m_dynamicFile+"_ik_model_marker_locations.sto")
+
+        # storageDataframe = opensimIO.OpensimDataFrame(
+        #     self.m_procedure.m_DATA_PATH+self.m_procedure.m_resultsDir+"\\", self.m_procedure.m_dynamicFile+"_ik_model_marker_locations.sto")
 
         storageObject = opensim.Storage(self.m_procedure.m_DATA_PATH + self.m_procedure.m_resultsDir+"\\"+self.m_procedure.m_dynamicFile +"_ik_model_marker_locations.sto")
         for marker in self.m_procedure.m_weights.keys():
