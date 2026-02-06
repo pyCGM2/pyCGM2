@@ -487,20 +487,7 @@ class MainParser:
         self.Nexus()
         self.QTM()
 
-    # def Settings(self):
-    #     """
-    #     Sets up the parser for SETTINGS related commands.
 
-    #     Creates a sub-parser for SETTINGS with options for editing folder initialization and EMG settings.
-    #     """
-
-    #     nexusparser = self.subparsers.add_parser('SETTINGS', help='pyCGM2 settings')
-    #     nexus_subparser = nexusparser.add_subparsers(help='', dest='SETTINGS')
-
-    #     # folder init
-    #     parser_init = nexus_subparser.add_parser("Remote", help= "Remote default settings")
-    #     parser_init.add_argument('-m', '--model', type=str,  help='copy CGM settings')
-    #     parser_init.add_argument('-e', '--emg', action='store_true',  help='copy emg settings')
 
 
 
@@ -581,9 +568,11 @@ class MainParser:
         system_subparsers = system_parser.add_subparsers(help='', dest="System")
         parser_deviceDetails = system_subparsers.add_parser('DeviceDetails', help='command to get device details')
         
+        # settings----
         settings_parser = nexus_subparser.add_parser("Settings", help= "Nexus settings commands")
         settings_subparsers = settings_parser.add_subparsers(help='', dest="Settings")
-        parser_settings = settings_subparsers.add_parser('Remote', help='command to get device details')
+        
+        parser_settings = settings_subparsers.add_parser('Remote', help='command to remote pyCGM2 settings')
         parser_settings.add_argument('-m', '--model', type=str,  help='copy CGM settings')
         parser_settings.add_argument('-e', '--emg', action='store_true',  help='copy emg settings')
 

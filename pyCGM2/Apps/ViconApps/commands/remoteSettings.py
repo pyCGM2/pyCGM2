@@ -26,10 +26,14 @@ def main(args=None):
         data_path, calibrateFilenameLabelledNoExt = nexusTools.getTrialName(NEXUS)    
 
         if args.emg:
-            files.copyPaste(pyCGM2.PYCGM2_SETTINGS_FOLDER+"emg.settings",
-                                data_path+"emg.settings")
-            LOGGER.logger.info(f"[pyCGM2] file [emg.settings] copied in your data folder {data_path}")
+            if not os.path.isfile(data_path+"emg.settings"):
+                files.copyPaste(pyCGM2.PYCGM2_SETTINGS_FOLDER+"emg.settings",
+                                    data_path+"emg.settings")
+                LOGGER.logger.info(f"[pyCGM2] file [emg.settings] copied in your data folder {data_path}")
+            else:
+                LOGGER.logger.warning(f"[pyCGM2] file [emg.settings] already exist in your data folder {data_path}")
             os.startfile(data_path+"emg.settings")
+            
 
         if args.model is not None:
             if args.model == "CGM1" or args.model == "CGM1.0":
