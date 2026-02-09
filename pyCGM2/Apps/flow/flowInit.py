@@ -19,11 +19,7 @@ LOGGER.setLevel("info")
 LOGGER.set_file_handler("pyCGM2-Mek.log")
 
 
-
 from pyCGM2.Utils import files
-
-
-
 from pyCGM2.Tools import uiTools
 from pyCGM2 import connection
 
@@ -33,13 +29,10 @@ def main(args=None):
 
     if args is None:
         parser = argparse.ArgumentParser(description='Initialize flow report')
-        
-        
-    args = parser.parse_args()
-
+        args = parser.parse_args()
+    
     nexusCon = connection.NexusConnection()
-
-                            
+                    
     if nexusCon.isConnected():
         try:
             data_path, trialFilename = nexusCon.nexusTools.getTrialName(nexusCon.NEXUS) 

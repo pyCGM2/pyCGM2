@@ -605,7 +605,14 @@ class MainParser:
 
         parser_flowEdit = flow_subparsers.add_parser('Edit', help='command to edit flow')
         parser_flowEdit.add_argument('-cgm', '--cgmVersion', type=str,
-                            help='CGM Version')
+                            help='CGM Version from CGM1.0 to CGM2.5',
+                            required=True)
+        parser_flowEdit.add_argument('-s', '--suffix', type=str,
+                            help='Suffix to add to the settings file name, default is _v2',
+                            default="",
+                            required=False) 
+        parser_flowEdit.add_argument('-d', '--display',
+                            action='store_true', help='distplay the flow file after edition')
 
 
     def get_parser(self):

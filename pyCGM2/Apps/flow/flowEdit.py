@@ -26,12 +26,20 @@ def main(args=None):
     if args is None:
         parser = argparse.ArgumentParser(description='Edit flow report from Eclipse')
         parser.add_argument('-cgm', '--cgmVersion', type=str,
-                            help='CGM Version from CGM1.0 to CGM2.6')
-                
-    args = parser.parse_args()
+                            help='CGM Version from CGM1.0 to CGM2.6',
+                            required=True)
+        parser.add_argument('-s', '--suffix', type=str,
+                            help='Suffix to add to the settings file name, default is _v2',
+                            default="",
+                            required=False) 
+        parser.add_argument('-d', '--display',
+                            action='store_true', help='display the flow file after edition')       
+        args = parser.parse_args()
 
     version = args.cgmVersion
     versionforFile = version.replace(".","")
+
+    displayFileFlag = args.display
 
     nexusCon = connection.NexusConnection()
 
@@ -57,7 +65,9 @@ def main(args=None):
                                         emgSettings = emgSettings
                                         )
 
-    fef.run(f"{versionforFile}_v2.settings",displayFile=True)
+    suffix = "-"+args.suffix if args.suffix != "" else ""
+
+    fef.run(f"{versionforFile}{suffix}_v2.settings",displayFile=displayFileFlag)
 
     LOGGER.logger.info(f"Flow editing completed for data path: {data_path} and CGM version: {version}")
     
