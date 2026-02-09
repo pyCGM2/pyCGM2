@@ -45,7 +45,8 @@ from pyCGM2.Apps.QtmApps.CGMi import QPYCGM2_modelling
 from pyCGM2.Apps.QtmApps.CGMi import QPYCGM2_processing
 
 
-
+from pyCGM2.Apps.flow import flowInit
+from pyCGM2.Apps.flow import flowEdit
 
 
 
@@ -488,6 +489,7 @@ class MainParser:
         self.Nexus()
         self.QTM()
         self.Settings()
+        self.Flow()
 
 
     def Settings(self):
@@ -595,6 +597,16 @@ class MainParser:
         cgmProcessing_parser.add_argument('--debug', action='store_true',
                             help='set logger as debug mode')
 
+    def Flow(self):
+        flow_parser = self.subparsers.add_parser("FLOW", help= "PyCGM2 Flow commands")
+        flow_subparsers = flow_parser.add_subparsers(help='', dest="FLOW")
+        
+        parser_flowInit = flow_subparsers.add_parser('Init', help='command to initialize flow')
+
+        parser_flowEdit = flow_subparsers.add_parser('Edit', help='command to edit flow')
+        parser_flowEdit.add_argument('-cgm', '--cgmVersion', type=str,
+                            help='CGM Version')
+
 
     def get_parser(self):
         """
@@ -612,6 +624,7 @@ class MainParser:
         
         args = self.parser.parse_args()
         print(args)
+
 
         if not debug:
             if "NEXUS" in args:
@@ -745,6 +758,11 @@ class MainParser:
                     if args.SETTINGS == "RemoteEmg":
                         remoteEmgSettings.main(args)
 
+            elif "FLOW" in args:
+                if args.FLOW == "Init":
+                    flowInit.main(args)
+                elif args.FLOW == "Edit":
+                    flowEdit.main(args)
 
 def get_main_parser():
     """

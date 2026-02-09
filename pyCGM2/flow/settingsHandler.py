@@ -1,5 +1,56 @@
 
 
+def emg_ordered_dict_to_list(emg_odict):
+    
+    emg_list = []
+
+    for key, subdict in emg_odict.items():
+        # key = "Voltage.EMG1"
+        name = key.replace("Voltage.", "")  # → EMG1
+
+        emg_list.append({
+            "name": name,
+            "muscle": "" if subdict.get("Muscle") is None else subdict.get("Muscle"),
+            "context": "" if subdict.get("Context") is None else subdict.get("Context") ,
+            "normal_activity": "" if subdict.get("NormalActivity") is None else subdict.get("NormalActivity") 
+        })
+
+    return emg_list
+
+
+
+def homogeneizeEmgSettings(settings, emgSettings=None):
+    """    
+
+    Args:
+        settings (_type_): _description_
+        emgSettings (_type_, optional): _description_. Defaults to None.
+    """
+
+    if emgSettings is None:
+        emgSettings = settings["Protocol"]["Conditions"][0]["EmgSettings"]
+
+        for i in range(1,len(settings["Protocol"]["Conditions"])):
+            settings["Protocol"]["Conditions"][i]["EmgSettings"].update(emgSettings)
+    else:
+        for i in range(0,len(settings["Protocol"]["Conditions"])):
+            settings["Protocol"]["Conditions"][i]["EmgSettings"].update(emgSettings)
+
+def homogeneizeTranslators(settings, translators=None):
+    
+    for it in settings["Calibration"]:
+        id = it["ID"]
+        if translators is  None:
+            translators = it["Translators"]
+        else:
+            it["Translators"].update(translators)
+
+    
+        for fittingIt in settings["Fitting"]["Trials"]:
+            if fittingIt["CalibrationID"] == id:
+                fittingIt["Translators"].update (translators)
+
+    
 
 def get_condition(settings,condition_id):
 
@@ -37,6 +88,15 @@ def get_emg_configuration(settings,condition_id,outputType = "list"):
         return {"Labels": labels, "Muscles": muscles, "Contexts": contexts, "NormalActivity": normalActivities}
 
 
+def get_emg_processing(settings,condition_id,outputType = "list"):
+
+    conditionItem = get_condition(settings,condition_id)
+
+    return conditionItem["EmgSettings"]["Processing"]
+
+
+
+
 def list_conditions(data):
     """Retourne la liste des ConditionIDs disponibles"""
     return [cond['ConditionID'] for cond in data['Protocol']['Conditions']]
@@ -44,7 +104,6 @@ def list_conditions(data):
 def get_trials_by_condition(data, condition_id):
     """Retourne la liste des fichiers de trial associés à une condition"""
     trials = data.get("Fitting", {}).get("Trials", [])
-    
     return [trial["File"] for trial in trials if trial.get("ConditionID") == condition_id]
 
 def get_condition_details(data, condition_id):
@@ -82,3 +141,8 @@ def get_emg_trials_by_condition(data, condition_id):
                   if trial.get("ConditionID") == condition_id and trial.get("Emg") is True]
 
     return emg_files
+
+# def get_all_trials(data):
+#     conditions = list_conditions(data)
+#     import ipdb; ipdb.set_trace()
+
