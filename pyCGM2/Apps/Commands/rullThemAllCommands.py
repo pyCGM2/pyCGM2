@@ -12,6 +12,7 @@ import argparse
 
 import pyCGM2
 LOGGER = pyCGM2.LOGGER
+from pyCGM2.Apps.Commands.settings import remoteEmgSettings
 from pyCGM2.Utils import files
 
 from pyCGM2.Apps.ViconApps.CGM1 import CGM1_Calibration, CGM1_Fitting
@@ -22,7 +23,7 @@ from pyCGM2.Apps.ViconApps.CGM2_3 import CGM2_3_Calibration, CGM2_3_Fitting
 from pyCGM2.Apps.ViconApps.CGM2_4 import CGM2_4_Calibration, CGM2_4_Fitting
 from pyCGM2.Apps.ViconApps.CGM2_5 import CGM2_5_Calibration, CGM2_5_Fitting
 from pyCGM2.Apps.ViconApps.CGM2_6 import CGM_Knee2DofCalibration, CGM_KneeSARA
-from pyCGM2.Apps.ViconApps.commands import deviceDetailsCommand, remoteSettings
+from pyCGM2.Apps.ViconApps.commands import deviceDetailsCommand
 
 from pyCGM2.Apps.ViconApps.Events import zeniDetector
 from pyCGM2.Apps.ViconApps.Events import oconnorDetector
@@ -486,9 +487,14 @@ class MainParser:
 
         self.Nexus()
         self.QTM()
+        self.Settings()
 
 
-
+    def Settings(self):
+        settings_parser = self.subparsers.add_parser("SETTINGS", help= "PyCGM2 Settings commands")
+        settings_subparsers = settings_parser.add_subparsers(help='', dest="SETTINGS")
+        
+        parser_settings = settings_subparsers.add_parser('RemoteEmg', help='command to remote EmG settings')
 
 
     def Nexus(self):
@@ -568,13 +574,6 @@ class MainParser:
         system_subparsers = system_parser.add_subparsers(help='', dest="System")
         parser_deviceDetails = system_subparsers.add_parser('DeviceDetails', help='command to get device details')
         
-        # settings----
-        settings_parser = nexus_subparser.add_parser("Settings", help= "Nexus settings commands")
-        settings_subparsers = settings_parser.add_subparsers(help='', dest="Settings")
-        
-        parser_settings = settings_subparsers.add_parser('Remote', help='command to remote pyCGM2 settings')
-        parser_settings.add_argument('-m', '--model', type=str,  help='copy CGM settings')
-        parser_settings.add_argument('-e', '--emg', action='store_true',  help='copy emg settings')
 
     def QTM(self):
         """
@@ -730,7 +729,7 @@ class MainParser:
  
                 elif args.NEXUS == "Settings":
                     if args.Settings == "Remote":
-                        remoteSettings.main(args)
+                        remoteEmgSettings.main(args)
 
 
             elif "QTM" in args:
@@ -740,6 +739,12 @@ class MainParser:
                     QPYCGM2_processing.main(args)
                 elif args.QTM == "GaitEvents":
                     QPYCGM2_events.main(args)    
+
+            elif "SETTINGS" in args:
+                   
+                    if args.SETTINGS == "RemoteEmg":
+                        remoteEmgSettings.main(args)
+
 
 def get_main_parser():
     """
