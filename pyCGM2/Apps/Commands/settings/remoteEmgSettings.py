@@ -26,7 +26,10 @@ def main(args=None):
         except Exception as e:
             LOGGER.logger.error(f"No trial  loaded in Nexus: {e}, fallback to ui selection")
             data_path = uiTools.uiGetDir()
-            data_path= data_path+"\\"   
+            data_path= data_path+"\\" 
+    else:
+        data_path = uiTools.uiGetDir()
+        data_path= data_path+"\\"     
 
 
 
