@@ -1,0 +1,156 @@
+lowerLimbKinetics:
+
+  rows: 3
+  cols: 4
+
+  sup_title : Time-normalized Lower Limb  Kinetics
+
+  plots:
+    - title: Hip extensor
+      position: [0, 0]
+      ylabel: Moment 
+      ylim: [-2000, 3000]
+      curves:
+        - data: LHipMoment.0
+          legendLabel: Left
+          eventContext: Left
+        - data: RHipMoment.0
+          legendLabel: Right
+          eventContext: Right
+
+    - title: Hip abductor
+      position: [0, 1]
+      ylabel: Moment
+      ylim: [-2000, 1000]
+      curves:
+        - data: LHipMoment.1
+          legendLabel: Left
+          eventContext: Left
+        - data: RHipMoment.1
+          legendLabel: Right
+          eventContext: Right
+
+
+    - title: Hip rotator
+      position: [0, 2]
+      ylabel: Moment
+      ylim: [-500, 500]
+      curves:
+        - data: LHipMoment.2
+          legendLabel: Left
+          eventContext: Left
+        - data: RHipMoment.2
+          legendLabel: Right
+          eventContext: Right
+
+    - title: Hip power
+      position: [-3, 3]
+      ylabel: Power
+      ylim: [-30, 30]
+      curves:
+        - data: LHipPower.2
+          legendLabel: Left
+          eventContext: Left
+        - data: RHipPower.2
+          legendLabel: Right
+          eventContext: Right
+
+    - title: Knee extensor
+      position: [1, 0]
+      ylabel: Moment 
+      ylim: [-1000, 1000]
+      curves:
+        - data: LKneeMoment.0
+          legendLabel: Left
+          eventContext: Left
+        - data: RKneeMoment.0
+          legendLabel: Right
+          eventContext: Right
+
+
+    - title: Knee abductor
+      position: [1, 1]
+      ylabel: Moment
+      ylim: [-2000, 1000]
+      curves:
+        - data: LKneeMoment.1
+          legendLabel: Left
+          eventContext: Left
+        - data: RKneeMoment.1
+          legendLabel: Right
+          eventContext: Right
+
+
+    - title: Knee rotator
+      position: [1, 2]
+      ylabel: Moment
+      ylim: [-500, 500]
+      curves:
+        - data: LKneeMoment.2
+          legendLabel: Left
+          eventContext: Left
+        - data: RKneeMoment.2
+          legendLabel: Right
+          eventContext: Right
+
+    - title: Knee power
+      position: [1, 3]
+      ylabel: Power
+      ylim: [-3, 3]
+      curves:
+        - data: LKneePower.2
+          legendLabel: Left
+          eventContext: Left
+        - data: RKneePower.2
+          legendLabel: Right
+          eventContext: Right
+
+    - title: Ankle extensor
+      position: [2, 0]
+      ylabel: Moment 
+      ylim: [-1000, 3000]
+      curves:
+        - data: LAnkleMoment.0
+          legendLabel: Left
+          eventContext: Left
+        - data: RAnkleMoment.0
+          legendLabel: Right
+          eventContext: Right
+
+
+    - title: Ankle abductor
+      position: [2, 1]
+      ylabel: Moment
+      ylim: [-500, 500]
+      curves:
+        - data: LAnkleMoment.1
+          legendLabel: Left
+          eventContext: Left
+        - data: RAnkleMoment.1
+          legendLabel: Right
+          eventContext: Right
+
+
+    - title: Ankle rotator
+      position: [2, 2]
+      ylabel: Moment
+      ylim: [-500, 500]
+      curves:
+        - data: LAnkleMoment.2
+          legendLabel: Left
+          eventContext: Left
+        - data: RAnkleMoment.2
+          legendLabel: Right
+          eventContext: Right
+
+    - title: Ankle power
+      position: [2, 3]
+      ylabel: Power
+      ylim: [-2, 5]
+      curves:
+        - data: LAnklePower.2
+          legendLabel: Left
+          eventContext: Left
+        - data: RAnklePower.2
+          legendLabel: Right
+          eventContext: Right

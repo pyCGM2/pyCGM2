@@ -1,0 +1,109 @@
+EMG1_10:
+
+  rows: 10
+  cols: 1
+
+  sup_title : Temporal EMG panel
+
+  plots:
+    - title: EMG1
+      position: [0, 0]
+      ylabel:  
+      ylim: [-inf, inf]
+      normalActivation:
+      curves:
+        - data: 
+          legendLabel: 
+          eventContext: 
+
+
+    - title: EMG2
+      position: [1, 0]
+      ylabel:  
+      ylim: [-inf, inf]
+      normalActivation:
+      curves:
+        - data: 
+          legendLabel: 
+          eventContext:
+
+    - title: EMG3
+      position: [2, 0]
+      ylabel:  
+      ylim: [-inf, inf]
+      normalActivation:
+      curves:
+        - data: 
+          legendLabel: 
+          eventContext:
+
+    - title: EMG4
+      position: [3, 0]
+      ylabel:  
+      ylim: [-inf, inf]
+      normalActivation:
+      curves:
+        - data: 
+          legendLabel: 
+          eventContext:
+
+    - title: EMG5
+      position: [4, 0]
+      ylabel:  
+      ylim: [-inf, inf]
+      normalActivation:
+      curves:
+        - data: 
+          legendLabel: 
+          eventContext:
+
+    - title: EMG6
+      position: [5, 0]
+      ylabel:  
+      ylim: [-inf, inf]
+      normalActivation:
+      curves:
+        - data: 
+          legendLabel: 
+          eventContext:
+
+    - title: EMG7
+      position: [6, 0]
+      ylabel:  
+      ylim: [-inf, inf]
+      normalActivation:
+      curves:
+        - data: 
+          legendLabel: 
+          eventContext:
+
+    - title: EMG8
+      position: [7, 0]
+      ylabel:  
+      ylim: [-inf, inf]
+      normalActivation:
+      curves:
+        - data: 
+          legendLabel: 
+          eventContext:
+
+    - title: EMG9
+      position: [8, 0]
+      ylabel:  
+      ylim: [-inf, inf]
+      normalActivation:
+      curves:
+        - data: 
+          legendLabel: 
+          eventContext:
+
+
+    - title: EMG10
+      position: [9, 0]
+      ylabel:  
+      ylim: [-inf, inf]
+      normalActivation:
+      curves:
+        - data: 
+          legendLabel: 
+          eventContext:

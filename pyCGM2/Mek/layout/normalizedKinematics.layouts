@@ -1,0 +1,494 @@
+lowerLimbKinematics:
+
+  rows: 5
+  cols: 3
+
+  sup_title : Time-normalized Lower Limb  Kinematics
+
+  plots:
+    - title: Pelvis Tilt
+      position: [0, 0]
+      ylabel: Amplitude
+      ylim: [0, 60]
+      curves:
+        - data: LPelvisAngles.0
+          legendLabel: Left
+          eventContext: Left
+        - data: RPelvisAngles.0
+          legendLabel: Right
+          eventContext: Right
+
+    - title: Pelvis Obliquity
+      position: [0, 1]
+      ylabel: Amplitude
+      ylim: [-30, 30]
+      curves:
+        - data: LPelvisAngles.1
+          legendLabel: Left
+          eventContext: Left
+        - data: RPelvisAngles.1
+          legendLabel: Right
+          eventContext: Right
+
+
+    - title: Pelvis Rotation
+      position: [0, 2]
+      ylabel: Amplitude
+      ylim: [-30, 30]
+      curves:
+        - data: LPelvisAngles.2
+          legendLabel: Left
+          eventContext: Left
+        - data: RPelvisAngles.2
+          legendLabel: Right
+          eventContext: Right
+
+  # hip -----------------------------
+    - title: Hip Flexion
+      position: [1, 0]
+      ylabel: Amplitude
+      ylim: [-20, 70]
+      curves:
+        - data: LHipAngles.0
+          legendLabel: Left
+          eventContext: Left
+        - data: RHipAngles.0
+          legendLabel: Right
+          eventContext: Right
+
+    - title: Hip Adduction
+      position: [1, 1]
+      ylabel: Amplitude
+      ylim: [-30, 30]
+      curves:
+        - data: LHipAngles.1
+          legendLabel: Left
+          eventContext: Left
+        - data: RHipAngles.1
+          legendLabel: Right
+          eventContext: Right
+
+
+    - title: Hip Rotation
+      position: [1, 2]
+      ylabel: Amplitude
+      ylim: [-30, 30]
+      curves:
+        - data: LHipAngles.2
+          legendLabel: Left
+          eventContext: Left
+        - data: RHipAngles.2
+          legendLabel: Right
+          eventContext: Right
+
+  # knee -----------------------------
+    - title: Knee Flexion
+      position: [2, 0]
+      ylabel: Amplitude
+      ylim: [-15, 75]
+      curves:
+        - data: LKneeAngles.0
+          legendLabel: Left
+          eventContext: Left
+        - data: RKneeAngles.0
+          legendLabel: Right
+          eventContext: Right
+
+    - title: Knee Adduction
+      position: [2, 1]
+      ylabel: Amplitude
+      ylim: [-30, 30]
+      curves:
+        - data: LKneeAngles.1
+          legendLabel: Left
+          eventContext: Left
+        - data: RKneeAngles.1
+          legendLabel: Right
+          eventContext: Right
+
+
+    - title: Knee Rotation
+      position: [2, 2]
+      ylabel: Amplitude
+      ylim: [-30, 30]
+      curves:
+        - data: LKneeAngles.2
+          legendLabel: Left
+          eventContext: Left
+        - data: RKneeAngles.2
+          legendLabel: Right
+          eventContext: Right
+
+
+
+  # Ankle -----------------------------
+    - title: Ankle Flexion
+      position: [3, 0]
+      ylabel: Amplitude
+      ylim: [-30, 30]
+      curves:
+        - data: LAnkleAngles.0
+          legendLabel: Left
+          eventContext: Left
+        - data: RAnkleAngles.0
+          legendLabel: Right
+          eventContext: Right
+
+    - title: Ankle Supination
+      position: [3, 1]
+      ylabel: Amplitude
+      ylim: [-30, 30]
+      curves:
+        - data: LAnkleAngles.1
+          legendLabel: Left
+          eventContext: Left
+        - data: RAnkleAngles.1
+          legendLabel: Right
+          eventContext: Right
+
+
+    - title: Foot Progress
+      position: [3, 2]
+      ylabel: Amplitude
+      ylim: [-30, 30]
+      curves:
+        - data: LFootProgressAngles.2
+          legendLabel: Left
+          eventContext: Left
+        - data: RFootProgressAngles.2
+          legendLabel: Right
+          eventContext: Right
+
+  # ForeFoot -----------------------------
+    - title: ForeFoot dorsiflexion
+      position: [4, 0]
+      ylabel: Amplitude
+      ylim: [-50, 30]
+      curves:
+        - data: LForeFootAngles.0
+          legendLabel: Left
+          eventContext: Left
+        - data: RForeFootAngles.0
+          legendLabel: Right
+          eventContext: Right
+
+    - title: ForeFoot Eversion
+      position: [4, 1]
+      ylabel: Amplitude
+      ylim: [-30, 30]
+      curves:
+        - data: LForeFootAngles.1
+          legendLabel: Left
+          eventContext: Left
+        - data: RForeFootAngles.1
+          legendLabel: Right
+          eventContext: Right
+
+
+    - title: ForeFoot Adduction
+      position: [4, 2]
+      ylabel: Amplitude
+      ylim: [-30, 30]
+      curves:
+        - data: LForeFootAngles.2
+          legendLabel: Left
+          eventContext: Left
+        - data: RForeFootAngles.2
+          legendLabel: Right
+          eventContext: Right
+
+trunkKinematics:
+  rows: 5
+  cols: 3
+
+  sup_title : Time-normalized Trunk Kinematics
+
+  plots:
+    - title: Pelvis Tilt
+      position: [0, 0]
+      ylabel: Amplitude
+      ylim: [0, 60]
+      curves:
+        - data: LPelvisAngles.0
+          label: Left
+          color: red
+        - data: RPelvisAngles.0
+          label: Right
+          color: blue
+
+    - title: Pelvis Obliquity
+      position: [0, 1]
+      ylabel: Amplitude
+      ylim: [-30, 30]
+      curves:
+        - data: LPelvisAngles.1
+          label: Left
+          color: red
+        - data: RPelvisAngles.1
+          label: Right
+          color: blue
+
+
+    - title: Pelvis Rotation
+      position: [0, 2]
+      ylabel: Amplitude
+      ylim: [-30, 30]
+      curves:
+        - data: LPelvisAngles.2
+          label: Left
+          color: red
+        - data: RPelvisAngles.2
+          label: Right
+          color: blue
+
+  # Spine -----------------------------
+    - title: Spine Flexion
+      position: [1, 0]
+      ylabel: Amplitude
+      ylim: [-30, 30]
+      curves:
+        - data: LSpineAngles.0
+          label: Left
+          color: red
+        - data: RSpineAngles.0
+          label: Right
+          color: blue
+
+    - title: Spine Adduction
+      position: [1, 1]
+      ylabel: Amplitude
+      ylim: [-30, 30]
+      curves:
+        - data: LSpineAngles.1
+          label: Left
+          color: red
+        - data: RSpineAngles.1
+          label: Right
+          color: blue
+
+
+    - title: Spine Rotation
+      position: [1, 2]
+      ylabel: Amplitude
+      ylim: [-30, 30]
+      curves:
+        - data: LSpineAngles.2
+          label: Left
+          color: red
+        - data: RSpineAngles.2
+          label: Right
+          color: blue
+
+  # Thorax -----------------------------
+    - title: Thorax Anteversion
+      position: [2, 0]
+      ylabel: Amplitude
+      ylim: [-30, 30]
+      curves:
+        - data: LThoraxAngles.0
+          label: Left
+          color: red
+        - data: RThoraxAngles.0
+          label: Right
+          color: blue
+
+    - title: Thorax Obliquity
+      position: [2, 1]
+      ylabel: Amplitude
+      ylim: [-30, 30]
+      curves:
+        - data: LThoraxAngles.1
+          label: Left
+          color: red
+        - data: RThoraxAngles.1
+          label: Right
+          color: blue
+
+
+    - title: Thorax Rotation
+      position: [2, 2]
+      ylabel: Amplitude
+      ylim: [-30, 30]
+      curves:
+        - data: LThoraxAngles.2
+          label: Left
+          color: red
+        - data: RThoraxAngles.2
+          label: Right
+          color: blue
+
+
+
+  # Neck -----------------------------
+    - title: Neck Forward Tilt
+      position: [3, 0]
+      ylabel: Amplitude
+      ylim: [-30, 30]
+      curves:
+        - data: LNeckAngles.0
+          label: Left
+          color: red
+        - data: RNeckAngles.0
+          label: Right
+          color: blue
+
+    - title: Neck Lateral Tilt
+      position: [3, 1]
+      ylabel: Amplitude
+      ylim: [-30, 30]
+      curves:
+        - data: LNeckAngles.1
+          label: Left
+          color: red
+        - data: RNeckAngles.1
+          label: Right
+          color: blue
+
+
+    - title: Neck Rotation
+      position: [3, 2]
+      ylabel: Amplitude
+      ylim: [-30, 30]
+      curves:
+        - data: LNeckAngles.2
+          label: Left
+          color: red
+        - data: RNeckAngles.2
+          label: Right
+          color: blue
+
+  # Head -----------------------------
+    - title: Head Forward Tilt
+      position: [4, 0]
+      ylabel: Amplitude
+      ylim: [-50, 30]
+      curves:
+        - data: LHeadAngles.0
+          label: Left
+          color: red
+        - data: RHeadAngles.0
+          label: Right
+          color: blue
+
+    - title: Head Lateral Tilt
+      position: [4, 1]
+      ylabel: Amplitude
+      ylim: [-30, 30]
+      curves:
+        - data: LHeadAngles.1
+          label: Left
+          color: red
+        - data: RHeadAngles.1
+          label: Right
+          color: blue
+
+
+    - title: Head Adduction
+      position: [4, 2]
+      ylabel: Amplitude
+      ylim: [-30, 30]
+      curves:
+        - data: LHeadAngles.2
+          label: Left
+          color: red
+        - data: RHeadAngles.2
+          label: Right
+          color: blue
+
+upperKinematics:
+  rows: 5
+  cols: 3
+
+  sup_title : Time-normalized Lower Limb  Kinematics
+
+  # Shoulder ----------------------------
+  plots:
+    - title: Shoulder flexion
+      position: [0, 0]
+      ylabel: Amplitude
+      ylim: [-60, 60]
+      curves:
+        - data: LPelvisAngles.0
+          label: Left
+          color: red
+        - data: RPelvisAngles.0
+          label: Right
+          color: blue
+
+    - title: Shoulder Adduction
+      position: [0, 1]
+      ylabel: Amplitude
+      ylim: [-30, 30]
+      curves:
+        - data: LPelvisAngles.1
+          label: Left
+          color: red
+        - data: RPelvisAngles.1
+          label: Right
+          color: blue
+
+
+    - title: Shoulder Rotation
+      position: [0, 2]
+      ylabel: Amplitude
+      ylim: [-30, 30]
+      curves:
+        - data: LPelvisAngles.2
+          label: Left
+          color: red
+        - data: RPelvisAngles.2
+          label: Right
+          color: blue
+
+  # Elbow -----------------------------
+    - title: Elbow Flexion
+      position: [1, 0]
+      ylabel: Amplitude
+      ylim: [-60, 60]
+      curves:
+        - data: LHipAngles.0
+          label: Left
+          color: red
+        - data: RHipAngles.0
+          label: Right
+          color: blue
+
+    
+
+  # Wrist -----------------------------
+    - title: Ulnar Deviation
+      position: [2, 0]
+      ylabel: Amplitude
+      ylim: [-30, 30]
+      curves:
+        - data: LKneeAngles.0
+          label: Left
+          color: red
+        - data: RKneeAngles.0
+          label: Right
+          color: blue
+
+    - title: Wrist Extension
+      position: [2, 1]
+      ylabel: Amplitude
+      ylim: [-30, 30]
+      curves:
+        - data: LKneeAngles.1
+          label: Left
+          color: red
+        - data: RKneeAngles.1
+          label: Right
+          color: blue
+
+
+    - title: Wrist Rotation
+      position: [2, 2]
+      ylabel: Amplitude
+      ylim: [0, 160]
+      curves:
+        - data: LKneeAngles.2
+          label: Left
+          color: red
+        - data: RKneeAngles.2
+          label: Right
+          color: blue
