@@ -61,9 +61,9 @@ def processEMG(DATA_PATH:str,
 
     if fileSuffix is None: fileSuffix = ""
 
+    out = []
     for gaitTrial in gaitTrials:
         acq = btkTools.smartReader(DATA_PATH + gaitTrial)
-
         for channel in emgChannels:
             if not btkTools.isAnalogExist(acq,channel):
                 raise Exception("channel [%s] not detected in the c3d [%s]" % (channel, gaitTrial))
@@ -81,8 +81,11 @@ def processEMG(DATA_PATH:str,
 
         if outDataPath is None:
             btkTools.smartWriter(acq,DATA_PATH+outFilename)
+            out.append(DATA_PATH+outFilename)
         else:
             btkTools.smartWriter(acq,outDataPath+outFilename)
+            out.append(outDataPath+outFilename)
+    return out
 
 
 def normalizedEMG(DATA_PATH:str,
