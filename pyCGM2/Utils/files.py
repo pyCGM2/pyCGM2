@@ -789,6 +789,7 @@ def copyPasteDirectory(src:str, dst:str):
         src (str): The source directory path.
         dst (str): The destination directory path.
     """
+    import ipdb; ipdb.set_trace()
     try:
         shutil.copytree(src, dst)
     except FileExistsError:
@@ -960,3 +961,55 @@ def count_directories_with_label(data_directory, label):
             if label in dir:
                 count += 1
     return count
+
+def get_parent_directory(path_str):
+    """
+    Return the parent directory of the given path,
+    ensuring a trailing separator.
+    """
+    # Normalize path (handles / vs \ on Windows)
+    path_str = os.path.normpath(path_str)
+
+    # Extract parent directory
+    parent = os.path.dirname(path_str)
+
+    # Ensure trailing separator
+    if not parent.endswith(os.sep):
+        parent += os.sep
+
+    return parent
+
+import os
+
+
+def delete_all_files(root_dir: str, extension: str, verbose: bool = True) -> None:
+    """
+    Delete all .h5 files found in a directory and all its subdirectories,
+    with optional logging.
+
+    Parameters
+    ----------
+    root_dir : str
+        Root directory to search recursively.
+    verbose : bool, optional
+        If True, print a log message for each deleted file.
+    """
+
+    if not os.path.isdir(root_dir):
+        raise FileNotFoundError(f"Directory does not exist: {root_dir}")
+
+    deleted_count = 0
+
+
+    for root, _, files in os.walk(root_dir):
+        for filename in files:
+            if filename.lower().endswith(f".{extension}"):
+                file_path = os.path.join(root, filename)
+                os.remove(file_path)
+                deleted_count += 1
+
+                if verbose:
+                    print(f"[DELETE] {file_path}")
+
+    if verbose:
+        print(f"[DONE] {deleted_count} .{extension} file(s) deleted.")

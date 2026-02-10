@@ -23,6 +23,18 @@ import argparse
 
 def main(args=None):
 
+    # from argparse import Namespace
+    # args2 = Namespace(
+    #     subparser="FLOW",
+    #     FLOW="Edit",
+    #     cgmVersion="CGM2.1",
+    #     suffix="",
+    #     display=False,
+    #     data_path="C:\\blabab\\"
+    # )
+
+    # import ipdb; ipdb.set_trace()
+
     if args is None:
         parser = argparse.ArgumentParser(description='Edit flow report from Eclipse')
         parser.add_argument('-cgm', '--cgmVersion', type=str,
@@ -33,26 +45,32 @@ def main(args=None):
                             default="",
                             required=False) 
         parser.add_argument('-d', '--display',
-                            action='store_true', help='display the flow file after edition')       
+                            action='store_true', help='display the flow file after edition')
+
+        parser.add_argument('-dp', '--data_path', type=str,
+                            default=None)       
+        
         args = parser.parse_args()
 
     version = args.cgmVersion
     versionforFile = version.replace(".","")
-
     displayFileFlag = args.display
+    suffix = args.suffix
 
-    nexusCon = connection.NexusConnection()
+    data_path = args.data_path
+    if data_path is None:
+        nexusCon = connection.NexusConnection()
 
-    if nexusCon.isConnected():
-        try:
-            data_path, trialFilename = nexusCon.nexusTools.getTrialName(nexusCon.NEXUS) 
-        except Exception as e:
-            LOGGER.logger.error(f"No trial  loaded in Nexus: {e}, fallback to ui selection")
+        if nexusCon.isConnected():
+            try:
+                data_path, trialFilename = nexusCon.nexusTools.getTrialName(nexusCon.NEXUS) 
+            except Exception as e:
+                LOGGER.logger.error(f"No trial  loaded in Nexus: {e}, fallback to ui selection")
+                data_path = uiTools.uiGetDir()
+                data_path= data_path+"\\" 
+        else:
             data_path = uiTools.uiGetDir()
-            data_path= data_path+"\\" 
-    else:
-        data_path = uiTools.uiGetDir()
-        data_path= data_path+"\\"                            
+            data_path= data_path+"\\"                            
 
 
     if not os.path.isfile(data_path+"emg.settings"):
@@ -65,7 +83,7 @@ def main(args=None):
                                         emgSettings = emgSettings
                                         )
 
-    suffix = "-"+args.suffix if args.suffix != "" else ""
+    suffix = "-"+suffix if suffix != "" else ""
 
     fef.run(f"{versionforFile}{suffix}_v2.settings",displayFile=displayFileFlag)
 

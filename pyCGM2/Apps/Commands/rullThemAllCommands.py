@@ -47,6 +47,8 @@ from pyCGM2.Apps.QtmApps.CGMi import QPYCGM2_processing
 
 from pyCGM2.Apps.flow import flowInit
 from pyCGM2.Apps.flow import flowEdit
+from pyCGM2.Apps.flow import flowPrepare
+from pyCGM2.Apps.flow import flowMekPopulate
 
 
 
@@ -602,6 +604,8 @@ class MainParser:
         flow_subparsers = flow_parser.add_subparsers(help='', dest="FLOW")
         
         parser_flowInit = flow_subparsers.add_parser('Init', help='command to initialize flow')
+        parser_flowInit.add_argument('-dp', '--data_path', type=str,
+                            default=None)       
 
         parser_flowEdit = flow_subparsers.add_parser('Edit', help='command to edit flow')
         parser_flowEdit.add_argument('-cgm', '--cgmVersion', type=str,
@@ -613,7 +617,29 @@ class MainParser:
                             required=False) 
         parser_flowEdit.add_argument('-d', '--display',
                             action='store_true', help='distplay the flow file after edition')
+        parser_flowEdit.add_argument('-dp', '--data_path', type=str,
+                            default=None)       
 
+        parser_prepare = flow_subparsers.add_parser('Prepare', help='command to prepare c3d')
+        parser_prepare.add_argument('-u', '--userSettings', type=str,
+                            help='userSettings file name, should be in the data folder',
+                            required=True)
+        parser_prepare.add_argument('-dp', '--data_path', type=str,
+                            default=None)
+        parser_prepare.add_argument('-c', '--conditions', nargs='*', help='list of conditions',required=False) 
+        
+        parser_populate = flow_subparsers.add_parser('Populate', help='command to populate mek database')
+        parser_populate.add_argument('-u', '--userSettings', type=str,
+                            help='userSettings file name, should be in the data folder',
+                            required=True)
+        parser_populate.add_argument('-dp', '--data_path', type=str,
+                            default=None)
+        parser_populate.add_argument('-a', '--analysisID', type=int,
+                            help='analysis identification',
+                            required=False)
+        parser_populate.add_argument('-up', '--update', 
+                            action='store_true', help='enable update of the analysis') 
+        parser_populate.add_argument('-c', '--conditions', nargs='*', help='list of conditions',required=False)
 
     def get_parser(self):
         """
@@ -770,7 +796,10 @@ class MainParser:
                     flowInit.main(args)
                 elif args.FLOW == "Edit":
                     flowEdit.main(args)
-
+                elif args.FLOW == "Prepare":
+                    flowPrepare.main(args)
+                elif args.FLOW =="Populate":
+                    flowMekPopulate.main(args)
 def get_main_parser():
     """
     This function is used by sphinx-argparse for documentation.
