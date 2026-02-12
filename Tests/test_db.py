@@ -43,15 +43,37 @@ class Test_eclipseConnection:
             # 5) (Optional) Register artifacts inside a session folder (relative paths)
             a1 = svc.artifacts.upsert(session_id=s1.id, data_type="c3d", rel_path="trial01.c3d", label="Trial 01")
             
+            # 6) (Optional) Register metadata artifacts inside
+            svc.artifact_meta.upsert(
+                            artifact_id=a1.id,
+                            section="TRIAL_INFO",
+                            key=str("ConditionID"),
+                            value="Condition1",
+                            value_type="str"
+                        )
+
 
             print("Artifact a1 full path:", svc.get_artifact_path(a1.id))
 
-            # 6) List sessions
-            for s in svc.sessions.list_by_patient(patient.ipp):
-                print(f"Session {s.session_index}:", svc.get_session_path(patient.ipp, s.session_index))
-
+ 
         finally:
             con.close()
+
+    def test_retreive(self):
+
+        factory = eclDB.SQLiteConnectionFactory(DB_PATH)
+        con = factory.connect()
+        try:
+
+            eclDB.SchemaManager(con).ensure_schema()
+            svc = eclDB.DataIndexService(con)
+            ipp="026886551"
+            for s in svc.sessions.list_by_patient(ipp):
+                print(f"Session {s.session_index}:", svc.get_session_path(ipp, s.session_index))
+        finally:
+            con.close()
+
+
 
     def test_retreiveC3d_fromIppSession(self):
 
