@@ -3,11 +3,13 @@
 
 
 import pyCGM2
+from pyCGM2 import connection
 from pyCGM2.connection import eclipseConnector as eclDB
 from pathlib import Path
 
 from argparse import Namespace
     
+DB_PATH = connection.DB_TEST_PATH
 
 class Test_eclipseConnection:
     def test_0(self):
@@ -50,6 +52,24 @@ class Test_eclipseConnection:
 
         finally:
             con.close()
+
+    def test_artifact(self):
+
+        factory = eclDB.SQLiteConnectionFactory(DB_PATH)
+        con = factory.connect()
+        try:
+
+            eclDB.SchemaManager(con).ensure_schema()
+            svc = eclDB.DataIndexService(con)
+
+            items = svc.list_c3d_with_metadata(ipp="026886551", session_index=1)
+            for item in items:
+                print("C3D:", item.full_path)
+                print("Type:", item.metadata.get(("TRIAL_INFO", "TrialType")))
+                print("Condition:", item.metadata.get(("TRIAL_INFO", "ConditionID")))
+        finally:
+            con.close()
+
 
 
 

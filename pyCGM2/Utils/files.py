@@ -14,6 +14,7 @@ LOGGER = pyCGM2.LOGGER
 from pyCGM2.Model.model import Model
 from pyCGM2.Processing.analysis import Analysis
 from typing import List, Tuple, Dict, Optional
+import re
 
 
 # set to fix orderdict in saveYaml
@@ -691,12 +692,16 @@ def createDir(fullPathName:str):
         LOGGER.logger.info("directory already exists")
     return pathOut+"\\"
 
-def getDirs(folderPath:str, contain:Optional[str]=None):
+def getDirs(folderPath:str, contain:Optional[str]=None, pattern: Optional[str] = None):
     """
     Get all subdirectories within a folder.
 
     Args:
         folderPath (str): The folder path to search for subdirectories.
+        contain (str, optional): If specified, only subdirectories containing this string will be returned. Defaults to None.
+        pattern (str, optional): If specified, only subdirectories matching this regex pattern will be returned. Defaults to None.  
+
+    Example:getDirs("C:\\Data\\", contain="Session", pattern= r"Session [0-9]+")     
 
     Returns:
         List[str]: A list of subdirectory names.
@@ -707,6 +712,10 @@ def getDirs(folderPath:str, contain:Optional[str]=None):
 
     if contain is not None:
         dirs = [name for name in dirs if contain in name]
+
+    if pattern is not None:
+        regex = re.compile(pattern)
+        dirs = [name for name in dirs if regex.fullmatch(name)]
 
     return ( dirs)
 

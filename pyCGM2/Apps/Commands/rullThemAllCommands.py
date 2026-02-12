@@ -611,7 +611,7 @@ class MainParser:
         parser_newPatient.add_argument('-pp', '--patient_path', type=str,
                             default=None)          
 
-        parser_registerPatient = flow_subparsers.add_parser('RegisterPatient', help='command to register a new patient in the database')
+        parser_registerPatient = flow_subparsers.add_parser('RegisterSession', help='command to register a  session in the database')
         parser_registerPatient.add_argument('-dp', '--data_path', type=str,
                             default=None)
 
@@ -820,7 +820,7 @@ class MainParser:
             elif "DB" in args: 
                 if args.DB == "NewPatient": 
                     manDBcommands.main_newPatient(args)
-                if args.DB =="RegisterPatient": 
+                if args.DB =="RegisterSession": 
                     manDBcommands.main_registerSession(args)
 
 def get_main_parser():

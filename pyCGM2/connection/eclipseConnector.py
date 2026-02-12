@@ -53,6 +53,15 @@ class ArtifactMeta:
     value: Optional[str]
     value_type: Optional[str] = None
 
+
+@dataclass(frozen=True)
+class ArtifactWithMetadata:
+    artifact: Artifact
+    full_path: Path
+    metadata: dict[tuple[Optional[str], str], Optional[str]]  # (section, key) -> value
+
+
+
 # ============================================================
 # Adapter pattern: convert stored TEXT paths into Path objects
 # ============================================================
@@ -537,6 +546,82 @@ class DataIndexService:
 
         base = self.get_session_path(row["ipp"], row["session_index"])
         return base / row["rel_path"]
+    
+    def list_c3d_with_metadata(self, ipp: str, session_index: int) -> list[ArtifactWithMetadata]:
+        # 1) récupérer root + folders + session_id en une seule fois
+        row = self._con.execute(
+            """
+            SELECT
+              s.id            AS session_id,
+              r.root_path     AS root_path,
+              p.folder_name   AS patient_folder,
+              s.folder_name   AS session_folder
+            FROM session s
+            JOIN patient p ON p.ipp = s.ipp
+            JOIN storage_root r ON r.id = p.storage_root_id
+            WHERE s.ipp=? AND s.session_index=?
+            """,
+            (ipp, session_index),
+        ).fetchone()
+
+        if row is None:
+            raise KeyError(f"Session not found: ipp={ipp}, session_index={session_index}")
+
+        session_id = int(row["session_id"])
+        base = PathAdapter.from_db(row["root_path"]) / row["patient_folder"] / row["session_folder"]
+
+        # 2) ramener tous les c3d + metadata en un seul SELECT
+        rows = self._con.execute(
+            """
+            SELECT
+              a.id         AS artifact_id,
+              a.session_id AS session_id,
+              a.data_type  AS data_type,
+              a.rel_path   AS rel_path,
+              a.label      AS label,
+              m.section    AS m_section,
+              m.key        AS m_key,
+              m.value      AS m_value
+            FROM artifact a
+            LEFT JOIN artifact_metadata m ON m.artifact_id = a.id
+            WHERE a.session_id=? AND a.data_type='c3d'
+            ORDER BY a.rel_path, m.section, m.key
+            """,
+            (session_id,),
+        ).fetchall()
+
+        # 3) regroupement par artifact
+        by_id: dict[int, dict] = {}
+        for r in rows:
+            aid = int(r["artifact_id"])
+            if aid not in by_id:
+                art = Artifact(
+                    id=aid,
+                    session_id=int(r["session_id"]),
+                    data_type=r["data_type"],
+                    rel_path=r["rel_path"],
+                    label=r["label"],
+                )
+                by_id[aid] = {
+                    "artifact": art,
+                    "metadata": {},
+                }
+
+            if r["m_key"] is not None:  # ligne avec metadata
+                by_id[aid]["metadata"][(r["m_section"], r["m_key"])] = r["m_value"]
+
+        out: list[ArtifactWithMetadata] = []
+        for aid, payload in by_id.items():
+            art: Artifact = payload["artifact"]
+            md: dict[tuple[Optional[str], str], Optional[str]] = payload["metadata"]
+            out.append(
+                ArtifactWithMetadata(
+                    artifact=art,
+                    full_path=base / art.rel_path,
+                    metadata=md,
+                )
+            )
+        return out
 
 
 # ============================================================

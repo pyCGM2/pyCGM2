@@ -180,3 +180,22 @@ def getNumberFromStr(input_string:str):
     else:
         LOGGER.logger.warning("No number found")
         return None
+    
+
+
+def is_valid_session_name(name: str) -> bool:
+    """
+    Vérifie que le nom est strictement du type 'Session <entier>'.
+
+    Exemples valides :
+        Session 1
+        Session 12
+
+    Exemples invalides :
+        Session_1
+        Session1
+        Session 1 passage1
+        Session A
+    """
+    pattern = r"^Session [0-9]+$"
+    return re.fullmatch(pattern, name) is not None

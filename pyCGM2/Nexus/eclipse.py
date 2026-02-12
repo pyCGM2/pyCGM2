@@ -23,7 +23,7 @@ def getC3d_enfTrialMetadata(data_path, c3dFilename):
             enfTrial = TrialEnfReader(data_path, f"{c3dName}.Trial.enf")
         except Exception as e: 
             LOGGER.logger.warning(f"No trial enf file found for c3d {c3dName} in the data path")
-            raise e
+            return c3dName, None
         metadataEnfTrial = enfTrial.getTrialInfos()
 
         c3dName = c3dFilename.replace(".c3d","") if c3dFilename.endswith(".c3d") else c3dFilename
