@@ -12,7 +12,7 @@ from argparse import Namespace
 DB_PATH = connection.DB_TEST_PATH
 
 class Test_eclipseConnection:
-    def test_0(self):
+    def test_usageExample(self):
 
         db_path = "C:\\Users\\fleboeuf\\Documents\DATA\\pyCGM2-Data-Tests\\NantesSamples\\eclipseDB_test.db "
 
@@ -53,7 +53,7 @@ class Test_eclipseConnection:
         finally:
             con.close()
 
-    def test_artifact(self):
+    def test_retreiveC3d_fromIppSession(self):
 
         factory = eclDB.SQLiteConnectionFactory(DB_PATH)
         con = factory.connect()
