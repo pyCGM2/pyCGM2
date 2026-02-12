@@ -21,32 +21,29 @@ LOGGER.set_file_handler("pyCGM2-Mek.log")
 
 from pyCGM2.Utils import files
 from pyCGM2.Tools import uiTools
-from pyCGM2 import connection
+from pyCGM2.Nexus import nexus
 
 import argparse
 
 def main(args=None):
 
-    if data_path is not None and  args is None:
+    if  args is None:
         parser = argparse.ArgumentParser(description='Initialize flow report')
         parser.add_argument('-dp', '--data_path', type=str,
                             default=None)       
         args = parser.parse_args()
     
-
-    data_path = args.data_path                 
     if data_path is None:
-        nexusCon = connection.NexusConnection()
+        nexusCon = nexus.NexusConnection()
         if nexusCon.isConnected():
             try:
-                data_path, trialFilename = nexusCon.nexusTools.getTrialName(nexusCon.NEXUS) 
+                data_path, trialFilename = nexusCon.nexusTools.getTrialName(nexusCon.NEXUS)
+                
             except Exception as e:
                 LOGGER.logger.warning(f"No trial  loaded in Nexus: {e}, fallback to ui selection")
                 data_path = uiTools.uiGetDir()
-                data_path= data_path+"\\" 
         else:
-            data_path = uiTools.uiGetDir()
-            data_path= data_path+"\\"     
+            data_path = uiTools.uiGetDir()     
 
     files.createDir(data_path+"Videos")
     files.createDir(data_path+"Exams")

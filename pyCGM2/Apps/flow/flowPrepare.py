@@ -20,7 +20,7 @@ from pyCGM2.Tools import uiTools
 from pyCGM2 import connection
 from pyCGM2.flow import settingsHandler
 from pyCGM2.Lib import emg
-
+from pyCGM2.Nexus import nexus
 
 import argparse
 
@@ -40,20 +40,17 @@ def main(args=None):
     userSettings = args.userSettings
     forcedConditions = args.conditions if args.conditions is not None else []
 
-    data_path = args.data_path
     if data_path is None:
-        nexusCon = connection.NexusConnection()
-
+        nexusCon = nexus.NexusConnection()
         if nexusCon.isConnected():
             try:
-                data_path, trialFilename = nexusCon.nexusTools.getTrialName(nexusCon.NEXUS) 
+                data_path, trialFilename = nexusCon.nexusTools.getTrialName(nexusCon.NEXUS)
+                
             except Exception as e:
-                LOGGER.logger.error(f"No trial  loaded in Nexus: {e}, fallback to ui selection")
+                LOGGER.logger.warning(f"No trial  loaded in Nexus: {e}, fallback to ui selection")
                 data_path = uiTools.uiGetDir()
-                data_path= data_path+"\\" 
         else:
-            data_path = uiTools.uiGetDir()
-            data_path= data_path+"\\"                            
+            data_path = uiTools.uiGetDir()                             
 
     # run 
     userSettingsFile = userSettings+".settings" if not userSettings.endswith(".settings") else userSettings

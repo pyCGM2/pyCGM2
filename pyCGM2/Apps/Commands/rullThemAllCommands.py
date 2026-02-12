@@ -50,6 +50,8 @@ from pyCGM2.Apps.flow import flowEdit
 from pyCGM2.Apps.flow import flowPrepare
 from pyCGM2.Apps.flow import flowMekPopulate
 
+from pyCGM2.Apps.manDB import manDBcommands
+
 
 
 
@@ -492,6 +494,7 @@ class MainParser:
         self.QTM()
         self.Settings()
         self.Flow()
+        self.DataBase()
 
 
     def Settings(self):
@@ -598,6 +601,19 @@ class MainParser:
         cgmProcessing_parser = qtm_cgm_subparser.add_parser("Processing", help= "CGM processing command")
         cgmProcessing_parser.add_argument('--debug', action='store_true',
                             help='set logger as debug mode')
+
+
+    def DataBase(self):
+        flow_parser = self.subparsers.add_parser("DB", help= "PyCGM2 Database commands")
+        flow_subparsers = flow_parser.add_subparsers(help='', dest="DB")
+        
+        parser_newPatient = flow_subparsers.add_parser('NewPatient', help='command to register a new patient in the database')
+        parser_newPatient.add_argument('-pp', '--patient_path', type=str,
+                            default=None)          
+
+        parser_registerPatient = flow_subparsers.add_parser('RegisterPatient', help='command to register a new patient in the database')
+        parser_registerPatient.add_argument('-dp', '--data_path', type=str,
+                            default=None)
 
     def Flow(self):
         flow_parser = self.subparsers.add_parser("FLOW", help= "PyCGM2 Flow commands")
@@ -800,6 +816,13 @@ class MainParser:
                     flowPrepare.main(args)
                 elif args.FLOW =="Populate":
                     flowMekPopulate.main(args)
+
+            elif "DB" in args: 
+                if args.DB == "NewPatient": 
+                    manDBcommands.main_newPatient(args)
+                if args.DB =="RegisterPatient": 
+                    manDBcommands.main_registerSession(args)
+
 def get_main_parser():
     """
     This function is used by sphinx-argparse for documentation.

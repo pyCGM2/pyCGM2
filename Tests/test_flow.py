@@ -1,5 +1,5 @@
 # coding: utf-8
-# pytest -s --disable-pytest-warnings --log-cli-level=INFO  test_flow.py::Test_flow
+# pytest -s --disable-pytest-warnings --log-cli-level=INFO  test_flow.py::Test_flowApp
 from jinja2 import Template
 
 import pyCGM2
@@ -9,8 +9,15 @@ from pyCGM2.Utils import files
 from pyCGM2.Mek.mek import mekTools
 
 from pyCGM2.flow import settingsHandler 
+from pyCGM2.Apps.flow import flowInit
+from pyCGM2.Apps.flow import flowEdit
+from pyCGM2.Apps.flow import flowPrepare
+from pyCGM2.Apps.flow import flowMekPopulate
 
 
+
+from argparse import Namespace
+    
 
 class Test_flow:
     def test_empty(self):
@@ -71,22 +78,31 @@ class Test_flow:
 
 
 
-class Test_settings:
-    def test_homogeneize(self):
-        path = "C:\\Users\\fleboeuf\\Documents\\DATA\\pyCGM2-Data-Tests\\flow\\settings\\"
+class Test_flowApp:
+    def test_init(self):
+        path = pyCGM2.TEST_DATA_PATH + "Nantes\\OSMANOV Akhmed\\Session 3\\"
+        args = Namespace(  subparser="FLOW" ,  FLOW="Init",         data_path=path    )
+        flowInit.main(args=args) 
 
-        settings = files.openFile(path, "CGMversion24-new.settings")
+    def test_edit(self):
+        path = pyCGM2.TEST_DATA_PATH + "Nantes\\OSMANOV Akhmed\\Session 3\\"
+        args = Namespace(  subparser="FLOW" ,  FLOW="Edit",         
+                         cgmVersion="CGM2.3", suffix="newtest", display=True,data_path=path    )
+        flowEdit.main(args=args) 
+    
+    def test_prepare(self):
+        path = pyCGM2.TEST_DATA_PATH + "Nantes\\OSMANOV Akhmed\\Session 3\\"
+        args = Namespace(  subparser="FLOW" ,  FLOW="prepare",         
+                         cgmVersion="CGM2.3", suffix="newtest", display=True,data_path=path    )
+        flowEdit.main(args=args) 
 
-        previousEmgSttings = files.openFile(path, "emg.settings")
+    def test_mekPopulate(self):
+        path = pyCGM2.TEST_DATA_PATH + "Nantes\\OSMANOV Akhmed\\Session 3\\"
+        args = Namespace(  subparser="FLOW" ,  FLOW="prepare",         
+                         cgmVersion="CGM2.3", suffix="newtest", display=True,data_path=path    )
+        flowEdit.main(args=args) 
 
-        settingsHandler.homogeneizeEmgSettings(settings, previousEmgSttings)
-        #print(settings["Protocol"]["Conditions"][0]["EmgSettings"])
 
-        settingsHandler.homogeneizeTranslators(settings)
-        #print(settings["Fitting"]["Trials"][0])
-
-        files.saveYaml(path,"CGMversion24-homogeneized.settings",settings)
-        
 
 
 

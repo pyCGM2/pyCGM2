@@ -23,4 +23,5 @@ def uiGetDir(title: str = "Select a Data Folder",
         QFileDialog.ShowDirsOnly | QFileDialog.DontResolveSymlinks
     )
 
+    directory = directory.replace("/", "\\")+"\\"  # Ensure backslashes for Windows paths
     return directory if directory else None
