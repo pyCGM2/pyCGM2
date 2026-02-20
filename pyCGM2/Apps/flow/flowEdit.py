@@ -23,7 +23,7 @@ from pyCGM2.Nexus import nexus
 import argparse
 
 def main(args=None):
-
+    
     # from argparse import Namespace
     # args2 = Namespace(
     #     subparser="FLOW",
@@ -57,6 +57,7 @@ def main(args=None):
     versionforFile = version.replace(".","")
     displayFileFlag = args.display
     suffix = args.suffix
+    data_path = args.data_path
 
     if data_path is None:
         nexusCon = nexus.NexusConnection()

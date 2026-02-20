@@ -1,5 +1,5 @@
 # coding: utf-8
-# pytest -s --disable-pytest-warnings --log-cli-level=INFO  test_flow.py::Test_flowApp
+# pytest -s --disable-pytest-warnings --log-cli-level=INFO  test_flow.py::Test_flowApp::test_mekImport
 from jinja2 import Template
 
 import pyCGM2
@@ -11,6 +11,7 @@ from pyCGM2.Mek.mek import mekTools
 from pyCGM2.flow import settingsHandler 
 from pyCGM2.Apps.flow import flowInit
 from pyCGM2.Apps.flow import flowEdit
+from pyCGM2.Apps.flow import flowMekImporter
 from pyCGM2.Apps.flow import flowPrepare
 from pyCGM2.Apps.flow import flowMekPopulate
 
@@ -90,17 +91,36 @@ class Test_flowApp:
                          cgmVersion="CGM2.3", suffix="newtest", display=True,data_path=path    )
         flowEdit.main(args=args) 
     
+    def test_mekImport(self):
+        path = pyCGM2.TEST_DATA_PATH + "NantesSamples\\AQM Adultes\\BOUCHE Alain\\Session 1\\"
+        args = Namespace(  subparser="FLOW" ,  FLOW="Import",         
+                         userSettings="CGM23_v2", data_path=path,
+                        conditions=None )
+        
+        flowMekImporter.main(args=args) 
+
+
     def test_prepare(self):
-        path = pyCGM2.TEST_DATA_PATH + "Nantes\\OSMANOV Akhmed\\Session 3\\"
-        args = Namespace(  subparser="FLOW" ,  FLOW="prepare",         
-                         cgmVersion="CGM2.3", suffix="newtest", display=True,data_path=path    )
-        flowEdit.main(args=args) 
+        path = pyCGM2.TEST_DATA_PATH + "NantesSamples\\AQM Adultes\\BOUCHE Alain\\Session 1\\"
+        args = Namespace(  subparser="FLOW" ,  FLOW="Prepare",         
+                         userSettings="CGM23_v2", data_path=path,
+                         conditions=None )
+        flowPrepare.main(args=args) 
+
+
+
 
     def test_mekPopulate(self):
-        path = pyCGM2.TEST_DATA_PATH + "Nantes\\OSMANOV Akhmed\\Session 3\\"
-        args = Namespace(  subparser="FLOW" ,  FLOW="prepare",         
-                         cgmVersion="CGM2.3", suffix="newtest", display=True,data_path=path    )
-        flowEdit.main(args=args) 
+        path = pyCGM2.TEST_DATA_PATH + "NantesSamples\\AQM Adultes\\BOUCHE Alain\\Session 1\\"
+        args = Namespace(  subparser="FLOW" ,  FLOW="Populate",         
+                         userSettings="CGM23_v2", data_path=path,
+                         analysisID =None,
+                         update=True,
+                        conditions=None )
+        flowMekPopulate.main(args=args) 
+
+
+
 
 
 

@@ -54,8 +54,7 @@ def main(args=None):
                             required=False)
         parser.add_argument('-up', '--update', 
                             action='store_true', help='enable update of the analysis')
-        
-        
+       
         parser.add_argument('-c', '--conditions', nargs='*', help='list of conditions',required=False)
 
         args = parser.parse_args()
@@ -65,6 +64,7 @@ def main(args=None):
     analysisId = args.analysisID if args.analysisID is not None else 1
     updateMode = args.update
     forcedConditions = args.conditions if args.conditions is not None else []
+    data_path = args.data_path
 
     if data_path is None:
         nexusCon = nexus.NexusConnection()
@@ -86,6 +86,7 @@ def main(args=None):
     processedPath = data_path+f"Processing_{userSettingsFileNoExt}\\"
 
     subject_path = files.get_parent_directory(data_path)
+
 
     # recherche du fichier h5
     ipp =  userSettings["SubjectInfo"]["Ipp"]
@@ -111,12 +112,13 @@ def main(args=None):
         if not updateMode:
             LOGGER.logger.error(f"the group ({session_dir}/Analysis {analysisId}) already exists.")
             raise Exception("groupError")
-        else:
-            ds.root().create_group(f"{session_dir}/Analysis {analysisId}")
+    else:
+        ds.root().create_group(f"{session_dir}/Analysis {analysisId}")
 
 
 
     # add attribute a session
+    # import ipdb; ipdb.set_trace()
     mekFlow.create_flowSettings_attribute(userSettings, ds, f"{session_dir}/Analysis {analysisId}")
     group = ds.root().retrieve_group(f"{session_dir}/Analysis {analysisId}")
     group.create_attribute("userSettingsFile", userSettingsFile)    

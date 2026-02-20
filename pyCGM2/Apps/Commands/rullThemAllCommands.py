@@ -40,6 +40,9 @@ from pyCGM2.Apps.ViconApps.Plot import kinetics
 from pyCGM2.Apps.ViconApps.Plot import reaction
 from pyCGM2.Apps.ViconApps.Plot import emg
 
+from pyCGM2.Apps.ViconApps.mek import mekTrialImporter
+
+
 from pyCGM2.Apps.QtmApps.CGMi import QPYCGM2_events
 from pyCGM2.Apps.QtmApps.CGMi import QPYCGM2_modelling
 from pyCGM2.Apps.QtmApps.CGMi import QPYCGM2_processing
@@ -47,6 +50,7 @@ from pyCGM2.Apps.QtmApps.CGMi import QPYCGM2_processing
 
 from pyCGM2.Apps.flow import flowInit
 from pyCGM2.Apps.flow import flowEdit
+from pyCGM2.Apps.flow import flowMekImporter
 from pyCGM2.Apps.flow import flowPrepare
 from pyCGM2.Apps.flow import flowMekPopulate
 
@@ -581,6 +585,13 @@ class MainParser:
         system_subparsers = system_parser.add_subparsers(help='', dest="System")
         parser_deviceDetails = system_subparsers.add_parser('DeviceDetails', help='command to get device details')
         
+        # mek----
+        mek_parser = nexus_subparser.add_parser("Mek", help= "Nexus mek commands")
+        mek_subparsers = mek_parser.add_subparsers(help='', dest="Mek")
+        parser_importer = mek_subparsers.add_parser('Import', help='command to import mek data into the database')
+        parser_importer.add_argument('-cgm', '--cgmVersion', type=str,
+                            help='a CGM version from CGM1.0 to CGM2.5 ',
+                            required=False, default=None)
 
     def QTM(self):
         """
@@ -634,7 +645,15 @@ class MainParser:
         parser_flowEdit.add_argument('-d', '--display',
                             action='store_true', help='distplay the flow file after edition')
         parser_flowEdit.add_argument('-dp', '--data_path', type=str,
-                            default=None)       
+                            default=None)
+
+        parser_import = flow_subparsers.add_parser('Import', help='command to import a trial')
+        parser_import.add_argument('-u', '--userSettings', type=str,
+                            help='userSettings file name, should be in the data folder',
+                            required=True)
+        parser_import.add_argument('-dp', '--data_path', type=str,
+                            default=None)
+        parser_import.add_argument('-c', '--conditions', nargs='*', help='list of conditions',required=False)       
 
         parser_prepare = flow_subparsers.add_parser('Prepare', help='command to prepare c3d')
         parser_prepare.add_argument('-u', '--userSettings', type=str,
@@ -789,6 +808,11 @@ class MainParser:
                     if args.System == "DeviceDetails":
                         deviceDetailsCommand.main(args)
  
+                elif args.NEXUS == "Mek":
+                    if args.Mek == "Import":
+                        mekTrialImporter.main(args)
+ 
+
                 elif args.NEXUS == "Settings":
                     if args.Settings == "Remote":
                         remoteEmgSettings.main(args)
@@ -812,6 +836,8 @@ class MainParser:
                     flowInit.main(args)
                 elif args.FLOW == "Edit":
                     flowEdit.main(args)
+                elif args.FLOW == "Import":
+                    flowMekImporter.main(args)
                 elif args.FLOW == "Prepare":
                     flowPrepare.main(args)
                 elif args.FLOW =="Populate":
