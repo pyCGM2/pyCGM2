@@ -11,6 +11,24 @@ from argparse import Namespace
     
 DB_PATH = connection.DB_TEST_PATH
 
+
+class Test_request:
+    def test_0(self):
+        db_path = "C:\\Users\\fleboeuf\\Documents\DATA\\pyCGM2-Data-Tests\\NantesSamples\\eclipseDB_test.db "
+
+        factory = eclDB.SQLiteConnectionFactory(db_path)
+        con = factory.connect()
+
+        try:
+            eclDB.SchemaManager(con).ensure_schema()
+            svc = eclDB.DataIndexService(con)
+ 
+            root = svc.storage_roots.upsert(name="AQM Adultes", root_path="C:\\Users\\fleboeuf\\Documents\\DATA\\pyCGM2-Data-Tests\\NantesSamples\\AQM Adultes")  # adapt if your root is Z:\Data etc.
+
+        finally:
+            con.close()
+
+
 class Test_eclipseConnection:
     def test_usageExample(self):
 
@@ -73,7 +91,25 @@ class Test_eclipseConnection:
         finally:
             con.close()
 
+    def test_retrieveIPP(self):
+        factory = eclDB.SQLiteConnectionFactory(DB_PATH)
+        con = factory.connect()
+        ipp="030462311"
+        try:
 
+            eclDB.SchemaManager(con).ensure_schema()
+            svc = eclDB.DataIndexService(con)
+
+            patient = svc.patients.get(ipp=ipp)
+            root = svc.storage_roots.get_by_id(patient.storage_root_id)
+
+            patientFoldername = root.root_path + "\\" +  patient.folder_name
+
+            print(f"Patient {patient.ipp} - {patient.folder_name} is stored in root {root.name} at path: {patientFoldername}")
+
+
+        finally:
+            con.close()
 
     def test_retreiveC3d_fromIppSession(self):
 

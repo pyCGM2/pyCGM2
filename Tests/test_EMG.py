@@ -11,6 +11,30 @@ from pyCGM2.Lib import emg
 from pyCGM2.EMG import coactivationProcedures
 from pyCGM2.EMG import emgFilters
 from pyCGM2.EMG import emgManager
+from pyCGM2.EMG import normalActivation
+from pyCGM2.Tools import btkTools
+from pyCGM2.Processing import cycle
+from pyCGM2.Cycles import cycleBuilders
+
+class Test_normalActivation:
+
+    def test_getNormalBurstActivity(self):
+
+        data_path = pyCGM2.TEST_DATA_PATH + "EMG\\emgTrials\\gait\\"
+        filename = "20210908_NZ-PRE-S-NNNN-dyn 02.c3d"
+
+
+        acq = btkTools.smartReader(data_path+filename)
+
+        lfs = btkTools.smartGetEvents(acq,"Foot Strike","Left",format ="time")
+        lfo = btkTools.smartGetEvents(acq,"Foot Off","Left",format ="time")
+        rfo = btkTools.smartGetEvents(acq,"Foot Off","Right",format ="time")
+        rfs = btkTools.smartGetEvents(acq,"Foot Strike","Right",format ="time")    
+
+
+        leftcycles = cycleBuilders.build_cycles_fromEvents(lfs, lfo, rfs, rfo)
+        onsets,durations=normalActivation.getNormalGaitEmgActivities(lfs, lfo, "RECFEM")
+
 
 
 

@@ -18,7 +18,18 @@ from pyCGM2.Apps.flow import flowMekPopulate
 
 
 from argparse import Namespace
+
+
+
+class Test_settingsHandler:
+    def test_emgRepresentative(self):
+        path = "C:\\Users\\fleboeuf\\Documents\\2. AREA OF RESPONSABILITY\\Programmation\\pyCGM2\\pyCGM2\\Tests\\files\\"
+        settings = files.openFile(path, "CGM23_v2.settings")
+
+        emgRep = settingsHandler.get_EmgRepresentative(settings,"Condition1")
     
+
+
 
 class Test_flow:
     def test_empty(self):
@@ -74,7 +85,7 @@ class Test_flow:
         # emgSettings = files.openFile(path,"emg.settings")
         settings["Protocol"]["Conditions"][0]["EmgSettings"]
         # files.saveYaml(path,"test.yaml",settings)
-        import ipdb; ipdb.set_trace()
+
 
 
 
