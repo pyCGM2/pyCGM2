@@ -26,6 +26,7 @@ from pyCGM2.Nexus import nexus
 
 
 import argparse
+from argparse import Namespace
 
 try:
     from pyCGM2.Mek.mek import mekOperations
@@ -33,7 +34,7 @@ try:
     from pyCGM2.Mek.mek import mekInit
     from pyCGM2.Mek.mek import mekExtract
     from pyCGM2.Mek.mek import mekNormalize
-    from pyCGM2.Mek.mek import mekFlow
+    from pyCGM2.Mek.lib import mekLib
 except ImportError as e:
     LOGGER.logger.error(f"Error importing Mek modules: {e}. Mek functionalities will not be available.")
     raise e    
@@ -57,8 +58,10 @@ def main(args=None):
        
         parser.add_argument('-c', '--conditions', nargs='*', help='list of conditions',required=False)
 
+
         args = parser.parse_args()
     
+
 
     userSettings = args.userSettings
     analysisId = args.analysisID if args.analysisID is not None else 1
@@ -104,8 +107,8 @@ def main(args=None):
         h5pathFile = None
 
 
-    storagefilter = mekInit.mekInitStorageFilter(storagePathFile=h5pathFile)
-    ds = storagefilter.getStorage()
+    storage = mekInit.Storage(storagePathFile=h5pathFile)
+    ds = storage.getStorage()
 
     continueFlag = True
     if ds.root().exists_group(f"{session_dir}/Analysis {analysisId}"):
@@ -119,7 +122,8 @@ def main(args=None):
 
     # add attribute a session
     # import ipdb; ipdb.set_trace()
-    mekFlow.create_flowSettings_attribute(userSettings, ds, f"{session_dir}/Analysis {analysisId}")
+
+    mekLib.setDictToYamlAttribute(ds,userSettings,  f"{session_dir}/Analysis {analysisId}","flow-userSettings")
     group = ds.root().retrieve_group(f"{session_dir}/Analysis {analysisId}")
     group.create_attribute("userSettingsFile", userSettingsFile)    
 
@@ -139,6 +143,9 @@ def main(args=None):
             trials =   list(set(trialnames).union(emgTrialNames))
             mekOperations.compute_spatio_temporal_parametersOperation( ds.root().retrieve_group(f"{session_dir}/Analysis {analysisId}/{condition}"),  data_path, trials)
 
+
+
+
             mergedLabelContext_env = [f"{label}_Rectify_Env:{context}={context[0]}{muscle}" for label, context, muscle in zip(emgConfiguration["Labels"], emgConfiguration["Contexts"],emgConfiguration["Muscles"]) if muscle is not None]
             mergedLabelContext_rect = [f"{label}_Rectify:{context}={context[0]}{muscle}" for label, context, muscle in zip(emgConfiguration["Labels"], emgConfiguration["Contexts"],emgConfiguration["Muscles"]) if muscle is not None]
 
@@ -147,6 +154,7 @@ def main(args=None):
                         "Kinematics/Angles": [[processedPath+filename for filename in trialnames],  [it+":Left" for it  in mekConstants.CGM_KINEMATICS_ANGLES["Left"]] + [it+":Right" for it  in mekConstants.CGM_KINEMATICS_ANGLES["Right"]]],
                         "Kinetics/Moments": [[processedPath+filename for filename in trialnames],  [it+":Left" for it  in mekConstants.CGM_KINETICS_MOMENTS["Left"]] + [it+":Right" for it  in mekConstants.CGM_KINETICS_MOMENTS["Right"]]],
                         "Kinetics/Forces": [[processedPath+filename for filename in trialnames],  [it+":Left" for it  in mekConstants.CGM_KINETICS_FORCES["Left"]] + [it+":Right" for it  in mekConstants.CGM_KINETICS_FORCES["Right"]]],
+                        "Kinetics/Powers": [[processedPath+filename for filename in trialnames],  [it+":Left" for it  in mekConstants.CGM_KINETICS_POWERS["Left"]] + [it+":Right" for it  in mekConstants.CGM_KINETICS_POWERS["Right"]]],
                         "EMG/rectify/Envelop": [[processedPath+filename for filename in emgTrialNames], mergedLabelContext_env],
                         "EMG/rectify": [[processedPath+filename for filename in emgTrialNames], mergedLabelContext_rect],
                 }
@@ -164,7 +172,7 @@ def main(args=None):
             normalize_filter.run(scheme,cropToForcePlateGroups =["Kinetics/Moments", "Kinetics/Forces"]) 
 
 
-            if not storagefilter.updateFlag:
+            if not storage.updateFlag:
                 ds.dump(h5pathFileOut)
 
             LOGGER.logger.info(f"✅ Session : { session_dir}-analysis {analysisId}-condition {condition}  processed successfully")

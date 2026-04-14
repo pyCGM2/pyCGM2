@@ -22,7 +22,9 @@ from pyCGM2.flow import settingsHandler
 from pyCGM2.Lib import emg
 from pyCGM2.Nexus import nexus
 
+
 import argparse
+from argparse import Namespace
 
 def main(args=None):
 
@@ -30,12 +32,12 @@ def main(args=None):
         parser = argparse.ArgumentParser(description='Process flow report from Eclipse')
         parser.add_argument('-u', '--userSettings', type=str,
                             help='userSettings file name, should be in the data folder',
-                            required=True)
+                            required=False)
         parser.add_argument('-dp', '--data_path', type=str,
                             default=None)  
         parser.add_argument('-c', '--conditions', nargs='*', help='list of conditions',required=False)
         args = parser.parse_args()
-        
+
     data_path = args.data_path
     userSettings = args.userSettings
     forcedConditions = args.conditions if args.conditions is not None else []

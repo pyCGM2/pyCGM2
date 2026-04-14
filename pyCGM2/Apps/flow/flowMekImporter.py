@@ -26,6 +26,7 @@ from pyCGM2.Nexus import nexus
 
 
 import argparse
+from argparse import Namespace
 
 try:
     from pyCGM2.Mek.mek import mekOperations
@@ -42,6 +43,7 @@ except ImportError as e:
 
 def main(args=None):
 
+
     if args is None:
         parser = argparse.ArgumentParser(description='Process flow report from Eclipse')
         parser.add_argument('-u', '--userSettings', type=str,
@@ -51,10 +53,14 @@ def main(args=None):
                             default=None)  
      
         parser.add_argument('-c', '--conditions', nargs='*', help='list of conditions',required=False)
+        parser.add_argument('--ui', action='store_true',
+                    help='open PySide6 dialog to fill arguments')
+      
 
         args = parser.parse_args()
     
     
+
     userSettings = args.userSettings
     forcedConditions = args.conditions if args.conditions is not None else []
     data_path = args.data_path
