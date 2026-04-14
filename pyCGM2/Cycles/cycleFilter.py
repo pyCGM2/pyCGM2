@@ -201,7 +201,7 @@ class GaitCycle(Cycle):
         stepDuration=np.divide(np.abs(self.m_oppositeFS - self.begin) , self.pointfrequency)
 
         self.stps["duration"] = duration
-        self.stps["cadence"]= np.divide(60.0,duration)
+        self.stps["cadence"]= np.divide(60.0,stepDuration)
 
         self.stps["stanceDuration"] = stanceDuration
         self.stps["swingDuration"] =  swingDuration
@@ -215,6 +215,7 @@ class GaitCycle(Cycle):
         self.stps["swingPhase"] =  round(np.divide(swingDuration,duration)*100 )
         self.stps["doubleStance1"] =  round(np.divide(np.divide(np.abs(self.m_oppositeFO - self.begin) , self.pointfrequency),duration)*100)
         self.stps["doubleStance2"] =  round(np.divide(np.divide(np.abs(self.m_contraFO - self.m_oppositeFS) , self.pointfrequency),duration)*100)
+        self.stps["doubleStances"] =  self.stps["doubleStance1"]+ self.stps["doubleStance2"]
         self.stps["simpleStance"] =  round(np.divide(np.divide(np.abs(self.m_oppositeFO - self.m_oppositeFS) , self.pointfrequency),duration)*100)
         self.stps["stepPhase"] =  round(np.divide(stepDuration,duration)*100)
 
@@ -239,7 +240,7 @@ class GaitCycle(Cycle):
                 self.stps["strideLength"] =  strideLength
 
                 stepLength = np.abs(self.getPointTimeSequenceData("RHEE")[self.m_oppositeFS-self.begin,longitudinal_axis] -\
-                                    self.getPointTimeSequenceData("LHEE")[0,longitudinal_axis])/1000.0
+                                    self.getPointTimeSequenceData("LHEE")[self.end-self.begin,longitudinal_axis])/1000.0
                 self.stps["stepLength"] =  stepLength
 
                 strideWidth = np.abs(self.getPointTimeSequenceData("LTOE")[self.end-self.begin,lateral_axis] -\
@@ -273,7 +274,7 @@ class GaitCycle(Cycle):
                 self.stps["strideWidth"] =  strideWidth
 
                 stepLength = np.abs(self.getPointTimeSequenceData("RHEE")[self.m_oppositeFS-self.begin,longitudinal_axis] -\
-                                    self.getPointTimeSequenceData("LHEE")[0,longitudinal_axis])/1000.0
+                                    self.getPointTimeSequenceData("LHEE")[self.end-self.begin,longitudinal_axis])/1000.0
                 self.stps["stepLength"] =  stepLength
 
                 self.stps["speed"] = np.divide(strideLength,duration)
