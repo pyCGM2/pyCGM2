@@ -17,9 +17,11 @@ from pyCGM2.Nexus import nexus
 from pyCGM2.Nexus import eclipse
 
 
-DB_PATH = connection.DB_TEST_PATH 
+# DB_PATH = connection.DB_TEST_PATH
+DB_PATH = pyCGM2.ECLISPE_DB_PATH 
 
-def main_newPatient(args=None):
+
+def main_newPatient(args=None,db=None):
 
     if  args is None:
         parser = argparse.ArgumentParser(description='Add a new patient to the database')
@@ -59,8 +61,11 @@ def main_newPatient(args=None):
     ipp = enfPatient.get("PatientID")
 
     if ipp is not None and ipp != "":
+
+        if db is None:
+            db = DB_PATH
         
-        factory = eclDB.SQLiteConnectionFactory(DB_PATH)
+        factory = eclDB.SQLiteConnectionFactory(db)
         con = factory.connect()
 
         try:
@@ -82,7 +87,7 @@ def main_newPatient(args=None):
     else:
         LOGGER.logger.warning(f"No PatientID (ipp) found in the patient enf file, cannot register patient in the database")
 
-def main_registerSession(args=None):
+def main_registerSession(args=None,db=None):
 
     if  args is None:
         parser = argparse.ArgumentParser(description='Register a session in the database')
@@ -135,10 +140,11 @@ def main_registerSession(args=None):
         
    #---- 
 
-
+    if db is None:
+        db = DB_PATH
 
     #------ Database registration ------    
-    factory = eclDB.SQLiteConnectionFactory(DB_PATH)
+    factory = eclDB.SQLiteConnectionFactory(db)
     con = factory.connect()
 
     try:
