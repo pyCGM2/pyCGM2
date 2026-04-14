@@ -41,6 +41,10 @@ def main_newPatient(args=None):
         else:
             patient_path = uiTools.uiGetDir()
 
+
+
+
+
     try:
         enfPatientFile = eclipse.getEnfFiles(patient_path,enums.EclipseType.Patient)
     except IndexError as e:
@@ -129,12 +133,11 @@ def main_registerSession(args=None):
         c3dname, metadata = eclipse.getC3d_enfTrialMetadata(data_path, c3dFile)
         c3d_name_meta_details[c3dname] = metadata
         
-    
-    #------ Database registration ------
+   #---- 
 
 
 
-    
+    #------ Database registration ------    
     factory = eclDB.SQLiteConnectionFactory(DB_PATH)
     con = factory.connect()
 
@@ -144,6 +147,11 @@ def main_registerSession(args=None):
 
         #1) Get the storage root for the classification
         root = svc.storage_roots.get_by_name(classificationName)
+
+        #2) Register a patient
+        if ipp is not None and ipp != "":
+            patientDbInstance = svc.patients.upsert(ipp=ipp, folder_name=patientDirName, storage_root_id=root.id)
+            LOGGER.logger.info(f"Patient {patientDbInstance.ipp} - {patientDbInstance.folder_name} registered in the database under classification ({classificationName})")   
 
         #2) get a patient
         patientDbInstance = svc.patients.get(ipp=ipp)

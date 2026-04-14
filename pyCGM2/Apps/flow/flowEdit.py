@@ -19,8 +19,9 @@ from pyCGM2.flow.procedures import eclipseFlowProcedure
 from pyCGM2.Tools import uiTools
 from pyCGM2.Nexus import nexus
 
-
 import argparse
+from argparse import Namespace
+
 
 def main(args=None):
     
@@ -40,7 +41,7 @@ def main(args=None):
         parser = argparse.ArgumentParser(description='Edit flow report from Eclipse')
         parser.add_argument('-cgm', '--cgmVersion', type=str,
                             help='CGM Version from CGM1.0 to CGM2.6',
-                            required=True)
+                            required=False)
         parser.add_argument('-s', '--suffix', type=str,
                             help='Suffix to add to the settings file name, default is _v2',
                             default="",
@@ -49,9 +50,14 @@ def main(args=None):
                             action='store_true', help='display the flow file after edition')
 
         parser.add_argument('-dp', '--data_path', type=str,
-                            default=None)       
+                            default=None) 
         
+    
         args = parser.parse_args()
+
+    
+
+
 
     version = args.cgmVersion
     versionforFile = version.replace(".","")
