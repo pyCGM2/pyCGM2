@@ -1350,7 +1350,7 @@ def printEvents(acq:btk.btkAcquisition):
         print(f"{it.GetLabel()} [{it.GetTime()}][{it.GetFrame()}]-- {it.GetSubject()} --- {it.GetContext()}" )
 
 
-def smartGetEvents(acq:btk.btkAcquisition, label:str, context:str):
+def smartGetEvents(acq:btk.btkAcquisition, label:str, context:str,format=None):
     """
     Retrieves events from the acquisition based on label and context.
 
@@ -1369,7 +1369,9 @@ def smartGetEvents(acq:btk.btkAcquisition, label:str, context:str):
         if it.GetContext() == context and it.GetLabel() == label:
             if it.GetFrame() not in out:
                 out.append(it.GetFrame())
-
+    
+    if format == "time":
+        out = [frame * (1/acq.GetPointFrequency())  for frame in out]
     return out
 
 def getEventsAsList(acq:btk.btkAcquisition):
