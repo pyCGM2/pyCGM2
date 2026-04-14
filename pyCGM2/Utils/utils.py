@@ -2,7 +2,23 @@ import pyCGM2
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 import re
 from typing import List, Tuple, Dict, Optional
+import numpy as np
 
+def timeRange(startTime: float, sampleRate: float, numberOfFrames: int) -> np.ndarray:
+    """
+    Calculate the time range for a given set of values.
+
+    Args:
+        startTime (float): The start time.
+        sampleRate (float): The sample rate.
+        values (np.ndarray): The values for which to calculate the time range.
+
+    Returns:
+        np.ndarray: The time range.
+    """
+    time = startTime + np.arange(numberOfFrames) / sampleRate
+
+    return time
 class FrameConverter():
     """
     A class for converting frame numbers between point and analog data formats.
