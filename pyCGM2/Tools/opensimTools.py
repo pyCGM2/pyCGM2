@@ -385,3 +385,21 @@ def calculateSegmentLength(model, jointLabel1, jointLabel2):
         length = np.linalg.norm(joint1_location_np - joint2_location_np)
 
         return length        
+
+
+    # osimMmodel = opensim.Model(data_path + scaledOsimName)
+
+    # # Attention à utiliser la même variable que celle du Model
+    # state = osimMmodel.initSystem()
+
+    # # Récupérer le body calcn_l
+    # calcn_l = osimMmodel.getBodySet().get("calcn_l")
+    # talus_l = osimMmodel.getBodySet().get("talus_l")
+
+    # # Position de l'origine de calcn_l dans le repère sol
+    # pos_calcn = calcn_l.getPositionInGround(state)  # SimTK::Vec3
+    # pos_talus = talus_l.getPositionInGround(state)  # SimTK::Vec3
+
+    # # Conversion en numpy
+    # pos_calcn_np = np.array([pos_calcn.get(i) for i in range(3)])
+    # pos_talus_np = np.array([pos_talus.get(i) for i in range(3)])
