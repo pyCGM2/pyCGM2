@@ -5,10 +5,14 @@ The module contains convenient function for getting the normal emg activity of t
 """
 from typing import Tuple
 import pyCGM2
+from pyCGM2.Cycles import cycleBuilders
 from pyCGM2.Utils import files
 
 from typing import List, Tuple, Dict, Optional
 
+from pyCGM2.Processing import cycle
+
+import numpy as np
 
 def getNormalBurstActivity(muscle:str, fo:int):
     """
@@ -123,6 +127,7 @@ def getNormalBurstActivity_fromCycles(muscle:str,
                            ((TABLE[muscle][j]-NORMAL_STANCE_PHASE)
                             / (100.0-NORMAL_STANCE_PHASE))*(end-fo)
 
+
                 list_beginBurst.append(beginBurst)
                 list_burstDuration.append(endBurst-beginBurst)
 
@@ -131,3 +136,37 @@ def getNormalBurstActivity_fromCycles(muscle:str,
         list_burstDuration = [0]
 
     return list_beginBurst, list_burstDuration
+
+
+
+
+def getNormalGaitEmgActivities(lfs, lfo, muscle: str, time: np.ndarray | None = None):
+
+    
+    gaitCycles = cycleBuilders.build_cycles_fromEvents(lfs, lfo, None, None)
+
+    onsets = []
+    durations = []
+    for cycleIt in gaitCycles:
+        pos, burstDuration = getNormalBurstActivity_fromCycles(
+            muscle, 0,
+            cycleIt["start"], cycleIt["footOff"], cycleIt["end"], 1
+        )
+        onsets.append(pos)
+        durations.append(burstDuration)
+
+    signal = None
+    if time is not None :
+        sampleRate = 1.0 / (time[1] - time[0])
+        signal = np.zeros(len(time), dtype=np.int8)
+
+        for cycle_onsets, cycle_durations in zip(onsets, durations):
+            for onset, duration in zip(cycle_onsets, cycle_durations):
+                i_on  = np.searchsorted(time, onset)
+                i_dur = round(duration * sampleRate)
+                signal[i_on : i_on + i_dur] = 1
+
+    return onsets, durations, signal
+
+
+
