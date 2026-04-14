@@ -11,11 +11,23 @@ CGM_KINEMATICS_ANGLES ={
                                 "RShoulderAngles","RElbowAngles","RWristAngles"]}
 
 CGM_KINETICS_MOMENTS ={
-                        'Left': ["LHipMoment","LKneeMoment","LAnkleMoment","LHipPower","LKneePower","LAnklePower"],
-                        'Right': ["RHipMoment","RKneeMoment","RAnkleMoment","RHipPower","RKneePower","RAnklePower"]}
+                        'Left': ["LHipMoment","LKneeMoment","LAnkleMoment"],
+                        'Right': ["RHipMoment","RKneeMoment","RAnkleMoment"]}
+
+CGM_KINETICS_POWERS ={
+                        'Left': ["LHipPower","LKneePower","LAnklePower"],
+                        'Right': ["RHipPower","RKneePower","RAnklePower"]}
+
 
 CGM_KINETICS_FORCES ={
                         'Left': ["LStanGroundReactionForce","LGroundReactionForce"],
                         'Right': ["RStanGroundReactionForce","RGroundReactionForce"]}
+
+
+PST ={
+                        'Left': ["duration","stanceDuration","swingDuration","stepDuration","doubleStance1Duration","doubleStance2Duration","simpleStanceDuration",
+                                 "stancePhase","swingPhase","doubleStance1","doubleStance2","simpleStance","stepPhase","strideLength","stepLength","strideWidth","speed"],
+                        'Right': ["duration","stanceDuration","swingDuration","stepDuration","doubleStance1Duration","doubleStance2Duration","simpleStanceDuration",
+                                 "stancePhase","swingPhase","doubleStance1","doubleStance2","simpleStance","stepPhase","strideLength","stepLength","strideWidth","speed"]}
 
 

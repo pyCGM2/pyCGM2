@@ -1,22 +1,32 @@
 import numpy as np
 import pyCGM2
 LOGGER = pyCGM2.LOGGER
-from pyCGM2.Utils import files
 
 from pyCGM2.Mek.mek import mekTools
+import yaml
 
-import matplotlib.pyplot as plt
+def setDictToYamlAttribute(ds, dictIn, groupname,label): #"flow-userSettings"
+    content = yaml.dump(dictIn, allow_unicode=True)
+    group = ds.root().retrieve_group(groupname)
+    group.create_attribute(label, content)
+
+
+def readYamlAttribute(ds, groupname,label):
+    group = ds.root().retrieve_group(groupname)
+    settingRaw = group.retrieve_attribute(label).read()
+    settings_dict = yaml.safe_load(settingRaw)
+    return settings_dict
 
 
 
-def gatherCycle(data_group,label):
+def gatherCycles(data_group,label):
     count = 0
     list_of_arrays = []
     list_of_attrs = []
     for groupPath, set_obj in mekTools.iter_sets(data_group):
-        print (f"Checking set in : {groupPath}")
+        # print (f"Checking set in : {groupPath}")
         if label in groupPath and "Cycle" in groupPath:
-            print(f"Set de {label} detected in : {groupPath}")
+            # print(f"Set de {label} detected in : {groupPath}")
             setDetect = data_group.retrieve_set(data_group.name()+groupPath)
             name= setDetect.name()
             values = setDetect.read()

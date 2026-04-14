@@ -1,29 +1,11 @@
-import sys
 import yaml
 import pyCGM2
 LOGGER = pyCGM2.LOGGER
-from pyCGM2.Tools import btkTools
-
-from pyCGM2.Mek.mek import mekTools
-from pyCGM2.flow import settingsHandler
 import pandas as pd
+from pyCGM2.Mek.lib import mekLib
+from pyCGM2.flow import settingsHandler 
 
 
-
-
-def create_flowSettings_attribute(settings_dict, ds, groupname):
-
-    content = yaml.dump(settings_dict, allow_unicode=True)
-
-    group = ds.root().retrieve_group(groupname)
-    group.create_attribute("flow-userSettings", content)
-
-def read_flowSettings_attribute(ds, groupname):
-    group = ds.root().retrieve_group(groupname)
-    settingRaw = group.retrieve_attribute("flow-userSettings").read()
-
-    settings_dict = yaml.safe_load(settingRaw)
-    return settings_dict
 
 
 def build_session_conditions_dataframe(ds):
@@ -32,7 +14,7 @@ def build_session_conditions_dataframe(ds):
 
     for group in ds.root().list_group_children_name():
         if "Session" in group:
-            settings = read_flowSettings_attribute(ds, f"{group}/Analysis 1")
+            settings = mekLib.readYamlAttribute(ds,f"{group}/Analysis 1","flow-userSettings")
 
             detailsDf = settingsHandler.build_session_conditions_dataframe(settings)
 
@@ -51,5 +33,6 @@ def build_session_conditions_dataframe(ds):
         out = None
 
     return out
+
 
 

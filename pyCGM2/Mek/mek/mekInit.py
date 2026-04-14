@@ -5,6 +5,10 @@ from pyCGM2.Tools import btkTools
 
 import pyCGM2
 
+import yaml
+
+
+
 # Import optionnel de moveck
 try:
     import moveck
@@ -15,11 +19,13 @@ except ImportError:
     LOGGER.warning("moveck pipe is not installed")
 
 if MOVECK_AVAILABLE:
-    class mekInitStorageFilter(object):
+
+
+
+    class Storage(object):
         """
 
         """
-
         def __init__(self, storagePathFile = None):
 
             self.updateFlag = False
@@ -30,9 +36,9 @@ if MOVECK_AVAILABLE:
                 self.updateFlag = True
 
 
-                self.ds.root().list_group_children_name()
-
-            
-        
         def getStorage(self):
             return self.ds
+
+
+
+

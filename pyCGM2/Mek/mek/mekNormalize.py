@@ -5,6 +5,10 @@ from scipy.interpolate import interp1d
 
 from pyCGM2.Mek.mek import mekTools
 from pyCGM2.Cycles import cycleUtils
+from pyCGM2.Cycles import cycleBuilders
+
+
+
 import pyCGM2
 LOGGER = pyCGM2.LOGGER
 
@@ -114,10 +118,9 @@ class mekNormalizeFilter(object):
                                 eventsfo_opp = eventGr.retrieve_set("Foot Off/Right").read()
                                 eventsfs_opp = eventGr.retrieve_set("Foot Strike/Right").read()
 
+ 
 
-                                cycles = cycleUtils.build_cycles_classified(events, eventsfo, eventsfs_opp, eventsfo_opp)
-
-                                
+                                cycles = cycleBuilders.build_cycles_fromEvents(events, eventsfo, eventsfs_opp, eventsfo_opp)
                                 try:
                                     fp_events = eventGr.retrieve_set("ForcePlateEvents/Left").read()
                                 except:
@@ -137,7 +140,7 @@ class mekNormalizeFilter(object):
                                 eventsfs_opp = eventGr.retrieve_set("Foot Strike/Left").read()
 
 
-                                cycles = cycleUtils.build_cycles_classified(events, eventsfo, eventsfs_opp, eventsfo_opp)
+                                cycles = cycleBuilders.build_cycles_fromEvents(events, eventsfo, eventsfs_opp, eventsfo_opp)
 
                             ncycles = len(cycles)
 

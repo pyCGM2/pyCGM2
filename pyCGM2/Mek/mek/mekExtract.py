@@ -83,12 +83,12 @@ class mekExtractFilter(object):
                     for target in targets:
                         if "=" in target:
                             targetName = target.split("=")[0].split(":")[0]
+                            eventContext = target.split("=")[0].split(":")[1]
                             variableName = target.split("=")[1]
                         else:
                             targetName = target.split(":")[0]
-                            variableName = targetName
-                        
-                        
+                            eventContext = target.split(":")[1]
+                            variableName = targetName 
                         
 
                         values = None
@@ -112,11 +112,13 @@ class mekExtractFilter(object):
                                 extractGrp.retrieve_set(groupSet_name).write(values)
                                 extractGrp.retrieve_set(groupSet_name).create_attribute("StartTime", acq.GetFirstFrame() / acq.GetPointFrequency())
                                 extractGrp.retrieve_set(groupSet_name).create_attribute("SampleRate", frequency )
+                                extractGrp.retrieve_set(groupSet_name).create_attribute("Channel", targetName )
                             else:
 
                                 extractGrp.create_set(groupSet_name, values)
                                 extractGrp.retrieve_set(groupSet_name).create_attribute("StartTime", acq.GetFirstFrame() / acq.GetPointFrequency())
                                 extractGrp.retrieve_set(groupSet_name).create_attribute("SampleRate", frequency )
+                                extractGrp.retrieve_set(groupSet_name).create_attribute("Channel", targetName )
                             counter+=1
             
             if counter == 0:

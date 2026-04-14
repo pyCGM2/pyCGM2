@@ -94,13 +94,17 @@ class CGM1_GPS(ScoreProcedure):
         for label,context in self.matchingNormativeDataLabel.keys():
             matchingNormativeDataLabel = self.matchingNormativeDataLabel[label,context]
             if context == "Left":
-                values = mekLib.gather(group,label)
+                values ,attrs = mekLib.gatherCycles(group,label)
                 nLeftCycles = values.shape[0]
                
                 left_rms_local = np.zeros((nLeftCycles,3))
                 for i in range(0,nLeftCycles):
                     values_cycle = values[i, :, :]
-                    valuesNorm = normativeData[matchingNormativeDataLabel]["mean"]
+                    
+                    valuesNorm = np.array([ [(row[1] + row[2]) / 2 for row in normativeData[matchingNormativeDataLabel]["X"]],
+                                     [(row[1] + row[2]) / 2 for row in normativeData[matchingNormativeDataLabel]["Y"]],
+                                     [(row[1] + row[2]) / 2 for row in normativeData[matchingNormativeDataLabel]["Z"]],]).T
+                
 
                     if valuesNorm.shape[0] == 51:
                         rms = numeric.rms(values_cycle[0:101:2]-valuesNorm,axis=0)
@@ -116,13 +120,15 @@ class CGM1_GPS(ScoreProcedure):
         for label,context in self.matchingNormativeDataLabel.keys():
             matchingNormativeDataLabel = self.matchingNormativeDataLabel[label,context]
             if context == "Right":
-                values = mekLib.gather(group,label)
+                values ,attrs = mekLib.gatherCycles(group,label)
                 nRightCycles = values.shape[0]
                 right_rms_local = np.zeros((nRightCycles,3))
 
                 for i in range(0,nRightCycles):
                     values_cycle = values[i, :, :]
-                    valuesNorm = normativeData[matchingNormativeDataLabel]["mean"]
+                    valuesNorm = np.array([ [(row[1] + row[2]) / 2 for row in normativeData[matchingNormativeDataLabel]["X"]],
+                                     [(row[1] + row[2]) / 2 for row in normativeData[matchingNormativeDataLabel]["Y"]],
+                                     [(row[1] + row[2]) / 2 for row in normativeData[matchingNormativeDataLabel]["Z"]],]).T
 
                     if valuesNorm.shape[0] == 51:
                         rms = numeric.rms(values_cycle[0:101:2]-valuesNorm,axis=0)
@@ -192,7 +198,6 @@ class CGM1_GPS(ScoreProcedure):
                            'median': np.array([np.median(overall_gps_values)]),
                            'values': overall_gps_values}
 
-        import ipdb; ipdb.set_trace()
         return outDict_gvs, outDict_gps_context,outDict_gps
 
 ## TODO:
@@ -219,12 +224,13 @@ class ScoreFilter(object):
     """
 
 
-    def __init__(self, scoreProcedure:ScoreProcedure, group, normativeDataSet:NormativeData):
+    def __init__(self, scoreProcedure:ScoreProcedure, group, normativeData):
 
         self.m_score = scoreProcedure
 
         # construct normative data
-        self.m_normativeData =  normativeDataSet.data
+        self.m_normativeData =  normativeData
+
 
         self.m_group=group
 
@@ -242,6 +248,7 @@ class ScoreFilter(object):
 
         if isinstance(self.m_score,pyCGM2.Mek.mek.mekScore.ScoreProcedure):
             descriptiveGvsStats,descriptiveGpsStats_context,descriptiveGpsStats = self.m_score._compute(self.m_group,self.m_normativeData)
+            return descriptiveGvsStats,descriptiveGpsStats_context,descriptiveGpsStats
 
         else:
             raise Exception("[pyCGM2] - the loaded procedure is not a ScoreProcedure instance")
