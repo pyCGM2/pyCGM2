@@ -82,3 +82,17 @@ class SingleBody():
         btkTools.smartAppendPoint(acq,label + "_Y", valuesY)
         btkTools.smartAppendPoint(acq,label + "_Z", valuesZ)
 
+
+    def globalize(self, localValues):
+        nFrames = len(self.getBody().getReferential("TF").motion)
+
+        globalValues = np.zeros((nFrames,3))
+
+
+        for i in range(0,nFrames):
+            rot = self.getBody().getReferential("TF").motion[i].getRotation()
+            trans = self.getBody().getReferential("TF").motion[i].getTranslation()
+            globalValues[i,:] = np.dot(rot,localValues[i,:]) #+ trans 
+
+        return globalValues             
+
