@@ -9,7 +9,9 @@ class NexusConnection():
             self.NEXUS = ViconNexus.ViconNexus()
             self.nexusTools = nexusTools
             
-        except:
+        except Exception as e:
+            import traceback
+            traceback.print_exc()
             pass
 
     def isConnected(self):
