@@ -1,4 +1,5 @@
 
+import pandas as pd
 
 def emg_ordered_dict_to_list(emg_odict):
     
@@ -146,3 +147,41 @@ def get_emg_trials_by_condition(data, condition_id):
 #     conditions = list_conditions(data)
 #     import ipdb; ipdb.set_trace()
 
+def build_session_conditions_dataframe(settings):
+
+    rows = []
+
+    conditions = list_conditions(settings)
+
+    for condition in conditions:
+        conditionDetails = get_condition_details(settings, condition)
+
+        rows.append({
+            "ConditionID": conditionDetails.get("ConditionID"),
+            "Context": conditionDetails.get("Context"),
+            "ContextComments": conditionDetails.get("ContextComments"),
+            "NerveBlock": conditionDetails.get("NerveBlock"),
+            "Task": conditionDetails.get("Task"),
+            "Shoes": conditionDetails.get("Shoes"),
+            "Orthosis": conditionDetails.get("Orthosis"),
+            "ExternalAid": conditionDetails.get("ExternalAid"),
+            "PersonalAid": conditionDetails.get("PersonalAid"),
+        })
+
+
+    df = pd.DataFrame(rows)
+
+    return df
+
+def get_EmgRepresentative(settings,condition_id):
+
+    out=None
+    for conditionIt in settings["Protocol"]["Conditions"]:
+        if conditionIt["ConditionID"] == condition_id:
+            out = conditionIt["EmgRepresentativeTrial"]
+           
+
+    if out is None:
+        raise Exception("[pyCGM2]  Condition Id not found")
+
+    return out
