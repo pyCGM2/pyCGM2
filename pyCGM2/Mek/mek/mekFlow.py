@@ -1,4 +1,4 @@
-import yaml
+# import yaml
 import pyCGM2
 LOGGER = pyCGM2.LOGGER
 import pandas as pd

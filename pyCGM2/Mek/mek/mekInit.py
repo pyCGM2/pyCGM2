@@ -1,11 +1,11 @@
-import sys
+
 import pyCGM2
 LOGGER = pyCGM2.LOGGER
-from pyCGM2.Tools import btkTools
 
-import pyCGM2
 
-import yaml
+# import sys
+# from pyCGM2.Tools import btkTools
+# import yaml
 
 
 
@@ -18,10 +18,8 @@ except ImportError:
     moveck = None  # pour éviter un NameError plus tard
     LOGGER.warning("moveck pipe is not installed")
 
+
 if MOVECK_AVAILABLE:
-
-
-
     class Storage(object):
         """
 

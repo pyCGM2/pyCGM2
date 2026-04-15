@@ -4,23 +4,14 @@ characterizing the movement performed.
 
 The filter `ScoreFilter` calls a specific procedure and returns score values.
 """
+import numpy as np
 import pyCGM2
 LOGGER = pyCGM2.LOGGER
 
 from pyCGM2.Processing.Scores.scoreProcedures import ScoreProcedure
-from pyCGM2.Processing.analysis import Analysis
 from pyCGM2.Report.normativeDatasets import NormativeData
 from typing import List, Tuple, Dict, Optional,Union,Any
-
-import numpy as np
 from pyCGM2.Math import numeric
-import pyCGM2
-LOGGER = pyCGM2.LOGGER
-
-from pyCGM2.Processing.analysis import Analysis
-from pyCGM2.Report.normativeDatasets import NormativeData
-from typing import List, Tuple, Dict, Optional,Union,Any
-
 from pyCGM2.Mek.lib import mekLib
 
 class ScoreProcedure(object):
