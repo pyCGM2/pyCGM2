@@ -1,6 +1,5 @@
 # coding: utf-8
 import os
-from pyCGM2.Mek.mek import mekOperations, mekTransform
 from pyCGM2.Utils import files
 import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
@@ -15,13 +14,9 @@ LOGGER = pyCGM2.LOGGER
 
 
 from pyCGM2.Utils import files
-from pyCGM2.flow import flowFilters
-from pyCGM2.flow.procedures import eclipseFlowProcedure
 from pyCGM2.Tools import uiTools
 
 from pyCGM2.flow import settingsHandler
-from pyCGM2.Lib import emg
-from pyCGM2.Model.Opensim.interface import opensimInterface
 from pyCGM2.Nexus import nexus
 
 

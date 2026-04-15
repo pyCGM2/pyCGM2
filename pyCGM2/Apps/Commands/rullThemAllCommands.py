@@ -763,6 +763,7 @@ class MainParser:
                             if params is None:
                                 return  
                             subargs = Namespace(**params)
+                        
 
                     elif args.UI == "Events":
                         params = nexusUI.uiGetNexusEventArgs()
@@ -827,7 +828,7 @@ class MainParser:
                     if subargs is not None:
                         setattr(subargs, "CGM23", args.Operation)
                         args = subargs
-
+                        
                     if args.CGM23 == "Calibration":
                         CGM2_3_Calibration.main(args)
                     if args.CGM23 == "Fitting":
@@ -967,7 +968,6 @@ class MainParser:
                     if params is None:
                         return  
                     args = Namespace(**params)
-                    import ipdb; ipdb.set_trace()
                 
                 
                 elif args.FLOW == "Init" or (args.FLOW == "UI" and args.command == "Init"):

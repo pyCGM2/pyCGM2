@@ -14,10 +14,7 @@ LOGGER = pyCGM2.LOGGER
 
 
 from pyCGM2.Utils import files
-from pyCGM2.flow import flowFilters
-from pyCGM2.flow.procedures import eclipseFlowProcedure
 from pyCGM2.Tools import uiTools
-from pyCGM2 import connection
 from pyCGM2.flow import settingsHandler
 from pyCGM2.Lib import emg
 from pyCGM2.Nexus import nexus
