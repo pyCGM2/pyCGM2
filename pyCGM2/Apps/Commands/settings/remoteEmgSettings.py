@@ -9,7 +9,7 @@ from pyCGM2.Utils import files
 from pyCGM2.Tools import uiTools
 
 from pyCGM2 import connection
-
+from pyCGM2.Nexus import nexus
 
 
 def main(args=None):
@@ -18,7 +18,16 @@ def main(args=None):
         parser = argparse.ArgumentParser(prog='pyCGM2-Remote EMG Settings")')
         args = parser.parse_args()
 
-    nexusCon = connection.NexusConnection()
+    nexusCon = nexus.NexusConnection()
+    if nexusCon.isConnected():
+        try:
+            data_path, trialFilename = nexusCon.nexusTools.getTrialName(nexusCon.NEXUS)
+            patient_path = files.get_parent_directory(data_path)
+        except Exception as e:
+            LOGGER.logger.warning(f"No trial  loaded in Nexus: {e}, fallback to ui selection")
+            patient_path = uiTools.uiGetDir()
+    else:
+        patient_path = uiTools.uiGetDir()
 
     if nexusCon.isConnected():
         try:
