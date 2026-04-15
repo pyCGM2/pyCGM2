@@ -74,3 +74,4 @@ MUSCLES_LABELS = ['glut_med1_r', 'glut_med2_r', 'glut_med3_r', 'bifemlh_r', 'bif
 
 #--- eclipse db
 ECLISPE_DB_PATH = "\\\\Bio2012006\\Vicon Data\\Donnees_Nexus\\eclipseDB.db"
+ECLIPSE_DB_LOCAL = MAIN_PYCGM2_PATH+"DB\\eclipseDB.db"
