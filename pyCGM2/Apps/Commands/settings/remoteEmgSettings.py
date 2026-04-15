@@ -7,8 +7,6 @@ LOGGER = pyCGM2.LOGGER
 from pyCGM2.Utils import files
 
 from pyCGM2.Tools import uiTools
-
-from pyCGM2 import connection
 from pyCGM2.Nexus import nexus
 
 
