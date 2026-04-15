@@ -27,3 +27,4 @@ dependencies:
   - pydata-sphinx-theme
   - onnxruntime
   - jinja2
+  - pyside6
