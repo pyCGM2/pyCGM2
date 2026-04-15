@@ -11,6 +11,7 @@ from datetime import datetime
 import pandas as pd
 import pyCGM2
 LOGGER = pyCGM2.LOGGER
+
 from pyCGM2.Model.model import Model
 from pyCGM2.Processing.analysis import Analysis
 from typing import List, Tuple, Dict, Optional

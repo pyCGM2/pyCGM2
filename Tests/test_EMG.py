@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # @Author: Fabien Leboeuf
 
-# pytest -s --log-cli-level=INFO --disable-pytest-warnings  test_EMG.py::Test_EMG::test_Coactivation
+# pytest -s --log-cli-level=INFO --disable-pytest-warnings  test_EMG.py:Test_normalActivation
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -13,8 +13,7 @@ from pyCGM2.EMG import emgFilters
 from pyCGM2.EMG import emgManager
 from pyCGM2.EMG import normalActivation
 from pyCGM2.Tools import btkTools
-from pyCGM2.Processing import cycle
-from pyCGM2.Cycles import cycleBuilders
+from pyCGM2 import Cycles 
 
 class Test_normalActivation:
 
@@ -32,8 +31,9 @@ class Test_normalActivation:
         rfs = btkTools.smartGetEvents(acq,"Foot Strike","Right",format ="time")    
 
 
-        leftcycles = cycleBuilders.build_cycles_fromEvents(lfs, lfo, rfs, rfo)
-        onsets,durations=normalActivation.getNormalGaitEmgActivities(lfs, lfo, "RECFEM")
+        leftcycles = Cycles.build_cycles_fromEvents(lfs, lfo, rfs, rfo)
+        import ipdb; ipdb.set_trace()
+        onsets, durations, signal =normalActivation.getNormalGaitEmgActivities(lfs, lfo, "RECFEM")
 
 
 
