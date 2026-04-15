@@ -5,7 +5,6 @@ import pyCGM2;
 LOGGER = pyCGM2.LOGGER
 
 from pyCGM2 import enums
-from pyCGM2 import connection 
 from pyCGM2.connection import eclipseConnector as eclDB
 import argparse
 from pyCGM2.Utils import files
@@ -25,11 +24,10 @@ DB_PATH = DB_PATH_LOCAL
 
 
 # copie locale
-shutil.copy(DB_PATH_DISTANT, DB_PATH_LOCAL)
-
-
 
 def main_newPatient(args=None,db=None):
+
+    shutil.copy(DB_PATH_DISTANT, DB_PATH_LOCAL)
 
     if  args is None:
         parser = argparse.ArgumentParser(description='Add a new patient to the database')
@@ -97,6 +95,8 @@ def main_newPatient(args=None,db=None):
         LOGGER.logger.warning(f"No PatientID (ipp) found in the patient enf file, cannot register patient in the database")
 
 def main_registerSession(args=None,db=None):
+
+    shutil.copy(DB_PATH_DISTANT, DB_PATH_LOCAL)
 
     if  args is None:
         parser = argparse.ArgumentParser(description='Register a session in the database')
