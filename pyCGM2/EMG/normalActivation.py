@@ -5,13 +5,12 @@ The module contains convenient function for getting the normal emg activity of t
 """
 from typing import Tuple
 import pyCGM2
-from pyCGM2.Cycles import cycleBuilders
-from pyCGM2.Utils import files
+from pyCGM2 import Cycles
+
+from pyCGM2.Utils import readers
+
 
 from typing import List, Tuple, Dict, Optional
-
-from pyCGM2.Processing import cycle
-
 import numpy as np
 
 def getNormalBurstActivity(muscle:str, fo:int):
@@ -29,7 +28,7 @@ def getNormalBurstActivity(muscle:str, fo:int):
         Tuple[List[int], List[int]]: Two lists containing the start frames and durations of the muscle's burst activities.
     """
 
-    normalActivations = files.openJson(
+    normalActivations = readers.openJson(
         pyCGM2.NORMATIVE_DATABASE_PATH+"emg\\", "normalActivation.json")
 
     NORMAL_STANCE_PHASE = normalActivations["NORMAL_STANCE_PHASE"]
@@ -95,7 +94,7 @@ def getNormalBurstActivity_fromCycles(muscle:str,
         Tuple[List[int], List[int]]: Two lists containing the start frames and durations of the muscle's burst activities within the cycle.
     """
 
-    normalActivations = files.openJson(
+    normalActivations = readers.openJson(
         pyCGM2.NORMATIVE_DATABASE_PATH+"emg\\", "normalActivation.json")
 
     NORMAL_STANCE_PHASE = normalActivations["NORMAL_STANCE_PHASE"]
@@ -143,7 +142,7 @@ def getNormalBurstActivity_fromCycles(muscle:str,
 def getNormalGaitEmgActivities(lfs, lfo, muscle: str, time: np.ndarray | None = None):
 
     
-    gaitCycles = cycleBuilders.build_cycles_fromEvents(lfs, lfo, None, None)
+    gaitCycles = Cycles.build_cycles_fromEvents(lfs, lfo, None, None)
 
     onsets = []
     durations = []
