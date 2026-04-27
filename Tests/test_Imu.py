@@ -19,6 +19,8 @@ from pyCGM2.IMU.Procedures import imuReaderProcedures
 from pyCGM2.IMU.Procedures import relativeImuAngleProcedures
 from pyCGM2.IMU.Procedures import imuMotionProcedure
 
+from pyCGM2.IMU import imuSpecificReaders
+
 
 from viconnexusapi import ViconUtils
 
@@ -78,20 +80,52 @@ def Vicon_practice_GlobalAngle(file_name):
 
 class Test_ImuReaders:
 
-    def test_blueTridentAlignedCsv(self):
-        fullfilename = pyCGM2.TEST_DATA_PATH + "LowLevel\\IMU\\\BlueTridentCaptureU\\static_2sensors_csvFiles\\S1-1_TS-01436_2023-08-01-15-59-57_aligned.csv"
-       
-        imuTranslators  = files.openFile(pyCGM2.PYCGM2_SETTINGS_FOLDER +"IMU\\","viconBlueTrident.translators")
-       
-        irp = imuReaderProcedures.CsvProcedure(fullfilename, imuTranslators["Translators"] )
+    def test_kivent(self):
+        path  = pyCGM2.TEST_DATA_PATH+"LowLevel/IMU/kinvent/"
+
+        fullfilename =f"{path}KFORCESens20266_F2_27_E6_47_94_0E.csv"
+        dataframe = imuSpecificReaders.read_imu_kinventCsv (fullfilename)
+    
+        irp = imuReaderProcedures.DataframeProcedure(dataframe,None,timeColumn="Time")
         irf = imuFilters.ImuReaderFilter(irp)
         imu1 = irf.run()
-        
-        irp2 = imuReaderProcedures.CsvProcedure(fullfilename, imuTranslators["Translators"] )
-        irp2.downsample(100)
-        irf = imuFilters.ImuReaderFilter(irp2)
-        imu2 = irf.run()
 
+    def test_blueTrident(self):
+        # path = pyCGM2.TEST_DATA_PATH+"nathan-FieldTests/Sprint/"
+
+        # fullfilename =f"{path}IMU_Frame.csv"    
+
+        fullfilename = pyCGM2.TEST_DATA_PATH + "LowLevel/IMU/blueTrident/bluetTrident_aligned.csv"
+
+        dataframe = imuSpecificReaders.read_blueTridentCsv(fullfilename)
+
+        irp = imuReaderProcedures.DataframeProcedure(dataframe,None)
+        irf = imuFilters.ImuReaderFilter(irp)
+        imu1 = irf.run()
+
+
+    def test_blueTridentNotAlignedData(self):
+        # path = pyCGM2.TEST_DATA_PATH+"nathan-FieldTests/Sprint/"
+
+        # fullfilename =f"{path}IMU_Frame.csv"    
+
+        fullfilename = pyCGM2.TEST_DATA_PATH + "LowLevel/IMU/blueTrident/notAlignedCsv/Rouling Maxence_TS-02374_2022-04-26-16-34-56_lowg.csv"
+        dataframe1 = imuSpecificReaders.read_blueTridentCsv(fullfilename)
+
+        fullfilename = pyCGM2.TEST_DATA_PATH + "LowLevel/IMU/blueTrident/notAlignedCsv/Rouling Maxence_TS-01436_2022-04-26-16-34-56_lowg.csv"
+        dataframe2 = imuSpecificReaders.read_blueTridentCsv(fullfilename)
+
+        fullfilename = pyCGM2.TEST_DATA_PATH + "LowLevel/IMU/blueTrident/notAlignedCsv/Rouling Maxence_TS-02122_2022-04-26-16-34-56_lowg.csv"
+        dataframe3 = imuSpecificReaders.read_blueTridentCsv(fullfilename)
+
+        dataframes = imuReaderProcedures.synchroniseNotAlignedDataFrames([dataframe1,dataframe2,dataframe3],timeColumn ="Time")
+
+        irp = imuReaderProcedures.DataframeProcedure(dataframes[0],None)
+        irf = imuFilters.ImuReaderFilter(irp)
+        imu1 = irf.run()
+
+
+    
 
     def test_blueTridentc3d(self):
         fullfilename = pyCGM2.TEST_DATA_PATH + "IMU\\angleMeasurement\\goniometer\\right36 -0to120 trial 01.c3d"
@@ -107,29 +141,6 @@ class Test_ImuReaders:
         irp.downsample(100)
         irf = imuFilters.ImuReaderFilter(irp)
         imu1 = irf.run()
-
-    def test_blueTridentNotAlignedCsv(self):
-        fullfilename1 = pyCGM2.TEST_DATA_PATH + "LowLevel\\IMU\\\BlueTridentCaptureU\\Rouling Maxence_TS-01436_2022-04-26-16-34-56_lowg.csv"
-        fullfilename2 = pyCGM2.TEST_DATA_PATH + "LowLevel\\IMU\\\BlueTridentCaptureU\\Rouling Maxence_TS-02122_2022-04-26-16-34-56_lowg.csv"
-        fullfilename3 = pyCGM2.TEST_DATA_PATH + "LowLevel\\IMU\\\BlueTridentCaptureU\\Rouling Maxence_TS-02374_2022-04-26-16-34-56_lowg.csv"
-
-        imuTranslators  = files.openFile(pyCGM2.PYCGM2_SETTINGS_FOLDER +"IMU\\","viconBlueTrident.translators")
-
-        dataframes = imuReaderProcedures.synchroniseNotAlignedCsv([fullfilename1,fullfilename2,fullfilename3],timeColumn ="time_s")
-
-
-        irp = imuReaderProcedures.DataframeProcedure(dataframes[0], imuTranslators["Translators"] )
-        irf = imuFilters.ImuReaderFilter(irp)
-        imu1 = irf.run()
-
-
-        irp2 = imuReaderProcedures.DataframeProcedure(dataframes[0], imuTranslators["Translators"] )
-        irp2.downsample(100)
-        irf = imuFilters.ImuReaderFilter(irp2)
-        imu2 = irf.run()
-        
-
-
 
 class Test_ImuMotion:
     def test_relativeAngles(self):
@@ -170,13 +181,11 @@ class Test_Vicon:
         fullfilename = "C:\\Users\\fleboeuf\\Documents\\Programmation\\vicon-plugin\\Capture.U Practice Scripts\\Practice_Python\\Practice_GlobalAngles.csv"
         trial_new_deg, trial_helical = Vicon_practice_GlobalAngle(fullfilename)
 
+        dataframe = imuSpecificReaders.read_blueTridentCsv(fullfilename)
 
-        imuTranslators  = files.openFile(pyCGM2.PYCGM2_SETTINGS_FOLDER +"IMU\\","viconBlueTrident.translators")
-       
-        irp = imuReaderProcedures.CsvProcedure(fullfilename, imuTranslators["Translators"] )
+        irp = imuReaderProcedures.DataframeProcedure(dataframe,None)
         irf = imuFilters.ImuReaderFilter(irp)
         imu1 = irf.run()
-
 
         motProc = imuMotionProcedure.RealignedMotionProcedure()
         motFilter = imuFilters.ImuMotionFilter(imu1,motProc)

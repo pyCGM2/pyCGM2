@@ -1,4 +1,5 @@
 Translators:
+    Time: time_s
     Accel.X: ax_m/s/s
     Accel.Y: ay_m/s/s
     Accel.Z: az_m/s/s

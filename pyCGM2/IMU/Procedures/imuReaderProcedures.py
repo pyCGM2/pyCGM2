@@ -11,12 +11,15 @@ from pyCGM2.Signal import signal_processing
 
 from typing import List, Tuple, Dict, Optional,Union
 
-def synchroniseNotAlignedCsv(fullfilenames:List,timeColumn = "time_s"):
+
+
+
+def synchroniseNotAlignedDataFrames(datasets:List,timeColumn = "Time"):
     """
     Synchronise different CSV files based on a common time column.
 
     Args:
-        fullfilenames (List): List of paths and filenames of the CSV files to be synchronised.
+        datasets (List): List of pandas DataFrames to be synchronised.
         timeColumn (str, optional): Name of the time column used for synchronisation. Defaults to "time_s".
     """
 
@@ -25,9 +28,7 @@ def synchroniseNotAlignedCsv(fullfilenames:List,timeColumn = "time_s"):
         idx = (np.abs(array - value)).argmin()
         return idx,array[idx]
 
-    datasets= []
-    for fullfilename in fullfilenames:
-        datasets.append( pd.read_csv(fullfilename))
+
 
     times0 = []
     for dataset in datasets:
@@ -65,96 +66,7 @@ class ImuReaderProcedure(object):
         """
         self.m_downsampleFreq = freq
 
-class CsvProcedure(ImuReaderProcedure):
-    """
-    Procedure to read IMU data from a CSV file.
-
-    Args:
-        fullfilename (str): Path and filename of the CSV file.
-        translators (Dict): Dictionary translating CSV column names to IMU data labels.
-        freq (str, optional): Frequency of the IMU data. If set to 'Auto', it will be automatically determined. Defaults to 'Auto'.
-        timeColumn (str, optional): Name of the time column in the CSV file. Defaults to 'time_s'.
-    """
-    def __init__(self,fullfilename:str,translators:Dict,freq = "Auto" , timeColumn = "time_s"):
-        """Initializes the CsvProcedure with specified file, translators, frequency, and time column."""
-        super(CsvProcedure, self).__init__()
-        
-        self.m_data = pd.read_csv(fullfilename)
-        self.m_translators = translators
-
-        self.m_freq = freq
-        self.__freq = self.m_freq
-        self.m_timeColumn = timeColumn
-
-
-    def read(self)->imu.Imu:
-        """
-        Read and process IMU data from the CSV file.
-
-        Returns:
-            imu.Imu: Instance of IMU containing the processed data.
-        """
-        
-        if self.m_freq == "Auto":
-            self.m_freq = int(1/(self.m_data[self.m_timeColumn].to_numpy()[1] - 
-                        self.m_data[self.m_timeColumn].to_numpy()[0]))
-            self.__freq = self.m_freq
-
-         
-        acceleration = np.zeros((self.m_data.shape[0],3))
-        try:
-            acceleration = np.array([self.m_data[self.m_translators["Accel.X"]].to_numpy(), 
-                                    self.m_data[self.m_translators["Accel.Y"]].to_numpy(), 
-                                    self.m_data[self.m_translators["Accel.Z"]].to_numpy()]).T
-        except:
-            LOGGER.logger.warning("[pyCGM2] - no accelerometer detected in your data ")
-
-
-        angularVelocity = np.zeros((self.m_data.shape[0],3))
-        try:
-            angularVelocity = np.array([self.m_data[self.m_translators["AngularVelocity.X"]].to_numpy(), 
-                                self.m_data[self.m_translators["AngularVelocity.Y"]].to_numpy(), 
-                                self.m_data[self.m_translators["AngularVelocity.Z"]].to_numpy()]).T
-        except:
-            LOGGER.logger.warning("[pyCGM2] - no goniometer detected in your data ")
-
-        magnetometer = np.zeros((self.m_data.shape[0],3))
-        try:
-            magnetometer = np.array([self.m_data[self.m_translators["Magneto.X"]].to_numpy(), 
-                                    self.m_data[self.m_translators["Magneto.Y"]].to_numpy(), 
-                                    self.m_data[self.m_translators["Magneto.Z"]].to_numpy()]).T
-        except:
-            LOGGER.logger.warning("[pyCGM2] - no magnetometer detected in your data ")
-
-        if self.m_downsampleFreq is not None:
-            acceleration = signal_processing.downsample(acceleration,self.m_freq,self.m_downsampleFreq)
-            angularVelocity = signal_processing.downsample(angularVelocity,self.m_freq,self.m_downsampleFreq)
-            magnetometer = signal_processing.downsample(magnetometer,self.m_freq,self.m_downsampleFreq)
-            self.m_freq = self.m_downsampleFreq    
-
-        imuInstance =  imu.Imu(self.m_freq,acceleration,angularVelocity,magnetometer)
-
-        
-        requiredCols = [self.m_translators["Quaternion.X"],self.m_translators["Quaternion.Y"], self.m_translators["Quaternion.Z"], self.m_translators["Quaternion.R"]]
-        if all(column in self.m_data.columns for column in requiredCols):
-            LOGGER.logger.info("[pyCGM2] - your csv contains quaternions- - the reader compute the imu Motion")
-
-            quaternions =  np.array([self.m_data[self.m_translators["Quaternion.X"]].to_numpy(),
-                                    self.m_data[self.m_translators["Quaternion.Y"]].to_numpy(),
-                                    self.m_data[self.m_translators["Quaternion.Z"]].to_numpy(), 
-                                    self.m_data[self.m_translators["Quaternion.R"]].to_numpy()]).T
-            
-            if self.m_downsampleFreq is not None:
-                quaternions = signal_processing.downsample(quaternions,self.__freq,self.m_downsampleFreq)
-
-            motProc = imuMotionProcedure.QuaternionMotionProcedure(quaternions)
-
-            from pyCGM2.IMU import imuFilters
-            motFilter = imuFilters.ImuMotionFilter(imuInstance,motProc)
-            motFilter.run()
-    
-        return imuInstance
-        
+       
 class DataframeProcedure(ImuReaderProcedure):
     """
     Procedure to read IMU data from a Pandas DataFrame.
@@ -165,13 +77,37 @@ class DataframeProcedure(ImuReaderProcedure):
         freq (str, optional): Frequency of the IMU data. If set to 'Auto', it will be automatically determined. Defaults to 'Auto'.
         timeColumn (str, optional): Name of the time column in the DataFrame. Defaults to 'time_s'.
     """
-    def __init__(self,dataframe:pd.DataFrame,translators:Dict,freq = "Auto" , timeColumn = "time_s"):
+    def __init__(self,dataframe:pd.DataFrame,translators:Dict,freq = "Auto" , timeColumn = "Time"):
         """
         Initializes the DataframeProcedure with specified DataFrame, translators, frequency, and time column.
         """
         super(DataframeProcedure, self).__init__()
         
         self.m_data = dataframe
+
+        if translators is None:
+            translators = {
+                "Time":"Time",
+                "Accel.X": "Accel.X",
+                "Accel.Y": "Accel.Y",
+                "Accel.Z": "Accel.Z",
+                "AngularVelocity.X": "AngularVelocity.X",
+                "AngularVelocity.Y": "AngularVelocity.Y",
+                "AngularVelocity.Z": "AngularVelocity.Z",
+                "Magneto.X": "Magneto.X",
+                "Magneto.Y": "Magneto.Y",
+                "Magneto.Z": "Magneto.Z",
+                "Quaternion.X": "Quaternion.X",
+                "Quaternion.Y": "Quaternion.Y",
+                "Quaternion.Z": "Quaternion.Z",
+                "Quaternion.R": "Quaternion.R",
+                "GlobalAngle.X": "GlobalAngle.X",
+                "GlobalAngle.Y": "GlobalAngle.Y",
+                "GlobalAngle.Z": "GlobalAngle.Z"
+            }
+
+
+
         self.m_translators = translators
 
         self.m_freq = freq

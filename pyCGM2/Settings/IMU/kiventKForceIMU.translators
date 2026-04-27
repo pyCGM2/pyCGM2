@@ -1,0 +1,16 @@
+---
+Translators:
+  Time: 0
+  Accel.X: 5
+  Accel.Y: 6
+  Accel.Z: 7
+  AngularVelocity.X: 8
+  AngularVelocity.Y: 9
+  AngularVelocity.Z: 10
+  Magneto.X: 11
+  Magneto.Y: 12
+  Magneto.Z: 13
+  Quaternion.X: 1
+  Quaternion.Y: 2
+  Quaternion.Z: 3
+  Quaternion.R: 4
