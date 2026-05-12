@@ -1,24 +1,21 @@
 import sys
-from PySide6.QtWidgets import QApplication, QFileDialog
-
+import tkinter as tk
+from tkinter import filedialog
 
 def uiGetDir(title: str = "Select a Data Folder",
              start_dir: str = "") -> str | None:
 
-    existing_app = QApplication.instance()
-    app = existing_app if existing_app is not None else QApplication(sys.argv)
-    created_locally = existing_app is None
+    root = tk.Tk()
+    root.withdraw()  # cache la fenêtre principale
 
-    directory = QFileDialog.getExistingDirectory(
-        None,
-        title,
-        start_dir,
-        QFileDialog.ShowDirsOnly | QFileDialog.DontResolveSymlinks
+    directory = filedialog.askdirectory(
+        title=title,
+        initialdir=start_dir
     )
 
-    if created_locally:
-        app.quit()
-        del app  # détruit le singleton pour libérer la place
+    root.destroy()
 
-    directory = directory.replace("/", "\\") + "\\"
-    return directory if directory else None
+    if not directory:
+        return None
+
+    return directory.replace("/", "\\") + "\\"
