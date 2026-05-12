@@ -967,10 +967,10 @@ class MainParser:
                     params = flowUI.uiGetFlowArgs()
                     if params is None:
                         return  
-                    args = Namespace(**params)
+
+                    vars(args).update(params)
                 
-                
-                elif args.FLOW == "Init" or (args.FLOW == "UI" and args.command == "Init"):
+                if args.FLOW == "Init" or (args.FLOW == "UI" and args.command == "Init"):
                     flowInit.main(args)
                 elif args.FLOW == "Edit" or (args.FLOW == "UI" and args.command == "Edit"):
                     flowEdit.main(args)
