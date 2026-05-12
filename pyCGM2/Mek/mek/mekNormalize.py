@@ -1,5 +1,4 @@
 import sys
-from pyCGM2.Tools import btkTools
 import numpy as np
 from scipy.interpolate import interp1d
 

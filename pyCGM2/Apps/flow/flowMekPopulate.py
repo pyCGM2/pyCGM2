@@ -15,7 +15,7 @@ LOGGER = pyCGM2.LOGGER
 
 from pyCGM2.Utils import files
 from pyCGM2.Tools import uiTools
-
+from pyCGM2.Model.Opensim import opensimIO
 from pyCGM2.flow import settingsHandler
 from pyCGM2.Model.Opensim.interface import opensimInterface
 from pyCGM2.Nexus import nexus
@@ -23,6 +23,8 @@ from pyCGM2.Nexus import nexus
 
 import argparse
 from argparse import Namespace
+from pathlib import Path
+
 
 try:
     from pyCGM2.Mek.mek import mekOperations
@@ -37,6 +39,7 @@ except ImportError as e:
 
 
 def main(args=None):
+
 
     if args is None:
         parser = argparse.ArgumentParser(description='Process flow report from Eclipse')
@@ -117,11 +120,33 @@ def main(args=None):
 
 
     # add attribute a session
-    # import ipdb; ipdb.set_trace()
-
     mekLib.setDictToYamlAttribute(ds,userSettings,  f"{session_dir}/Analysis {analysisId}","flow-userSettings")
     group = ds.root().retrieve_group(f"{session_dir}/Analysis {analysisId}")
     group.create_attribute("userSettingsFile", userSettingsFile)    
+
+
+
+    #
+    exists = (Path(data_path) / "musculoskeletal_modelling" / "pose_standstill").exists()
+    if exists:
+        modelVersionShort = modelVersion.replace(".","") 
+        muscleLengths0 = opensimIO.OpensimDataFrame(data_path,
+                                                    f"musculoskeletal_modelling/pose_standstill/{modelVersionShort}-Pose[standstill]_MuscleAnalysis_Length.sto")
+        muscleLengths0Dict = muscleLengths0.dataFrameToDict()
+
+        poseGroup = f"{session_dir}/Analysis {analysisId}/Poses/standstill"
+
+        for muscle in muscleLengths0Dict:
+            print(muscle)
+            values = muscleLengths0Dict[muscle]
+            if ds.root().exists_set(f"{poseGroup}/MTUL/{muscle}"):
+                ds.root().retrieve_set(f"{poseGroup}/MTUL/{muscle}").write(values)
+            else:
+                ds.root().create_set(f"{poseGroup}/MTUL/{muscle}", values)
+
+
+
+
 
     conditions = settingsHandler.list_conditions(userSettings)
     for condition in conditions:
@@ -155,9 +180,11 @@ def main(args=None):
                         "EMG/rectify": [[processedPath+filename for filename in emgTrialNames], mergedLabelContext_rect],
                 }
 
+            
             if modelVersion in ["CGM2.2","CGM2.3"]:
-                osimInterface = opensimInterface.osimInterface(pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\"+modelVersion.replace(".","")+"\\", "pycgm2-gait2354_simbody.osim")
+                osimInterface = opensimInterface.osimInterface(pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\"+modelVersion.replace(".","")+"\\", "pycgm2-gait2392_simbody.osim")
                 muscleDict = osimInterface.getMuscles_bySide(addToName="[MuscleLength]")
+                
                 scheme["MuscleKinematics/MTUL"] = [[processedPath+filename for filename in trialnames],  [it+":Left" for it  in muscleDict["Left"]] + [it+":Right" for it  in muscleDict["Right"]]]
 
             filter = mekExtract.mekExtractFilter(ds,group=f"{session_dir}/Analysis {analysisId}/{condition}")
@@ -166,6 +193,9 @@ def main(args=None):
 
             normalize_filter = mekNormalize.mekNormalizeFilter(ds,group=f"{session_dir}/Analysis {analysisId}/{condition}")
             normalize_filter.run(scheme,cropToForcePlateGroups =["Kinetics/Moments", "Kinetics/Forces"]) 
+
+            
+
 
 
             if not storage.updateFlag:
