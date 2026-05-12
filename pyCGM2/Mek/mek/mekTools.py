@@ -7,6 +7,21 @@ def mekAttributesToDict(group):
             out[attr] = group.retrieve_attribute(attr).read()
     return out
 
+def writeDataset(group, name, data, attributes=None):
+    if group.exists_set(name):
+        group.retrieve_set(name).write(data)
+        if attributes is not None:
+            for attr in attributes:
+                group.retrieve_set(name).create_attribute(attr, attributes[attr])
+
+    else:
+        group.create_set(name, data)
+        if attributes is not None:
+            for attr in attributes:
+                group.retrieve_set(name).create_attribute(attr, attributes[attr])    
+
+
+
 
 def iter_sets(groupe, prefix=""):
     # Yield les sets du groupe courant
