@@ -103,6 +103,11 @@ class OpensimDataFrame(object):
     def getDataFrame(self):
         return self.m_dataframe
 
+    def dataFrameToDict(self):
+
+        result = {col: self.m_dataframe[col].values for col in self.m_dataframe.columns if col != "time"}
+        return result
+
     def save(self, outDir = None, filename=None):
 
         directory = self.m_DATA_PATH if outDir is None else  outDir
