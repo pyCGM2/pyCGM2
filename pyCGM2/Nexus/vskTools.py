@@ -8,6 +8,8 @@ import string
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 import pyCGM2
 from pyCGM2.Utils import files
+import numpy as np
+
 
 from typing import List, Tuple, Dict, Optional,Union
 
@@ -67,6 +69,23 @@ class Vsk(object):
         soup = BeautifulSoup(contents,'xml')
 
         self.m_soup = soup
+
+    def getLocapMarkerPositions(self):
+        # 1. Récupérer les valeurs des paramètres
+        params = {}
+        for p in self.m_soup.find_all("Parameter"):
+            params[p["NAME"]] = float(p["VALUE"])
+
+        # 2. Mapper les marqueurs vers leurs coordonnées locales
+        marker_positions = {}
+        for target in self.m_soup.find_all("TargetLocalPointToWorldPoint"):
+            marker_name = target["MARKER"]
+            position_str = target["POSITION"]  # ex: "'Probe_Probe1_x' 'Probe_Probe1_y' 'Probe_Probe1_z'"
+            param_names = position_str.replace("'", "").split()
+            coords = np.array([params[p] for p in param_names])
+            marker_positions[marker_name] = coords
+
+        return marker_positions
 
 
 
