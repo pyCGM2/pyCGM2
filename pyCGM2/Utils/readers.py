@@ -124,3 +124,21 @@ def is_yaml(s):
         bool: True if the string is valid YAML, False otherwise.
     """
     return try_as(yaml.safe_load, s, yaml.scanner.ScannerError)
+
+def try_as(loader, s, on_error):
+    """
+    Attempt to parse a string with a given loader and catch specific errors.
+
+    Args:
+        loader (callable): The function used to load and parse the string.
+        s (str): The string to be parsed.
+        on_error (Exception): The exception type to catch.
+
+    Returns:
+        bool: True if parsing is successful, False otherwise.
+    """
+    try:
+        loader(s)
+        return True
+    except on_error:
+        return False
