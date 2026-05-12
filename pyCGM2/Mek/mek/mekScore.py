@@ -8,8 +8,6 @@ import numpy as np
 import pyCGM2
 LOGGER = pyCGM2.LOGGER
 
-from pyCGM2.Processing.Scores.scoreProcedures import ScoreProcedure
-from pyCGM2.Report.normativeDatasets import NormativeData
 from typing import List, Tuple, Dict, Optional,Union,Any
 from pyCGM2.Math import numeric
 from pyCGM2.Mek.lib import mekLib
@@ -62,7 +60,7 @@ class CGM1_GPS(ScoreProcedure):
         self.matchingNormativeDataLabel = matchingNormativeDataLabel
         self.axes = axes
 
-    def _compute(self,group,normativeData:NormativeData):
+    def _compute(self,group,normativeData):
         """
         Computes the Gait Profile Score (GPS) and associated Gait Variable Scores (GVS).
 
