@@ -117,3 +117,6 @@ pyCGM2/External/opensim
 pyCGM2/External/lbmc
 Sandbox
 build_artifacts
+
+
+*.h5

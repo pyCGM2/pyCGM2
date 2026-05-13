@@ -8,6 +8,15 @@ import yamlordereddictloader
 import pyCGM2
 LOGGER = pyCGM2.LOGGER
 
+from openpyxl import load_workbook
+
+class ExcelReader:
+    def __init__(self, file_path: str):
+        self._workbook = load_workbook(filename=file_path, data_only=True)
+    
+    def get_cell_value(self, sheet_name: str, cell: str):
+        sheet = self._workbook[sheet_name]
+        return sheet[cell].value
 
 
 def openFile(path:str,filename:str):
