@@ -11,7 +11,7 @@ __version__= "4.4rc2"
 
 LOGGER = log.pyCGM2_Logger(__name__)
 
-
+VIRTUAL_MACHINE = False
 
 # CONSTANTS
 MAIN_PYCGM2_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir)) + "\\"
@@ -64,7 +64,10 @@ TEST_DATA_PATH_OUT = "C:\\Users\\fleboeuf\\Documents\\DATA\\pyCGM2-Data-Tests-OU
 NEXUS_PYCGM2_TOOLS_PATH = MAIN_PYCGM2_PATH + "pyCGM2\\Nexus\\"
 
 # [optional] moveck path
-MOVECKPATH = "C:\\Users\\fleboeuf\\Documents\\2. AREA OF RESPONSABILITY\\Programmation\\moveck\\"
+if VIRTUAL_MACHINE: 
+    MOVECKPATH= "C:\\Users\\FLeboeuf\\Documents\\programmation\\moveck\\"
+else:
+    MOVECKPATH = "C:\\Users\\fleboeuf\\Documents\\2. AREA OF RESPONSABILITY\\Programmation\\moveck\\"
 sys.path.append(MOVECKPATH+"Moveck_pipe-2024.1.0-win64-pipeline_install\\packages")
 
 #----- CONSTANTES -----
