@@ -1,5 +1,5 @@
 # coding: utf-8
-# pytest -s --disable-pytest-warnings --log-cli-level=INFO  test_mek.py::Test_mek::test_gaitScheme
+# pytest -s --disable-pytest-warnings --log-cli-level=INFO  test_mek.py::Test_mekApp::test_plotmuscle
 from logging import root
 import sys
 import time
@@ -49,7 +49,7 @@ if MOVECK_AVAILABLE:
     from pyCGM2.Mek.mek import mekFlow
     from pyCGM2.Mek.lib import mekLib
     from pyCGM2.Mek.mek import mekTools
-    from pyCGM2.Mek.mek import mekPlot
+    # from pyCGM2.Mek.mek import mekPlot
     from pyCGM2.Mek.mek import mekOperations
     from pyCGM2.Mek.mek import mekTransform
     from pyCGM2.Mek.mek import mekScore
@@ -490,7 +490,7 @@ if MOVECK_AVAILABLE:
 
         def test_plot(self):
             path = pyCGM2.TEST_DATA_PATH + "mek\\storageSample\\"
-            ds = moveck.data_store(path+"session-storage.h5")
+            ds = moveck.data_store(path+"ipp-storage.h5")
 
             group = ds.root().retrieve_group("Session 2/Analysis 1/Condition1/Normalize/Kinematics/Angles")
             cycleValues ,attrs = mekLib.gatherCycles(group,"LAnkleAngles")
@@ -543,7 +543,27 @@ if MOVECK_AVAILABLE:
             import ipdb; ipdb.set_trace()
 
 
+        def test_plot_reaction(self):
+            path = pyCGM2.TEST_DATA_PATH + "mek\\storageSample\\"
+            ds = moveck.data_store(path+"ipp-storage.h5")
 
+            group = ds.root().retrieve_group("Session 2/Analysis 1/Condition1/Normalize/Kinetics/Force")
+            cycleValues ,attrs = mekLib.gatherCycles(group,"LStanGroundreactionForce")
+            avg = cycleValues[:, :, 0].mean(axis=0) # return frame by frame mean of col #0
+
+
+
+        def test_plotmuscle(self):
+            path = pyCGM2.TEST_DATA_PATH + "mek\\"
+            ds = moveck.data_store(path+"ipp-storage.h5")
+
+            group = ds.root().retrieve_group("Session 1/Analysis 1/Condition1/Normalize/MuscleKinematics/MTUL")
+
+
+            cycleValues ,attrs = mekLib.gatherCycles(group,"add_mag2_l[MuscleLength]")
+            avg = cycleValues[:, :, 0].mean(axis=0) # return frame by frame mean of col #0
+            values = ds.root().retrieve_set("Session 1/Analysis 1/Poses/standstill//MTUL/add_mag2_l").read()
+            avgNorm = avg / values.max()
 
 
 

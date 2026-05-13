@@ -4,6 +4,8 @@
 # pytest -s --disable-pytest-warnings  test_opensimInterface.py::Test_CGM_XmlProcedures::test_cgm22_scaling_ik_muscle
 
 # pytest -s --disable-pytest-warnings  test_opensimInterface.py::Test_CGM_XmlProcedures::test_cgm22_scaling_ISSUE_oneFrame
+# pytest -s --disable-pytest-warnings  test_opensimInterface.py::Test_checking::test_Musclelabels
+
 
 from pickle import NONE
 import os
@@ -31,6 +33,7 @@ from pyCGM2.Lib.CGM.musculoskeletal import  cgm2_3 as cgm2_3msm
 from pyCGM2.Lib.CGM.musculoskeletal import  cgm2_2 as cgm2_2msm
 
 from pyCGM2.Model.Opensim.interface import opensimInterfaceFilters
+from pyCGM2.Model.Opensim.interface import opensimInterface
 from pyCGM2.Model.Opensim.interface.procedures.scaling import opensimScalingInterfaceProcedure
 from pyCGM2.Model.Opensim.interface.procedures.inverseKinematics import opensimInverseKinematicsInterfaceProcedure
 from pyCGM2.Model.Opensim.interface.procedures.inverseDynamics import opensimInverseDynamicsInterfaceProcedure
@@ -1414,6 +1417,12 @@ class Test_Generic_DrivenPose:
         rf = muscles.get("rect_fem_r")
         print(rf.getLength(states))
         ipdb.set_trace()
-        
-        
 
+class Test_checking:
+
+    def test_Musclelabels(self):
+        modelVersion = "CGM2.3"
+        osimInterface = opensimInterface.osimInterface(pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\"+modelVersion.replace(".","")+"\\", "pycgm2-gait2392_simbody.osim")
+        muscleDict = osimInterface.getMuscles_bySide(addToName="[MuscleLength]")
+
+        import ipdb; ipdb.set_trace()
