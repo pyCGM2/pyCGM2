@@ -791,7 +791,7 @@ def moveFile(src:str, dst:str):
     except Exception as e:
         LOGGER.logger.error("Error moving file from [%s] to [%s]: %s" % (src, dst, e))
 
-def copyPasteDirectory(src:str, dst:str):
+def copyPasteDirectory(src:str, dst:str,overwriteFlag = True):
     """
     Copy and paste a directory from a source to a destination.
 
@@ -799,13 +799,15 @@ def copyPasteDirectory(src:str, dst:str):
         src (str): The source directory path.
         dst (str): The destination directory path.
     """
-    import ipdb; ipdb.set_trace()
     try:
         shutil.copytree(src, dst)
     except FileExistsError:
-        LOGGER.logger.warning("directory already exists. delete and overwritten ")
-        shutil.rmtree(dst)
-        shutil.copytree(src, dst)
+        if overwriteFlag:
+            LOGGER.logger.warning("directory already exists. delete and overwritten ")
+            shutil.rmtree(dst)
+            shutil.copytree(src, dst)
+        else:
+            LOGGER.logger.warning("directory already exists. delete and overwritten Manually  ")
 
 
 def deleteDirectory(dir:str):
