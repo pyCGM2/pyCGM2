@@ -48,6 +48,16 @@ class mekViconTrialTransformProcedure(AbstractMekTrialTransformProcedure):
         }
         moveck.transform_data(trial, split_spec)
 
+        # spec = {
+        #     "callable_unit": "c3d-format.detect-forceplate-channels",
+        #     "SourceGroup": f"Trials/{c3dFilename[:-4]}",
+        #     "DestinationGroup" : f"Trials/{c3dFilename[:-4]}/Devices/ForcePlateChannels",
+        #     "extractionMethod": "split"
+        # }
+        # moveck.transform_data(trial, spec)
+
+
+        # datastorage.dump("test.h5")
 
         grp = root.retrieve_group(f"Trials/{c3dFilename[:-4]}/Devices/Mocap/Markers")
         for label in  grp.list_set_children_name():
