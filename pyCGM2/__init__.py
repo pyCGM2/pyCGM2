@@ -68,11 +68,17 @@ if VIRTUAL_MACHINE:
     MOVECKPATH= "C:\\Users\\FLeboeuf\\Documents\\programmation\\moveck\\"
 else:
     MOVECKPATH = "C:\\Users\\fleboeuf\\Documents\\2. AREA OF RESPONSABILITY\\Programmation\\moveck\\"
+    
+    #C:\Users\fleboeuf\Documents\2. AREA OF RESPONSABILITY\Programmation\moveck\PipeUI-ModulePython\PipeUI-ModulePython\dist\plugins\python_plugin\sdk\moveck
+
 sys.path.append(MOVECKPATH+"Moveck_pipe-2024.1.0-win64-pipeline_install\\packages")
+
+
+
 
 #----- CONSTANTES -----
 
-MUSCLES_LABELS = ['glut_med1_r', 'glut_med2_r', 'glut_med3_r', 'bifemlh_r', 'bifemsh_r', 'sar_r', 'add_mag2_r', 'tfl_r', 'pect_r', 'grac_r', 'glut_max1_r', 'glut_max2_r', 'glut_max3_r', 'iliacus_r', 'psoas_r', 'quad_fem_r', 'gem_r', 'peri_r', 'rect_fem_r', 'vas_int_r', 'med_gas_r', 'soleus_r', 'tib_post_r', 'tib_ant_r', 'glut_med1_l', 'glut_med2_l', 'glut_med3_l', 'bifemlh_l', 'bifemsh_l', 'sar_l', 'add_mag2_l', 'tfl_l', 'pect_l', 'grac_l', 'glut_max1_l', 'glut_max2_l', 'glut_max3_l', 'iliacus_l', 'psoas_l', 'quad_fem_l', 'gem_l', 'peri_l', 'rect_fem_l', 'vas_int_l', 'med_gas_l', 'soleus_l', 'tib_post_l', 'tib_ant_l', 'ercspn_r', 'ercspn_l', 'intobl_r', 'intobl_l', 'extobl_r', 'extobl_l']
+mu = ['glut_med1_r', 'glut_med2_r', 'glut_med3_r', 'bifemlh_r', 'bifemsh_r', 'sar_r', 'add_mag2_r', 'tfl_r', 'pect_r', 'grac_r', 'glut_max1_r', 'glut_max2_r', 'glut_max3_r', 'iliacus_r', 'psoas_r', 'quad_fem_r', 'gem_r', 'peri_r', 'rect_fem_r', 'vas_int_r', 'med_gas_r', 'soleus_r', 'tib_post_r', 'tib_ant_r', 'glut_med1_l', 'glut_med2_l', 'glut_med3_l', 'bifemlh_l', 'bifemsh_l', 'sar_l', 'add_mag2_l', 'tfl_l', 'pect_l', 'grac_l', 'glut_max1_l', 'glut_max2_l', 'glut_max3_l', 'iliacus_l', 'psoas_l', 'quad_fem_l', 'gem_l', 'peri_l', 'rect_fem_l', 'vas_int_l', 'med_gas_l', 'soleus_l', 'tib_post_l', 'tib_ant_l', 'ercspn_r', 'ercspn_l', 'intobl_r', 'intobl_l', 'extobl_r', 'extobl_l']
 
 
 #--- eclipse db
@@ -80,4 +86,4 @@ ECLISPE_DB_PATH = "\\\\Bio2012006\\Vicon Data\\Donnees_Nexus\\eclipseDB.db"
 ECLIPSE_DB_LOCAL = MAIN_PYCGM2_PATH+"DB\\eclipseDB.db"
 
 #--- flow Folder
-FLOW_PUSH_FOLDER_PATH = "\\\\mandbprd\gaitdata3\\"
+FLOW_PUSH_FOLDER_PATH = "\\\\mandbprd\GAITLAB\\"

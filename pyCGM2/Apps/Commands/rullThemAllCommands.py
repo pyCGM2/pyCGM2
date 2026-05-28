@@ -57,6 +57,9 @@ from pyCGM2.Apps.flow import flowEdit
 from pyCGM2.Apps.flow import flowMekImporter
 from pyCGM2.Apps.flow import flowPrepare
 from pyCGM2.Apps.flow import flowMekPopulate
+from pyCGM2.Apps.flow import flowPush
+
+
 
 from pyCGM2.Apps.manDB import manDBcommands
 
@@ -718,7 +721,12 @@ class MainParser:
         parser_populate.add_argument('-c', '--conditions', nargs='*', help='list of conditions',required=False)
 
 
-
+        parser_push = flow_subparsers.add_parser('Push', help='command to push data')
+        parser_push.add_argument('-u', '--userSettings', type=str,
+                            help='userSettings file name, should be in the data folder',
+                            required=True)
+        parser_push.add_argument('-dp', '--data_path', type=str,
+                            default=None)
 
 
     def get_parser(self):
@@ -968,18 +976,24 @@ class MainParser:
                     if params is None:
                         return  
 
+                    if "commands" not in vars(args):
+                        setattr(args,"commands",[])
+
+
                     vars(args).update(params)
                 
-                if args.FLOW == "Init" or (args.FLOW == "UI" and args.command == "Init"):
+                if args.FLOW == "Init" or (args.FLOW == "UI" and (args.command == "Init" or "Init" in args.commands )):
                     flowInit.main(args)
-                elif args.FLOW == "Edit" or (args.FLOW == "UI" and args.command == "Edit"):
+                if args.FLOW == "Edit" or (args.FLOW == "UI" and (args.command == "Edit" or "Edit" in args.commands )):
                     flowEdit.main(args)
-                elif args.FLOW == "Import" or (args.FLOW == "UI" and args.command == "Import"):
+                if args.FLOW == "Import" or (args.FLOW == "UI" and (args.command == "Import" or "Import" in args.commands )):
                     flowMekImporter.main(args)
-                elif args.FLOW == "Prepare" or (args.FLOW == "UI" and args.command == "Prepare"):
+                if args.FLOW == "Prepare" or (args.FLOW == "UI" and (args.command == "Prepare" or "Prepare" in args.commands )):
                     flowPrepare.main(args)
-                elif args.FLOW =="Populate" or (args.FLOW == "UI" and args.command == "Populate"):
+                if args.FLOW =="Populate" or (args.FLOW == "UI" and (args.command == "Populate"or "Populate" in args.commands)):
                     flowMekPopulate.main(args)
+                if args.FLOW =="Push": #or (args.FLOW == "UI" and (args.command == "Populate"or "Populate" in args.commands)):
+                    flowPush.main(args)
 
             elif "DB" in args: 
                 if args.DB == "NewPatient": 
