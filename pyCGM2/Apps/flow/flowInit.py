@@ -10,7 +10,7 @@ warnings.filterwarnings("ignore", category=RuntimeWarning)
 import pyCGM2;
 LOGGER = pyCGM2.LOGGER
 LOGGER.setLevel("info")
-LOGGER.set_file_handler("pyCGM2-Mek.log")
+
 from pyCGM2.Tools import uiTools
 from pyCGM2.Nexus import nexus
 from pyCGM2.Utils import files
