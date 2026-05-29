@@ -9,7 +9,7 @@ try:
 except ImportError:
     MOVECK_AVAILABLE = False
     moveck = None  # pour éviter un NameError plus tard
-    LOGGER.warning("moveck pipe is not installed")
+    LOGGER.logger.warning("moveck pipe is not installed")
 
 
 if MOVECK_AVAILABLE:
