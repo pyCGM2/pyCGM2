@@ -61,9 +61,8 @@ def ForcePlateIntegration(ReactionForce:np.ndarray, mass:float, frameInit:int=0,
     acceleration[:,2] = (ReactionForce_cut[:,2] - mass*g)/mass
 
     for j in range(0,3):
-        velocity[:,j] = sp.integrate.cumulative_trapezoid(acceleration[:,j], dx=1/analogFrequency, initial=0)+v0[j]
-        position[:,j] = sp.integrate.cumulative_trapezoid(velocity[:,j], dx=1/analogFrequency, initial=0)+p0[j]
-
+        velocity[:,j] = sp.integrate.cumulative_simpson(acceleration[:,j], dx=1/analogFrequency, initial=0)+v0[j] #cumulative_trapezoid
+        position[:,j] = sp.integrate.cumulative_simpson(velocity[:,j], dx=1/analogFrequency, initial=0)+p0[j]
 
 
     index = 0
