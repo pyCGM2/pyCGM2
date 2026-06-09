@@ -1,1 +1,0 @@
-DB_TEST_PATH = "C:\\Users\\fleboeuf\\Documents\DATA\\pyCGM2-Data-Tests\\NantesSamples\\eclipseDB_test.db "
