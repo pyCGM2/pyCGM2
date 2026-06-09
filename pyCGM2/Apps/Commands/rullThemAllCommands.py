@@ -60,16 +60,7 @@ from pyCGM2.Apps.flow import flowMekPopulate
 from pyCGM2.Apps.flow import flowPush
 
 
-
 from pyCGM2.Apps.manDB import manDBcommands
-
-try:
-    from companion.UI import nexusUI
-    from companion.UI import flowUI
-    companionConnected = True
-except ImportError as e:
-    companionConnected = False
-
 
 
 
@@ -559,21 +550,7 @@ class MainParser:
         parser_CGM26_sara.add_argument('-fe', '--frameEnd', type=int,
                             help='last frame to process')
 
-        # UI parser
-        ui_parser = nexus_subparser.add_parser("UI", help= "UI")
-        ui_subparser = ui_parser.add_subparsers(help='', dest="UI")
-        ui_subparser_cgmParser = ui_subparser.add_parser("CGM", help= "CGM command with UI")
-        ui_subparser_cgmParser_subparser = ui_subparser_cgmParser.add_subparsers(help='', dest="Operation")
         
-        cgmUi_Calibparser = ui_subparser_cgmParser_subparser.add_parser('Calibration', help='CGM calibration')
-        cgmUi_KneeCalibparser = ui_subparser_cgmParser_subparser.add_parser('KneeCalibration', help='CGM knee calibration')
-        cgmUi_Fittingparser = ui_subparser_cgmParser_subparser.add_parser('Fitting', help='CGM fitting')
-        
-        ui_subparser_EventParser = ui_subparser.add_parser("Events", help= "Events command with UI")
-
-        ui_subparser_GapsParser = ui_subparser.add_parser("Gaps", help= "Gaps command with UI")
-
-        ui_subparser_PlotParser = ui_subparser.add_parser("Plots", help= "Plot command with UI")
       
 
 
@@ -664,12 +641,7 @@ class MainParser:
         flow_subparsers = flow_parser.add_subparsers(help='', dest="FLOW")
         
 
-        # flowUI.uiGetFlowArgs()
-        parser_flowUi = flow_subparsers.add_parser('UI', help='command to initialize flow')
-        # parser_flowUi.add_argument('-dp', '--data_path', type=str,
-        #                     default=None)
-        
-
+       
 
         parser_flowInit = flow_subparsers.add_parser('Init', help='command to initialize flow')
         parser_flowInit.add_argument('-dp', '--data_path', type=str,
@@ -750,61 +722,16 @@ class MainParser:
 
         if not debug:
             if "NEXUS" in args:
-                subargs = None
-
-                if args.NEXUS == "UI":
-                    if  args.UI == "CGM":
-                        if args.Operation == "Calibration":
-                            params = nexusUI.uiGetNexusCGMCalibrationArgs()
-                            if params is None:
-                                return  
-                            subargs = Namespace(**params)
-                        
-                        if args.Operation == "KneeCalibration":
-                            params = nexusUI.uiGetNexusKneeCalibrationArgs()
-                            if params is None:
-                                return  
-                            subargs = Namespace(**params)
-                    
-                        if args.Operation == "Fitting":
-                            params = nexusUI.uiGetNexusCGMFittingArgs()
-                            if params is None:
-                                return  
-                            subargs = Namespace(**params)
-                        
-
-                    elif args.UI == "Events":
-                        params = nexusUI.uiGetNexusEventArgs()
-                        if params is None:
-                            return  
-                        subargs = Namespace(**params)
-
-                    elif  args.UI == "Gaps":
-                        params = nexusUI.uiGetNexusGapFillingArgs()
-                        if params is None:
-                            return  
-                        subargs = Namespace(**params)
-                    elif  args.UI == "Plots":
-                        params = nexusUI.uiGetNexusPlotArgs()
-                        if params is None:
-                            return  
-                        subargs = Namespace(**params)
                 
-
-                if args.NEXUS == "CGM1.0" or (subargs is not None and "cgmVersion" in subargs and subargs.cgmVersion == "CGM1.0"):
-                    if subargs is not None:
-                        setattr(subargs, "CGM10", args.Operation)
-                        args = subargs
+                if args.NEXUS == "CGM1.0" :
 
                     if args.CGM10 == "Calibration":
                         CGM1_Calibration.main(args)
                     if args.CGM10 == "Fitting":
                         CGM1_Fitting.main(args)
 
-                elif args.NEXUS == "CGM1.1" or (subargs is not None and "cgmVersion" in subargs and subargs.cgmVersion == "CGM1.1"):
-                    if subargs is not None:
-                        setattr(subargs, "CGM11", args.Operation)
-                        args = subargs
+                elif args.NEXUS == "CGM1.1" :
+                   
 
                     if args.CGM11 == "Calibration":
                         CGM1_1_Calibration.main(args)
@@ -812,61 +739,42 @@ class MainParser:
                         CGM1_1_Fitting.main(args)
 
 
-                elif args.NEXUS == "CGM2.1" or (subargs is not None and "cgmVersion" in subargs and subargs.cgmVersion == "CGM2.1"):
-                    if subargs is not None:
-                        setattr(subargs, "CGM21", args.Operation)
-                        args = subargs
+                elif args.NEXUS == "CGM2.1" :
 
                     if args.CGM21 == "Calibration":
                         CGM2_1_Calibration.main(args)
                     if args.CGM21 == "Fitting":
                         CGM2_1_Fitting.main(args)   
 
-                elif args.NEXUS == "CGM2.2" or (subargs is not None and "cgmVersion" in subargs and subargs.cgmVersion == "CGM2.2"):
-                    if subargs is not None:
-                        setattr(subargs, "CGM22", args.Operation)
-                        args = subargs
+                elif args.NEXUS == "CGM2.2" :
 
                     if args.CGM22 == "Calibration":
                         CGM2_2_Calibration.main(args)
                     if args.CGM22 == "Fitting":
                         CGM2_2_Fitting.main(args)
 
-                elif args.NEXUS == "CGM2.3" or (subargs is not None and "cgmVersion" in subargs and subargs.cgmVersion == "CGM2.3"):
-                    if subargs is not None:
-                        setattr(subargs, "CGM23", args.Operation)
-                        args = subargs
-                        
+                elif args.NEXUS == "CGM2.3":
+                       
                     if args.CGM23 == "Calibration":
                         CGM2_3_Calibration.main(args)
                     if args.CGM23 == "Fitting":
                         CGM2_3_Fitting.main(args)
 
-                elif args.NEXUS == "CGM2.4" or (subargs is not None and "cgmVersion" in subargs and subargs.cgmVersion == "CGM2.4"):
-                    if subargs is not None:
-                        setattr(subargs, "CGM24", args.Operation)
-                        args = subargs
+                elif args.NEXUS == "CGM2.4" :
 
                     if args.CGM24 == "Calibration":
                         CGM2_4_Calibration.main(args)
                     if args.CGM24 == "Fitting":
                         CGM2_4_Fitting.main(args)
 
-                elif args.NEXUS == "CGM2.5" or (subargs is not None and "cgmVersion" in subargs and subargs.cgmVersion == "CGM2.5"):
-                    if subargs is not None:
-                        setattr(subargs, "CGM25", args.Operation)
-                        args = subargs
+                elif args.NEXUS == "CGM2.5" :
 
                     if args.CGM25 == "Calibration":
                         CGM2_5_Calibration.main(args)
                     if args.CGM25 == "Fitting":
                         CGM2_5_Fitting.main(args)
 
-                elif args.NEXUS == "CGM2.6" or (subargs is not None and "method" in subargs and subargs.method in ["SARA", "2DOF"]):
-                    
-                    if subargs is not None: 
-                        setattr(subargs, "CGM26", subargs.method)
-                        args = subargs
+                elif args.NEXUS == "CGM2.6" :
 
                     if args.CGM26 == "SARA":
                         CGM_KneeSARA.main(args)
@@ -874,10 +782,7 @@ class MainParser:
                         CGM_Knee2DofCalibration.main(args)
 
                 # -- Events---
-                elif args.NEXUS == "Events" or (subargs is not None and "method" in subargs and subargs.method in ["Zeni", "Oconnor","Intellevent"]):
-                    if subargs is not None: 
-                        setattr(subargs, "Events", subargs.method)
-                        args = subargs
+                elif args.NEXUS == "Events" :
 
                     if args.Events == "Zeni" :
                         zeniDetector.main(args)
@@ -887,10 +792,7 @@ class MainParser:
                         intelleventDetector.main(args)
                 
                 # -- Gaps---
-                elif args.NEXUS == "Gaps" or (subargs is not None and "method" in subargs and subargs.method in ["Kalman", "Gloersen","Rigid"]): 
-                    if subargs is not None: 
-                        setattr(subargs, "Gaps", subargs.method)
-                        args = subargs
+                elif args.NEXUS == "Gaps" : 
 
                     if args.Gaps == "Kalman" :
                         KalmanGapFilling.main(args)
@@ -900,11 +802,8 @@ class MainParser:
                         rigidGapFilling.main(args)
 
                 #--Plots---
-                elif args.NEXUS == "Plots" or (subargs is not None and "category" in subargs and subargs.category in ["STP", "Kinematics", "Kinetics", "Reaction", "EMG"]): 
-                    if subargs is not None:  
-                        setattr(subargs, "Plots", subargs.category)
-                        setattr(subargs, subargs.category, subargs.subtype)
-                        args = subargs
+                elif args.NEXUS == "Plots" : 
+                    
 
                     if args.Plots == "STP" : 
                         spatioTemporalParameters.horizontalHistogram(args)
@@ -971,28 +870,18 @@ class MainParser:
                         remoteEmgSettings.main(args)
 
             elif "FLOW" in args:
-                if args.FLOW == "UI":
-                    params = flowUI.uiGetFlowArgs()
-                    if params is None:
-                        return  
-
-                    if "commands" not in vars(args):
-                        setattr(args,"commands",[])
-
-
-                    vars(args).update(params)
                 
-                if args.FLOW == "Init" or (args.FLOW == "UI" and (args.command == "Init" or "Init" in args.commands )):
+                if args.FLOW == "Init" :
                     flowInit.main(args)
-                if args.FLOW == "Edit" or (args.FLOW == "UI" and (args.command == "Edit" or "Edit" in args.commands )):
+                if args.FLOW == "Edit" :
                     flowEdit.main(args)
-                if args.FLOW == "Import" or (args.FLOW == "UI" and (args.command == "Import" or "Import" in args.commands )):
+                if args.FLOW == "Import" :
                     flowMekImporter.main(args)
-                if args.FLOW == "Prepare" or (args.FLOW == "UI" and (args.command == "Prepare" or "Prepare" in args.commands )):
+                if args.FLOW == "Prepare":
                     flowPrepare.main(args)
-                if args.FLOW =="Populate" or (args.FLOW == "UI" and (args.command == "Populate"or "Populate" in args.commands)):
+                if args.FLOW =="Populate":
                     flowMekPopulate.main(args)
-                if args.FLOW =="Push": #or (args.FLOW == "UI" and (args.command == "Populate"or "Populate" in args.commands)):
+                if args.FLOW =="Push": 
                     flowPush.main(args)
 
             elif "DB" in args: 
