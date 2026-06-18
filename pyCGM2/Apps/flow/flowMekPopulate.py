@@ -159,10 +159,16 @@ def main(args=None):
 
             emgTrialNames = settingsHandler.get_emg_trials_by_condition(userSettings, condition)
             emgConfiguration = settingsHandler.get_emg_configuration(userSettings, condition, outputType="dict")
-            
+
+            task = settingsHandler.get_condition_details(userSettings,condition)["Task"]            
 
             trials =   list(set(trialnames).union(emgTrialNames))
-            mekOperations.compute_spatio_temporal_parametersOperation( ds.root().retrieve_group(f"{session_dir}/Analysis {analysisId}/{condition}"),  data_path, trials)
+
+
+            if "Gait" in task:
+                mekOperations.compute_spatio_temporal_parametersOperation( ds.root().retrieve_group(f"{session_dir}/Analysis {analysisId}/{condition}"),  data_path, trials)
+            else:
+                LOGGER.logger.warning(f"No STP computed for the condition {condition} - task ({task})")   
 
 
 
