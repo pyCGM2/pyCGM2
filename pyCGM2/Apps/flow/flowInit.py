@@ -73,7 +73,7 @@ def main(args=None):
     
 
     distantFolder = f"{pyCGM2.FLOW_PUSH_FOLDER_PATH}{ipp}/Session {sessionID}\\"
-    document_path = pyCGM2.MAIN_PYCGM2_PATH+"ressources\\"
+    document_path = pyCGM2.MANTK_PATH
 
     call(["robocopy", document_path+"3DGA",
           distantFolder, "/E", "/XC"])

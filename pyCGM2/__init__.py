@@ -87,3 +87,6 @@ ECLIPSE_DB_LOCAL = MAIN_PYCGM2_PATH+"DB\\eclipseDB.db"
 
 #--- flow Folder
 FLOW_PUSH_FOLDER_PATH = "\\\\mandbprd\GAITLAB\\"
+
+
+MANTK_PATH =  "C:/Users/fleboeuf/Documents/2. AREA OF RESPONSABILITY/Programmation/manToolKit/"
