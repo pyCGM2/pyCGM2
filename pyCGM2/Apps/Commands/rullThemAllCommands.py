@@ -626,6 +626,10 @@ class MainParser:
         flow_parser = self.subparsers.add_parser("DB", help= "PyCGM2 Database commands")
         flow_subparsers = flow_parser.add_subparsers(help='', dest="DB")
         
+
+        parser_patientInfo = flow_subparsers.add_parser('PatientInfo', help='command to get  patient infos from the database')
+        parser_patientInfo.add_argument('--ipp',  type=str,  default=None, required=True)     
+
         parser_newPatient = flow_subparsers.add_parser('NewPatient', help='command to register a new patient in the database')
         parser_newPatient.add_argument('-pp', '--patient_path', type=str,
                             default=None)          
@@ -885,8 +889,12 @@ class MainParser:
                     flowPush.main(args)
 
             elif "DB" in args: 
+                if args.DB == "PatientInfo": 
+                    manDBcommands.main_patientInfo(args)
+
                 if args.DB == "NewPatient": 
                     manDBcommands.main_newPatient(args)
+
                 if args.DB =="RegisterSession": 
                     manDBcommands.main_registerSession(args)
 

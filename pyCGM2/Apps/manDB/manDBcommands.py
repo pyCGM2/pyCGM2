@@ -5,6 +5,11 @@ import pyCGM2;
 LOGGER = pyCGM2.LOGGER
 
 from pyCGM2 import enums
+
+from pyCGM2.connection import connector 
+from pyCGM2.connection import eclipseConnector as eclDB
+
+
 from pyCGM2.connection import eclipseConnector as eclDB
 import argparse
 from pyCGM2.Utils import files
@@ -208,9 +213,47 @@ def main_registerSession(args=None,db=None):
         shutil.copy(DB_PATH_LOCAL,DB_PATH_DISTANT)
 
 
+def main_patientInfo(args=None,db=None):
+
+    if  args is None:
+        parser = argparse.ArgumentParser(description='get patient info from ipp')
+        parser.add_argument('--ipp',  type=str,  default=None, required=True)       
+        args = parser.parse_args()
+
+    ipp = args.ipp
+
+    if ipp is not None and ipp != "":
+
+        if db is None:
+            db = DB_PATH
+    
+        factory = eclDB.SQLiteConnectionFactory(db)
+        con = factory.connect()
+
+        try:
+            eclDB.SchemaManager(con).ensure_schema()
+            svc = eclDB.DataIndexService(con)
+
+            patientDbInstance = svc.patients.get(ipp=ipp)
+            root = svc.storage_roots.get_by_id(patientDbInstance.storage_root_id)
+
+            # patientFoldername = root.root_path + "\\" +  patientDbInstance.folder_name
+            LOGGER.logger.info(f"Patient {patientDbInstance.ipp} - {patientDbInstance.folder_name} is stored in root {root.name} at path: {root.root_path}")
+    
+        except Exception as e:
+            LOGGER.logger.error(f"Error while registering patient in the database: {e}") 
+            raise e     
+        finally:
+            con.close()
+
+
+
+    
 
 if __name__ == "__main__":
+    # main_patientInfo()
     pass
+
     
     # main_newPatient(args=None)
     # main_registerSession(args=None)
