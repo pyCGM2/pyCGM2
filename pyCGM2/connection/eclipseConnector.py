@@ -60,6 +60,17 @@ class ArtifactWithMetadata:
     full_path: Path
     metadata: dict[tuple[Optional[str], str], Optional[str]]  # (section, key) -> value
 
+@dataclass(frozen=True)
+class SharedTrialRecord:
+    """Résultat aplati d'un c3d partagé, toutes sessions et patients confondus."""
+    ipp: str
+    session_id: int
+    session_index: int
+    session_date: Optional[str]
+    artifact: Artifact
+    full_path: Path
+    metadata: dict[tuple[Optional[str], str], Optional[str]]  # (section, key) -> value
+
 
 
 # ============================================================
@@ -623,6 +634,178 @@ class DataIndexService:
             )
         return out
 
+    def list_shared_c3d(self, ipp: str, session_index: int) -> list[ArtifactWithMetadata]:
+        """
+        Retourne uniquement les artifacts c3d dont la metadata
+        TRIAL_INFO / Share == 'true' (insensible à la casse).
+
+        Stratégie :
+        - Un seul SELECT avec un EXISTS sub-query pour filtrer côté SQL.
+        - Les metadata complètes (toutes sections/clés) sont ensuite
+          chargées pour chaque artifact retenu, cohérent avec
+          list_c3d_with_metadata.
+        """
+        row = self._con.execute(
+            """
+            SELECT
+              s.id            AS session_id,
+              r.root_path     AS root_path,
+              p.folder_name   AS patient_folder,
+              s.folder_name   AS session_folder
+            FROM session s
+            JOIN patient p ON p.ipp = s.ipp
+            JOIN storage_root r ON r.id = p.storage_root_id
+            WHERE s.ipp=? AND s.session_index=?
+            """,
+            (ipp, session_index),
+        ).fetchone()
+
+        if row is None:
+            raise KeyError(f"Session not found: ipp={ipp}, session_index={session_index}")
+
+        session_id = int(row["session_id"])
+        base = PathAdapter.from_db(row["root_path"]) / row["patient_folder"] / row["session_folder"]
+
+        # Récupère tous les c3d + metadata, filtrés sur Share='true'
+        rows = self._con.execute(
+            """
+            SELECT
+              a.id         AS artifact_id,
+              a.session_id AS session_id,
+              a.data_type  AS data_type,
+              a.rel_path   AS rel_path,
+              a.label      AS label,
+              m.section    AS m_section,
+              m.key        AS m_key,
+              m.value      AS m_value
+            FROM artifact a
+            LEFT JOIN artifact_metadata m ON m.artifact_id = a.id
+            WHERE a.session_id = ?
+              AND a.data_type  = 'c3d'
+              AND EXISTS (
+                    SELECT 1
+                    FROM artifact_metadata fm
+                    WHERE fm.artifact_id = a.id
+                      AND fm.section     = 'TRIAL_INFO'
+                      AND fm.key         = 'Share'
+                      AND LOWER(fm.value) = 'true'
+                  )
+            ORDER BY a.rel_path, m.section, m.key
+            """,
+            (session_id,),
+        ).fetchall()
+
+        # Regroupement par artifact (même logique que list_c3d_with_metadata)
+        by_id: dict[int, dict] = {}
+        for r in rows:
+            aid = int(r["artifact_id"])
+            if aid not in by_id:
+                art = Artifact(
+                    id=aid,
+                    session_id=int(r["session_id"]),
+                    data_type=r["data_type"],
+                    rel_path=r["rel_path"],
+                    label=r["label"],
+                )
+                by_id[aid] = {"artifact": art, "metadata": {}}
+
+            if r["m_key"] is not None:
+                by_id[aid]["metadata"][(r["m_section"], r["m_key"])] = r["m_value"]
+
+        return [
+            ArtifactWithMetadata(
+                artifact=payload["artifact"],
+                full_path=base / payload["artifact"].rel_path,
+                metadata=payload["metadata"],
+            )
+            for payload in by_id.values()
+        ]
+
+    def list_all_shared_c3d(self) -> list[SharedTrialRecord]:
+        """
+        Retourne tous les c3d partagés (TRIAL_INFO/Share == 'true')
+        pour l'ensemble des patients et sessions de la base.
+
+        Aucun paramètre requis. Chaque entrée expose :
+          - ipp, session_id, session_index, session_date
+          - l'Artifact c3d
+          - son full_path reconstruit
+          - toutes ses metadata (section, key) -> value
+        """
+        rows = self._con.execute(
+            """
+            SELECT
+              s.ipp           AS ipp,
+              s.id            AS session_id,
+              s.session_index AS session_index,
+              s.session_date  AS session_date,
+              r.root_path     AS root_path,
+              p.folder_name   AS patient_folder,
+              s.folder_name   AS session_folder,
+              a.id            AS artifact_id,
+              a.session_id    AS a_session_id,
+              a.data_type     AS data_type,
+              a.rel_path      AS rel_path,
+              a.label         AS label,
+              m.section       AS m_section,
+              m.key           AS m_key,
+              m.value         AS m_value
+            FROM artifact a
+            JOIN session s         ON s.id  = a.session_id
+            JOIN patient p         ON p.ipp = s.ipp
+            JOIN storage_root r    ON r.id  = p.storage_root_id
+            LEFT JOIN artifact_metadata m ON m.artifact_id = a.id
+            WHERE a.data_type = 'c3d'
+              AND EXISTS (
+                    SELECT 1
+                    FROM artifact_metadata fm
+                    WHERE fm.artifact_id = a.id
+                      AND fm.section     = 'TRIAL_INFO'
+                      AND fm.key         = 'Share'
+                      AND LOWER(fm.value) = 'true'
+                  )
+            ORDER BY s.ipp, s.session_index, a.rel_path, m.section, m.key
+            """
+        ).fetchall()
+
+        # Regroupement par (session_id, artifact_id)
+        by_id: dict[int, dict] = {}
+        for r in rows:
+            aid = int(r["artifact_id"])
+            if aid not in by_id:
+                art = Artifact(
+                    id=aid,
+                    session_id=int(r["a_session_id"]),
+                    data_type=r["data_type"],
+                    rel_path=r["rel_path"],
+                    label=r["label"],
+                )
+                base = PathAdapter.from_db(r["root_path"]) / r["patient_folder"] / r["session_folder"]
+                by_id[aid] = {
+                    "ipp": r["ipp"],
+                    "session_id": int(r["session_id"]),
+                    "session_index": int(r["session_index"]),
+                    "session_date": r["session_date"],
+                    "artifact": art,
+                    "full_path": base / r["rel_path"],
+                    "metadata": {},
+                }
+
+            if r["m_key"] is not None:
+                by_id[aid]["metadata"][(r["m_section"], r["m_key"])] = r["m_value"]
+
+        return [
+            SharedTrialRecord(
+                ipp=p["ipp"],
+                session_id=p["session_id"],
+                session_index=p["session_index"],
+                session_date=p["session_date"],
+                artifact=p["artifact"],
+                full_path=p["full_path"],
+                metadata=p["metadata"],
+            )
+            for p in by_id.values()
+        ]
 
 # ============================================================
 # Example usage
