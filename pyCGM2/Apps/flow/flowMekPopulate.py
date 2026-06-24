@@ -106,7 +106,7 @@ def main(args=None):
         h5pathFile = None
 
 
-    storage = mekInit.Storage(storagePathFile=h5pathFile)
+    storage = mekInit.Storage(storagePathFile=h5pathFile,updateFlag=True)
     ds = storage.getStorage()
 
     continueFlag = True

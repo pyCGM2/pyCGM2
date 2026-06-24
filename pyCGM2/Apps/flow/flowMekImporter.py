@@ -79,7 +79,7 @@ def main(args=None):
     h5pathFileOut = data_path + h5fileOut
     h5pathFile = h5pathFileOut if os.path.exists(h5pathFileOut) else None
 
-    storagefilter = mekInit.mekInitStorageFilter(storagePathFile=h5pathFile)
+    storagefilter = mekInit.mekInitStorageFilter(storagePathFile=h5pathFile,updateFlag=True)
     ds = storagefilter.getStorage()
 
 

@@ -24,14 +24,17 @@ if MOVECK_AVAILABLE:
         """
 
         """
-        def __init__(self, storagePathFile = None):
+        def __init__(self, storagePathFile = None, updateFlag=False):
 
             self.updateFlag = False
             if storagePathFile is None:
                 self.ds = moveck.data_store()
             else:
-                self.ds = moveck.data_store(storagePathFile,moveck.data_store.update)
-                self.updateFlag = True
+                if updateFlag :
+                    self.ds = moveck.data_store(storagePathFile,moveck.data_store.update)
+                else:
+                    self.ds = moveck.data_store(storagePathFile)
+
 
 
         def getStorage(self):
