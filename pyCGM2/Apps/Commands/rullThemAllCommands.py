@@ -60,7 +60,6 @@ from pyCGM2.Apps.flow import flowMekPopulate
 from pyCGM2.Apps.flow import flowPush
 
 
-from pyCGM2.Apps.manDB import manDBcommands
 
 
 
@@ -622,34 +621,12 @@ class MainParser:
                             help='set logger as debug mode')
 
 
-    def DataBase(self):
-        flow_parser = self.subparsers.add_parser("DB", help= "PyCGM2 Database commands")
-        flow_subparsers = flow_parser.add_subparsers(help='', dest="DB")
-        
-
-        parser_patientInfo = flow_subparsers.add_parser('PatientInfo', help='command to get  patient infos from the database')
-        parser_patientInfo.add_argument('--ipp',  type=str,  default=None, required=True)     
-
-        parser_newPatient = flow_subparsers.add_parser('NewPatient', help='command to register a new patient in the database')
-        parser_newPatient.add_argument('-pp', '--patient_path', type=str,
-                            default=None)          
-
-        parser_registerPatient = flow_subparsers.add_parser('RegisterSession', help='command to register a  session in the database')
-        parser_registerPatient.add_argument('-dp', '--data_path', type=str,
-                            default=None)
-
-
 
     def Flow(self):
         flow_parser = self.subparsers.add_parser("FLOW", help= "PyCGM2 Flow commands")
         flow_subparsers = flow_parser.add_subparsers(help='', dest="FLOW")
         
 
-       
-
-        parser_flowInit = flow_subparsers.add_parser('Init', help='command to initialize flow')
-        parser_flowInit.add_argument('-dp', '--data_path', type=str,
-                            default=None)       
 
         parser_flowEdit = flow_subparsers.add_parser('Edit', help='command to edit flow')
         parser_flowEdit.add_argument('-cgm', '--cgmVersion', type=str,
@@ -696,13 +673,6 @@ class MainParser:
                             action='store_true', help='enable update of the analysis') 
         parser_populate.add_argument('-c', '--conditions', nargs='*', help='list of conditions',required=False)
 
-
-        parser_push = flow_subparsers.add_parser('Push', help='command to push data')
-        parser_push.add_argument('-u', '--userSettings', type=str,
-                            help='userSettings file name, should be in the data folder',
-                            required=True)
-        parser_push.add_argument('-dp', '--data_path', type=str,
-                            default=None)
 
 
     def get_parser(self):
@@ -875,8 +845,6 @@ class MainParser:
 
             elif "FLOW" in args:
                 
-                if args.FLOW == "Init" :
-                    flowInit.main(args)
                 if args.FLOW == "Edit" :
                     flowEdit.main(args)
                 if args.FLOW == "Import" :
@@ -885,18 +853,7 @@ class MainParser:
                     flowPrepare.main(args)
                 if args.FLOW =="Populate":
                     flowMekPopulate.main(args)
-                if args.FLOW =="Push": 
-                    flowPush.main(args)
 
-            elif "DB" in args: 
-                if args.DB == "PatientInfo": 
-                    manDBcommands.main_patientInfo(args)
-
-                if args.DB == "NewPatient": 
-                    manDBcommands.main_newPatient(args)
-
-                if args.DB =="RegisterSession": 
-                    manDBcommands.main_registerSession(args)
 
 def get_main_parser():
     """
