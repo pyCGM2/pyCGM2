@@ -16,6 +16,7 @@ from pyCGM2.Model.model import Model
 from pyCGM2.Processing.analysis import Analysis
 from typing import List, Tuple, Dict, Optional
 import re
+import subprocess
 
 
 # set to fix orderdict in saveYaml
@@ -1025,3 +1026,22 @@ def delete_all_files(root_dir: str, extension: str, verbose: bool = True) -> Non
 
     if verbose:
         print(f"[DONE] {deleted_count} .{extension} file(s) deleted.")
+
+def robocopyFile(sourceDir,destinationDir,filename):
+
+
+    result = subprocess.run(
+        ["robocopy", sourceDir, destinationDir, filename],
+        capture_output=True,
+        text=True
+    )
+
+    # print(result.stdout)
+    if result.returncode <= 7:
+        LOGGER.logger.info(f"file {filename}  copied")
+        out = True
+    else:
+         LOGGER.logger.error(f"file {filename} copy failed")
+         out = False
+
+    return out
