@@ -164,8 +164,7 @@ def main(args=None):
 
             trials =   list(set(trialnames).union(emgTrialNames))
 
-
-            if "Gait" in task:
+            if "gait" in task.lower():
                 mekOperations.compute_spatio_temporal_parametersOperation( ds.root().retrieve_group(f"{session_dir}/Analysis {analysisId}/{condition}"),  data_path, trials)
             else:
                 LOGGER.logger.warning(f"No STP computed for the condition {condition} - task ({task})")   
@@ -200,15 +199,19 @@ def main(args=None):
             normalize_filter = mekNormalize.mekNormalizeFilter(ds,group=f"{session_dir}/Analysis {analysisId}/{condition}")
             normalize_filter.run(scheme,cropToForcePlateGroups =["Kinetics/Moments", "Kinetics/Forces"]) 
 
-            
-
-
-
             if not storage.updateFlag:
                 ds.dump(h5pathFileOut)
 
             LOGGER.logger.info(f"✅ Session : { session_dir}-analysis {analysisId}-condition {condition}  processed successfully")
 
+    # file copied to server
+    try:
+        import companion
+        destination = f"{companion.FLOW_PUSH_FOLDER_PATH}{ipp}"
+        copiedFlag = files.robocopyFile(subject_path, destination, h5fileOut)
+    except:
+        pass
+    
 
 
 if __name__ == "__main__":
