@@ -17,7 +17,7 @@ class FlowEdittingFilter(object):
 
         if emgSettings is  None:
 
-            emgSettings = files.openFile(pyCGM2.PYCGM2_SETTINGS_FOLDER+"emg.settings")
+            emgSettings = files.openFile(pyCGM2.PYCGM2_SETTINGS_FOLDER,"emg.settings")
 
             self.m_emg_list = settingsHandler.emg_ordered_dict_to_list(emgSettings["CHANNELS"])
 

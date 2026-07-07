@@ -52,12 +52,11 @@ from pyCGM2.Apps.QtmApps.CGMi import QPYCGM2_modelling
 from pyCGM2.Apps.QtmApps.CGMi import QPYCGM2_processing
 
 
-from pyCGM2.Apps.flow import flowInit
 from pyCGM2.Apps.flow import flowEdit
 from pyCGM2.Apps.flow import flowMekImporter
 from pyCGM2.Apps.flow import flowPrepare
 from pyCGM2.Apps.flow import flowMekPopulate
-from pyCGM2.Apps.flow import flowPush
+
 
 
 
@@ -503,7 +502,6 @@ class MainParser:
         self.QTM()
         self.Settings()
         self.Flow()
-        self.DataBase()
 
 
     def Settings(self):

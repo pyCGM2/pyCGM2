@@ -106,7 +106,7 @@ def main(args=None):
         h5pathFile = None
 
 
-    storage = mekInit.Storage(storagePathFile=h5pathFile,updateFlag=True)
+    storage = mekInit.Storage(storagePathFile=h5pathFile,updateFlag=updateMode)
     ds = storage.getStorage()
 
     continueFlag = True
@@ -199,12 +199,16 @@ def main(args=None):
             normalize_filter = mekNormalize.mekNormalizeFilter(ds,group=f"{session_dir}/Analysis {analysisId}/{condition}")
             normalize_filter.run(scheme,cropToForcePlateGroups =["Kinetics/Moments", "Kinetics/Forces"]) 
 
+
             if not storage.updateFlag:
                 ds.dump(h5pathFileOut)
 
+            
             LOGGER.logger.info(f"✅ Session : { session_dir}-analysis {analysisId}-condition {condition}  processed successfully")
 
+    
     # file copied to server
+    LOGGER.logger.info(f"copy to server")
     try:
         import companion
         destination = f"{companion.FLOW_PUSH_FOLDER_PATH}{ipp}"

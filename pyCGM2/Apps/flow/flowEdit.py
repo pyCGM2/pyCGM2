@@ -4,7 +4,7 @@ from pyCGM2.Utils import files
 import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
 warnings.filterwarnings("ignore", category=RuntimeWarning)
-
+from tkinter import messagebox
 
 import pyCGM2 
 LOGGER = pyCGM2.LOGGER
@@ -57,7 +57,7 @@ def main(args=None):
 
     
 
-
+    
 
     version = args.cgmVersion
     versionforFile = version.replace(".","")
@@ -77,11 +77,15 @@ def main(args=None):
         else:
             data_path = uiTools.uiGetDir()
 
-
+    emgFlag = True
     if not os.path.isfile(data_path+"emg.settings"):
-        raise FileNotFoundError(f"EMG settings file not found in data path: {data_path}. Please create an emg.settings file in the data folder before running the flow edit.")  
 
-    emgSettings = files.openFile(data_path, "emg.settings")
+        if messagebox.askyesno(f"EMG settings file not found in data path: {data_path}", "Continue ?"):
+            emgFlag = False
+
+        # raise FileNotFoundError(f"EMG settings file not found in data path: {data_path}. Please create an emg.settings file in the data folder before running the flow edit.")  
+
+    emgSettings = files.openFile(data_path, "emg.settings") if emgFlag else None 
 
     fef = flowFilters.FlowEdittingFilter(data_path,version, 
                                         procedure=eclipseFlowProcedure.EclipseFlowProcedure(),
