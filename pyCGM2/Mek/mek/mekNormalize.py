@@ -157,10 +157,19 @@ class mekNormalizeFilter(object):
                                             footOff = (cycle["footOff"]-cycle["start"])/( cycle["end"]-cycle["start"])*100
                                             normalizeGrp.retrieve_set(group_name).create_attribute("footOff",  round(footOff))
 
-                                            controlateralFootOff = (cycle["controlateral_footOff"]-cycle["start"])/( cycle["end"]-cycle["start"])*100
+                                            try:
+                                                controlateralFootOff = (cycle["controlateral_footOff"]-cycle["start"])/( cycle["end"]-cycle["start"])*100
+                                            except:
+                                                controlateralFootOff=0
+   
+
                                             normalizeGrp.retrieve_set(group_name).create_attribute("controlateral_footOff",  round(controlateralFootOff))
 
-                                            controlateralFootStrike = (cycle["controlateral_footStrike"]-cycle["start"])/( cycle["end"]-cycle["start"])*100
+                                            try:
+                                                controlateralFootStrike = (cycle["controlateral_footStrike"]-cycle["start"])/( cycle["end"]-cycle["start"])*100
+                                            except:
+                                                controlateralFootStrike=0
+    
                                             normalizeGrp.retrieve_set(group_name).create_attribute("controlateral_footStrike",  round(controlateralFootStrike))
 
                                         index+=1
@@ -176,14 +185,24 @@ class mekNormalizeFilter(object):
                                     else:
                                         normalizeGrp.create_set(group_name ,cycleValues )
                                     
-
                                     footOff = (cycle["footOff"]-cycle["start"])/( cycle["end"]-cycle["start"])*100
+    
+
                                     normalizeGrp.retrieve_set(group_name).create_attribute("footOff",  round(footOff))
 
-                                    controlateralFootOff = (cycle["controlateral_footOff"]-cycle["start"])/( cycle["end"]-cycle["start"])*100
+                                    try:
+                                        controlateralFootOff = (cycle["controlateral_footOff"]-cycle["start"])/( cycle["end"]-cycle["start"])*100
+                                    except:
+                                        controlateralFootOff=0
+   
                                     normalizeGrp.retrieve_set(group_name).create_attribute("controlateral_footOff",  round(controlateralFootOff))
 
-                                    controlateralFootStrike = (cycle["controlateral_footStrike"]-cycle["start"])/( cycle["end"]-cycle["start"])*100
+                                    try:
+                                        controlateralFootStrike = (cycle["controlateral_footStrike"]-cycle["start"])/( cycle["end"]-cycle["start"])*100
+                                    except:
+                                        controlateralFootStrike=0
+    
+
                                     normalizeGrp.retrieve_set(group_name).create_attribute("controlateral_footStrike",  round(controlateralFootStrike))
                                     
                                     index+=1
