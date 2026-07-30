@@ -37,6 +37,7 @@ except ImportError as e:
     LOGGER.logger.error(f"Error importing Mek modules: {e}. Mek functionalities will not be available.")
     raise e    
 
+import subprocess
 
 def main(args=None):
 
@@ -57,6 +58,8 @@ def main(args=None):
        
         parser.add_argument('-c', '--conditions', nargs='*', help='list of conditions',required=False)
 
+        parser.add_argument('-ncs', '--noCopyToServer', 
+                            action='store_true', help='enable update of the analysis')
 
         args = parser.parse_args()
     
@@ -67,6 +70,7 @@ def main(args=None):
     updateMode = args.update
     forcedConditions = args.conditions if args.conditions is not None else []
     data_path = args.data_path
+    noCopyToServer = args.noCopyToServer
 
     if data_path is None:
         nexusCon = nexus.NexusConnection()
@@ -209,12 +213,14 @@ def main(args=None):
     
     # file copied to server
     LOGGER.logger.info(f"copy to server")
-    try:
-        import companion
-        destination = f"{companion.FLOW_PUSH_FOLDER_PATH}{ipp}"
-        copiedFlag = files.robocopyFile(subject_path, destination, h5fileOut)
-    except:
-        pass
+    if not noCopyToServer:
+        try:
+            import companion
+            destinationDir = f"{companion.FLOW_PUSH_FOLDER_PATH}{ipp}"
+            files.copyPaste(subject_path+h5fileOut, destinationDir+"\\"+h5fileOut)
+        except:
+            pass
+    LOGGER.logger.info(f"copy to server---> done")
     
 
 

@@ -670,6 +670,8 @@ class MainParser:
         parser_populate.add_argument('-up', '--update', 
                             action='store_true', help='enable update of the analysis') 
         parser_populate.add_argument('-c', '--conditions', nargs='*', help='list of conditions',required=False)
+        parser_populate.add_argument('-ncs', '--noCopyToServer', 
+                            action='store_true', help='enable update of the analysis')
 
 
 
