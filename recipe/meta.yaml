@@ -1,6 +1,6 @@
 package:
   name: pycgm2
-  version: "4.4rc1"
+  version: "4.4rc2"
 
 source:
   path: ..
