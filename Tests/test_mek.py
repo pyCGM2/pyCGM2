@@ -501,7 +501,6 @@ if MOVECK_AVAILABLE:
             controlateral_footOff =np.mean([it["controlateral_footOff"] for it in attrs])
             controlateral_footStrike =np.mean([it["controlateral_footStrike"] for it in attrs])
 
-
             plt.plot(avg)
             plt.show()
 
@@ -566,6 +565,161 @@ if MOVECK_AVAILABLE:
             avgNorm = avg / values.max()
 
 
+
+        def test_muscleLimites(self):
+            path = pyCGM2.TEST_DATA_PATH + "mek\\"
+            ds = moveck.data_store(path+"ipp-storage.h5")
+
+            group = ds.root().retrieve_group("Session 1/Analysis 1/Condition1/Normalize/MuscleKinematics/MTUL")
+
+
+            cycleValues ,attrs = mekLib.gatherCycles(group,"add_mag2_l[MuscleLength]")
+            avg = cycleValues[:, :, 0].mean(axis=0) # return frame by frame mean of col #0
+            values = ds.root().retrieve_set("Session 1/Analysis 1/Poses/standstill//MTUL/add_mag2_l").read()
+            avgNorm = avg / values.max()
+
+
+
+            if clinicalExamFile is not None:
+                # initialisation     
+                analytics = {"rect_fem":[],
+                            "med_gas":[],
+                            "semiten":[],
+                            "semimem":[],
+                            "psoas":[],
+                            "lat_gas":[],
+                            "med_gas":[],
+                            "soleus":[],
+                            }
+                
+                muscleLengths0 = opensimIO.OpensimDataFrame(DATA_PATH,"musculoskeletal_modelling/pose_standstill/CGM23-Pose[standstill]_MuscleAnalysis_Length.sto")
+
+
+            # -- angle poplité (ischio - max length)
+
+                pose = dict()
+                if all(analyticSheet[cell].value is not None for cell in ["D22"]) : pose.update({"hip_flexion_r":90,"knee_flexion_r":-(90-analyticSheet['D22'].value),"ankle_flexion_r":0}) 
+                if all(analyticSheet[cell].value is not None for cell in ["E22"]) :  pose.update({"hip_flexion_l":0,"knee_flexion_l":-(90-analyticSheet['E22'].value),"ankle_flexion_l":0})
+                
+                procAnaDriven = opensimAnalysesInterfaceProcedure.AnalysesXmlCgmDrivenModelProcedure(DATA_PATH,scaledOsimName,"musculoskeletal_modelling/Poplity","CGM2.3")
+                procAnaDriven.setPose("Poplity",pose)
+                procAnaDriven.prepareXml()
+                oiamf = opensimInterfaceFilters.opensimInterfaceAnalysesFilter(procAnaDriven)
+                oiamf.run()
+                musclePopLengths = opensimIO.OpensimDataFrame(DATA_PATH,"musculoskeletal_modelling/Poplity/CGM23-Pose[Poplity]_MuscleAnalysis_Length.sto")
+
+                analytics["semiten"].append([musclePopLengths.getDataFrame()["semiten_l"][0] / muscleLengths0.getDataFrame()["semiten_l"][0],"red"])
+                analytics["semiten"].append([musclePopLengths.getDataFrame()["semiten_r"][0] / muscleLengths0.getDataFrame()["semiten_r"][0],"blue"])
+                analytics["semimem"].append([musclePopLengths.getDataFrame()["semimem_l"][0] / muscleLengths0.getDataFrame()["semimem_l"][0],"red"])
+                analytics["semimem"].append([musclePopLengths.getDataFrame()["semimem_l"][0] / muscleLengths0.getDataFrame()["semimem_l"][0],"blue"])
+
+
+                # RF
+                pose = dict()
+                if all(analyticSheet[cell].value is not None for cell in ["D5", "D29"]) : pose.update({"hip_flexion_r":-analyticSheet['D5'].value,"knee_flexion_r":-analyticSheet['D29'].value}) 
+                if all(analyticSheet[cell].value is not None for cell in ["E5", "E29"]) :  pose.update({"hip_flexion_l":-analyticSheet['E5'].value,"knee_flexion_l":-analyticSheet['E29'].value})
+
+                procAnaDriven = opensimAnalysesInterfaceProcedure.AnalysesXmlCgmDrivenModelProcedure(DATA_PATH,scaledOsimName,"musculoskeletal_modelling/RF","CGM2.3")
+                procAnaDriven.setPose("RF",pose)
+                procAnaDriven.prepareXml()
+                oiamf = opensimInterfaceFilters.opensimInterfaceAnalysesFilter(procAnaDriven)
+                oiamf.run()
+
+                muscleRFLengths = opensimIO.OpensimDataFrame(DATA_PATH,"musculoskeletal_modelling/RF/CGM23-Pose[RF]_MuscleAnalysis_Length.sto")
+
+                analytics["rect_fem"].append([muscleRFLengths.getDataFrame()["rect_fem_l"][0] / muscleLengths0.getDataFrame()["rect_fem_l"][0],"red"])
+                analytics["rect_fem"].append([muscleRFLengths.getDataFrame()["rect_fem_r"][0] / muscleLengths0.getDataFrame()["rect_fem_r"][0],"blue"])
+
+                # Psoas
+                pose = dict()
+                if all(analyticSheet[cell].value is not None for cell in ["D5"]) : pose.update({"hip_flexion_r":-analyticSheet['D5'].value,"knee_flexion_r":0}) 
+                if all(analyticSheet[cell].value is not None for cell in ["E5"]) :  pose.update({"hip_flexion_l":-analyticSheet['E5'].value,"knee_flexion_l":0})
+                procAnaDriven = opensimAnalysesInterfaceProcedure.AnalysesXmlCgmDrivenModelProcedure(DATA_PATH,scaledOsimName,"musculoskeletal_modelling/Psoas","CGM2.3")
+                procAnaDriven.setPose("Psoas",pose)
+                procAnaDriven.prepareXml()
+                oiamf = opensimInterfaceFilters.opensimInterfaceAnalysesFilter(procAnaDriven)
+                oiamf.run()
+
+                musclePsoasLengths = opensimIO.OpensimDataFrame(DATA_PATH,"musculoskeletal_modelling/Psoas/CGM23-Pose[Psoas]_MuscleAnalysis_Length.sto")
+
+                analytics["psoas"].append([musclePsoasLengths.getDataFrame()["psoas_l"][0] / muscleLengths0.getDataFrame()["psoas_l"][0],"red"])
+                analytics["psoas"].append([musclePsoasLengths.getDataFrame()["psoas_r"][0] / muscleLengths0.getDataFrame()["psoas_r"][0],"blue"])
+
+
+                # Gastroc
+                pose = dict()
+                if all(analyticSheet[cell].value is not None for cell in ["D19","E34"]) : pose.update({"hip_flexion_r":0,"knee_flexion_r":analyticSheet['D19'].value,"ankle_flexion_r":analyticSheet['D34'].value}) 
+                if all(analyticSheet[cell].value is not None for cell in ["D19","E34"]) :  pose.update({"hip_flexion_l":0,"knee_flexion_l":analyticSheet['E19'].value,"ankle_flexion_l":analyticSheet['E34'].value}) 
+
+                procAnaDriven = opensimAnalysesInterfaceProcedure.AnalysesXmlCgmDrivenModelProcedure(DATA_PATH,scaledOsimName,"musculoskeletal_modelling/Gastroc","CGM2.3")
+                procAnaDriven.setPose("Gastroc",pose)
+                procAnaDriven.prepareXml()
+                oiamf = opensimInterfaceFilters.opensimInterfaceAnalysesFilter(procAnaDriven)
+                oiamf.run()
+
+                muscleGastrocLengths = opensimIO.OpensimDataFrame(DATA_PATH,"musculoskeletal_modelling/Gastroc/CGM23-Pose[Gastroc]_MuscleAnalysis_Length.sto")
+
+                analytics["lat_gas"].append([muscleGastrocLengths.getDataFrame()["lat_gas_l"][0] / muscleLengths0.getDataFrame()["lat_gas_l"][0],"red"])
+                analytics["lat_gas"].append([muscleGastrocLengths.getDataFrame()["lat_gas_r"][0] / muscleLengths0.getDataFrame()["lat_gas_r"][0],"blue"])
+                analytics["med_gas"].append([muscleGastrocLengths.getDataFrame()["med_gas_l"][0] / muscleLengths0.getDataFrame()["med_gas_l"][0],"red"])
+                analytics["med_gas"].append([muscleGastrocLengths.getDataFrame()["med_gas_r"][0] / muscleLengths0.getDataFrame()["med_gas_r"][0],"blue"])
+
+
+                # Soleus
+                pose = dict()
+                if all(analyticSheet[cell].value is not None for cell in ["D35"]) : pose.update({"hip_flexion_r":0,"knee_flexion_r":90,"ankle_flexion_r":analyticSheet['D35'].value}) 
+                if all(analyticSheet[cell].value is not None for cell in ["E35"]) :  pose.update({"hip_flexion_l":0,"knee_flexion_l":90,"ankle_flexion_l":analyticSheet['E35'].value}) 
+
+                procAnaDriven = opensimAnalysesInterfaceProcedure.AnalysesXmlCgmDrivenModelProcedure(DATA_PATH,scaledOsimName,"musculoskeletal_modelling/Soleus","CGM2.3")
+                procAnaDriven.setPose("Soleus",pose)
+                procAnaDriven.prepareXml()
+                oiamf = opensimInterfaceFilters.opensimInterfaceAnalysesFilter(procAnaDriven)
+                oiamf.run()
+
+                muscleSoleusLengths = opensimIO.OpensimDataFrame(DATA_PATH,"musculoskeletal_modelling/Soleus/CGM23-Pose[Soleus]_MuscleAnalysis_Length.sto")
+                analytics["soleus"].append([muscleSoleusLengths.getDataFrame()["soleus_l"][0] / muscleLengths0.getDataFrame()["soleus_l"][0],"red"])
+                analytics["soleus"].append([muscleSoleusLengths.getDataFrame()["soleus_r"][0] / muscleLengths0.getDataFrame()["soleus_r"][0],"blue"])
+        
+            else:
+                analytics=None
+
+
+    class Test_mekPipe:
+        def test_userSettings(self):
+
+            data_path = pyCGM2.TEST_DATA_PATH + "\\NantesSamples\\AQM Enfants\\BILLAUD Maxence\\Session 2\\"
+                       # modelledFilenames = ["20201209-AO-PONC-S-NNNN-dyn 05.c3d","20201209-AO-PONC-S-NNNN-dyn 06.c3d"]
+            
+            userSettingsFile = "CGM23_v2.settings"
+            userSettings = files.openFile(data_path,"CGM23_v2.settings")
+
+
+
+            calibrationTrialNames = settingsHandler.get_CalibrationTrials(userSettings)
+            fittingTrialNames = settingsHandler.get_FittingTrials(userSettings)
+
+
+            from pyCGM2.Mek.pipe import pipe as mekPipe
+
+            mp = mekPipe.PipeFlowUserSettingsProcedure(userSettings)
+            mf = mekPipe.PipeFilter(mp)
+            mf.run(data_path)
+
+            # trialnames = settingsHandler.get_trials_by_condition(userSettings, condition)    
+            # emgTrialNames = settingsHandler.get_emg_trials_by_condition(userSettings, condition)
+
+
+            # trials =   list(set(trialnames).union(emgTrialNames))
+            # for trial in trials:
+            #     files.copyPaste(  data_path+trial, processedPath+trial)
+
+            # conditionInfo = settingsHandler.get_condition(userSettings,condition)
+            # path = pyCGM2.TEST_DATA_PATH + "mek\\gaitdata\\"
+
+
+
+            # MOVECK_BASE = Path(r"C:\Users\fleboeuf\Documents\3. PROJECTS\PROJECTS\HUG\DATAVAR - scientificData-Moveck\moveck-storage")
+            # envFile ="config-env.yaml"
 
 
 

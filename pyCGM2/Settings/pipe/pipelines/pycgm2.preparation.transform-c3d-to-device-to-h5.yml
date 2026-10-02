@@ -1,0 +1,139 @@
+details:
+  id: transform-c3d-to-device-to-h5
+  name: Copy C3D content to h5
+  version: 0.0.0
+  publisher: pycgm2
+  extension: preparation
+  description: This pipeline copies the content of a Nexus C3D to a h5
+
+parameters:
+- name: modelName
+  type: string
+  default: CGM2.3
+  description: Name of the device used by the biomechanical model
+
+
+- name: mocapDeviceGroupName
+  type: string
+  default: Mocap
+  description: Device containing the markers of interest
+
+
+steps:
+
+#  ----- mocap preparation -----
+- task: moveck.data-modifier.split-set@0
+  displayName: Split the Markers group
+  inputs:
+    SourceSet: ${{trial.data.source}}/Data/Points
+    DestinationGroup: ${{trial.data.processings}}/${{parameters.mocapDeviceGroupName}}
+    LabelsFilter: ${{env.MarkersList}}
+    SourceAttributesSplit: [Units, Unit, Types, MetricType]
+    ExtraGroupAttributes: [DeviceType, Mocap]
+
+
+#  ----- events preparation -----
+- task: moveck.c3d.detect-events@0
+  displayName: Detect events from the original C3D file
+  inputs:
+    sourceGroup: ${{trial.name}}
+    destinationGroup: ${{trial.data.processings}}/Events
+
+
+
+#  ----- force plate preparation -----
+- task: moveck.c3d.detect-forceplate-channels@0
+  displayName: Detect the forceplates channels from the c3d
+  inputs:
+    sourceGroup: ${{trial.data.source}}
+    destinationGroup: ${{trial.data.processings}}/ForcePlateChannels
+    extractionMethod: Split
+
+- task: moveck.signal.apply-set-butterworth@0
+  displayName: Low-pass filtering (${{env.filterCutoff}} Hz)
+  inputs:
+    sourceGroup: ${{trial.data.processings}}/ForcePlateChannels
+    cutoffFrequency: ${{env.filterCutoff}}
+    order: ${{env.filterOrder}}
+    bandform: ZeroLagLowPass
+  condition: ${{env.forceplateChannelsFilterEnabled}}
+
+
+- task: moveck.signal.apply-set-downsample@0
+  displayName: Downsample force plate channels data to have the same sample frequency than ${{parameters.mocapDeviceGroupName}} device
+  inputs:
+    sourceGroup: ${{trial.data.processings}}/ForcePlateChannels
+    hintGroup:  ${{trial.data.processings}}/${{parameters.mocapDeviceGroupName}}
+    scanRecursive: false
+
+    
+- task: moveck.c3d.detect-forceplates@0
+  displayName: Compute the forces and moments for each forceplates
+  inputs:
+    SourceGroup: ${{trial.data.processings}}/ForcePlateChannels
+    DestinationGroup:  ${{trial.data.processings}}/ForcePlate
+    MetadataSourceGroup: ${{trial.name}}
+
+- task: moveck.classical-mechanics.compute-ground-reaction-wrenches@0
+  displayName: Compute the ground wrenches for all forceplates
+  inputs:
+    SourceGroup: ${{trial.data.processings}}/ForcePlate
+    DestinationGroup: ${{trial.data.processings}}/ForcePlate
+    Locations: 
+      - point-of-application
+
+
+#---- model outputs extraction -----
+
+# - task: moveck.data-modifier.split-set@0
+#   displayName: Split the Angles group
+#   inputs:
+#     SourceSet: ${{trial.data.source}}/Data/Points
+#     DestinationGroup: ${{trial.data.processings}}/${{parameters.modelName}}/Angles
+#     LabelsFilter: ${{env.AnglesList}}
+#     SourceAttributesSplit: [Units, Unit, Types, MetricType]
+#     ExtraGroupAttributes: [DeviceType, Mocap]
+
+# - task: moveck.data-modifier.split-set@0
+#   displayName: Split the Moments group
+#   inputs:
+#     SourceSet: ${{trial.data.source}}/Data/Points
+#     DestinationGroup: ${{trial.data.processings}}/${{parameters.modelName}}/Moments
+#     LabelsFilter: ${{env.MomentsList}}
+#     SourceAttributesSplit: [Units, Unit, Types, MetricType]
+#     ExtraGroupAttributes: [DeviceType, Mocap]
+
+# - task: moveck.data-modifier.split-set@0
+#   displayName: Split the Forces group
+#   inputs:
+#     SourceSet: ${{trial.data.source}}/Data/Points
+#     DestinationGroup: ${{trial.data.processings}}/${{parameters.modelName}}/Forces
+#     LabelsFilter: ${{env.ForcesList}}
+#     SourceAttributesSplit: [Units, Unit, Types, MetricType]
+#     ExtraGroupAttributes: [DeviceType, Mocap]
+
+# - task: moveck.data-modifier.split-set@0
+#   displayName: Split the Powers group
+#   inputs:
+#     SourceSet: ${{trial.data.source}}/Data/Points
+#     DestinationGroup: ${{trial.data.processings}}/${{parameters.modelName}}/Powers
+#     LabelsFilter: ${{env.PowersList}}
+#     SourceAttributesSplit: [Units, Unit, Types, MetricType]
+#     ExtraGroupAttributes: [DeviceType, Mocap]
+
+# - task: moveck.data-modifier.split-set@0
+#   displayName: Split the MuscleLengths group
+#   inputs:
+#     SourceSet: ${{trial.data.source}}/Data/Points
+#     DestinationGroup: ${{trial.data.processings}}/${{parameters.modelName}}/MuscleLengths
+#     LabelsFilter: ${{env.MuscleLengthList}}
+#     SourceAttributesSplit: [Units, Unit, Types, MetricType]
+#     ExtraGroupAttributes: [DeviceType, Mocap]
+
+
+
+
+
+
+
+

@@ -1,0 +1,101 @@
+Parameters:
+  CGMVersion: CGM2i
+  forceplateChannelsFilterEnabled: forceplateChannelsFilterEnabled 
+
+  
+ParametersConverter:
+  forceplateChannelsFilterEnabled:
+    - false: 0
+    - true: 1
+
+
+ParametersDefaultValues:
+  forceplateChannelsFilterEnabled: false
+  filterCutoff: 20
+  filterOrder: 4
+
+
+
+
+  markersList: 
+  - LASI
+  - RASI
+  - LPSI
+  - RPSI
+  - LTHI
+  - LTHAP
+  - LTHAD
+  - LKNE
+  - LKNM
+  - LTIAP
+  - LTIAD
+  - LANK
+  - LMED
+  - LTOE
+  - LHEE
+  - RTHI
+  - RTHAP
+  - RTHAD
+  - RKNE
+  - RKNM
+  - RTIAP
+  - RTIAD
+  - RANK
+  - RMED
+  - RTOE
+  - RHEE
+
+
+  AnglesList: 
+  - LAnkleAngles
+  - LFootProgressAngles
+  - LHipAngles
+  - LKneeAngles
+  - LPelvisAngles
+  - RAnkleAngles
+  - RFootProgressAngles
+  - RHipAngles
+  - RKneeAngles
+  - RPelvisAngles
+
+  ForcesList:
+  - LAnkleForce
+  - LGroundReactionForce
+  - LHipForce
+  - LKneeForce
+  - LStanGroundReactionForce
+  - RAnkleForce
+  - RGroundReactionForce
+  - RHipForce
+  - RKneeForce
+  - RStanGroundReactionForce
+
+  MomentsList:
+  - LAnkleMoment
+  - LGroundReactionMoment
+  - LHipMoment
+  - LKneeMoment
+  - RAnkleMoment
+  - RGroundReactionMoment
+  - RHipMoment
+  - RKneeMoment
+  
+  PowersList:
+  - LAnklePower
+  - LHipPower
+  - LKneePower
+  - RAnklePower
+  - RHipPower
+  - RKneePower
+
+TrialsHierarchy:
+  - Static
+  - Dynamic
+
+
+
+
+
+
+
+

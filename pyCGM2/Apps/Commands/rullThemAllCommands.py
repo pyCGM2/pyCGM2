@@ -45,7 +45,7 @@ from pyCGM2.Apps.ViconApps.Plot import reaction
 from pyCGM2.Apps.ViconApps.Plot import emg
 
 from pyCGM2.Apps.ViconApps.mek import mekTrialImporter
-
+from pyCGM2.Apps.ViconApps.mek import pipeTrialImporter
 
 from pyCGM2.Apps.QtmApps.CGMi import QPYCGM2_events
 from pyCGM2.Apps.QtmApps.CGMi import QPYCGM2_modelling
@@ -593,10 +593,21 @@ class MainParser:
         # mek----
         mek_parser = nexus_subparser.add_parser("Mek", help= "Nexus mek commands")
         mek_subparsers = mek_parser.add_subparsers(help='', dest="Mek")
-        parser_importer = mek_subparsers.add_parser('Import', help='command to import mek data into the database')
-        parser_importer.add_argument('-cgm', '--cgmVersion', type=str,
+        parser_pipeImporter = mek_subparsers.add_parser('Import', help='command to import mek data into the database')
+        parser_pipeImporter.add_argument('-s','--static', action='store_true',
+                            help='identiy a static trial import')
+        parser_oldImporter = mek_subparsers.add_parser('oldImport', help='OBSOLETE command to import mek data into the database')
+        parser_oldImporter.add_argument('-cgm', '--cgmVersion', type=str,
                             help='a CGM version from CGM1.0 to CGM2.5 ',
                             required=False, default=None)
+
+
+        # pipe----
+        pipe_parser = nexus_subparser.add_parser("Pipe", help= "Nexus pipe commands")
+        pipe_subparsers = pipe_parser.add_subparsers(help='', dest="Pipe")
+        parser_pipeImporter = pipe_subparsers.add_parser('Import', help='command to import pipe data into the database')
+        parser_pipeImporter.add_argument('-s','--static', action='store_true',
+                            help='identiy a static trial import')
 
     def QTM(self):
         """
@@ -822,6 +833,9 @@ class MainParser:
  
                 elif args.NEXUS == "Mek":
                     if args.Mek == "Import":
+                        pipeTrialImporter.main(args)
+
+                    elif args.Mek == "myTrialImport":
                         mekTrialImporter.main(args)
  
 
