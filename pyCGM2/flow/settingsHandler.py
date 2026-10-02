@@ -185,3 +185,16 @@ def get_EmgRepresentative(settings,condition_id):
         raise Exception("[pyCGM2]  Condition Id not found")
 
     return out
+
+
+def get_FittingTrials(settings):
+    trials = []
+    for it in settings["Fitting"]["Trials"]:
+        trials.append(it["File"])
+    return trials
+
+def get_CalibrationTrials(settings):
+    trials = []
+    for it in settings["Calibration"]:
+        trials.append(it["StaticTrial"])
+    return trials
