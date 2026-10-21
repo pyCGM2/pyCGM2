@@ -215,3 +215,20 @@ def is_valid_session_name(name: str) -> bool:
     """
     pattern = r"^Session [0-9]+$"
     return re.fullmatch(pattern, name) is not None
+
+def cleanStringSpacing(param1):
+    """
+    clean spacing in a string
+    """
+    corrected_param = ""
+    words = param1.split()
+    n = len(words)
+
+    count = 0
+    for word in words :
+        if count < len(words)-1: 
+            corrected_param += word + " "
+        else:
+            corrected_param += word
+        count += 1
+    return corrected_param
