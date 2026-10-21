@@ -574,8 +574,15 @@ def appendAnalysisParameters(NEXUS, acq:btk.btkAcquisition):
    
     parameters = btkTools.getAllParamAnalysis(acq)
 
+
     for parameter in parameters:
-        NEXUS.CreateAnalysisParam(parameter["subject"],parameter["name"],parameter["value"], parameter["unit"])
+        parameter["name"] = parameter["name"].replace(":","_")
+        if NEXUS.GetAnalysisParam(parameter["subject"],parameter["name"])[1]:
+            NEXUS.SetAnalysisParam(parameter["subject"],parameter["name"],parameter["value"])
+            LOGGER.logger.debug(f"update analysis parameter {parameter['name']} for subject {parameter['subject']}")
+        else:
+            NEXUS.CreateAnalysisParam(parameter["subject"],parameter["name"],parameter["value"], parameter["unit"])
+            LOGGER.logger.debug(f"create analysis parameter {parameter['name']} for subject {parameter['subject']}")
 
 
 def checkEvents(NEXUS,subject:str,event_names:List):
