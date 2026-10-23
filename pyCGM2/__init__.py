@@ -75,3 +75,4 @@ else:
     sys.path.append(MOVECKPATH)
 
 
+FLOW_GAITLAB_FOLDER_PATH = os.getenv("FLOW_GAITLAB_FOLDER_PATH")  

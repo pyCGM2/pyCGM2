@@ -17,7 +17,8 @@ from argparse import Namespace
 import pyCGM2
 LOGGER = pyCGM2.LOGGER
 from pyCGM2.Apps.Commands.settings import remoteEmgSettings
-from pyCGM2.Utils import files
+
+from pyCGM2.Apps.Commands.install import setup_pyCGM2_Nexus
 
 from pyCGM2.Apps.ViconApps.CGM1 import CGM1_Calibration, CGM1_Fitting
 from pyCGM2.Apps.ViconApps.CGM1_1 import CGM1_1_Calibration, CGM1_1_Fitting
@@ -44,8 +45,8 @@ from pyCGM2.Apps.ViconApps.Plot import kinetics
 from pyCGM2.Apps.ViconApps.Plot import reaction
 from pyCGM2.Apps.ViconApps.Plot import emg
 
-from pyCGM2.Apps.ViconApps.mek import mekTrialImporter
-from pyCGM2.Apps.ViconApps.mek import pipeTrialImporter
+# from pyCGM2.Apps.ViconApps.mek import mekTrialImporter
+# from pyCGM2.Apps.ViconApps.mek import pipeTrialImporter
 
 from pyCGM2.Apps.QtmApps.CGMi import QPYCGM2_events
 from pyCGM2.Apps.QtmApps.CGMi import QPYCGM2_modelling
@@ -56,7 +57,7 @@ from pyCGM2.Apps.flow import flowEdit
 from pyCGM2.Apps.flow import flowMekImporter
 from pyCGM2.Apps.flow import flowPrepare
 from pyCGM2.Apps.flow import flowMekPopulate
-
+from pyCGM2.Apps.flow import flowReport
 
 
 
@@ -589,17 +590,23 @@ class MainParser:
         system_parser = nexus_subparser.add_parser("System", help= "Nexus system commands")
         system_subparsers = system_parser.add_subparsers(help='', dest="System")
         parser_deviceDetails = system_subparsers.add_parser('DeviceDetails', help='command to get device details')
-        
-        # mek----
-        mek_parser = nexus_subparser.add_parser("Mek", help= "Nexus mek commands")
-        mek_subparsers = mek_parser.add_subparsers(help='', dest="Mek")
-        parser_pipeImporter = mek_subparsers.add_parser('Import', help='command to import mek data into the database')
-        parser_pipeImporter.add_argument('-s','--static', action='store_true',
-                            help='identiy a static trial import')
-        parser_oldImporter = mek_subparsers.add_parser('oldImport', help='OBSOLETE command to import mek data into the database')
-        parser_oldImporter.add_argument('-cgm', '--cgmVersion', type=str,
-                            help='a CGM version from CGM1.0 to CGM2.5 ',
-                            required=False, default=None)
+
+        # install----
+        install_parser = nexus_subparser.add_parser("Install", help= "Nexus install commands")
+        install_subparsers = install_parser.add_subparsers(help='', dest="Install")
+        parser_installPipelines = install_subparsers.add_parser('Pipelines', help='command to install or rewrite pyCGM2 nexus pipelines')
+
+
+        # # mek----
+        # mek_parser = nexus_subparser.add_parser("Mek", help= "Nexus mek commands")
+        # mek_subparsers = mek_parser.add_subparsers(help='', dest="Mek")
+        # parser_pipeImporter = mek_subparsers.add_parser('Import', help='command to import mek data into the database')
+        # parser_pipeImporter.add_argument('-s','--static', action='store_true',
+        #                     help='identiy a static trial import')
+        # parser_oldImporter = mek_subparsers.add_parser('oldImport', help='OBSOLETE command to import mek data into the database')
+        # parser_oldImporter.add_argument('-cgm', '--cgmVersion', type=str,
+        #                     help='a CGM version from CGM1.0 to CGM2.5 ',
+        #                     required=False, default=None)
 
 
         # pipe----
@@ -608,6 +615,10 @@ class MainParser:
         parser_pipeImporter = pipe_subparsers.add_parser('Import', help='command to import pipe data into the database')
         parser_pipeImporter.add_argument('-s','--static', action='store_true',
                             help='identiy a static trial import')
+
+        
+
+
 
     def QTM(self):
         """
@@ -684,6 +695,14 @@ class MainParser:
         parser_populate.add_argument('-ncs', '--noCopyToServer', 
                             action='store_true', help='enable update of the analysis')
 
+
+        parser_flowReport = flow_subparsers.add_parser('Report', help='command to generate a quick report')
+        parser_flowReport.add_argument('-u', '--userSettings', type=str,
+                                help='userSettings file name, should be in the data folder (e.g CGM23_v2))',
+                                required=True)
+        parser_flowReport.add_argument('-dp', '--data_path', type=str,
+                            default=None)       
+        parser_flowReport.add_argument('-c', '--conditions', nargs='*', help='list of conditions',required=False)
 
 
     def get_parser(self):
@@ -830,20 +849,12 @@ class MainParser:
                 elif args.NEXUS == "System":
                     if args.System == "DeviceDetails":
                         deviceDetailsCommand.main(args)
+
+                elif args.NEXUS == "Install":
+                    if args.Install == "Pipelines":
+                        setup_pyCGM2_Nexus.main_install_pyCGM2_NexusFiles()
  
-                elif args.NEXUS == "Mek":
-                    if args.Mek == "Import":
-                        pipeTrialImporter.main(args)
-
-                    elif args.Mek == "myTrialImport":
-                        mekTrialImporter.main(args)
  
-
-                elif args.NEXUS == "Settings":
-                    if args.Settings == "Remote":
-                        remoteEmgSettings.main(args)
-
-
             elif "QTM" in args:
                 if args.QTM == "CGM" and args.CGM == "Modelling":
                     QPYCGM2_modelling.main(args)
@@ -867,6 +878,8 @@ class MainParser:
                     flowPrepare.main(args)
                 if args.FLOW =="Populate":
                     flowMekPopulate.main(args)
+                if args.FLOW == "Report": 
+                    flowReport.main(args)
 
 
 def get_main_parser():

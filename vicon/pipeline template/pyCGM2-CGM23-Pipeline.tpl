@@ -323,6 +323,28 @@
     </ParamList>
   </Entry>
 
+  <Entry DisplayName="pyCGM2-Edit-EMG" Enabled="0" OperationId="0" OperationName="Python">
+    <ParamList name="" version="1">
+      <Param name="Script" value="{{ data.commands_path }}"/>
+      <Param name="ScriptArgs" value="SETTINGS RemoteEmg"/>
+      <Param name="PythonCommand" value="python.exe"/>
+      <Param name="PythonPreScript" value="{{ data.activate_path }}"/>
+      <Param name="LaunchPython" value="false"/>
+      <Param name="UseNexusPython" value="false"/>
+    </ParamList>
+  </Entry>
+
+  <Entry DisplayName="pyCGM2-Plots-EMG" Enabled="0" OperationId="0" OperationName="Python">
+    <ParamList name="" version="1">
+      <Param name="Script" value="{{ data.commands_path }}"/>
+      <Param name="ScriptArgs" value="NEXUS Plots EMG Temporal"/>
+      <Param name="PythonCommand" value="python.exe"/>
+      <Param name="PythonPreScript" value="{{ data.activate_path }}"/>
+      <Param name="LaunchPython" value="false"/>
+      <Param name="UseNexusPython" value="false"/>
+    </ParamList>
+  </Entry>
+
   <Entry DisplayName="Export C3D" Enabled="0" OperationId="91" OperationName="Exportc3d">
     <ParamList name="">
       <Param macro="CURRENT_TRIAL" name="Filename"/>
@@ -338,5 +360,7 @@
       <Param name="CopyToClip"/>
     </ParamList>
   </Entry>
+
+
 
 </Pipeline>

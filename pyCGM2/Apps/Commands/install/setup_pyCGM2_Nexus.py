@@ -116,6 +116,19 @@ def main_install_pyCGM2_NexusFiles():
     template = Template(jinja2_template_string.decode("utf-8"))
     template.stream(data=data).dump(nexus_pipeline_folder +"\\" + f"pyCGM2-{env_name}-CGM23.Pipeline")
 
+
+    template = path+"\\vicon\\pipeline template\\pyCGM2-FLOW -CGM23-Pipeline.tpl"
+    data = {
+        "path": path,
+        "commands_path": path+"\\pyCGM2\\Apps\\Commands\\rullThemAllCommands.py",
+        "activate_path": script_path
+    }
+    jinja2_template_string = open(template, 'rb').read()
+    template = Template(jinja2_template_string.decode("utf-8"))
+    template.stream(data=data).dump(nexus_pipeline_folder +"\\" + f"pyCGM2-FLOW-{env_name}-CGM23.Pipeline")
+
+
+
     print(f"[pyCGM2] CGM23 vicon Pipeline generated : {nexus_pipeline_folder}")
 
 if __name__ == "__main__":
