@@ -4,9 +4,8 @@ check out the script : *\Tests\test_eclipse.py* for examples
 
 """
 
-from bs4 import BeautifulSoup
-from pyCGM2.Utils import files
-from pyCGM2.Tools import btkTools
+# bs4, pyCGM2.Utils.files (pandas, scipy...) et btkTools sont importés dans les
+# fonctions qui en ont besoin : lire un .enf ne doit coûter que configparser.
 from pyCGM2 import enums
 import os
 import configparser
@@ -37,6 +36,7 @@ def generateEmptyENF(path:str):
     Args:
         path (str): Path to a folder containing .c3d files and no .enf files.
     """
+    from pyCGM2.Utils import files
 
     c3ds = files.getFiles(path, "c3d")
     for c3d in c3ds:
@@ -52,6 +52,7 @@ def getCurrentMarkedEnfs():
     Returns:
         List[str]: A list of marked .enf filenames, or None if none are found.
     """
+    from bs4 import BeautifulSoup
     currentMarkedNodesFile = os.getenv(
         "PUBLIC")+"\\Documents\\Vicon\\Eclipse\\CurrentlyMarkedNodes.xml"
 
@@ -77,6 +78,7 @@ def getCurrentMarkedNodes(fileType:str="c3d"):
     Returns:
         Tuple[str, List[str]]: The path and a list of marked files with the specified file type.
     """
+    from bs4 import BeautifulSoup
     currentMarkedNodesFile = os.getenv(
         "PUBLIC")+"\\Documents\\Vicon\\Eclipse\\CurrentlyMarkedNodes.xml"
 
@@ -112,6 +114,7 @@ def getEnfFiles(path:str, type:enums.EclipseType):
     Returns:
         List[str] or str: List of .enf filenames or a single filename, depending on the type.
     """
+    from pyCGM2.Utils import files
     path = path[:-1] if path[-1:] == "\\" else path
 
     enfFiles = files.getFiles(path+"\\", type.value)
@@ -173,7 +176,9 @@ class EnfReader(object):
     def __init__(self, path:str, enfFile:str):
         """Initializes the EnfReader object."""
 
-        config = configparser.ConfigParser()
+        # interpolation=None : a "%" in a note (e.g. "50% weight bearing") is plain text,
+        # not an interpolation token (which made get() fail and set() raise)
+        config = configparser.ConfigParser(interpolation=None)
         config.optionxform = str  # keep letter case
 
         if not os.path.isfile((path+enfFile)):
@@ -289,12 +294,25 @@ class PatientEnfReader(EnfReader):
         self.m_patientInfos[label] = value
         self.m_config.set('SUBJECT_INFO', label, value)
 
+    def remove(self, label:str):
+        """
+        Removes a parameter from the Patient.enf file (call save() to write it).
+
+        Args:
+            label (str): The name of the parameter (exact case).
+
+        Returns:
+            bool: True if the parameter existed.
+        """
+        self.m_patientInfos.pop(label, None)
+        return self.m_config.remove_option('SUBJECT_INFO', label)
+
     def save(self):
         """
         Saves the changes made to the Patient.enf file.
         """
         with open((self.m_path + self.m_file), 'w') as configfile:
-            self.m_config.write(configfile)
+            self.m_config.write(configfile, space_around_delimiters=False)  # Eclipse writes key=value
 
 
 class SessionEnfReader(EnfReader):
@@ -355,12 +373,25 @@ class SessionEnfReader(EnfReader):
         self.m_sessionInfos[label] = value
         self.m_config.set('SESSION_INFO', label, value)
 
+    def remove(self, label:str):
+        """
+        Removes a parameter from the Session.enf file (call save() to write it).
+
+        Args:
+            label (str): The name of the parameter (exact case).
+
+        Returns:
+            bool: True if the parameter existed.
+        """
+        self.m_sessionInfos.pop(label, None)
+        return self.m_config.remove_option('SESSION_INFO', label)
+
     def save(self):
         """
         Saves the changes made to the Session.enf file.
         """
         with open((self.m_path + self.m_file), 'w') as configfile:
-            self.m_config.write(configfile)
+            self.m_config.write(configfile, space_around_delimiters=False)  # Eclipse writes key=value
 
 
 class TrialEnfReader(EnfReader):
@@ -398,12 +429,25 @@ class TrialEnfReader(EnfReader):
         self.m_trialInfos[label] = value
         self.m_config.set('TRIAL_INFO', label, value)
 
+    def remove(self, label:str):
+        """
+        Removes a parameter from the Trial.enf file (call save() to write it).
+
+        Args:
+            label (str): The name of the parameter (exact case).
+
+        Returns:
+            bool: True if the parameter existed.
+        """
+        self.m_trialInfos.pop(label, None)
+        return self.m_config.remove_option('TRIAL_INFO', label)
+
     def save(self):
         """"
         Saves the changes made to the Trial.enf file.
         """
         with open((self.m_path + self.m_file), 'w') as configfile:
-            self.m_config.write(configfile)
+            self.m_config.write(configfile, space_around_delimiters=False)  # Eclipse writes key=value
 
     def getTrialInfos(self):
         """
@@ -455,6 +499,7 @@ class TrialEnfReader(EnfReader):
             str: A string indicating the assignment of force plates.
         """
 
+        from pyCGM2.Tools import btkTools
         c3dFilename = self.m_file.replace(".Trial.enf",".c3d")
         acq = btkTools.smartReader((self.m_path + c3dFilename))
         nfp = btkTools.getNumberOfForcePlate(acq)
