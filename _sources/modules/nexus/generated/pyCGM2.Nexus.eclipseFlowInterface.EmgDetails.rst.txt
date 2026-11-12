@@ -1,0 +1,7 @@
+﻿EmgDetails
+================================================================
+
+.. currentmodule:: pyCGM2.Nexus.eclipseFlowInterface
+
+.. autofunction:: EmgDetails
+

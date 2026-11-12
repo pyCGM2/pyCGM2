@@ -1,0 +1,7 @@
+﻿checkSetReadOnly
+==========================================================
+
+.. currentmodule:: pyCGM2.Nexus.vskTools
+
+.. autofunction:: checkSetReadOnly
+

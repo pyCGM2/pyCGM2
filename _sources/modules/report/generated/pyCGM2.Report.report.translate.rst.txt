@@ -1,0 +1,7 @@
+﻿translate
+==================================================
+
+.. currentmodule:: pyCGM2.Report.report
+
+.. autofunction:: translate
+

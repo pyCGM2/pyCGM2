@@ -1,0 +1,7 @@
+﻿print_offset
+==========================================================
+
+.. currentmodule:: pyCGM2.Utils.testingUtils
+
+.. autofunction:: print_offset
+

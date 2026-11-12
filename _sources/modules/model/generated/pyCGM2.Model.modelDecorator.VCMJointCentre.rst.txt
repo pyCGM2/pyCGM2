@@ -1,6 +1,7 @@
-﻿pyCGM2.Model.modelDecorator.VCMJointCentre
-==========================================
+﻿VCMJointCentre
+==============================================================
 
 .. currentmodule:: pyCGM2.Model.modelDecorator
 
 .. autofunction:: VCMJointCentre
+

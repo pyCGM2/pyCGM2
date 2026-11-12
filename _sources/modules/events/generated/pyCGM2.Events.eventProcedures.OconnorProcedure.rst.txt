@@ -1,0 +1,24 @@
+﻿OconnorProcedure
+================
+
+.. currentmodule:: pyCGM2.Events.eventProcedures
+
+.. autoclass:: OconnorProcedure
+   :members:
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~OconnorProcedure.__init__
+      ~OconnorProcedure.detect
+   
+   
+
+   
+   
+   

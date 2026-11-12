@@ -1,0 +1,7 @@
+﻿secondOrderFiniteDifference
+======================================================================
+
+.. currentmodule:: pyCGM2.Math.derivation
+
+.. autofunction:: secondOrderFiniteDifference
+

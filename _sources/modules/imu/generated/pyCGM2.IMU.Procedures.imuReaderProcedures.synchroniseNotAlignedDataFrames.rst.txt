@@ -1,0 +1,7 @@
+﻿synchroniseNotAlignedDataFrames
+=============================================================================================
+
+.. currentmodule:: pyCGM2.IMU.Procedures.imuReaderProcedures
+
+.. autofunction:: synchroniseNotAlignedDataFrames
+

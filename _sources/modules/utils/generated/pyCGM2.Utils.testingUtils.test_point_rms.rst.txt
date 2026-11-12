@@ -1,0 +1,7 @@
+﻿test_point_rms
+============================================================
+
+.. currentmodule:: pyCGM2.Utils.testingUtils
+
+.. autofunction:: test_point_rms
+

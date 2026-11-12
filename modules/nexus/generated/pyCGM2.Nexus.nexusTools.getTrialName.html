@@ -1,0 +1,1161 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>getTrialName &#8212; pyCGM2-API 4.4rc2 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=a95f357e85573c9b56d5" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=a95f357e85573c9b56d5" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8f2a1f02" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../../../_static/scripts/fontawesome.js?digest=a95f357e85573c9b56d5"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5" />
+
+    <script src="../../../_static/documentation_options.js?v=41e7a66b"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'modules/nexus/generated/pyCGM2.Nexus.nexusTools.getTrialName';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="updateEvents" href="pyCGM2.Nexus.nexusTools.updateEvents.html" />
+    <link rel="prev" title="checkEvents" href="pyCGM2.Nexus.nexusTools.checkEvents.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  
+    
+    <script src="../../../_static/searchtools.js"></script>
+    <script src="../../../_static/language_data.js"></script>
+    <script src="../../../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../../_static/pyCGM2-logo2.png" class="logo__image only-light" alt="pyCGM2-API 4.4rc2 documentation - Home"/>
+    <img src="../../../_static/pyCGM2-logo2.png" class="logo__image only-dark pst-js-only" alt="pyCGM2-API 4.4rc2 documentation - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../Apps/apps.html">
+    Apps
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../Lib/libIndex.html">
+    High Level functions
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../../moduleIndex.html">
+    API Reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../thirdparty/thirdpartyIndex.html">
+    Third party package
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../Apps/apps.html">
+    Apps
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../Lib/libIndex.html">
+    High Level functions
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../../moduleIndex.html">
+    API Reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../thirdparty/thirdpartyIndex.html">
+    Third party package
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar"><svg class="pst-icon svg-inline--fa" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../model/model.html">Model</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../model/modelComponents.html">Components</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../model/generated/pyCGM2.Model.model.ClinicalDescriptor.html">ClinicalDescriptor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../model/generated/pyCGM2.Model.model.Joint.html">Joint</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../model/generated/pyCGM2.Model.model.Segment.html">Segment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../model/generated/pyCGM2.Model.model.Model.html">Model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../model/generated/pyCGM2.Model.model.Model6Dof.html">Model6Dof</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../model/generated/pyCGM2.Model.model.Referential.html">Referential</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../model/generated/pyCGM2.Model.model.TechnicalReferential.html">TechnicalReferential</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../model/generated/pyCGM2.Model.model.AnatomicalReferential.html">AnatomicalReferential</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../model/generated/pyCGM2.Model.frame.Node.html">Node</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../model/generated/pyCGM2.Model.frame.Frame.html">Frame</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../model/generated/pyCGM2.Model.frame.setFrameData.html">setFrameData</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../model/generated/pyCGM2.Model.frame.angleAxis_TO_rotationMatrix.html">angleAxis_TO_rotationMatrix</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../model/generated/pyCGM2.Model.frame.rotationMatrix_TO_quaternion.html">rotationMatrix_TO_quaternion</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../model/generated/pyCGM2.Model.frame.quaternion_TO_angleAxis.html">quaternion_TO_angleAxis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../model/generated/pyCGM2.Model.frame.rotationMatrix_TO_angleAxis.html">rotationMatrix_TO_angleAxis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../model/generated/pyCGM2.Model.frame.angleAxis_TO_quaternion.html">angleAxis_TO_quaternion</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../model/generated/pyCGM2.Model.frame.quaternion_TO_rotationMatrix.html">quaternion_TO_rotationMatrix</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../model/bodySegmentParameters.html">BodySegmentParameters</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../model/generated/pyCGM2.Model.bodySegmentParameters.Bsp.html">Bsp</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../model/generated/pyCGM2.Model.bodySegmentParameters.updateFromcustomMp.html">updateFromcustomMp</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../model/cgm2.html">CGM</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../model/generated/pyCGM2.Model.CGM2.cgm.CGM.html">CGM</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../model/generated/pyCGM2.Model.CGM2.cgm.CGM1.html">CGM1</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../model/generated/pyCGM2.Model.CGM2.cgm2.CGM2_1.html">CGM2_1</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../model/generated/pyCGM2.Model.CGM2.cgm2.CGM2_2.html">CGM2_2</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../model/generated/pyCGM2.Model.CGM2.cgm2.CGM2_3.html">CGM2_3</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../model/generated/pyCGM2.Model.CGM2.cgm2.CGM2_4.html">CGM2_4</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../model/generated/pyCGM2.Model.CGM2.cgm2.CGM2_5.html">CGM2_5</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../model/generated/pyCGM2.Model.CGM2.decorators.applyBasicDecorators.html">applyBasicDecorators</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../model/generated/pyCGM2.Model.CGM2.decorators.applyKJC_AJCDecorators.html">applyKJC_AJCDecorators</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../model/generated/pyCGM2.Model.CGM2.decorators.applyHJCDecorators.html">applyHJCDecorators</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../../model/generated/pyCGM2.Model.modelFilters.ModelCalibrationFilter.html">ModelCalibrationFilter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../model/generated/pyCGM2.Model.modelFilters.ModelMotionFilter.html">ModelMotionFilter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../model/generated/pyCGM2.Model.modelFilters.ModelJCSFilter.html">ModelJCSFilter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../model/generated/pyCGM2.Model.modelFilters.ModelAbsoluteAnglesFilter.html">ModelAbsoluteAnglesFilter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../model/generated/pyCGM2.Model.modelFilters.ForcePlateAssemblyFilter.html">ForcePlateAssemblyFilter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../model/generated/pyCGM2.Model.modelFilters.GroundReactionIntegrationFilter.html">GroundReactionIntegrationFilter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../model/generated/pyCGM2.Model.modelFilters.GroundReactionForceAdapterFilter.html">GroundReactionForceAdapterFilter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../model/generated/pyCGM2.Model.modelFilters.InverseDynamicFilter.html">InverseDynamicFilter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../model/generated/pyCGM2.Model.modelFilters.JointPowerFilter.html">JointPowerFilter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../model/generated/pyCGM2.Model.modelFilters.CoordinateSystemDisplayFilter.html">CoordinateSystemDisplayFilter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../model/generated/pyCGM2.Model.modelFilters.CentreOfMassFilter.html">CentreOfMassFilter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../model/generated/pyCGM2.Model.modelFilters.ModelMotionCorrectionFilter.html">ModelMotionCorrectionFilter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../model/generated/pyCGM2.Model.modelFilters.ModelQualityFilter.html">ModelQualityFilter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../model/generated/pyCGM2.Model.modelFilters.GeneralCoordinateSystemProcedure.html">GeneralCoordinateSystemProcedure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../model/generated/pyCGM2.Model.modelFilters.ModelCoordinateSystemProcedure.html">ModelCoordinateSystemProcedure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../model/generated/pyCGM2.Model.modelFilters.GeneralCalibrationProcedure.html">GeneralCalibrationProcedure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../model/generated/pyCGM2.Model.modelFilters.StaticCalibrationProcedure.html">StaticCalibrationProcedure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../model/generated/pyCGM2.Model.modelFilters.InverseDynamicProcedure.html">InverseDynamicProcedure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../model/generated/pyCGM2.Model.modelFilters.CGMLowerlimbInverseDynamicProcedure.html">CGMLowerlimbInverseDynamicProcedure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../model/generated/pyCGM2.Model.Procedures.modelQuality.QualityProcedure.html">QualityProcedure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../model/generated/pyCGM2.Model.Procedures.modelQuality.WandAngleQualityProcedure.html">WandAngleQualityProcedure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../model/generated/pyCGM2.Model.Procedures.modelQuality.GeneralScoreResidualProcedure.html">GeneralScoreResidualProcedure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../model/generated/pyCGM2.Model.Procedures.modelQuality.ModelScoreResidualProcedure.html">ModelScoreResidualProcedure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../model/generated/pyCGM2.Model.Procedures.modelMotionCorrection.ModelCorrectionProcedure.html">ModelCorrectionProcedure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../model/generated/pyCGM2.Model.Procedures.modelMotionCorrection.Naim2019ThighMisaligmentCorrectionProcedure.html">Naim2019ThighMisaligmentCorrectionProcedure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../model/generated/pyCGM2.Model.Procedures.forcePlateIntegrationProcedures.ForcePlateIntegrationProcedure.html">ForcePlateIntegrationProcedure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../model/generated/pyCGM2.Model.Procedures.forcePlateIntegrationProcedures.GaitForcePlateIntegrationProcedure.html">GaitForcePlateIntegrationProcedure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../model/generated/pyCGM2.Model.modelDecorator.DecoratorModel.html">DecoratorModel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../model/generated/pyCGM2.Model.modelDecorator.Kad.html">Kad</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../model/generated/pyCGM2.Model.modelDecorator.Cgm1ManualOffsets.html">Cgm1ManualOffsets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../model/generated/pyCGM2.Model.modelDecorator.HipJointCenterDecorator.html">HipJointCenterDecorator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../model/generated/pyCGM2.Model.modelDecorator.KneeCalibrationDecorator.html">KneeCalibrationDecorator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../model/generated/pyCGM2.Model.modelDecorator.AnkleCalibrationDecorator.html">AnkleCalibrationDecorator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../model/generated/pyCGM2.Model.modelDecorator.footJointCentreFromMet.html">footJointCentreFromMet</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../model/generated/pyCGM2.Model.modelDecorator.VCMJointCentre.html">VCMJointCentre</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../model/generated/pyCGM2.Model.modelDecorator.chord.html">chord</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../model/generated/pyCGM2.Model.modelDecorator.midPoint.html">midPoint</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../model/generated/pyCGM2.Model.modelDecorator.calibration2Dof.html">calibration2Dof</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../model/generated/pyCGM2.Model.modelDecorator.saraCalibration.html">saraCalibration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../model/generated/pyCGM2.Model.modelDecorator.haraRegression.html">haraRegression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../model/generated/pyCGM2.Model.modelDecorator.harringtonRegression.html">harringtonRegression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../model/generated/pyCGM2.Model.modelDecorator.davisRegression.html">davisRegression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../model/generated/pyCGM2.Model.modelDecorator.bellRegression.html">bellRegression</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../model/generated/pyCGM2.Model.Models.singleBody.SingleBody.html">SingleBody</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../model/generated/pyCGM2.Model.modelFilters.TrackingMarkerDecompositionFilter.html">TrackingMarkerDecompositionFilter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../model/generated/pyCGM2.Model.motion.segmentalLeastSquare.html">segmentalLeastSquare</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../model/generated/pyCGM2.Model.anthropometricMeasurement.measureNorm.html">measureNorm</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../model/opensim.html">Opensim</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../model/generated/pyCGM2.Model.Opensim.interface.opensimInterface.osimInterface.html">osimInterface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../model/generated/pyCGM2.Model.Opensim.interface.opensimInterface.osimCgmInterface.html">osimCgmInterface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../model/generated/pyCGM2.Model.Opensim.interface.opensimInterface.opensimXmlInterface.html">opensimXmlInterface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../model/generated/pyCGM2.Model.Opensim.interface.opensimInterfaceFilters.opensimInterfaceScalingFilter.html">opensimInterfaceScalingFilter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../model/generated/pyCGM2.Model.Opensim.interface.opensimInterfaceFilters.opensimInterfaceInverseKinematicsFilter.html">opensimInterfaceInverseKinematicsFilter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../model/generated/pyCGM2.Model.Opensim.interface.opensimInterfaceFilters.opensimInterfaceInverseDynamicsFilter.html">opensimInterfaceInverseDynamicsFilter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../model/generated/pyCGM2.Model.Opensim.interface.opensimInterfaceFilters.opensimInterfaceStaticOptimizationFilter.html">opensimInterfaceStaticOptimizationFilter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../model/generated/pyCGM2.Model.Opensim.interface.opensimInterfaceFilters.opensimInterfaceAnalysesFilter.html">opensimInterfaceAnalysesFilter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../model/generated/pyCGM2.Model.Opensim.interface.procedures.scaling.opensimScalingInterfaceProcedure.ScalingXmlProcedure.html">ScalingXmlProcedure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../model/generated/pyCGM2.Model.Opensim.interface.procedures.scaling.opensimScalingInterfaceProcedure.ScalingXmlCgmProcedure.html">ScalingXmlCgmProcedure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../model/generated/pyCGM2.Model.Opensim.interface.procedures.inverseKinematics.opensimInverseKinematicsInterfaceProcedure.InverseKinematicXmlProcedure.html">InverseKinematicXmlProcedure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../model/generated/pyCGM2.Model.Opensim.interface.procedures.inverseKinematics.opensimInverseKinematicsInterfaceProcedure.InverseKinematicXmlCgmProcedure.html">InverseKinematicXmlCgmProcedure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../model/generated/pyCGM2.Model.Opensim.interface.procedures.inverseDynamics.opensimInverseDynamicsInterfaceProcedure.InverseDynamicsXmlProcedure.html">InverseDynamicsXmlProcedure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../model/generated/pyCGM2.Model.Opensim.interface.procedures.inverseDynamics.opensimInverseDynamicsInterfaceProcedure.InverseDynamicsXmlCgmProcedure.html">InverseDynamicsXmlCgmProcedure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../model/generated/pyCGM2.Model.Opensim.interface.procedures.staticOptimisation.opensimStaticOptimizationInterfaceProcedure.StaticOptimisationXmlProcedure.html">StaticOptimisationXmlProcedure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../model/generated/pyCGM2.Model.Opensim.interface.procedures.staticOptimisation.opensimStaticOptimizationInterfaceProcedure.StaticOptimisationXmlCgmProcedure.html">StaticOptimisationXmlCgmProcedure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../model/generated/pyCGM2.Model.Opensim.interface.procedures.analysisReport.opensimAnalysesInterfaceProcedure.AnalysesXmlProcedure.html">AnalysesXmlProcedure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../model/generated/pyCGM2.Model.Opensim.interface.procedures.analysisReport.opensimAnalysesInterfaceProcedure.AnalysesXmlCgmProcedure.html">AnalysesXmlCgmProcedure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../model/generated/pyCGM2.Model.Opensim.interface.procedures.analysisReport.opensimAnalysesInterfaceProcedure.AnalysesXmlCgmDrivenModelProcedure.html">AnalysesXmlCgmDrivenModelProcedure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../model/generated/pyCGM2.Model.Opensim.interface.procedures.opensimProcedures.OpensimInterfaceXmlProcedure.html">OpensimInterfaceXmlProcedure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../model/generated/pyCGM2.Model.Opensim.interface.procedures.inverseKinematics.opensimInverseKinematicsInterfaceProcedure.KalmanInverseKinematicXmlCgmProcedure.html">KalmanInverseKinematicXmlCgmProcedure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../model/generated/pyCGM2.Model.Opensim.opensimFilters.GeneralOpensimCalibrationProcedure.html">GeneralOpensimCalibrationProcedure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../model/generated/pyCGM2.Model.Opensim.opensimFilters.CgmOpensimCalibrationProcedures.html">CgmOpensimCalibrationProcedures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../model/generated/pyCGM2.Model.Opensim.opensimFilters.GeneralOpensimFittingProcedure.html">GeneralOpensimFittingProcedure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../model/generated/pyCGM2.Model.Opensim.opensimFilters.CgmOpensimFittingProcedure.html">CgmOpensimFittingProcedure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../model/generated/pyCGM2.Model.Opensim.opensimFilters.opensimCalibrationFilter.html">opensimCalibrationFilter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../model/generated/pyCGM2.Model.Opensim.opensimFilters.opensimFittingFilter.html">opensimFittingFilter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../model/generated/pyCGM2.Model.Opensim.opensimIO.ImuStorageFile.html">ImuStorageFile</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../model/generated/pyCGM2.Model.Opensim.opensimIO.OpensimDataFrame.html">OpensimDataFrame</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../model/generated/pyCGM2.Model.Opensim.opensimIO.TrcDataFrame.html">TrcDataFrame</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../model/generated/pyCGM2.Model.Opensim.osimProcessing.opensimModel.html">opensimModel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../model/generated/pyCGM2.Model.Opensim.osimProcessing.opensimKinematicFitting.html">opensimKinematicFitting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../model/generated/pyCGM2.Model.Opensim.osimProcessing.globalTransformationLabToOsim.html">globalTransformationLabToOsim</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../model/generated/pyCGM2.Model.Opensim.osimProcessing.setGlobalTransormation_lab_osim.html">setGlobalTransormation_lab_osim</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../model/generated/pyCGM2.Model.Opensim.osimProcessing.smartTrcExport.html">smartTrcExport</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../model/generated/pyCGM2.Model.Opensim.osimProcessing.sto2pointValues.html">sto2pointValues</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../model/generated/pyCGM2.Model.Opensim.osimProcessing.mot2pointValues.html">mot2pointValues</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../processing/processing.html">Processing</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../processing/manager.html">Manager</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../processing/generated/pyCGM2.Processing.C3dManager.c3dManager.C3dManager.html">C3dManager</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../processing/generated/pyCGM2.Processing.C3dManager.c3dManagerFilters.C3dManagerFilter.html">C3dManagerFilter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../processing/generated/pyCGM2.Processing.C3dManager.c3dManagerProcedures.C3dManagerProcedure.html">C3dManagerProcedure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../processing/generated/pyCGM2.Processing.C3dManager.c3dManagerProcedures.UniqueBtkAcqSetProcedure.html">UniqueBtkAcqSetProcedure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../processing/generated/pyCGM2.Processing.C3dManager.c3dManagerProcedures.UniqueC3dSetProcedure.html">UniqueC3dSetProcedure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../processing/generated/pyCGM2.Processing.C3dManager.c3dManagerProcedures.DistinctC3dSetProcedure.html">DistinctC3dSetProcedure</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../processing/cycle.html">Cycle</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../processing/generated/pyCGM2.Processing.cycle.CyclesFilter.html">CyclesFilter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../processing/generated/pyCGM2.Processing.cycle.CyclesBuilder.html">CyclesBuilder</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../processing/generated/pyCGM2.Processing.cycle.GaitCyclesBuilder.html">GaitCyclesBuilder</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../processing/generated/pyCGM2.Processing.cycle.Cycles.html">Cycles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../processing/generated/pyCGM2.Processing.cycle.Cycle.html">Cycle</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../processing/generated/pyCGM2.Processing.cycle.GaitCycle.html">GaitCycle</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../processing/generated/pyCGM2.Processing.cycle.spatioTemporelParameter_descriptiveStats.html">spatioTemporelParameter_descriptiveStats</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../processing/generated/pyCGM2.Processing.cycle.point_descriptiveStats.html">point_descriptiveStats</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../processing/generated/pyCGM2.Processing.cycle.analog_descriptiveStats.html">analog_descriptiveStats</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../processing/generated/pyCGM2.Processing.cycle.construcGaitCycle.html">construcGaitCycle</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../processing/analysis.html">Analysis</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../processing/generated/pyCGM2.Processing.analysis.AnalysisFilter.html">AnalysisFilter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../processing/generated/pyCGM2.Processing.exporter.XlsExportDataFrameFilter.html">XlsExportDataFrameFilter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../processing/generated/pyCGM2.Processing.exporter.XlsAnalysisExportFilter.html">XlsAnalysisExportFilter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../processing/generated/pyCGM2.Processing.exporter.AnalysisExportFilter.html">AnalysisExportFilter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../processing/generated/pyCGM2.Processing.analysis.AbstractBuilder.html">AbstractBuilder</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../processing/generated/pyCGM2.Processing.analysis.AnalysisBuilder.html">AnalysisBuilder</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../processing/generated/pyCGM2.Processing.analysis.GaitAnalysisBuilder.html">GaitAnalysisBuilder</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../processing/generated/pyCGM2.Processing.analysis.Analysis.html">Analysis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../processing/generated/pyCGM2.Processing.analysis.AnalysisStructure.html">AnalysisStructure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../processing/generated/pyCGM2.Processing.analysisHandler.getPhases.html">getPhases</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../processing/generated/pyCGM2.Processing.analysisHandler.getNumberOfCycle.html">getNumberOfCycle</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../processing/generated/pyCGM2.Processing.analysisHandler.getValues.html">getValues</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../processing/generated/pyCGM2.Processing.analysisHandler.isKeyExist.html">isKeyExist</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../processing/generated/pyCGM2.Processing.analysisHandler.getAnalysisSection.html">getAnalysisSection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../processing/generated/pyCGM2.Processing.analysisHandler.normalizedMuscleLength_withPose.html">normalizedMuscleLength_withPose</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../processing/scores.html">Scores</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../processing/generated/pyCGM2.Processing.Scores.scoreFilters.ScoreFilter.html">ScoreFilter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../processing/generated/pyCGM2.Processing.Scores.scoreProcedures.ScoreProcedure.html">ScoreProcedure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../processing/generated/pyCGM2.Processing.Scores.scoreProcedures.CGM1_GPS.html">CGM1_GPS</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../processing/representative.html">Representative cycle</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../processing/generated/pyCGM2.Processing.Representative.representativeFilters.RepresentativeCycleFilter.html">RepresentativeCycleFilter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../processing/generated/pyCGM2.Processing.Representative.representativeProcedures.RepresentativeProcedure.html">RepresentativeProcedure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../processing/generated/pyCGM2.Processing.Representative.representativeProcedures.Sangeux2015Procedure.html">Sangeux2015Procedure</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../processing/progression.html">Progression frame</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../processing/generated/pyCGM2.Processing.ProgressionFrame.progressionFrameFilters.ProgressionFrameFilter.html">ProgressionFrameFilter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../processing/generated/pyCGM2.Processing.ProgressionFrame.progressionFrameProcedures.ProgressionFrameProcedure.html">ProgressionFrameProcedure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../processing/generated/pyCGM2.Processing.ProgressionFrame.progressionFrameProcedures.PointProgressionFrameProcedure.html">PointProgressionFrameProcedure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../processing/generated/pyCGM2.Processing.ProgressionFrame.progressionFrameProcedures.PelvisProgressionFrameProcedure.html">PelvisProgressionFrameProcedure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../processing/generated/pyCGM2.Processing.ProgressionFrame.progressionFrameProcedures.ThoraxProgressionFrameProcedure.html">ThoraxProgressionFrameProcedure</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../processing/jointPatterns.html">Joint patterns</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../processing/generated/pyCGM2.Processing.JointPatterns.jointPatternFilters.JointPatternFilter.html">JointPatternFilter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../processing/generated/pyCGM2.Processing.JointPatterns.jointPatternProcedures.JointPatternProcedure.html">JointPatternProcedure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../processing/generated/pyCGM2.Processing.JointPatterns.jointPatternProcedures.XlsJointPatternProcedure.html">XlsJointPatternProcedure</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../processing/discretePoints.html">Discrete Points</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../processing/generated/pyCGM2.Processing.DiscretePoints.discretePointFilters.DiscretePointsFilter.html">DiscretePointsFilter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../processing/generated/pyCGM2.Processing.DiscretePoints.discretePointProcedures.DiscretePointProcedure.html">DiscretePointProcedure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../processing/generated/pyCGM2.Processing.DiscretePoints.discretePointProcedures.BenedettiProcedure.html">BenedettiProcedure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../processing/generated/pyCGM2.Processing.DiscretePoints.discretePointProcedures.MaxMinProcedure.html">MaxMinProcedure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../processing/generated/pyCGM2.Processing.DiscretePoints.discretePointProcedures.GoldbergProcedure.html">GoldbergProcedure</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../processing/classification.html">Classification</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../processing/generated/pyCGM2.Processing.Classification.classificationFilters.ClassificationFilter.html">ClassificationFilter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../processing/generated/pyCGM2.Processing.Classification.classificationProcedures.ClassificationProcedure.html">ClassificationProcedure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../processing/generated/pyCGM2.Processing.Classification.classificationProcedures.PFKEprocedure.html">PFKEprocedure</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../../processing/generated/pyCGM2.Processing.analysisProcessing.NormativeDataGeneratorFilter.html">NormativeDataGeneratorFilter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../processing/generated/pyCGM2.Processing.exporter.isColumnNameExist.html">isColumnNameExist</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../processing/generated/pyCGM2.Processing.exporter.build_df_descriptiveCycle1_1.html">build_df_descriptiveCycle1_1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../processing/generated/pyCGM2.Processing.exporter.build_df_cycles1_1.html">build_df_cycles1_1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../processing/generated/pyCGM2.Processing.exporter.build_df_descriptiveCycle1_1_overall.html">build_df_descriptiveCycle1_1_overall</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../processing/generated/pyCGM2.Processing.exporter.build_df_descriptiveCycle1_1_onlyContext.html">build_df_descriptiveCycle1_1_onlyContext</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../processing/generated/pyCGM2.Processing.exporter.build_df_cycles1_1_onlyContext.html">build_df_cycles1_1_onlyContext</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../processing/generated/pyCGM2.Processing.exporter.buid_df_descriptiveCycle1_3.html">buid_df_descriptiveCycle1_3</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../processing/generated/pyCGM2.Processing.exporter.build_df_cycles1_3.html">build_df_cycles1_3</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../processing/generated/pyCGM2.Processing.exporter.build_df_descriptiveCycle101_3.html">build_df_descriptiveCycle101_3</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../processing/generated/pyCGM2.Processing.exporter.build_df_cycles101_3.html">build_df_cycles101_3</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../processing/generated/pyCGM2.Processing.exporter.build_df_descriptiveCycle101_1.html">build_df_descriptiveCycle101_1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../processing/generated/pyCGM2.Processing.exporter.build_df_cycles101_1.html">build_df_cycles101_1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../processing/generated/pyCGM2.Processing.exporter.renameEmgInAnalysis.html">renameEmgInAnalysis</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../report/report.html">Report</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../report/plot.html">plot</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../report/generated/pyCGM2.Report.plot.temporalPlot.html">temporalPlot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../report/generated/pyCGM2.Report.plot.descriptivePlot.html">descriptivePlot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../report/generated/pyCGM2.Report.plot.consistencyPlot.html">consistencyPlot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../report/generated/pyCGM2.Report.plot.meanPlot.html">meanPlot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../report/generated/pyCGM2.Report.plot.gaitDescriptivePlot.html">gaitDescriptivePlot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../report/generated/pyCGM2.Report.plot.gaitConsistencyPlot.html">gaitConsistencyPlot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../report/generated/pyCGM2.Report.plot.gaitMeanPlot.html">gaitMeanPlot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../report/generated/pyCGM2.Report.plot.stpHorizontalHistogram.html">stpHorizontalHistogram</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../report/generated/pyCGM2.Report.plot.addNormalActivationLayer.html">addNormalActivationLayer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../report/generated/pyCGM2.Report.plot.addTemporalNormalActivationLayer.html">addTemporalNormalActivationLayer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../report/generated/pyCGM2.Report.plot.addRectanglePatches.html">addRectanglePatches</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../report/normativeData.html">normativeDataset</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../report/generated/pyCGM2.Report.normativeDatasets.NormativeData.html">NormativeData</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../report/generated/pyCGM2.Report.normativeDatasets.NormalSTP.html">NormalSTP</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../../report/generated/pyCGM2.Report.plotFilters.PlottingFilter.html">PlottingFilter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../report/generated/pyCGM2.Report.Viewers.plotViewers.PlotViewer.html">PlotViewer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../report/generated/pyCGM2.Report.Viewers.plotViewers.SpatioTemporalPlotViewer.html">SpatioTemporalPlotViewer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../report/generated/pyCGM2.Report.Viewers.plotViewers.GpsMapPlotViewer.html">GpsMapPlotViewer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../report/generated/pyCGM2.Report.Viewers.plotViewers.NormalizedKinematicsPlotViewer.html">NormalizedKinematicsPlotViewer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../report/generated/pyCGM2.Report.Viewers.plotViewers.TemporalKinematicsPlotViewer.html">TemporalKinematicsPlotViewer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../report/generated/pyCGM2.Report.Viewers.plotViewers.NormalizedKineticsPlotViewer.html">NormalizedKineticsPlotViewer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../report/generated/pyCGM2.Report.Viewers.plotViewers.TemporalKineticsPlotViewer.html">TemporalKineticsPlotViewer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../report/generated/pyCGM2.Report.Viewers.emgPlotViewers.TemporalEmgPlotViewer.html">TemporalEmgPlotViewer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../report/generated/pyCGM2.Report.Viewers.emgPlotViewers.CoactivationEmgPlotViewer.html">CoactivationEmgPlotViewer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../report/generated/pyCGM2.Report.Viewers.emgPlotViewers.EnvEmgGaitPlotPanelViewer.html">EnvEmgGaitPlotPanelViewer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../report/generated/pyCGM2.Report.Viewers.emgPlotViewers.MultipleAnalysis_EnvEmgPlotPanelViewer.html">MultipleAnalysis_EnvEmgPlotPanelViewer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../report/generated/pyCGM2.Report.Viewers.groundReactionPlotViewers.NormalizedGroundReactionForcePlotViewer.html">NormalizedGroundReactionForcePlotViewer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../report/generated/pyCGM2.Report.Viewers.groundReactionPlotViewers.NormalizedGaitGrfIntegrationPlotViewer.html">NormalizedGaitGrfIntegrationPlotViewer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../report/generated/pyCGM2.Report.Viewers.groundReactionPlotViewers.NormalizedGaitMeanGrfIntegrationPlotViewer.html">NormalizedGaitMeanGrfIntegrationPlotViewer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../report/generated/pyCGM2.Report.Viewers.musclePlotViewers.MuscleNormalizedPlotPanelViewer.html">MuscleNormalizedPlotPanelViewer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../report/generated/pyCGM2.Report.Viewers.customPlotViewers.SaggitalGagePlotViewer.html">SaggitalGagePlotViewer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../report/generated/pyCGM2.Report.Viewers.comparisonPlotViewers.KinematicsPlotComparisonViewer.html">KinematicsPlotComparisonViewer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../report/generated/pyCGM2.Report.Viewers.comparisonPlotViewers.KineticsPlotComparisonViewer.html">KineticsPlotComparisonViewer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../report/generated/pyCGM2.Report.plotUtils.colorContext.html">colorContext</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../report/generated/pyCGM2.Report.Viewers.comparisonPlotViewers.GroundReactionForceComparisonViewer.html">GroundReactionForceComparisonViewer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../report/generated/pyCGM2.Report.Viewers.comparisonPlotViewers.MapComparisonViewer.html">MapComparisonViewer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../report/generated/pyCGM2.Report.Viewers.groundReactionPlotViewers.TemporalReactionPlotViewer.html">TemporalReactionPlotViewer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../report/generated/pyCGM2.Report.report.Report.html">Report</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../report/generated/pyCGM2.Report.report.translate.html">translate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../report/generated/pyCGM2.Report.report.xlsColLetterToNum.html">xlsColLetterToNum</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../anomaly/anomaly.html">Anomaly</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../anomaly/generated/pyCGM2.Anomaly.anomalyFilters.AnomalyDetectionFilter.html">AnomalyDetectionFilter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../anomaly/generated/pyCGM2.Anomaly.anomalyFilters.AnomalyCorrectionFilter.html">AnomalyCorrectionFilter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../anomaly/generated/pyCGM2.Anomaly.anomalyDetectionProcedures.AnomalyDetectionProcedure.html">AnomalyDetectionProcedure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../anomaly/generated/pyCGM2.Anomaly.anomalyDetectionProcedures.AnthropoDataAnomalyProcedure.html">AnthropoDataAnomalyProcedure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../anomaly/generated/pyCGM2.Anomaly.anomalyDetectionProcedures.ForcePlateAnomalyProcedure.html">ForcePlateAnomalyProcedure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../anomaly/generated/pyCGM2.Anomaly.anomalyDetectionProcedures.GaitEventAnomalyProcedure.html">GaitEventAnomalyProcedure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../anomaly/generated/pyCGM2.Anomaly.anomalyDetectionProcedures.MarkerAnomalyDetectionRollingProcedure.html">MarkerAnomalyDetectionRollingProcedure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../anomaly/generated/pyCGM2.Anomaly.anomalyCorrectionProcedures.AnomalyCorrectionProcedure.html">AnomalyCorrectionProcedure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../anomaly/generated/pyCGM2.Anomaly.anomalyCorrectionProcedures.MarkerAnomalyCorrectionProcedure.html">MarkerAnomalyCorrectionProcedure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../anomaly/generated/pyCGM2.Anomaly.anomalyCorrectionProcedures.plot_dendrogram.html">plot_dendrogram</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../emg/emg.html">EMG</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../emg/generated/pyCGM2.EMG.emgManager.EmgManager.html">EmgManager</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../emg/generated/pyCGM2.EMG.emgFilters.BasicEmgProcessingFilter.html">BasicEmgProcessingFilter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../emg/generated/pyCGM2.EMG.emgFilters.DiscreteEMGFilter.html">DiscreteEMGFilter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../emg/generated/pyCGM2.EMG.emgFilters.EmgCoActivationFilter.html">EmgCoActivationFilter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../emg/generated/pyCGM2.EMG.emgFilters.EmgEnvelopProcessingFilter.html">EmgEnvelopProcessingFilter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../emg/generated/pyCGM2.EMG.emgFilters.EmgNormalisationProcessingFilter.html">EmgNormalisationProcessingFilter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../emg/generated/pyCGM2.EMG.coactivationProcedures.CoActivationProcedure.html">CoActivationProcedure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../emg/generated/pyCGM2.EMG.coactivationProcedures.UnithanCoActivationProcedure.html">UnithanCoActivationProcedure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../emg/generated/pyCGM2.EMG.coactivationProcedures.FalconerCoActivationProcedure.html">FalconerCoActivationProcedure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../emg/generated/pyCGM2.EMG.discreteEmgProcedures.DiscreteEmgProcedure.html">DiscreteEmgProcedure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../emg/generated/pyCGM2.EMG.discreteEmgProcedures.AmplitudesProcedure.html">AmplitudesProcedure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../emg/generated/pyCGM2.EMG.normalActivation.getNormalBurstActivity.html">getNormalBurstActivity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../emg/generated/pyCGM2.EMG.normalActivation.getNormalBurstActivity_fromCycles.html">getNormalBurstActivity_fromCycles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../emg/generated/pyCGM2.EMG.normalActivation.getNormalGaitEmgActivities.html">getNormalGaitEmgActivities</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../events/events.html">Events</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../events/generated/pyCGM2.Events.eventFilters.EventFilter.html">EventFilter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../events/generated/pyCGM2.Events.eventProcedures.EventProcedure.html">EventProcedure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../events/generated/pyCGM2.Events.eventProcedures.ZeniProcedure.html">ZeniProcedure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../events/generated/pyCGM2.Events.eventProcedures.OconnorProcedure.html">OconnorProcedure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../events/generated/pyCGM2.Events.procedures.intellEventProcedures.EventProcedure.html">EventProcedure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../events/generated/pyCGM2.Events.procedures.intellEventProcedures.IntellEventProcedure.html">IntellEventProcedure</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../forcePlates/forcePlates.html">ForcePlates</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../forcePlates/generated/pyCGM2.ForcePlates.forceplates.ForcePlateIntegration.html">ForcePlateIntegration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../forcePlates/generated/pyCGM2.ForcePlates.forceplates.appendForcePlateCornerAsMarker.html">appendForcePlateCornerAsMarker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../forcePlates/generated/pyCGM2.ForcePlates.forceplates.matchingFootSideOnForceplate.html">matchingFootSideOnForceplate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../forcePlates/generated/pyCGM2.ForcePlates.forceplates.addForcePlateGeneralEvents.html">addForcePlateGeneralEvents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../forcePlates/generated/pyCGM2.ForcePlates.forceplates.correctForcePlateType5.html">correctForcePlateType5</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../forcePlates/generated/pyCGM2.ForcePlates.forceplates.combineForcePlate.html">combineForcePlate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../forcePlates/generated/pyCGM2.ForcePlates.forceplates.detectGaitConsecutiveForcePlates.html">detectGaitConsecutiveForcePlates</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../imu/imu.html">IMU</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../imu/generated/pyCGM2.IMU.imu.Imu.html">Imu</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../imu/generated/pyCGM2.IMU.imuFilters.ImuReaderFilter.html">ImuReaderFilter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../imu/generated/pyCGM2.IMU.imuFilters.ImuMotionFilter.html">ImuMotionFilter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../imu/generated/pyCGM2.IMU.imuFilters.ImuRelativeAnglesFilter.html">ImuRelativeAnglesFilter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../imu/generated/pyCGM2.IMU.opensense.interface.opensenseFilters.opensenseInterfaceImuPlacerFilter.html">opensenseInterfaceImuPlacerFilter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../imu/generated/pyCGM2.IMU.opensense.interface.opensenseFilters.opensenseInterfaceImuInverseKinematicFilter.html">opensenseInterfaceImuInverseKinematicFilter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../imu/generated/pyCGM2.IMU.Procedures.imuReaderProcedures.ImuReaderProcedure.html">ImuReaderProcedure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../imu/generated/pyCGM2.IMU.Procedures.imuReaderProcedures.DataframeProcedure.html">DataframeProcedure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../imu/generated/pyCGM2.IMU.Procedures.imuReaderProcedures.C3dBlueTridentProcedure.html">C3dBlueTridentProcedure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../imu/generated/pyCGM2.IMU.Procedures.imuMotionProcedure.ImuMotionProcedure.html">ImuMotionProcedure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../imu/generated/pyCGM2.IMU.Procedures.imuMotionProcedure.QuaternionMotionProcedure.html">QuaternionMotionProcedure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../imu/generated/pyCGM2.IMU.Procedures.imuMotionProcedure.GlobalAngleMotionProcedure.html">GlobalAngleMotionProcedure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../imu/generated/pyCGM2.IMU.Procedures.imuMotionProcedure.RealignedMotionProcedure.html">RealignedMotionProcedure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../imu/generated/pyCGM2.IMU.Procedures.relativeImuAngleProcedures.RelativeImuAnglesProcedure.html">RelativeImuAnglesProcedure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../imu/generated/pyCGM2.IMU.Procedures.relativeImuAngleProcedures.RelativeAnglesProcedure.html">RelativeAnglesProcedure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../imu/generated/pyCGM2.IMU.opensense.interface.procedures.opensenseImuPlacerInterfaceProcedure.ImuPlacerXMLProcedure.html">ImuPlacerXMLProcedure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../imu/generated/pyCGM2.IMU.opensense.interface.procedures.opensenseImuKinematicFitterProcedure.ImuInverseKinematicXMLProcedure.html">ImuInverseKinematicXMLProcedure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../imu/generated/pyCGM2.IMU.Procedures.imuReaderProcedures.synchroniseNotAlignedDataFrames.html">synchroniseNotAlignedDataFrames</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../imu/generated/pyCGM2.IMU.imuSpecificReaders.read_blueTridentCsv.html">read_blueTridentCsv</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../imu/generated/pyCGM2.IMU.imuSpecificReaders.read_imu_kinventCsv.html">read_imu_kinventCsv</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../inspector/inspector.html">Inspector</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../inspector/generated/pyCGM2.Inspector.inspectorFilters.InspectorFilter.html">InspectorFilter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../inspector/generated/pyCGM2.Inspector.inspectorProcedures.InspectorProcedure.html">InspectorProcedure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../inspector/generated/pyCGM2.Inspector.inspectorProcedures.MarkerPresenceDetectionProcedure.html">MarkerPresenceDetectionProcedure</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../math/math.html">Math</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../math/generated/pyCGM2.Math.derivation.splineFittingDerivation.html">splineFittingDerivation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../math/generated/pyCGM2.Math.derivation.splineDerivation.html">splineDerivation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../math/generated/pyCGM2.Math.derivation.firstOrderFiniteDifference.html">firstOrderFiniteDifference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../math/generated/pyCGM2.Math.derivation.firstOrderFiniteDifference.html">firstOrderFiniteDifference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../math/generated/pyCGM2.Math.derivation.matrixFirstDerivation.html">matrixFirstDerivation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../math/generated/pyCGM2.Math.derivation.matrixSecondDerivation.html">matrixSecondDerivation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../math/generated/pyCGM2.Math.euler.wrapEulerTo.html">wrapEulerTo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../math/generated/pyCGM2.Math.euler.euler_xyz.html">euler_xyz</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../math/generated/pyCGM2.Math.euler.euler_xzy.html">euler_xzy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../math/generated/pyCGM2.Math.euler.euler_yxz.html">euler_yxz</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../math/generated/pyCGM2.Math.euler.euler_yzx.html">euler_yzx</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../math/generated/pyCGM2.Math.euler.euler_zxy.html">euler_zxy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../math/generated/pyCGM2.Math.euler.euler_zyx.html">euler_zyx</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../math/generated/pyCGM2.Math.geometry.computeAngle.html">computeAngle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../math/generated/pyCGM2.Math.geometry.angleFrom2Vectors.html">angleFrom2Vectors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../math/generated/pyCGM2.Math.geometry.oppositeVector.html">oppositeVector</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../math/generated/pyCGM2.Math.geometry.LineLineIntersect.html">LineLineIntersect</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../math/generated/pyCGM2.Math.normalisation.timeSequenceNormalisation.html">timeSequenceNormalisation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../math/generated/pyCGM2.Math.numeric.rms.html">rms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../math/generated/pyCGM2.Math.numeric.skewMatrix.html">skewMatrix</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../math/generated/pyCGM2.Math.derivation.secondOrderFiniteDifference.html">secondOrderFiniteDifference</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../nexus.html">Nexus</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="pyCGM2.Nexus.Devices.Channel.html">Channel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyCGM2.Nexus.Devices.Device.html">Device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyCGM2.Nexus.Devices.AnalogDevice.html">AnalogDevice</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyCGM2.Nexus.Devices.ForcePlate.html">ForcePlate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyCGM2.Nexus.nexusFilters.NexusModelFilter.html">NexusModelFilter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyCGM2.Nexus.nexusFilters.NexusConstructAcquisitionFilter.html">NexusConstructAcquisitionFilter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyCGM2.Nexus.nexusTools.appendAnalysisParameters.html">appendAnalysisParameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyCGM2.Nexus.nexusTools.appendAngleFromAcq.html">appendAngleFromAcq</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyCGM2.Nexus.nexusTools.appendBones.html">appendBones</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyCGM2.Nexus.nexusTools.appendBtkScalarFromAcq.html">appendBtkScalarFromAcq</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyCGM2.Nexus.nexusTools.appendForceFromAcq.html">appendForceFromAcq</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyCGM2.Nexus.nexusTools.appendModelledMarkerFromAcq.html">appendModelledMarkerFromAcq</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyCGM2.Nexus.nexusTools.appendMomentFromAcq.html">appendMomentFromAcq</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyCGM2.Nexus.nexusTools.appendPowerFromAcq.html">appendPowerFromAcq</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyCGM2.Nexus.nexusTools.checkActivatedSubject.html">checkActivatedSubject</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyCGM2.Nexus.nexusTools.createEvents.html">createEvents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyCGM2.Nexus.nexusTools.createGeneralEvents.html">createGeneralEvents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyCGM2.Nexus.nexusTools.getActiveSubject.html">getActiveSubject</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyCGM2.Nexus.nexusTools.getForcePlateAssignment.html">getForcePlateAssignment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyCGM2.Nexus.nexusTools.setTrajectoryFromAcq.html">setTrajectoryFromAcq</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyCGM2.Nexus.nexusTools.setTrajectoryFromArray.html">setTrajectoryFromArray</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyCGM2.Nexus.nexusUtils.getNexusSubjectMp.html">getNexusSubjectMp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyCGM2.Nexus.nexusUtils.updateNexusSubjectMp.html">updateNexusSubjectMp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyCGM2.Nexus.nexus.NexusConnection.html">NexusConnection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyCGM2.Nexus.nexusTools.checkEvents.html">checkEvents</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">getTrialName</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyCGM2.Nexus.nexusTools.updateEvents.html">updateEvents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyCGM2.Nexus.vskTools.Vsk.html">Vsk</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyCGM2.Nexus.vskTools.checkSetReadOnly.html">checkSetReadOnly</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyCGM2.Nexus.vskTools.getFromVskSubjectMp.html">getFromVskSubjectMp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyCGM2.Nexus.vskTools.getVskFiles.html">getVskFiles</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../eclipse.html">Eclipse</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="pyCGM2.Nexus.eclipse.EnfReader.html">EnfReader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyCGM2.Nexus.eclipse.PatientEnfReader.html">PatientEnfReader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyCGM2.Nexus.eclipse.SessionEnfReader.html">SessionEnfReader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyCGM2.Nexus.eclipse.TrialEnfReader.html">TrialEnfReader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyCGM2.Nexus.eclipse.generateEmptyENF.html">generateEmptyENF</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyCGM2.Nexus.eclipse.getCurrentMarkedEnfs.html">getCurrentMarkedEnfs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyCGM2.Nexus.eclipse.getCurrentMarkedNodes.html">getCurrentMarkedNodes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyCGM2.Nexus.eclipse.getEnfFiles.html">getEnfFiles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyCGM2.Nexus.eclipse.cleanEnf.html">cleanEnf</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyCGM2.Nexus.eclipse.getC3d_enfTrialMetadata.html">getC3d_enfTrialMetadata</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyCGM2.Nexus.eclipseFlowInterface.findStaticTrials.html">findStaticTrials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyCGM2.Nexus.eclipseFlowInterface.findMotionTrials.html">findMotionTrials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyCGM2.Nexus.eclipseFlowInterface.findEmgTrials.html">findEmgTrials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyCGM2.Nexus.eclipseFlowInterface.findMVCTrials.html">findMVCTrials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyCGM2.Nexus.eclipseFlowInterface.staticDetails.html">staticDetails</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyCGM2.Nexus.eclipseFlowInterface.FittingDetails.html">FittingDetails</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyCGM2.Nexus.eclipseFlowInterface.EmgDetails.html">EmgDetails</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyCGM2.Nexus.eclipseFlowInterface.MvcDetails.html">MvcDetails</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyCGM2.Nexus.eclipseFlowInterface.getConditions.html">getConditions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyCGM2.Nexus.eclipseFlowInterface.list_duplicates.html">list_duplicates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyCGM2.Nexus.eclipseFlowInterface.repareEnf.html">repareEnf</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../qtm/qtm.html">Qtm</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../qtm/generated/pyCGM2.QTM.qtmTools.SubjectMp.html">SubjectMp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../qtm/generated/pyCGM2.QTM.qtmTools.detectMeasurementType.html">detectMeasurementType</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../qtm/generated/pyCGM2.QTM.qtmTools.findDynamic.html">findDynamic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../qtm/generated/pyCGM2.QTM.qtmTools.findKneeCalibration.html">findKneeCalibration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../qtm/generated/pyCGM2.QTM.qtmTools.findStatic.html">findStatic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../qtm/generated/pyCGM2.QTM.qtmTools.getFilename.html">getFilename</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../qtm/generated/pyCGM2.QTM.qtmTools.getForcePlateAssigment.html">getForcePlateAssigment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../qtm/generated/pyCGM2.QTM.qtmTools.getKneeFunctionCalibMethod.html">getKneeFunctionCalibMethod</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../qtm/generated/pyCGM2.QTM.qtmTools.get_creation_date.html">get_creation_date</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../qtm/generated/pyCGM2.QTM.qtmTools.get_modelled_trials.html">get_modelled_trials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../qtm/generated/pyCGM2.QTM.qtmTools.isType.html">isType</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../signal/signal.html">Signal</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../signal/generated/pyCGM2.Signal.detector.detectStart_fromThreshold.html">detectStart_fromThreshold</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../signal/generated/pyCGM2.Signal.detector.detect_cusum.html">detect_cusum</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../signal/generated/pyCGM2.Signal.detector.detect_onset.html">detect_onset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../signal/generated/pyCGM2.Signal.detector.detect_peaks.html">detect_peaks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../signal/generated/pyCGM2.Signal.detector.detect_seq.html">detect_seq</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../signal/generated/pyCGM2.Signal.signal_processing.arrayLowPassFiltering.html">arrayLowPassFiltering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../signal/generated/pyCGM2.Signal.signal_processing.downsample.html">downsample</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../signal/generated/pyCGM2.Signal.signal_processing.enveloppe.html">enveloppe</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../signal/generated/pyCGM2.Signal.signal_processing.forcePlateFiltering.html">forcePlateFiltering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../signal/generated/pyCGM2.Signal.signal_processing.highPass.html">highPass</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../signal/generated/pyCGM2.Signal.signal_processing.markerFiltering.html">markerFiltering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../signal/generated/pyCGM2.Signal.signal_processing.rectify.html">rectify</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../signal/generated/pyCGM2.Signal.signal_processing.remove50hz.html">remove50hz</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../signal/generated/pyCGM2.Signal.signal_processing.upsample.html">upsample</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../signal/generated/pyCGM2.Signal.detect_changes.detect_cusum.html">detect_cusum</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../signal/generated/pyCGM2.Signal.detect_peaks.detect_peaks.html">detect_peaks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../signal/generated/pyCGM2.Signal.anomaly.anomaly_rolling.html">anomaly_rolling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../signal/generated/pyCGM2.Signal.scipyWrapper.safe_cumtrapz.html">safe_cumtrapz</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../tools/tools.html">Tools</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../tools/generated/pyCGM2.Tools.btkTools.GetAnalogNames.html">GetAnalogNames</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tools/generated/pyCGM2.Tools.btkTools.GetMarkerNames.html">GetMarkerNames</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tools/generated/pyCGM2.Tools.btkTools.applyOnValidFrames.html">applyOnValidFrames</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tools/generated/pyCGM2.Tools.btkTools.applyRotation.html">applyRotation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tools/generated/pyCGM2.Tools.btkTools.applyTranslators.html">applyTranslators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tools/generated/pyCGM2.Tools.btkTools.applyValidFramesOnOutput.html">applyValidFramesOnOutput</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tools/generated/pyCGM2.Tools.btkTools.automaticKineticDetection.html">automaticKineticDetection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tools/generated/pyCGM2.Tools.btkTools.buildTrials.html">buildTrials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tools/generated/pyCGM2.Tools.btkTools.calculateAngleFrom3points.html">calculateAngleFrom3points</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tools/generated/pyCGM2.Tools.btkTools.changeSubjectName.html">changeSubjectName</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tools/generated/pyCGM2.Tools.btkTools.checkForcePlateExist.html">checkForcePlateExist</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tools/generated/pyCGM2.Tools.btkTools.checkGap.html">checkGap</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tools/generated/pyCGM2.Tools.btkTools.checkMarkers.html">checkMarkers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tools/generated/pyCGM2.Tools.btkTools.checkMetadata.html">checkMetadata</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tools/generated/pyCGM2.Tools.btkTools.checkMultipleSubject.html">checkMultipleSubject</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tools/generated/pyCGM2.Tools.btkTools.cleanAcq.html">cleanAcq</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tools/generated/pyCGM2.Tools.btkTools.clearEvents.html">clearEvents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tools/generated/pyCGM2.Tools.btkTools.clearPoints.html">clearPoints</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tools/generated/pyCGM2.Tools.btkTools.constructMarker.html">constructMarker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tools/generated/pyCGM2.Tools.btkTools.constructPhantom.html">constructPhantom</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tools/generated/pyCGM2.Tools.btkTools.createPhantoms.html">createPhantoms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tools/generated/pyCGM2.Tools.btkTools.deleteContextEvents.html">deleteContextEvents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tools/generated/pyCGM2.Tools.btkTools.findMarkerGap.html">findMarkerGap</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tools/generated/pyCGM2.Tools.btkTools.findValidFrames.html">findValidFrames</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tools/generated/pyCGM2.Tools.btkTools.getAllParamAnalysis.html">getAllParamAnalysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tools/generated/pyCGM2.Tools.btkTools.getForcePlateWrench.html">getForcePlateWrench</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tools/generated/pyCGM2.Tools.btkTools.getFrameBoundaries.html">getFrameBoundaries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tools/generated/pyCGM2.Tools.btkTools.getLabelsFromScalar.html">getLabelsFromScalar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tools/generated/pyCGM2.Tools.btkTools.getNumberOfForcePlate.html">getNumberOfForcePlate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tools/generated/pyCGM2.Tools.btkTools.getNumberOfModelOutputs.html">getNumberOfModelOutputs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tools/generated/pyCGM2.Tools.btkTools.getParamAnalysis.html">getParamAnalysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tools/generated/pyCGM2.Tools.btkTools.getScalar.html">getScalar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tools/generated/pyCGM2.Tools.btkTools.getStartEndEvents.html">getStartEndEvents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tools/generated/pyCGM2.Tools.btkTools.getValidFrames.html">getValidFrames</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tools/generated/pyCGM2.Tools.btkTools.getVisibleMarkersAtFrame.html">getVisibleMarkersAtFrame</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tools/generated/pyCGM2.Tools.btkTools.hasChild.html">hasChild</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tools/generated/pyCGM2.Tools.btkTools.isAnalogExist.html">isAnalogExist</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tools/generated/pyCGM2.Tools.btkTools.isEventExist.html">isEventExist</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tools/generated/pyCGM2.Tools.btkTools.isGap.html">isGap</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tools/generated/pyCGM2.Tools.btkTools.isKineticFlag.html">isKineticFlag</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tools/generated/pyCGM2.Tools.btkTools.isPhantom.html">isPhantom</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tools/generated/pyCGM2.Tools.btkTools.isPointExist.html">isPointExist</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tools/generated/pyCGM2.Tools.btkTools.isPointsExist.html">isPointsExist</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tools/generated/pyCGM2.Tools.btkTools.keepAndDeleteOtherPoints.html">keepAndDeleteOtherPoints</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tools/generated/pyCGM2.Tools.btkTools.markerUnitConverter.html">markerUnitConverter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tools/generated/pyCGM2.Tools.btkTools.markersToArray.html">markersToArray</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tools/generated/pyCGM2.Tools.btkTools.modifyEventSubject.html">modifyEventSubject</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tools/generated/pyCGM2.Tools.btkTools.modifySubject.html">modifySubject</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tools/generated/pyCGM2.Tools.btkTools.renameEvent.html">renameEvent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tools/generated/pyCGM2.Tools.btkTools.smartAppendAnalog.html">smartAppendAnalog</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tools/generated/pyCGM2.Tools.btkTools.smartAppendParamAnalysis.html">smartAppendParamAnalysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tools/generated/pyCGM2.Tools.btkTools.smartAppendPoint.html">smartAppendPoint</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tools/generated/pyCGM2.Tools.btkTools.smartCreateEvent.html">smartCreateEvent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tools/generated/pyCGM2.Tools.btkTools.smartGetEvents.html">smartGetEvents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tools/generated/pyCGM2.Tools.btkTools.smartGetMetadata.html">smartGetMetadata</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tools/generated/pyCGM2.Tools.btkTools.smartReader.html">smartReader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tools/generated/pyCGM2.Tools.btkTools.smartSetMetadata.html">smartSetMetadata</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tools/generated/pyCGM2.Tools.btkTools.smartWriter.html">smartWriter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tools/generated/pyCGM2.Tools.btkTools.sortedEvents.html">sortedEvents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tools/generated/pyCGM2.Tools.opensimTools.export_CgmToMot.html">export_CgmToMot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tools/generated/pyCGM2.Tools.opensimTools.footReactionMotFile.html">footReactionMotFile</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tools/generated/pyCGM2.Tools.opensimTools.mot2pointValues.html">mot2pointValues</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tools/generated/pyCGM2.Tools.opensimTools.smartGetValues.html">smartGetValues</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tools/generated/pyCGM2.Tools.opensimTools.sto2pointValues.html">sto2pointValues</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tools/generated/pyCGM2.Tools.opensimTools.transformMarker_ToOsimReferencial.html">transformMarker_ToOsimReferencial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tools/generated/pyCGM2.Tools.btkTools.alignExternalData.html">alignExternalData</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tools/generated/pyCGM2.Tools.btkTools.barycentricPoint.html">barycentricPoint</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tools/generated/pyCGM2.Tools.btkTools.clearEventsOutside.html">clearEventsOutside</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tools/generated/pyCGM2.Tools.btkTools.getEventsAsList.html">getEventsAsList</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tools/generated/pyCGM2.Tools.btkTools.printEvents.html">printEvents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tools/generated/pyCGM2.Tools.btkTools.printPoints.html">printPoints</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tools/generated/pyCGM2.Tools.opensimTools.calculateSegmentLength.html">calculateSegmentLength</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tools/generated/pyCGM2.Tools.opensimTools.constructMarkerSetXml.html">constructMarkerSetXml</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tools/generated/pyCGM2.Tools.opensimTools.rotationMatrix_labToOsim.html">rotationMatrix_labToOsim</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tools/generated/pyCGM2.Tools.pythonTools.ordict.html">ordict</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tools/generated/pyCGM2.Tools.uiTools.uiGetDir.html">uiGetDir</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tools/generated/pyCGM2.Tools.uiTools.uiGetFiles.html">uiGetFiles</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../utils/utils.html">Utils</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../utils/generated/pyCGM2.Utils.files.concatenateExcelFiles.html">concatenateExcelFiles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utils/generated/pyCGM2.Utils.files.copyPaste.html">copyPaste</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utils/generated/pyCGM2.Utils.files.copyPasteDirectory.html">copyPasteDirectory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utils/generated/pyCGM2.Utils.files.copySessionFolder.html">copySessionFolder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utils/generated/pyCGM2.Utils.files.createDir.html">createDir</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utils/generated/pyCGM2.Utils.files.deleteDirectory.html">deleteDirectory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utils/generated/pyCGM2.Utils.files.getC3dFiles.html">getC3dFiles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utils/generated/pyCGM2.Utils.files.getDirname.html">getDirname</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utils/generated/pyCGM2.Utils.files.getDirs.html">getDirs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utils/generated/pyCGM2.Utils.files.getFileCreationDate.html">getFileCreationDate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utils/generated/pyCGM2.Utils.files.getFilename.html">getFilename</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utils/generated/pyCGM2.Utils.files.getFiles.html">getFiles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utils/generated/pyCGM2.Utils.files.getIKweightSet.html">getIKweightSet</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utils/generated/pyCGM2.Utils.files.getMp.html">getMp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utils/generated/pyCGM2.Utils.files.getMpFileContent.html">getMpFileContent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utils/generated/pyCGM2.Utils.files.getTranslators.html">getTranslators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utils/generated/pyCGM2.Utils.files.is_json.html">is_json</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utils/generated/pyCGM2.Utils.files.is_yaml.html">is_yaml</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utils/generated/pyCGM2.Utils.files.loadAnalysis.html">loadAnalysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utils/generated/pyCGM2.Utils.files.loadModel.html">loadModel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utils/generated/pyCGM2.Utils.files.loadModelSettings.html">loadModelSettings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utils/generated/pyCGM2.Utils.files.loadMp.html">loadMp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utils/generated/pyCGM2.Utils.files.loadSettings.html">loadSettings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utils/generated/pyCGM2.Utils.files.openFile.html">openFile</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utils/generated/pyCGM2.Utils.files.openJson.html">openJson</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utils/generated/pyCGM2.Utils.files.openPickleFile.html">openPickleFile</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utils/generated/pyCGM2.Utils.files.openYaml.html">openYaml</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utils/generated/pyCGM2.Utils.files.readContent.html">readContent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utils/generated/pyCGM2.Utils.files.readXml.html">readXml</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utils/generated/pyCGM2.Utils.files.renameFile.html">renameFile</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utils/generated/pyCGM2.Utils.files.saveAnalysis.html">saveAnalysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utils/generated/pyCGM2.Utils.files.saveJson.html">saveJson</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utils/generated/pyCGM2.Utils.files.saveModel.html">saveModel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utils/generated/pyCGM2.Utils.files.saveMp.html">saveMp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utils/generated/pyCGM2.Utils.files.savePickleFile.html">savePickleFile</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utils/generated/pyCGM2.Utils.files.saveYaml.html">saveYaml</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utils/generated/pyCGM2.Utils.files.try_as.html">try_as</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utils/generated/pyCGM2.Utils.utils.checkSimilarElement.html">checkSimilarElement</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utils/generated/pyCGM2.Utils.utils.getSimilarElement.html">getSimilarElement</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utils/generated/pyCGM2.Utils.utils.homogeneizeArguments.html">homogeneizeArguments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utils/generated/pyCGM2.Utils.utils.isInRange.html">isInRange</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utils/generated/pyCGM2.Utils.utils.str.html">str</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utils/generated/pyCGM2.Utils.utils.toBool.html">toBool</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utils/generated/pyCGM2.Utils.files.count_directories.html">count_directories</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utils/generated/pyCGM2.Utils.files.count_directories_with_label.html">count_directories_with_label</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utils/generated/pyCGM2.Utils.files.delete_all_files.html">delete_all_files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utils/generated/pyCGM2.Utils.files.get_parent_directory.html">get_parent_directory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utils/generated/pyCGM2.Utils.files.moveDirectory.html">moveDirectory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utils/generated/pyCGM2.Utils.files.moveFile.html">moveFile</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utils/generated/pyCGM2.Utils.utils.FrameConverter.html">FrameConverter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utils/generated/pyCGM2.Utils.utils.cleanStringSpacing.html">cleanStringSpacing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utils/generated/pyCGM2.Utils.utils.getNumberFromStr.html">getNumberFromStr</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utils/generated/pyCGM2.Utils.utils.is_valid_session_name.html">is_valid_session_name</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utils/generated/pyCGM2.Utils.utils.removeDuplicate.html">removeDuplicate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utils/generated/pyCGM2.Utils.utils.timeRange.html">timeRange</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utils/generated/pyCGM2.Utils.readers.ExcelReader.html">ExcelReader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utils/generated/pyCGM2.Utils.readers.is_json.html">is_json</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utils/generated/pyCGM2.Utils.readers.is_yaml.html">is_yaml</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utils/generated/pyCGM2.Utils.readers.openFile.html">openFile</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utils/generated/pyCGM2.Utils.readers.openJson.html">openJson</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utils/generated/pyCGM2.Utils.readers.openYaml.html">openYaml</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utils/generated/pyCGM2.Utils.readers.try_as.html">try_as</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utils/generated/pyCGM2.Utils.prettyfier.RegExSub.html">RegExSub</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utils/generated/pyCGM2.Utils.prettyfier.apply_re_subs.html">apply_re_subs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utils/generated/pyCGM2.Utils.prettyfier.prettify_html.html">prettify_html</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utils/generated/pyCGM2.Utils.prettyfier.prettify_xml.html">prettify_xml</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utils/generated/pyCGM2.Utils.timer.Timer.html">Timer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utils/generated/pyCGM2.Utils.viz.displayFrame.html">displayFrame</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utils/generated/pyCGM2.Utils.testingUtils.test_offset.html">test_offset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utils/generated/pyCGM2.Utils.testingUtils.test_point.html">test_point</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utils/generated/pyCGM2.Utils.testingUtils.test_point_rms.html">test_point_rms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utils/generated/pyCGM2.Utils.testingUtils.test_point_compareToRef.html">test_point_compareToRef</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utils/generated/pyCGM2.Utils.testingUtils.test_point_rms_compareToRef.html">test_point_rms_compareToRef</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utils/generated/pyCGM2.Utils.testingUtils.print_offset.html">print_offset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utils/generated/pyCGM2.Utils.testingUtils.plotComparisonOfPoint.html">plotComparisonOfPoint</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utils/generated/pyCGM2.Utils.testingUtils.plotValuesComparison.html">plotValuesComparison</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utils/generated/pyCGM2.Utils.testingUtils.plotComparison_MomentPanel.html">plotComparison_MomentPanel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utils/generated/pyCGM2.Utils.testingUtils.plotComparison_ForcePanel.html">plotComparison_ForcePanel</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../enums/enums.html">Enums</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../enums/generated/pyCGM2.enums.AnalysisSection.html">AnalysisSection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../enums/generated/pyCGM2.enums.BodyPart.html">BodyPart</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../enums/generated/pyCGM2.enums.BodyPartPlot.html">BodyPartPlot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../enums/generated/pyCGM2.enums.DataType.html">DataType</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../enums/generated/pyCGM2.enums.EclipseType.html">EclipseType</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../enums/generated/pyCGM2.enums.EmgAmplitudeNormalization.html">EmgAmplitudeNormalization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../enums/generated/pyCGM2.enums.HarringtonPredictor.html">HarringtonPredictor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../enums/generated/pyCGM2.enums.JointCalibrationMethod.html">JointCalibrationMethod</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../enums/generated/pyCGM2.enums.MomentProjection.html">MomentProjection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../enums/generated/pyCGM2.enums.SegmentSide.html">SegmentSide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../enums/generated/pyCGM2.enums.motionMethod.html">motionMethod</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../enums/generated/pyCGM2.enums.enumFromtext.html">enumFromtext</a></li>
+</ul>
+</details></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../moduleIndex.html" class="nav-link">API Reference</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../nexus.html" class="nav-link">pyCGM2.Nexus</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">getTrialName</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="gettrialname">
+<h1>getTrialName<a class="headerlink" href="#gettrialname" title="Link to this heading">#</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="pyCGM2.Nexus.nexusTools.getTrialName">
+<span class="sig-prename descclassname"><span class="pre">pyCGM2.Nexus.nexusTools.</span></span><span class="sig-name descname"><span class="pre">getTrialName</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">NEXUS</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyCGM2.Nexus.nexusTools.getTrialName" title="Link to this definition">#</a></dt>
+<dd><p>Return the folder and the name of the trial loaded in Nexus.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>NEXUS</strong> (<em>ViconNexus.ViconNexus</em>) – Nexus handle.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>Tuple[str, str]</strong> – Data path and trial name without extension.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>Exception</strong> – If no trial is loaded.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="pyCGM2.Nexus.nexusTools.checkEvents.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">checkEvents</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="pyCGM2.Nexus.nexusTools.updateEvents.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">updateEvents</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pyCGM2.Nexus.nexusTools.getTrialName"><code class="docutils literal notranslate"><span class="pre">getTrialName()</span></code></a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  <div class="tocsection sourcelink">
+    <a href="../../../_sources/modules/nexus/generated/pyCGM2.Nexus.nexusTools.getTrialName.rst.txt">
+      <i class="fa-solid fa-file-lines"></i> Show Source
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5"></script>
+<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2022, Fabien Leboeuf.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.19.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

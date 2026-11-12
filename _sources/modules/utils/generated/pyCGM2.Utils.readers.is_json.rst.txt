@@ -1,0 +1,7 @@
+﻿is_json
+================================================
+
+.. currentmodule:: pyCGM2.Utils.readers
+
+.. autofunction:: is_json
+

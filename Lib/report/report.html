@@ -8,75 +8,71 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>pyCGM2.Lib.report module &#8212; pyCGM2-API 4.3.1-rc3 documentation</title>
+    <title>pyCGM2.Lib.report module &#8212; pyCGM2-API 4.4rc2 documentation</title>
   
   
   
   <script data-cfasync="false">
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
-    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
   </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../../_static/styles/theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
-<link href="../../_static/styles/bootstrap.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
-<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+  <link href="../../_static/styles/theme.css?digest=a95f357e85573c9b56d5" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=a95f357e85573c9b56d5" rel="stylesheet" />
 
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
   
-  <link href="../../_static/vendor/fontawesome/6.5.1/css/all.min.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
-  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.1/webfonts/fa-solid-900.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.1/webfonts/fa-brands-400.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.1/webfonts/fa-regular-400.woff2" />
-
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
-  
+  <!-- So that users can add custom icons -->
+  <script defer src="../../_static/scripts/fontawesome.js?digest=a95f357e85573c9b56d5"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae" />
-<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae" />
-  <script src="../../_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=8d27b9dea8ad943066ae"></script>
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5" />
 
-    <script src="../../_static/documentation_options.js?v=8c65e904"></script>
-    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/documentation_options.js?v=41e7a66b"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'Lib/report/report';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="pyCGM2.Lib.report.pdfGaitReport" href="generated/pyCGM2.Lib.report.pdfGaitReport.html" />
-    <link rel="prev" title="pyCGM2.Lib.plot.plot_spatioTemporal" href="../plot/generated/pyCGM2.Lib.plot.plot_spatioTemporal.html" />
+    <link rel="next" title="pdfGaitReport" href="generated/pyCGM2.Lib.report.pdfGaitReport.html" />
+    <link rel="prev" title="plot_ConsistencyMuscleLength" href="../plot/generated/pyCGM2.Lib.plot.plot_ConsistencyMuscleLength.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  
+    
+    <script src="../../_static/searchtools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <script src="../../searchindex.js"></script>
+  
   </head>
+  <body data-default-mode="">
   
   
-  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
 
-  
-  
-  <a id="pst-skip-link" class="skip-link" href="#main-content">Skip to main content</a>
   
   <div id="pst-scroll-pixel-helper"></div>
   
   <button type="button" class="btn rounded-pill" id="pst-back-to-top">
-    <i class="fa-solid fa-arrow-up"></i>
-    Back to top
-  </button>
-
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
   
-  <input type="checkbox"
-          class="sidebar-toggle"
-          name="__primary"
-          id="__primary"/>
-  <label class="overlay overlay-primary" for="__primary"></label>
   
-  <input type="checkbox"
-          class="sidebar-toggle"
-          name="__secondary"
-          id="__secondary"/>
-  <label class="overlay overlay-secondary" for="__secondary"></label>
   
-  <div class="search-button__wrapper">
-    <div class="search-button__overlay"></div>
-    <div class="search-button__search-container">
+  
+  <dialog id="pst-search-dialog">
+    
 <form class="bd-search d-flex align-items-center"
       action="../../search.html"
       method="get">
@@ -84,7 +80,6 @@
   <input type="search"
          class="form-control"
          name="q"
-         id="search-input"
          placeholder="Search the docs ..."
          aria-label="Search the docs ..."
          autocomplete="off"
@@ -92,20 +87,27 @@
          autocapitalize="off"
          spellcheck="false"/>
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
-</form></div>
-  </div>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
   
-    <header class="bd-header navbar navbar-expand-lg bd-navbar">
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
 <div class="bd-header__inner bd-page-width">
-  <label class="sidebar-toggle primary-toggle" for="__primary">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
     <span class="fa-solid fa-bars"></span>
-  </label>
+  </button>
   
   
   <div class="col-lg-3 navbar-header-items__start">
     
       <div class="navbar-item">
 
+  
+    
   
 
 <a class="navbar-brand logo" href="../../index.html">
@@ -119,8 +121,8 @@
       
     
     
-    <img src="../../_static/pyCGM2-logo2.png" class="logo__image only-light" alt="pyCGM2-API 4.3.1-rc3 documentation - Home"/>
-    <script>document.write(`<img src="../../_static/pyCGM2-logo2.png" class="logo__image only-dark" alt="pyCGM2-API 4.3.1-rc3 documentation - Home"/>`);</script>
+    <img src="../../_static/pyCGM2-logo2.png" class="logo__image only-light" alt="pyCGM2-API 4.4rc2 documentation - Home"/>
+    <img src="../../_static/pyCGM2-logo2.png" class="logo__image only-dark pst-js-only" alt="pyCGM2-API 4.4rc2 documentation - Home"/>
   
   
 </a></div>
@@ -132,36 +134,36 @@
     <div class="me-auto navbar-header-items__center">
       
         <div class="navbar-item">
-<nav class="navbar-nav">
+<nav>
   <ul class="bd-navbar-elements navbar-nav">
     
-                    <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../../Apps/apps.html">
-                        Apps
-                      </a>
-                    </li>
-                
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../Apps/apps.html">
+    Apps
+  </a>
+</li>
 
-                    <li class="nav-item current active">
-                      <a class="nav-link nav-internal" href="../libIndex.html">
-                        High Level functions
-                      </a>
-                    </li>
-                
 
-                    <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../../modules/moduleIndex.html">
-                        API Reference
-                      </a>
-                    </li>
-                
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../libIndex.html">
+    High Level functions
+  </a>
+</li>
 
-                    <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../../thirdparty/thirdpartyIndex.html">
-                        Third party package
-                      </a>
-                    </li>
-                
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../modules/moduleIndex.html">
+    API Reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../thirdparty/thirdpartyIndex.html">
+    Third party package
+  </a>
+</li>
+
   </ul>
 </nav></div>
       
@@ -173,29 +175,28 @@
         <div class="navbar-item navbar-persistent--container">
           
 
- <script>
- document.write(`
-   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <i class="fa-solid fa-magnifying-glass"></i>
-    <span class="search-button__default-text">Search</span>
-    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
-   </button>
- `);
- </script>
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
         </div>
       
       
         <div class="navbar-item">
 
-<script>
-document.write(`
-  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
-    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
-    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
   </button>
-`);
-</script></div>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
       
     </div>
     
@@ -204,22 +205,18 @@ document.write(`
   
     <div class="navbar-persistent--mobile">
 
- <script>
- document.write(`
-   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <i class="fa-solid fa-magnifying-glass"></i>
-    <span class="search-button__default-text">Search</span>
-    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
-   </button>
- `);
- </script>
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
     </div>
   
 
   
-    <label class="sidebar-toggle secondary-toggle" for="__secondary" tabindex="0">
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
       <span class="fa-solid fa-outdent"></span>
-    </label>
+    </button>
   
 </div>
 
@@ -231,7 +228,8 @@ document.write(`
       
       
       
-      <div class="bd-sidebar-primary bd-sidebar">
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
         
 
   
@@ -240,39 +238,42 @@ document.write(`
     
       <div class="sidebar-header-items__center">
         
-          <div class="navbar-item">
-<nav class="navbar-nav">
+          
+          
+            <div class="navbar-item">
+<nav>
   <ul class="bd-navbar-elements navbar-nav">
     
-                    <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../../Apps/apps.html">
-                        Apps
-                      </a>
-                    </li>
-                
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../Apps/apps.html">
+    Apps
+  </a>
+</li>
 
-                    <li class="nav-item current active">
-                      <a class="nav-link nav-internal" href="../libIndex.html">
-                        High Level functions
-                      </a>
-                    </li>
-                
 
-                    <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../../modules/moduleIndex.html">
-                        API Reference
-                      </a>
-                    </li>
-                
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../libIndex.html">
+    High Level functions
+  </a>
+</li>
 
-                    <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../../thirdparty/thirdpartyIndex.html">
-                        Third party package
-                      </a>
-                    </li>
-                
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../modules/moduleIndex.html">
+    API Reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../thirdparty/thirdpartyIndex.html">
+    Third party package
+  </a>
+</li>
+
   </ul>
 </nav></div>
+          
         
       </div>
     
@@ -282,93 +283,111 @@ document.write(`
         
           <div class="navbar-item">
 
-<script>
-document.write(`
-  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
-    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
-    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
   </button>
-`);
-</script></div>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
         
       </div>
     
   </div>
   
     <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar"><svg class="pst-icon svg-inline--fa" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
         <div class="sidebar-primary-item">
+
 <nav class="bd-docs-nav bd-links"
      aria-label="Section Navigation">
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
-<li class="toctree-l1 has-children"><a class="reference internal" href="../cgm/cgm.html">pyCGM2.Lib.CGM</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../cgm/generated/pyCGM2.Lib.CGM.cgm1.calibrate.html">pyCGM2.Lib.CGM.cgm1.calibrate</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../cgm/generated/pyCGM2.Lib.CGM.cgm1.fitting.html">pyCGM2.Lib.CGM.cgm1.fitting</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../cgm/generated/pyCGM2.Lib.CGM.cgm1_1.calibrate.html">pyCGM2.Lib.CGM.cgm1_1.calibrate</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../cgm/generated/pyCGM2.Lib.CGM.cgm1_1.fitting.html">pyCGM2.Lib.CGM.cgm1_1.fitting</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../cgm/generated/pyCGM2.Lib.CGM.cgm2_1.calibrate.html">pyCGM2.Lib.CGM.cgm2_1.calibrate</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../cgm/generated/pyCGM2.Lib.CGM.cgm2_1.fitting.html">pyCGM2.Lib.CGM.cgm2_1.fitting</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../cgm/generated/pyCGM2.Lib.CGM.cgm2_2.calibrate.html">pyCGM2.Lib.CGM.cgm2_2.calibrate</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../cgm/generated/pyCGM2.Lib.CGM.cgm2_2.fitting.html">pyCGM2.Lib.CGM.cgm2_2.fitting</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../cgm/generated/pyCGM2.Lib.CGM.musculoskeletal.cgm2_2.calibrate.html">pyCGM2.Lib.CGM.musculoskeletal.cgm2_2.calibrate</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../cgm/generated/pyCGM2.Lib.CGM.musculoskeletal.cgm2_2.fitting.html">pyCGM2.Lib.CGM.musculoskeletal.cgm2_2.fitting</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../cgm/generated/pyCGM2.Lib.CGM.cgm2_3.calibrate.html">pyCGM2.Lib.CGM.cgm2_3.calibrate</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../cgm/generated/pyCGM2.Lib.CGM.cgm2_3.fitting.html">pyCGM2.Lib.CGM.cgm2_3.fitting</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../cgm/generated/pyCGM2.Lib.CGM.musculoskeletal.cgm2_3.calibrate.html">pyCGM2.Lib.CGM.musculoskeletal.cgm2_3.calibrate</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../cgm/generated/pyCGM2.Lib.CGM.musculoskeletal.cgm2_3.fitting.html">pyCGM2.Lib.CGM.musculoskeletal.cgm2_3.fitting</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../cgm/generated/pyCGM2.Lib.CGM.cgm2_4.calibrate.html">pyCGM2.Lib.CGM.cgm2_4.calibrate</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../cgm/generated/pyCGM2.Lib.CGM.cgm2_4.fitting.html">pyCGM2.Lib.CGM.cgm2_4.fitting</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../cgm/generated/pyCGM2.Lib.CGM.cgm2_5.calibrate.html">pyCGM2.Lib.CGM.cgm2_5.calibrate</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../cgm/generated/pyCGM2.Lib.CGM.cgm2_5.fitting.html">pyCGM2.Lib.CGM.cgm2_5.fitting</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../cgm/generated/pyCGM2.Lib.CGM.kneeCalibration.calibration2Dof.html">pyCGM2.Lib.CGM.kneeCalibration.calibration2Dof</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../cgm/generated/pyCGM2.Lib.CGM.kneeCalibration.sara.html">pyCGM2.Lib.CGM.kneeCalibration.sara</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../cgm/cgm.html">pyCGM2.Lib.CGM</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../cgm/generated/pyCGM2.Lib.CGM.cgm1.calibrate.html">calibrate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cgm/generated/pyCGM2.Lib.CGM.cgm1.fitting.html">fitting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cgm/generated/pyCGM2.Lib.CGM.cgm1_1.calibrate.html">calibrate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cgm/generated/pyCGM2.Lib.CGM.cgm1_1.fitting.html">fitting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cgm/generated/pyCGM2.Lib.CGM.cgm2_1.calibrate.html">calibrate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cgm/generated/pyCGM2.Lib.CGM.cgm2_1.fitting.html">fitting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cgm/generated/pyCGM2.Lib.CGM.cgm2_2.calibrate.html">calibrate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cgm/generated/pyCGM2.Lib.CGM.cgm2_2.fitting.html">fitting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cgm/generated/pyCGM2.Lib.CGM.musculoskeletal.cgm2_2.calibrate.html">calibrate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cgm/generated/pyCGM2.Lib.CGM.musculoskeletal.cgm2_2.fitting.html">fitting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cgm/generated/pyCGM2.Lib.CGM.cgm2_3.calibrate.html">calibrate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cgm/generated/pyCGM2.Lib.CGM.cgm2_3.fitting.html">fitting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cgm/generated/pyCGM2.Lib.CGM.musculoskeletal.cgm2_3.calibrate.html">calibrate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cgm/generated/pyCGM2.Lib.CGM.musculoskeletal.cgm2_3.fitting.html">fitting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cgm/generated/pyCGM2.Lib.CGM.cgm2_4.calibrate.html">calibrate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cgm/generated/pyCGM2.Lib.CGM.cgm2_4.fitting.html">fitting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cgm/generated/pyCGM2.Lib.CGM.cgm2_5.calibrate.html">calibrate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cgm/generated/pyCGM2.Lib.CGM.cgm2_5.fitting.html">fitting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cgm/generated/pyCGM2.Lib.CGM.kneeCalibration.calibration2Dof.html">calibration2Dof</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cgm/generated/pyCGM2.Lib.CGM.kneeCalibration.sara.html">sara</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cgm/generated/pyCGM2.Lib.CGM.kneeCalibration.detectSide.html">detectSide</a></li>
 </ul>
-</li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../analysis/analysis.html">pyCGM2.Lib.analysis</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../analysis/generated/pyCGM2.Lib.analysis.makeAnalysis.html">pyCGM2.Lib.analysis.makeAnalysis</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../analysis/generated/pyCGM2.Lib.analysis.exportAnalysis.html">pyCGM2.Lib.analysis.exportAnalysis</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../analysis/generated/pyCGM2.Lib.analysis.automaticCPdeviations.html">pyCGM2.Lib.analysis.automaticCPdeviations</a></li>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../analysis/analysis.html">pyCGM2.Lib.analysis</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../analysis/generated/pyCGM2.Lib.analysis.makeAnalysis.html">makeAnalysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../analysis/generated/pyCGM2.Lib.analysis.exportAnalysis.html">exportAnalysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../analysis/generated/pyCGM2.Lib.analysis.automaticCPdeviations.html">automaticCPdeviations</a></li>
 </ul>
-</li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../emg/emg.html">pyCGM2.Lib.emg</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../emg/generated/pyCGM2.Lib.emg.loadEmg.html">pyCGM2.Lib.emg.loadEmg</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../emg/generated/pyCGM2.Lib.emg.processEMG.html">pyCGM2.Lib.emg.processEMG</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../emg/generated/pyCGM2.Lib.emg.normalizedEMG.html">pyCGM2.Lib.emg.normalizedEMG</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../emg/generated/pyCGM2.Lib.emg.processEMG_fromBtkAcq.html">pyCGM2.Lib.emg.processEMG_fromBtkAcq</a></li>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../emg/emg.html">pyCGM2.Lib.emg</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../emg/generated/pyCGM2.Lib.emg.loadEmg.html">loadEmg</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../emg/generated/pyCGM2.Lib.emg.processEMG.html">processEMG</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../emg/generated/pyCGM2.Lib.emg.normalizedEMG.html">normalizedEMG</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../emg/generated/pyCGM2.Lib.emg.processEMG_fromBtkAcq.html">processEMG_fromBtkAcq</a></li>
 </ul>
-</li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../event/eventDetectors.html">pyCGM2.Lib.eventDetector</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-4"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../event/generated/pyCGM2.Lib.eventDetector.zeni.html">pyCGM2.Lib.eventDetector.zeni</a></li>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../event/eventDetectors.html">pyCGM2.Lib.eventDetector</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../event/generated/pyCGM2.Lib.eventDetector.zeni.html">zeni</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../event/generated/pyCGM2.Lib.eventDetector.oconnor.html">oconnor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../event/generated/pyCGM2.Lib.eventDetector.intellEvent.html">intellEvent</a></li>
 </ul>
-</li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../plot/plot.html">pyCGM2.Lib.plot</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-5"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../plot/generated/pyCGM2.Lib.plot.compareEmgEnvelops.html">pyCGM2.Lib.plot.compareEmgEnvelops</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../plot/generated/pyCGM2.Lib.plot.compareKinematic.html">pyCGM2.Lib.plot.compareKinematic</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../plot/generated/pyCGM2.Lib.plot.compareKinetic.html">pyCGM2.Lib.plot.compareKinetic</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../plot/generated/pyCGM2.Lib.plot.compareSelectedEmgEvelops.html">pyCGM2.Lib.plot.compareSelectedEmgEvelops</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../plot/generated/pyCGM2.Lib.plot.plotConsistencyEnvelopEMGpanel.html">pyCGM2.Lib.plot.plotConsistencyEnvelopEMGpanel</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../plot/generated/pyCGM2.Lib.plot.plotDescriptiveEnvelopEMGpanel.html">pyCGM2.Lib.plot.plotDescriptiveEnvelopEMGpanel</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../plot/generated/pyCGM2.Lib.plot.plotPFKE.html">pyCGM2.Lib.plot.plotPFKE</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../plot/generated/pyCGM2.Lib.plot.plotSaggitalGagePanel.html">pyCGM2.Lib.plot.plotSaggitalGagePanel</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../plot/generated/pyCGM2.Lib.plot.plotTemporalEMG.html">pyCGM2.Lib.plot.plotTemporalEMG</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../plot/generated/pyCGM2.Lib.plot.plotTemporalKinematic.html">pyCGM2.Lib.plot.plotTemporalKinematic</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../plot/generated/pyCGM2.Lib.plot.plotTemporalKinetic.html">pyCGM2.Lib.plot.plotTemporalKinetic</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../plot/generated/pyCGM2.Lib.plot.plot_ConsistencyKinematic.html">pyCGM2.Lib.plot.plot_ConsistencyKinematic</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../plot/generated/pyCGM2.Lib.plot.plot_ConsistencyKinetic.html">pyCGM2.Lib.plot.plot_ConsistencyKinetic</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../plot/generated/pyCGM2.Lib.plot.plot_DescriptiveGRF.html">pyCGM2.Lib.plot.plot_DescriptiveGRF</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../plot/generated/pyCGM2.Lib.plot.plot_DescriptiveGrfIntegration.html">pyCGM2.Lib.plot.plot_DescriptiveGrfIntegration</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../plot/generated/pyCGM2.Lib.plot.plot_DescriptiveKinematic.html">pyCGM2.Lib.plot.plot_DescriptiveKinematic</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../plot/generated/pyCGM2.Lib.plot.plot_DescriptiveKinetic.html">pyCGM2.Lib.plot.plot_DescriptiveKinetic</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../plot/generated/pyCGM2.Lib.plot.plot_DescriptiveMuscleLength.html">pyCGM2.Lib.plot.plot_DescriptiveMuscleLength</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../plot/generated/pyCGM2.Lib.plot.plot_MAP.html">pyCGM2.Lib.plot.plot_MAP</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../plot/generated/pyCGM2.Lib.plot.plot_spatioTemporal.html">pyCGM2.Lib.plot.plot_spatioTemporal</a></li>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../plot/plot.html">pyCGM2.Lib.plot</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../plot/generated/pyCGM2.Lib.plot.compareEmgEnvelops.html">compareEmgEnvelops</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../plot/generated/pyCGM2.Lib.plot.compareKinematic.html">compareKinematic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../plot/generated/pyCGM2.Lib.plot.compareKinetic.html">compareKinetic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../plot/generated/pyCGM2.Lib.plot.compareSelectedEmgEvelops.html">compareSelectedEmgEvelops</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../plot/generated/pyCGM2.Lib.plot.plotConsistencyEnvelopEMGpanel.html">plotConsistencyEnvelopEMGpanel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../plot/generated/pyCGM2.Lib.plot.plotDescriptiveEnvelopEMGpanel.html">plotDescriptiveEnvelopEMGpanel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../plot/generated/pyCGM2.Lib.plot.plotPFKE.html">plotPFKE</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../plot/generated/pyCGM2.Lib.plot.plotSaggitalGagePanel.html">plotSaggitalGagePanel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../plot/generated/pyCGM2.Lib.plot.plotTemporalEMG.html">plotTemporalEMG</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../plot/generated/pyCGM2.Lib.plot.plotTemporalKinematic.html">plotTemporalKinematic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../plot/generated/pyCGM2.Lib.plot.plotTemporalKinetic.html">plotTemporalKinetic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../plot/generated/pyCGM2.Lib.plot.plot_ConsistencyKinematic.html">plot_ConsistencyKinematic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../plot/generated/pyCGM2.Lib.plot.plot_ConsistencyKinetic.html">plot_ConsistencyKinetic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../plot/generated/pyCGM2.Lib.plot.plot_DescriptiveGRF.html">plot_DescriptiveGRF</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../plot/generated/pyCGM2.Lib.plot.plot_DescriptiveGrfIntegration.html">plot_DescriptiveGrfIntegration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../plot/generated/pyCGM2.Lib.plot.plot_DescriptiveKinematic.html">plot_DescriptiveKinematic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../plot/generated/pyCGM2.Lib.plot.plot_DescriptiveKinetic.html">plot_DescriptiveKinetic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../plot/generated/pyCGM2.Lib.plot.plot_DescriptiveMuscleLength.html">plot_DescriptiveMuscleLength</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../plot/generated/pyCGM2.Lib.plot.plot_MAP.html">plot_MAP</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../plot/generated/pyCGM2.Lib.plot.plot_spatioTemporal.html">plot_spatioTemporal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../plot/generated/pyCGM2.Lib.plot.plotTemporalReaction.html">plotTemporalReaction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../plot/generated/pyCGM2.Lib.plot.compareReaction.html">compareReaction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../plot/generated/pyCGM2.Lib.plot.compareMapScores.html">compareMapScores</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../plot/generated/pyCGM2.Lib.plot.plot_ConsistencyGRF.html">plot_ConsistencyGRF</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../plot/generated/pyCGM2.Lib.plot.plot_ConsistencyMuscleLength.html">plot_ConsistencyMuscleLength</a></li>
 </ul>
-</li>
-<li class="toctree-l1 current active has-children"><a class="current reference internal" href="#">pyCGM2.Lib.report</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-6"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="generated/pyCGM2.Lib.report.pdfGaitReport.html">pyCGM2.Lib.report.pdfGaitReport</a></li>
+</details></li>
+<li class="toctree-l1 current active has-children"><a class="current reference internal" href="#">pyCGM2.Lib.report</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="generated/pyCGM2.Lib.report.pdfGaitReport.html">pdfGaitReport</a></li>
 </ul>
-</li>
+</details></li>
 </ul>
 </div>
 </nav></div>
@@ -376,29 +395,32 @@ document.write(`
   
   
   <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
   </div>
-  
-  <div id="rtd-footer-container"></div>
 
 
       </div>
       
-      <main id="main-content" class="bd-main">
+      <main id="main-content" class="bd-main" role="main">
         
         
           <div class="bd-content">
             <div class="bd-article-container">
               
-              <div class="bd-header-article">
+              <div class="bd-header-article d-print-none">
 <div class="header-article-items header-article__inner">
   
     <div class="header-article-items__start">
       
         <div class="header-article-item">
 
-
-
-<nav aria-label="Breadcrumb">
+<nav aria-label="Breadcrumb" class="d-print-none">
   <ul class="bd-breadcrumbs">
     
     <li class="breadcrumb-item breadcrumb-home">
@@ -409,7 +431,7 @@ document.write(`
     
     <li class="breadcrumb-item"><a href="../libIndex.html" class="nav-link">High Level functions</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page">pyCGM2.Lib.r...</li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">pyCGM2.Lib.report module</span></li>
   </ul>
 </nav>
 </div>
@@ -430,13 +452,14 @@ document.write(`
 <h1>pyCGM2.Lib.report module<a class="headerlink" href="#pycgm2-lib-report-module" title="Link to this heading">#</a></h1>
 <div class="toctree-wrapper compound">
 </div>
-<table class="autosummary longtable table autosummary">
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/pyCGM2.Lib.report.pdfGaitReport.html#pyCGM2.Lib.report.pdfGaitReport" title="pyCGM2.Lib.report.pdfGaitReport"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pdfGaitReport</span></code></a>(DATA_PATH, modelledTrials, ...)</p></td>
 <td><p>generate pdf with Kinematic-Kinetic-MAP gait plots .</p></td>
 </tr>
 </tbody>
 </table>
+</div>
 </section>
 
 
@@ -446,16 +469,16 @@ document.write(`
               
               
               
-                <footer class="prev-next-footer">
+                <footer class="prev-next-footer d-print-none">
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="../plot/generated/pyCGM2.Lib.plot.plot_spatioTemporal.html"
+       href="../plot/generated/pyCGM2.Lib.plot.plot_ConsistencyMuscleLength.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">pyCGM2.Lib.plot.plot_spatioTemporal</p>
+        <p class="prev-next-title">plot_ConsistencyMuscleLength</p>
       </div>
     </a>
     <a class="right-next"
@@ -463,7 +486,7 @@ document.write(`
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">pyCGM2.Lib.report.pdfGaitReport</p>
+        <p class="prev-next-title">pdfGaitReport</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -474,7 +497,8 @@ document.write(`
             
             
               
-                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
 
   <div class="sidebar-secondary-item">
@@ -499,8 +523,8 @@ document.write(`
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae"></script>
-<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae"></script>
+  <script defer src="../../_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
@@ -520,7 +544,7 @@ document.write(`
         <div class="footer-item">
 
   <p class="sphinx-version">
-    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
     <br/>
   </p>
 </div>
@@ -533,7 +557,8 @@ document.write(`
       
         <div class="footer-item">
 <p class="theme-version">
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.15.2.
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.19.0.
 </p></div>
       
     </div>

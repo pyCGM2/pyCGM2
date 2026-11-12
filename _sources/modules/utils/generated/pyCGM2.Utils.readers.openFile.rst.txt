@@ -1,0 +1,7 @@
+﻿openFile
+=================================================
+
+.. currentmodule:: pyCGM2.Utils.readers
+
+.. autofunction:: openFile
+

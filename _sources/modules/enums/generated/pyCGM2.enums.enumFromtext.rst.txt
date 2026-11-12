@@ -1,6 +1,7 @@
-﻿pyCGM2.enums.enumFromtext
-=========================
+﻿enumFromtext
+=============================================
 
 .. currentmodule:: pyCGM2.enums
 
 .. autofunction:: enumFromtext
+

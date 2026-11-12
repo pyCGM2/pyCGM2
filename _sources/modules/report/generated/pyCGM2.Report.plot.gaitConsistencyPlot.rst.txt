@@ -1,6 +1,7 @@
-﻿pyCGM2.Report.plot.gaitConsistencyPlot
-======================================
+﻿gaitConsistencyPlot
+==========================================================
 
 .. currentmodule:: pyCGM2.Report.plot
 
 .. autofunction:: gaitConsistencyPlot
+

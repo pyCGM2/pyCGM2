@@ -1,0 +1,7 @@
+﻿apply_re_subs
+=========================================================
+
+.. currentmodule:: pyCGM2.Utils.prettyfier
+
+.. autofunction:: apply_re_subs
+

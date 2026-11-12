@@ -1,0 +1,7 @@
+﻿read_imu_kinventCsv
+=====================================================================
+
+.. currentmodule:: pyCGM2.IMU.imuSpecificReaders
+
+.. autofunction:: read_imu_kinventCsv
+

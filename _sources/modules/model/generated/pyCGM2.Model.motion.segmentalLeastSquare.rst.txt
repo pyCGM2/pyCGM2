@@ -1,0 +1,7 @@
+﻿segmentalLeastSquare
+============================================================
+
+.. currentmodule:: pyCGM2.Model.motion
+
+.. autofunction:: segmentalLeastSquare
+

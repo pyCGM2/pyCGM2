@@ -39,7 +39,7 @@ frame
 
 .. autosummary::
    :toctree: generated
-   :template: functions.rst
+   :template: function.rst
 
    setFrameData
    angleAxis_TO_rotationMatrix

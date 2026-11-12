@@ -1,6 +1,7 @@
-﻿pyCGM2.Report.plot.descriptivePlot
-==================================
+﻿descriptivePlot
+======================================================
 
 .. currentmodule:: pyCGM2.Report.plot
 
 .. autofunction:: descriptivePlot
+

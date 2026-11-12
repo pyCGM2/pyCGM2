@@ -1,0 +1,25 @@
+﻿FrameConverter
+==============
+
+.. currentmodule:: pyCGM2.Utils.utils
+
+.. autoclass:: FrameConverter
+   :members:
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~FrameConverter.__init__
+      ~FrameConverter.toAnalog
+      ~FrameConverter.toPoint
+   
+   
+
+   
+   
+   

@@ -1,0 +1,7 @@
+﻿buid_df_descriptiveCycle1_3
+==========================================================================
+
+.. currentmodule:: pyCGM2.Processing.exporter
+
+.. autofunction:: buid_df_descriptiveCycle1_3
+

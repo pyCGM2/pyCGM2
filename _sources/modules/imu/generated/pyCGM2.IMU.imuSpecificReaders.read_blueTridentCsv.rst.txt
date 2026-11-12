@@ -1,0 +1,7 @@
+﻿read_blueTridentCsv
+=====================================================================
+
+.. currentmodule:: pyCGM2.IMU.imuSpecificReaders
+
+.. autofunction:: read_blueTridentCsv
+

@@ -1,0 +1,27 @@
+﻿MapComparisonViewer
+===================
+
+.. currentmodule:: pyCGM2.Report.Viewers.comparisonPlotViewers
+
+.. autoclass:: MapComparisonViewer
+   :members:
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~MapComparisonViewer.__init__
+      ~MapComparisonViewer.plotPanel
+      ~MapComparisonViewer.setAutomaticYlimits
+      ~MapComparisonViewer.setNormativeData
+      ~MapComparisonViewer.setNormativeDataset
+   
+   
+
+   
+   
+   

@@ -1,6 +1,7 @@
-﻿pyCGM2.Report.plot.addTemporalNormalActivationLayer
-===================================================
+﻿addTemporalNormalActivationLayer
+=======================================================================
 
 .. currentmodule:: pyCGM2.Report.plot
 
 .. autofunction:: addTemporalNormalActivationLayer
+

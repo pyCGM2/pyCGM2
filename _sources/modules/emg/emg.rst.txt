@@ -61,3 +61,16 @@ discreteEmgProcedures
     AmplitudesProcedure
 
 
+Normal activation
+--------------------
+
+.. currentmodule:: pyCGM2.EMG.normalActivation
+
+.. autosummary::
+   :toctree: generated
+   :template: function.rst
+
+   getNormalBurstActivity
+   getNormalBurstActivity_fromCycles
+   getNormalGaitEmgActivities
+

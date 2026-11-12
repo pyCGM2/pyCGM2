@@ -1,0 +1,7 @@
+﻿plot_ConsistencyGRF
+=======================================================
+
+.. currentmodule:: pyCGM2.Lib.plot
+
+.. autofunction:: plot_ConsistencyGRF
+

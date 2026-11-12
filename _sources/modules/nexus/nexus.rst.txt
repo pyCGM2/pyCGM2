@@ -70,3 +70,50 @@ Utils
 
    getNexusSubjectMp
    updateNexusSubjectMp
+
+
+Connection
+--------------------
+
+.. currentmodule:: pyCGM2.Nexus.nexus
+
+.. autosummary::
+   :toctree: generated
+   :template: class.rst
+
+   NexusConnection
+
+Additional tools
+--------------------
+
+.. currentmodule:: pyCGM2.Nexus.nexusTools
+
+.. autosummary::
+   :toctree: generated
+   :template: function.rst
+
+   checkEvents
+   getTrialName
+   updateEvents
+
+Vsk
+--------------------
+
+.. currentmodule:: pyCGM2.Nexus.vskTools
+
+.. autosummary::
+   :toctree: generated
+   :template: class.rst
+
+   Vsk
+
+.. currentmodule:: pyCGM2.Nexus.vskTools
+
+.. autosummary::
+   :toctree: generated
+   :template: function.rst
+
+   checkSetReadOnly
+   getFromVskSubjectMp
+   getVskFiles
+

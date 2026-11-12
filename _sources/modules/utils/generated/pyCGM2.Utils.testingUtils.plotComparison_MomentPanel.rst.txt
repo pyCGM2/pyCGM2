@@ -1,0 +1,7 @@
+﻿plotComparison_MomentPanel
+========================================================================
+
+.. currentmodule:: pyCGM2.Utils.testingUtils
+
+.. autofunction:: plotComparison_MomentPanel
+

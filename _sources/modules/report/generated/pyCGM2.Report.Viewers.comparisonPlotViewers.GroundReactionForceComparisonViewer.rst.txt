@@ -1,0 +1,28 @@
+﻿GroundReactionForceComparisonViewer
+===================================
+
+.. currentmodule:: pyCGM2.Report.Viewers.comparisonPlotViewers
+
+.. autoclass:: GroundReactionForceComparisonViewer
+   :members:
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~GroundReactionForceComparisonViewer.__init__
+      ~GroundReactionForceComparisonViewer.plotPanel
+      ~GroundReactionForceComparisonViewer.setAutomaticYlimits
+      ~GroundReactionForceComparisonViewer.setConcretePlotFunction
+      ~GroundReactionForceComparisonViewer.setNormativeData
+      ~GroundReactionForceComparisonViewer.setNormativeDataset
+   
+   
+
+   
+   
+   

@@ -1,0 +1,7 @@
+﻿globalTransformationLabToOsim
+=====================================================================================
+
+.. currentmodule:: pyCGM2.Model.Opensim.osimProcessing
+
+.. autofunction:: globalTransformationLabToOsim
+

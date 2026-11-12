@@ -1,0 +1,7 @@
+﻿smartTrcExport
+======================================================================
+
+.. currentmodule:: pyCGM2.Model.Opensim.osimProcessing
+
+.. autofunction:: smartTrcExport
+

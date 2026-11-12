@@ -1,0 +1,7 @@
+﻿sto2pointValues
+=======================================================================
+
+.. currentmodule:: pyCGM2.Model.Opensim.osimProcessing
+
+.. autofunction:: sto2pointValues
+

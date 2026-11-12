@@ -1,0 +1,7 @@
+﻿uiGetDir
+=================================================
+
+.. currentmodule:: pyCGM2.Tools.uiTools
+
+.. autofunction:: uiGetDir
+

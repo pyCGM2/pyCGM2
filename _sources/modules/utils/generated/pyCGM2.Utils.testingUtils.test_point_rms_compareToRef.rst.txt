@@ -1,0 +1,7 @@
+﻿test_point_rms_compareToRef
+=========================================================================
+
+.. currentmodule:: pyCGM2.Utils.testingUtils
+
+.. autofunction:: test_point_rms_compareToRef
+

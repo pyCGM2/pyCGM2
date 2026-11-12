@@ -1,0 +1,7 @@
+﻿compareMapScores
+====================================================
+
+.. currentmodule:: pyCGM2.Lib.plot
+
+.. autofunction:: compareMapScores
+

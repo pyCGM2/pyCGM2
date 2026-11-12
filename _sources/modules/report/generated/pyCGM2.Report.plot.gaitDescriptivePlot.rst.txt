@@ -1,6 +1,7 @@
-﻿pyCGM2.Report.plot.gaitDescriptivePlot
-======================================
+﻿gaitDescriptivePlot
+==========================================================
 
 .. currentmodule:: pyCGM2.Report.plot
 
 .. autofunction:: gaitDescriptivePlot
+

@@ -1,6 +1,7 @@
-﻿pyCGM2.Processing.analysisHandler.getValues
-===========================================
+﻿getValues
+===============================================================
 
 .. currentmodule:: pyCGM2.Processing.analysisHandler
 
 .. autofunction:: getValues
+

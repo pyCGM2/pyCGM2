@@ -13,6 +13,9 @@ High Level functions
     pyCGM2.Lib.eventDetector <event/eventDetectors>
     pyCGM2.Lib.plot <plot/plot>
     pyCGM2.Lib.report <report/report>
+    pyCGM2.Lib.Processing <processing/processing>
+    pyCGM2.Lib.modelling <modelling/modelling>
+    pyCGM2.Lib.opensimtk <opensimtk/opensimtk>
 
 
 

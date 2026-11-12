@@ -1,0 +1,7 @@
+﻿calculateSegmentLength
+====================================================================
+
+.. currentmodule:: pyCGM2.Tools.opensimTools
+
+.. autofunction:: calculateSegmentLength
+

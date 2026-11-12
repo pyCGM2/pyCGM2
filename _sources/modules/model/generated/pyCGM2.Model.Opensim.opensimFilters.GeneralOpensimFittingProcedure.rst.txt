@@ -1,0 +1,25 @@
+﻿GeneralOpensimFittingProcedure
+==============================
+
+.. currentmodule:: pyCGM2.Model.Opensim.opensimFilters
+
+.. autoclass:: GeneralOpensimFittingProcedure
+   :members:
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~GeneralOpensimFittingProcedure.__init__
+      ~GeneralOpensimFittingProcedure.setIkTags
+      ~GeneralOpensimFittingProcedure.setMarkerWeight
+   
+   
+
+   
+   
+   

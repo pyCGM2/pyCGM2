@@ -20,6 +20,7 @@
       ~SessionEnfReader.getPath
       ~SessionEnfReader.getSection
       ~SessionEnfReader.getSessionInfos
+      ~SessionEnfReader.remove
       ~SessionEnfReader.save
       ~SessionEnfReader.set
    

@@ -1,0 +1,7 @@
+﻿prettify_html
+=========================================================
+
+.. currentmodule:: pyCGM2.Utils.prettyfier
+
+.. autofunction:: prettify_html
+

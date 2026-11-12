@@ -1,6 +1,7 @@
-﻿pyCGM2.Model.modelDecorator.footJointCentreFromMet
-==================================================
+﻿footJointCentreFromMet
+======================================================================
 
 .. currentmodule:: pyCGM2.Model.modelDecorator
 
 .. autofunction:: footJointCentreFromMet
+

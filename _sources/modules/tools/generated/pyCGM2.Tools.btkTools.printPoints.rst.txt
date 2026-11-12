@@ -1,0 +1,7 @@
+﻿printPoints
+=====================================================
+
+.. currentmodule:: pyCGM2.Tools.btkTools
+
+.. autofunction:: printPoints
+

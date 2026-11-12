@@ -1,0 +1,7 @@
+﻿count_directories_with_label
+===================================================================
+
+.. currentmodule:: pyCGM2.Utils.files
+
+.. autofunction:: count_directories_with_label
+

@@ -1,0 +1,26 @@
+﻿OpensimDataFrame
+================
+
+.. currentmodule:: pyCGM2.Model.Opensim.opensimIO
+
+.. autoclass:: OpensimDataFrame
+   :members:
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~OpensimDataFrame.__init__
+      ~OpensimDataFrame.dataFrameToDict
+      ~OpensimDataFrame.getDataFrame
+      ~OpensimDataFrame.save
+   
+   
+
+   
+   
+   

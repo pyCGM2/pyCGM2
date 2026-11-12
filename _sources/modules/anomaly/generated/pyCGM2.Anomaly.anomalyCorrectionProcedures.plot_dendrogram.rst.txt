@@ -1,0 +1,7 @@
+﻿plot_dendrogram
+==============================================================================
+
+.. currentmodule:: pyCGM2.Anomaly.anomalyCorrectionProcedures
+
+.. autofunction:: plot_dendrogram
+

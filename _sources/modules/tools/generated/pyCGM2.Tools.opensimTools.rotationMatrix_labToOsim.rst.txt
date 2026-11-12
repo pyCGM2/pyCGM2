@@ -1,0 +1,7 @@
+﻿rotationMatrix_labToOsim
+======================================================================
+
+.. currentmodule:: pyCGM2.Tools.opensimTools
+
+.. autofunction:: rotationMatrix_labToOsim
+

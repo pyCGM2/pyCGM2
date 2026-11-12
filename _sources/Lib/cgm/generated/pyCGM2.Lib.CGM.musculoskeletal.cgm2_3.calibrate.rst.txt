@@ -1,6 +1,7 @@
-﻿pyCGM2.Lib.CGM.musculoskeletal.cgm2\_3.calibrate
-================================================
+﻿calibrate
+===================================================================
 
 .. currentmodule:: pyCGM2.Lib.CGM.musculoskeletal.cgm2_3
 
 .. autofunction:: calibrate
+

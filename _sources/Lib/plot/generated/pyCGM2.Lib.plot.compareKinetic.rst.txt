@@ -1,6 +1,7 @@
-﻿pyCGM2.Lib.plot.compareKinetic
-==============================
+﻿compareKinetic
+==================================================
 
 .. currentmodule:: pyCGM2.Lib.plot
 
 .. autofunction:: compareKinetic
+

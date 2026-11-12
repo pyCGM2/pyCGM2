@@ -1,0 +1,7 @@
+﻿is_valid_session_name
+============================================================
+
+.. currentmodule:: pyCGM2.Utils.utils
+
+.. autofunction:: is_valid_session_name
+

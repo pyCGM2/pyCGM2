@@ -1,0 +1,28 @@
+﻿opensimModel
+============
+
+.. currentmodule:: pyCGM2.Model.Opensim.osimProcessing
+
+.. autoclass:: opensimModel
+   :members:
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~opensimModel.__init__
+      ~opensimModel.addMarkerSet
+      ~opensimModel.addmarkerFromModel
+      ~opensimModel.createMarkerSet
+      ~opensimModel.setOsimJoinCentres
+      ~opensimModel.updateMarkerInMarkerSet
+   
+   
+
+   
+   
+   

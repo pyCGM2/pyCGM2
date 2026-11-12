@@ -1,0 +1,25 @@
+﻿ImuStorageFile
+==============
+
+.. currentmodule:: pyCGM2.Model.Opensim.opensimIO
+
+.. autoclass:: ImuStorageFile
+   :members:
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~ImuStorageFile.__init__
+      ~ImuStorageFile.construct
+      ~ImuStorageFile.setData
+   
+   
+
+   
+   
+   

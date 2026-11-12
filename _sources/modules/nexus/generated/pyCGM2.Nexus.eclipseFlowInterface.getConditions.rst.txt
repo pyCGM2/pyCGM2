@@ -1,0 +1,7 @@
+﻿getConditions
+===================================================================
+
+.. currentmodule:: pyCGM2.Nexus.eclipseFlowInterface
+
+.. autofunction:: getConditions
+

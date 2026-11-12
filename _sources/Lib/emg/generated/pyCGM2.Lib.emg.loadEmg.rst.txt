@@ -1,6 +1,7 @@
-﻿pyCGM2.Lib.emg.loadEmg
-======================
+﻿loadEmg
+==========================================
 
 .. currentmodule:: pyCGM2.Lib.emg
 
 .. autofunction:: loadEmg
+

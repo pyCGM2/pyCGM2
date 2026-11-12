@@ -1,0 +1,7 @@
+﻿safe_cumtrapz
+============================================================
+
+.. currentmodule:: pyCGM2.Signal.scipyWrapper
+
+.. autofunction:: safe_cumtrapz
+

@@ -1,0 +1,24 @@
+﻿RegExSub
+========
+
+.. currentmodule:: pyCGM2.Utils.prettyfier
+
+.. autoclass:: RegExSub
+   :members:
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~RegExSub.__init__
+      ~RegExSub.sub
+   
+   
+
+   
+   
+   

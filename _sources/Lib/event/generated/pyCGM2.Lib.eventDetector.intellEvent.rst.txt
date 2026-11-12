@@ -1,0 +1,7 @@
+﻿intellEvent
+========================================================
+
+.. currentmodule:: pyCGM2.Lib.eventDetector
+
+.. autofunction:: intellEvent
+

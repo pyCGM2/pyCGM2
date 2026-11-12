@@ -1,0 +1,7 @@
+﻿getNumberFromStr
+=======================================================
+
+.. currentmodule:: pyCGM2.Utils.utils
+
+.. autofunction:: getNumberFromStr
+

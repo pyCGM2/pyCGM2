@@ -1,0 +1,26 @@
+﻿opensimCalibrationFilter
+========================
+
+.. currentmodule:: pyCGM2.Model.Opensim.opensimFilters
+
+.. autoclass:: opensimCalibrationFilter
+   :members:
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~opensimCalibrationFilter.__init__
+      ~opensimCalibrationFilter.addMarkerSet
+      ~opensimCalibrationFilter.build
+      ~opensimCalibrationFilter.exportXml
+   
+   
+
+   
+   
+   

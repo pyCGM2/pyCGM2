@@ -131,6 +131,48 @@ Utils
 
 .. autosummary::
     :toctree: generated
-    :template: functions.rst
+    :template: function.rst
 
     colorContext
+
+
+Additional viewers
+--------------------
+
+.. currentmodule:: pyCGM2.Report.Viewers.comparisonPlotViewers
+
+.. autosummary::
+   :toctree: generated
+   :template: class.rst
+
+   GroundReactionForceComparisonViewer
+   MapComparisonViewer
+
+.. currentmodule:: pyCGM2.Report.Viewers.groundReactionPlotViewers
+
+.. autosummary::
+   :toctree: generated
+   :template: class.rst
+
+   TemporalReactionPlotViewer
+
+Word report
+--------------------
+
+.. currentmodule:: pyCGM2.Report.report
+
+.. autosummary::
+   :toctree: generated
+   :template: class.rst
+
+   Report
+
+.. currentmodule:: pyCGM2.Report.report
+
+.. autosummary::
+   :toctree: generated
+   :template: function.rst
+
+   translate
+   xlsColLetterToNum
+

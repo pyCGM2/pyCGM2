@@ -1,0 +1,7 @@
+﻿getNormalBurstActivity
+======================================================================
+
+.. currentmodule:: pyCGM2.EMG.normalActivation
+
+.. autofunction:: getNormalBurstActivity
+

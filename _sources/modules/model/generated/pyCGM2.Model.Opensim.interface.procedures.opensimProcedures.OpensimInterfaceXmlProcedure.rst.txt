@@ -1,0 +1,26 @@
+﻿OpensimInterfaceXmlProcedure
+============================
+
+.. currentmodule:: pyCGM2.Model.Opensim.interface.procedures.opensimProcedures
+
+.. autoclass:: OpensimInterfaceXmlProcedure
+   :members:
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~OpensimInterfaceXmlProcedure.__init__
+      ~OpensimInterfaceXmlProcedure.getXml
+      ~OpensimInterfaceXmlProcedure.setModelVersion
+      ~OpensimInterfaceXmlProcedure.setResultsDirname
+   
+   
+
+   
+   
+   

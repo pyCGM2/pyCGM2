@@ -1,0 +1,7 @@
+﻿plotValuesComparison
+==================================================================
+
+.. currentmodule:: pyCGM2.Utils.testingUtils
+
+.. autofunction:: plotValuesComparison
+

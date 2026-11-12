@@ -1,0 +1,7 @@
+﻿getNormalGaitEmgActivities
+==========================================================================
+
+.. currentmodule:: pyCGM2.EMG.normalActivation
+
+.. autofunction:: getNormalGaitEmgActivities
+

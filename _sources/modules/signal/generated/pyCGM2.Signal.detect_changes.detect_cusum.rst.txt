@@ -1,0 +1,7 @@
+﻿detect_cusum
+=============================================================
+
+.. currentmodule:: pyCGM2.Signal.detect_changes
+
+.. autofunction:: detect_cusum
+

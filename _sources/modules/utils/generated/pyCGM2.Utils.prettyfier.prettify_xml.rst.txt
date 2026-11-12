@@ -1,0 +1,7 @@
+﻿prettify_xml
+========================================================
+
+.. currentmodule:: pyCGM2.Utils.prettyfier
+
+.. autofunction:: prettify_xml
+

@@ -1,6 +1,7 @@
-﻿pyCGM2.Report.plot.temporalPlot
-===============================
+﻿temporalPlot
+===================================================
 
 .. currentmodule:: pyCGM2.Report.plot
 
 .. autofunction:: temporalPlot
+

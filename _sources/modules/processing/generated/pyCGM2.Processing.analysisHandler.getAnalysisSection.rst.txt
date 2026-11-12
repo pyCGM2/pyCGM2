@@ -1,6 +1,7 @@
-﻿pyCGM2.Processing.analysisHandler.getAnalysisSection
-====================================================
+﻿getAnalysisSection
+========================================================================
 
 .. currentmodule:: pyCGM2.Processing.analysisHandler
 
 .. autofunction:: getAnalysisSection
+

@@ -1,0 +1,7 @@
+﻿plotComparison_ForcePanel
+=======================================================================
+
+.. currentmodule:: pyCGM2.Utils.testingUtils
+
+.. autofunction:: plotComparison_ForcePanel
+

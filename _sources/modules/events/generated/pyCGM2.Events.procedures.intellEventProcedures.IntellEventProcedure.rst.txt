@@ -1,0 +1,25 @@
+﻿IntellEventProcedure
+====================
+
+.. currentmodule:: pyCGM2.Events.procedures.intellEventProcedures
+
+.. autoclass:: IntellEventProcedure
+   :members:
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~IntellEventProcedure.__init__
+      ~IntellEventProcedure.detect
+      ~IntellEventProcedure.setModels
+   
+   
+
+   
+   
+   

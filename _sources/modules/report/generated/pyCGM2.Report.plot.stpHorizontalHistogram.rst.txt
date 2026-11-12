@@ -1,6 +1,7 @@
-﻿pyCGM2.Report.plot.stpHorizontalHistogram
-=========================================
+﻿stpHorizontalHistogram
+=============================================================
 
 .. currentmodule:: pyCGM2.Report.plot
 
 .. autofunction:: stpHorizontalHistogram
+

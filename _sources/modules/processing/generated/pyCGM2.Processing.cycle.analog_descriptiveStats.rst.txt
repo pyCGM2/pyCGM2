@@ -1,6 +1,7 @@
-﻿pyCGM2.Processing.cycle.analog\_descriptiveStats
-================================================
+﻿analog_descriptiveStats
+===================================================================
 
 .. currentmodule:: pyCGM2.Processing.cycle
 
 .. autofunction:: analog_descriptiveStats
+

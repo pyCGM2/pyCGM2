@@ -15,6 +15,8 @@
    .. autosummary::
    
       ~GeneralCalibrationProcedure.__init__
+      ~GeneralCalibrationProcedure.getAnatomicalDefinition
+      ~GeneralCalibrationProcedure.getDefinition
       ~GeneralCalibrationProcedure.setAnatomicalDefinition
       ~GeneralCalibrationProcedure.setDefinition
    

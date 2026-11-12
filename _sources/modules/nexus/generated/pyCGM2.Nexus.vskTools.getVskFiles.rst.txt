@@ -1,0 +1,7 @@
+﻿getVskFiles
+=====================================================
+
+.. currentmodule:: pyCGM2.Nexus.vskTools
+
+.. autofunction:: getVskFiles
+

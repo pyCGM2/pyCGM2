@@ -30,3 +30,28 @@ eventProcedures
 
    EventProcedure
    ZeniProcedure
+
+
+Other procedures
+--------------------
+
+.. currentmodule:: pyCGM2.Events.eventProcedures
+
+.. autosummary::
+   :toctree: generated
+   :template: class.rst
+
+   OconnorProcedure
+
+machine-learning procedures
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. currentmodule:: pyCGM2.Events.procedures.intellEventProcedures
+
+.. autosummary::
+   :toctree: generated
+   :template: class.rst
+
+   EventProcedure
+   IntellEventProcedure
+

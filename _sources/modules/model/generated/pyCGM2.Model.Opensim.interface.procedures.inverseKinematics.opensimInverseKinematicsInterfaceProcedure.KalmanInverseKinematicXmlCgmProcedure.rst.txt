@@ -1,0 +1,35 @@
+﻿KalmanInverseKinematicXmlCgmProcedure
+=====================================
+
+.. currentmodule:: pyCGM2.Model.Opensim.interface.procedures.inverseKinematics.opensimInverseKinematicsInterfaceProcedure
+
+.. autoclass:: KalmanInverseKinematicXmlCgmProcedure
+   :members:
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~KalmanInverseKinematicXmlCgmProcedure.__init__
+      ~KalmanInverseKinematicXmlCgmProcedure.finalize
+      ~KalmanInverseKinematicXmlCgmProcedure.getXml
+      ~KalmanInverseKinematicXmlCgmProcedure.prepareTrial_fromBtkAcq
+      ~KalmanInverseKinematicXmlCgmProcedure.prepareWeights
+      ~KalmanInverseKinematicXmlCgmProcedure.prepareXml
+      ~KalmanInverseKinematicXmlCgmProcedure.run
+      ~KalmanInverseKinematicXmlCgmProcedure.setAccuracy
+      ~KalmanInverseKinematicXmlCgmProcedure.setFrameRange
+      ~KalmanInverseKinematicXmlCgmProcedure.setModelVersion
+      ~KalmanInverseKinematicXmlCgmProcedure.setResultsDirname
+      ~KalmanInverseKinematicXmlCgmProcedure.setSetupFile
+      ~KalmanInverseKinematicXmlCgmProcedure.setTimeRange
+   
+   
+
+   
+   
+   

@@ -34,6 +34,6 @@ Functions
 
 .. autosummary::
    :toctree: generated
-   :template: functions.rst
+   :template: function.rst
 
    enumFromtext

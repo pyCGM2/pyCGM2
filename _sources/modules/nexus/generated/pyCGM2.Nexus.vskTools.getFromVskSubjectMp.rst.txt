@@ -1,0 +1,7 @@
+﻿getFromVskSubjectMp
+=============================================================
+
+.. currentmodule:: pyCGM2.Nexus.vskTools
+
+.. autofunction:: getFromVskSubjectMp
+

@@ -141,7 +141,7 @@ functions
     
 .. autosummary::
    :toctree: generated
-   :template: functions.rst
+   :template: function.rst
 
    footJointCentreFromMet
    VCMJointCentre
@@ -154,4 +154,51 @@ functions
    davisRegression
    bellRegression
 
+
+Other models and tools
+----------------------
+
+single body model
+^^^^^^^^^^^^^^^^^^^^
+
+.. currentmodule:: pyCGM2.Model.Models.singleBody
+
+.. autosummary::
+   :toctree: generated
+   :template: class.rst
+
+   SingleBody
+
+additional filters
+^^^^^^^^^^^^^^^^^^^^
+
+.. currentmodule:: pyCGM2.Model.modelFilters
+
+.. autosummary::
+   :toctree: generated
+   :template: class.rst
+
+   TrackingMarkerDecompositionFilter
+
+motion
+^^^^^^^^^^^^^^^^^^^^
+
+.. currentmodule:: pyCGM2.Model.motion
+
+.. autosummary::
+   :toctree: generated
+   :template: function.rst
+
+   segmentalLeastSquare
+
+anthropometric measurements
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. currentmodule:: pyCGM2.Model.anthropometricMeasurement
+
+.. autosummary::
+   :toctree: generated
+   :template: function.rst
+
+   measureNorm
 

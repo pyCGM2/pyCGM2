@@ -26,6 +26,8 @@ Filters
    :template: class.rst
    
    ImuReaderFilter
+   ImuMotionFilter
+   ImuRelativeAnglesFilter
 
 .. currentmodule:: pyCGM2.IMU.opensense.interface.opensenseFilters
     
@@ -50,7 +52,6 @@ reader
    :template: class.rst
    
    ImuReaderProcedure
-   CsvProcedure
    DataframeProcedure
    C3dBlueTridentProcedure
 
@@ -79,7 +80,7 @@ relative angles
    :toctree: generated
    :template: class.rst
    
-   RelativeAnglesProcedure
+   RelativeImuAnglesProcedure
    RelativeAnglesProcedure
 
 
@@ -106,7 +107,26 @@ fitter
    ImuInverseKinematicXMLProcedure
 
 
+Readers
+--------------------
 
+.. currentmodule:: pyCGM2.IMU.Procedures.imuReaderProcedures
 
+.. autosummary::
+   :toctree: generated
+   :template: function.rst
 
+   synchroniseNotAlignedDataFrames
+
+manufacturer-specific readers
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. currentmodule:: pyCGM2.IMU.imuSpecificReaders
+
+.. autosummary::
+   :toctree: generated
+   :template: function.rst
+
+   read_blueTridentCsv
+   read_imu_kinventCsv
 

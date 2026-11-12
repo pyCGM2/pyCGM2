@@ -1,0 +1,28 @@
+﻿NormativeDataGeneratorFilter
+============================
+
+.. currentmodule:: pyCGM2.Processing.analysisProcessing
+
+.. autoclass:: NormativeDataGeneratorFilter
+   :members:
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~NormativeDataGeneratorFilter.__init__
+      ~NormativeDataGeneratorFilter.generate
+      ~NormativeDataGeneratorFilter.getAllTraces
+      ~NormativeDataGeneratorFilter.getNormativeCorridor
+      ~NormativeDataGeneratorFilter.getNormativeData
+      ~NormativeDataGeneratorFilter.save
+   
+   
+
+   
+   
+   

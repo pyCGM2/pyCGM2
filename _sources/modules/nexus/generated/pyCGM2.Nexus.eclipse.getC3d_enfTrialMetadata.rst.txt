@@ -1,0 +1,7 @@
+﻿getC3d_enfTrialMetadata
+================================================================
+
+.. currentmodule:: pyCGM2.Nexus.eclipse
+
+.. autofunction:: getC3d_enfTrialMetadata
+

@@ -1,6 +1,7 @@
-﻿pyCGM2.Model.frame.angleAxis\_TO\_quaternion
-============================================
+﻿angleAxis_TO_quaternion
+==============================================================
 
 .. currentmodule:: pyCGM2.Model.frame
 
 .. autofunction:: angleAxis_TO_quaternion
+

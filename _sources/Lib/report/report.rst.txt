@@ -9,7 +9,7 @@ pyCGM2.Lib.report module
 
 .. autosummary::
    :toctree: generated
-   :template: functions.rst
+   :template: function.rst
    
    pdfGaitReport
    

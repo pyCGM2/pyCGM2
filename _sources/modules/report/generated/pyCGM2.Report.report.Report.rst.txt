@@ -1,0 +1,30 @@
+﻿Report
+======
+
+.. currentmodule:: pyCGM2.Report.report
+
+.. autoclass:: Report
+   :members:
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~Report.__init__
+      ~Report.add_analysisSection
+      ~Report.add_interComparison
+      ~Report.add_intraComparison
+      ~Report.add_pageToAnalysis
+      ~Report.add_pageToInterComparison
+      ~Report.add_pageToIntraComparison
+      ~Report.generateWord
+   
+   
+
+   
+   
+   

@@ -1,0 +1,7 @@
+﻿isColumnNameExist
+================================================================
+
+.. currentmodule:: pyCGM2.Processing.exporter
+
+.. autofunction:: isColumnNameExist
+

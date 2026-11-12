@@ -10,7 +10,7 @@ pyCGM2.Lib.emg module
 
 .. autosummary::
    :toctree: generated
-   :template: functions.rst
+   :template: function.rst
    
    loadEmg
    processEMG

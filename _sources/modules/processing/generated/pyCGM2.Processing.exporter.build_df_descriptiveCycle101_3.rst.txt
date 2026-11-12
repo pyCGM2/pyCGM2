@@ -1,0 +1,7 @@
+﻿build_df_descriptiveCycle101_3
+=============================================================================
+
+.. currentmodule:: pyCGM2.Processing.exporter
+
+.. autofunction:: build_df_descriptiveCycle101_3
+

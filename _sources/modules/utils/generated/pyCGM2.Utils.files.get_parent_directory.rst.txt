@@ -1,0 +1,7 @@
+﻿get_parent_directory
+===========================================================
+
+.. currentmodule:: pyCGM2.Utils.files
+
+.. autofunction:: get_parent_directory
+

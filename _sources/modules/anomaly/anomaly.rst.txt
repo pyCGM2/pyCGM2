@@ -48,4 +48,16 @@ CorrectionProcedures
 
    AnomalyCorrectionProcedure
    MarkerAnomalyCorrectionProcedure
-   
+
+
+Functions
+--------------------
+
+.. currentmodule:: pyCGM2.Anomaly.anomalyCorrectionProcedures
+
+.. autosummary::
+   :toctree: generated
+   :template: function.rst
+
+   plot_dendrogram
+

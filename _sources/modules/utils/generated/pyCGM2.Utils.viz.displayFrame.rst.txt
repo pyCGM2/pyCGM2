@@ -1,0 +1,7 @@
+﻿displayFrame
+=================================================
+
+.. currentmodule:: pyCGM2.Utils.viz
+
+.. autofunction:: displayFrame
+

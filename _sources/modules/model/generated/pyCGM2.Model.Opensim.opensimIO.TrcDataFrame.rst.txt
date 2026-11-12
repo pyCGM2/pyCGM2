@@ -1,0 +1,26 @@
+﻿TrcDataFrame
+============
+
+.. currentmodule:: pyCGM2.Model.Opensim.opensimIO
+
+.. autoclass:: TrcDataFrame
+   :members:
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~TrcDataFrame.__init__
+      ~TrcDataFrame.duplicateLastRow
+      ~TrcDataFrame.getDataFrame
+      ~TrcDataFrame.save
+   
+   
+
+   
+   
+   

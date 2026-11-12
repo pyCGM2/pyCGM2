@@ -1,0 +1,7 @@
+﻿openYaml
+=================================================
+
+.. currentmodule:: pyCGM2.Utils.readers
+
+.. autofunction:: openYaml
+

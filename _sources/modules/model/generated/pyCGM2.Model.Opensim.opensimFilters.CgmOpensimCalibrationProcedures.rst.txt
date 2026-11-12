@@ -1,0 +1,23 @@
+﻿CgmOpensimCalibrationProcedures
+===============================
+
+.. currentmodule:: pyCGM2.Model.Opensim.opensimFilters
+
+.. autoclass:: CgmOpensimCalibrationProcedures
+   :members:
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~CgmOpensimCalibrationProcedures.__init__
+   
+   
+
+   
+   
+   

@@ -1,0 +1,7 @@
+﻿anomaly_rolling
+=========================================================
+
+.. currentmodule:: pyCGM2.Signal.anomaly
+
+.. autofunction:: anomaly_rolling
+

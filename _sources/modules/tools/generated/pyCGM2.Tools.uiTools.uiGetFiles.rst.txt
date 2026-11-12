@@ -1,0 +1,7 @@
+﻿uiGetFiles
+===================================================
+
+.. currentmodule:: pyCGM2.Tools.uiTools
+
+.. autofunction:: uiGetFiles
+

@@ -1,6 +1,7 @@
-﻿pyCGM2.Model.modelDecorator.harringtonRegression
-================================================
+﻿harringtonRegression
+====================================================================
 
 .. currentmodule:: pyCGM2.Model.modelDecorator
 
 .. autofunction:: harringtonRegression
+

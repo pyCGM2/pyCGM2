@@ -1,0 +1,7 @@
+﻿try_as
+===============================================
+
+.. currentmodule:: pyCGM2.Utils.readers
+
+.. autofunction:: try_as
+

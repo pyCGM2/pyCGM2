@@ -1,6 +1,7 @@
-﻿pyCGM2.Lib.plot.plot\_ConsistencyKinetic
-========================================
+﻿plot_ConsistencyKinetic
+===========================================================
 
 .. currentmodule:: pyCGM2.Lib.plot
 
 .. autofunction:: plot_ConsistencyKinetic
+

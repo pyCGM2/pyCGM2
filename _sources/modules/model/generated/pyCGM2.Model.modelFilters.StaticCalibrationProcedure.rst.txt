@@ -15,6 +15,8 @@
    .. autosummary::
    
       ~StaticCalibrationProcedure.__init__
+      ~StaticCalibrationProcedure.getAnatomicalDefinitions
+      ~StaticCalibrationProcedure.getDefinitions
    
    
 

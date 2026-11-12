@@ -1,0 +1,7 @@
+﻿measureNorm
+======================================================================
+
+.. currentmodule:: pyCGM2.Model.anthropometricMeasurement
+
+.. autofunction:: measureNorm
+

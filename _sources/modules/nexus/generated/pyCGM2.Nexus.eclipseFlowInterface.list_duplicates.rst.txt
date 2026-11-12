@@ -1,0 +1,7 @@
+﻿list_duplicates
+=====================================================================
+
+.. currentmodule:: pyCGM2.Nexus.eclipseFlowInterface
+
+.. autofunction:: list_duplicates
+

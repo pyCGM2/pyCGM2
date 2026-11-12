@@ -1,6 +1,7 @@
-﻿pyCGM2.Report.plot.consistencyPlot
-==================================
+﻿consistencyPlot
+======================================================
 
 .. currentmodule:: pyCGM2.Report.plot
 
 .. autofunction:: consistencyPlot
+

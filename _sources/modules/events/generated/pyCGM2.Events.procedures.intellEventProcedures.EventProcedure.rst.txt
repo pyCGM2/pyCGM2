@@ -1,0 +1,23 @@
+﻿EventProcedure
+==============
+
+.. currentmodule:: pyCGM2.Events.procedures.intellEventProcedures
+
+.. autoclass:: EventProcedure
+   :members:
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~EventProcedure.__init__
+   
+   
+
+   
+   
+   

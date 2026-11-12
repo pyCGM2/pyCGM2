@@ -24,7 +24,7 @@ functions
 
 .. autosummary::
    :toctree: generated
-   :template: functions.rst
+   :template: function.rst
 
    updateFromcustomMp
 

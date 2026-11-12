@@ -1,0 +1,7 @@
+﻿clearEventsOutside
+============================================================
+
+.. currentmodule:: pyCGM2.Tools.btkTools
+
+.. autofunction:: clearEventsOutside
+

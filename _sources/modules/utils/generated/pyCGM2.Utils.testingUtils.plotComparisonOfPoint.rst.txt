@@ -1,0 +1,7 @@
+﻿plotComparisonOfPoint
+===================================================================
+
+.. currentmodule:: pyCGM2.Utils.testingUtils
+
+.. autofunction:: plotComparisonOfPoint
+

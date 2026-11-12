@@ -1,0 +1,7 @@
+﻿renameEmgInAnalysis
+==================================================================
+
+.. currentmodule:: pyCGM2.Processing.exporter
+
+.. autofunction:: renameEmgInAnalysis
+

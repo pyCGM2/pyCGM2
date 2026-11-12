@@ -1,0 +1,7 @@
+﻿is_yaml
+================================================
+
+.. currentmodule:: pyCGM2.Utils.readers
+
+.. autofunction:: is_yaml
+

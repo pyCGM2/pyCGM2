@@ -21,6 +21,7 @@
       ~Imu.getAngularVelocity
       ~Imu.getMagnetometer
       ~Imu.getMotion
+      ~Imu.getMotionValues
       ~Imu.getQuaternions
       ~Imu.reInit
       ~Imu.update

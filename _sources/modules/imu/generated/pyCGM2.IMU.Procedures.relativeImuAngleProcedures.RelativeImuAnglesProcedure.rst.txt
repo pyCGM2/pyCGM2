@@ -1,0 +1,23 @@
+﻿RelativeImuAnglesProcedure
+==========================
+
+.. currentmodule:: pyCGM2.IMU.Procedures.relativeImuAngleProcedures
+
+.. autoclass:: RelativeImuAnglesProcedure
+   :members:
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~RelativeImuAnglesProcedure.__init__
+   
+   
+
+   
+   
+   

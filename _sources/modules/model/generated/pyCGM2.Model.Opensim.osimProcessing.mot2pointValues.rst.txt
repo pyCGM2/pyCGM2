@@ -1,0 +1,7 @@
+﻿mot2pointValues
+=======================================================================
+
+.. currentmodule:: pyCGM2.Model.Opensim.osimProcessing
+
+.. autofunction:: mot2pointValues
+

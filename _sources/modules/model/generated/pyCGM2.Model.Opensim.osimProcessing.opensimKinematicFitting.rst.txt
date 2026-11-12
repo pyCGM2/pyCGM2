@@ -1,0 +1,28 @@
+﻿opensimKinematicFitting
+=======================
+
+.. currentmodule:: pyCGM2.Model.Opensim.osimProcessing
+
+.. autoclass:: opensimKinematicFitting
+   :members:
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~opensimKinematicFitting.__init__
+      ~opensimKinematicFitting.addIkMarkerTask
+      ~opensimKinematicFitting.config
+      ~opensimKinematicFitting.createIKTaskSet
+      ~opensimKinematicFitting.run
+      ~opensimKinematicFitting.updateIKTask
+   
+   
+
+   
+   
+   

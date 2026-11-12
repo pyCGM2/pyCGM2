@@ -1,6 +1,7 @@
-﻿pyCGM2.Report.plot.meanPlot
-===========================
+﻿meanPlot
+===============================================
 
 .. currentmodule:: pyCGM2.Report.plot
 
 .. autofunction:: meanPlot
+

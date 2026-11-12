@@ -1,0 +1,7 @@
+﻿openJson
+=================================================
+
+.. currentmodule:: pyCGM2.Utils.readers
+
+.. autofunction:: openJson
+

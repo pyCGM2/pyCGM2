@@ -1,0 +1,37 @@
+﻿ordict
+======
+
+.. currentmodule:: pyCGM2.Tools.pythonTools
+
+.. autoclass:: ordict
+   :members:
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~ordict.__init__
+      ~ordict.clear
+      ~ordict.copy
+      ~ordict.fromkeys
+      ~ordict.get
+      ~ordict.items
+      ~ordict.iteritems
+      ~ordict.iterkeys
+      ~ordict.itervalues
+      ~ordict.keys
+      ~ordict.pop
+      ~ordict.popitem
+      ~ordict.setdefault
+      ~ordict.update
+      ~ordict.values
+   
+   
+
+   
+   
+   

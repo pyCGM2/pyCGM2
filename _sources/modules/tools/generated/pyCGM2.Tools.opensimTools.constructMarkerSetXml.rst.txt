@@ -1,0 +1,7 @@
+﻿constructMarkerSetXml
+===================================================================
+
+.. currentmodule:: pyCGM2.Tools.opensimTools
+
+.. autofunction:: constructMarkerSetXml
+

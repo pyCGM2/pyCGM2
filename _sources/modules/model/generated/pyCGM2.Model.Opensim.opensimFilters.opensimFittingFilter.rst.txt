@@ -1,0 +1,29 @@
+﻿opensimFittingFilter
+====================
+
+.. currentmodule:: pyCGM2.Model.Opensim.opensimFilters
+
+.. autoclass:: opensimFittingFilter
+   :members:
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~opensimFittingFilter.__init__
+      ~opensimFittingFilter.exportXml
+      ~opensimFittingFilter.run
+      ~opensimFittingFilter.setAccuracy
+      ~opensimFittingFilter.setResultsDirectory
+      ~opensimFittingFilter.setTimeRange
+      ~opensimFittingFilter.updateConfig
+   
+   
+
+   
+   
+   

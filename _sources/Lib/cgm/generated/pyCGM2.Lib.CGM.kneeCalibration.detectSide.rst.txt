@@ -1,0 +1,7 @@
+﻿detectSide
+=============================================================
+
+.. currentmodule:: pyCGM2.Lib.CGM.kneeCalibration
+
+.. autofunction:: detectSide
+

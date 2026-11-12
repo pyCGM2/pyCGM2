@@ -1,0 +1,31 @@
+﻿SingleBody
+==========
+
+.. currentmodule:: pyCGM2.Model.Models.singleBody
+
+.. autoclass:: SingleBody
+   :members:
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~SingleBody.__init__
+      ~SingleBody.addNode
+      ~SingleBody.calibrate
+      ~SingleBody.displayAxis
+      ~SingleBody.fit
+      ~SingleBody.getBody
+      ~SingleBody.getModel
+      ~SingleBody.getTrajectory
+      ~SingleBody.globalize
+   
+   
+
+   
+   
+   

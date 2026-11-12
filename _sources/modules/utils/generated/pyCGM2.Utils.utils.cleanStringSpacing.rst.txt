@@ -1,0 +1,7 @@
+﻿cleanStringSpacing
+=========================================================
+
+.. currentmodule:: pyCGM2.Utils.utils
+
+.. autofunction:: cleanStringSpacing
+

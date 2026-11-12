@@ -1,0 +1,26 @@
+﻿TemporalReactionPlotViewer
+==========================
+
+.. currentmodule:: pyCGM2.Report.Viewers.groundReactionPlotViewers
+
+.. autoclass:: TemporalReactionPlotViewer
+   :members:
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~TemporalReactionPlotViewer.__init__
+      ~TemporalReactionPlotViewer.plotPanel
+      ~TemporalReactionPlotViewer.setAutomaticYlimits
+      ~TemporalReactionPlotViewer.setNormativeData
+   
+   
+
+   
+   
+   

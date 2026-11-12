@@ -1,6 +1,7 @@
-﻿pyCGM2.Report.plot.gaitMeanPlot
-===============================
+﻿gaitMeanPlot
+===================================================
 
 .. currentmodule:: pyCGM2.Report.plot
 
 .. autofunction:: gaitMeanPlot
+

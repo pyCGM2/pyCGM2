@@ -1,6 +1,7 @@
-﻿pyCGM2.Processing.cycle.construcGaitCycle
-=========================================
+﻿construcGaitCycle
+=============================================================
 
 .. currentmodule:: pyCGM2.Processing.cycle
 
 .. autofunction:: construcGaitCycle
+
