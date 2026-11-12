@@ -1,3 +1,4 @@
+"""Vicon Nexus operation: CGM2.1 calibration."""
 import os
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 import argparse
@@ -15,6 +16,12 @@ from pyCGM2.Lib.CGM import  cgm2_1
 from pyCGM2.Tools import btkTools
 
 def main(args=None):
+    """Run the application: CGM2.1 calibration of the static trial from the trial loaded in Vicon Nexus.
+
+    Args:
+        args (argparse.Namespace, optional): Parsed command-line arguments. If None, arguments are
+            parsed from the command line.
+    """
     if args is None:
         parser = argparse.ArgumentParser(description='CGM2.1 Calibration')
         parser.add_argument('-l','--leftFlatFoot', type=int, help='left flat foot option')

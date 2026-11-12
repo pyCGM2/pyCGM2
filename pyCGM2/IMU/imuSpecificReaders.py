@@ -1,3 +1,4 @@
+"""Readers of manufacturer-specific IMU csv files."""
 import pandas as pd
 
 import pyCGM2
@@ -5,6 +6,16 @@ from pyCGM2.Utils import readers
 
 
 def read_blueTridentCsv(filepath: str) -> pd.DataFrame:
+    """Read a Vicon Blue Trident csv file and rename its columns.
+
+    Columns are renamed according to the ``IMU/viconBlueTrident.translators`` settings file.
+
+    Args:
+        filepath (str): Path of the csv file.
+
+    Returns:
+        pd.DataFrame: Data with pyCGM2 column labels.
+    """
     imuTranslators  = readers.openFile(pyCGM2.PYCGM2_SETTINGS_FOLDER +"IMU\\","viconBlueTrident.translators")
     translators = imuTranslators["Translators"]
 
@@ -19,13 +30,17 @@ def read_blueTridentCsv(filepath: str) -> pd.DataFrame:
 
 
 def read_imu_kinventCsv(filepath: str) -> pd.DataFrame:
-    """Lit un CSV sans header et renomme les colonnes selon translators.
+    """Read a Kinvent IMU csv file (no header) and rename its columns.
+
+    Columns are selected and renamed according to the ``IMU/kiventKForceIMU.translators``
+    settings file. Raw values are converted into physical units with ``(raw - offset) * scale``
+    (quaternion without unit, acceleration in g, angular velocity in deg/s, magnetic field in µT).
 
     Args:
-        filepath:    Chemin vers le fichier CSV.
+        filepath (str): Path of the csv file.
 
     Returns:
-        DataFrame avec uniquement les colonnes spécifiées, renommées.
+        pd.DataFrame: Data with only the selected columns, renamed and converted.
     """
     imuTranslators  = readers.openFile(pyCGM2.PYCGM2_SETTINGS_FOLDER +"IMU\\","kiventKForceIMU.translators")
     translators = imuTranslators["Translators"]

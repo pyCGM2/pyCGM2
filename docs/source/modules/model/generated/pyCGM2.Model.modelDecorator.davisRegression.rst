@@ -1,6 +1,7 @@
-﻿pyCGM2.Model.modelDecorator.davisRegression
-===========================================
+﻿davisRegression
+===============================================================
 
 .. currentmodule:: pyCGM2.Model.modelDecorator
 
 .. autofunction:: davisRegression
+

@@ -140,6 +140,21 @@ def getNormalBurstActivity_fromCycles(muscle:str,
 
 
 def getNormalGaitEmgActivities(lfs, lfo, muscle: str, time: np.ndarray | None = None):
+    """Return normal muscle activity bursts of a muscle over the gait cycles.
+
+    Gait cycles are built from the foot strike and foot off events, then the normal
+    burst onsets and durations of the muscle are computed for each cycle.
+
+    Args:
+        lfs (array_like): Foot strike times.
+        lfo (array_like): Foot off times.
+        muscle (str): Muscle label (see ``pyCGM2.EMG.NORMAL_ACTIVITY_CHOICES``).
+        time (np.ndarray, optional): Time vector. If provided, a binary activation signal is built.
+
+    Returns:
+        Tuple[list, list, Optional[np.ndarray]]: Burst onsets per cycle, burst durations per cycle,
+        and the binary activation signal (None if ``time`` is not provided).
+    """
 
     
     gaitCycles = Cycles.build_cycles_fromEvents(lfs, lfo, None, None)

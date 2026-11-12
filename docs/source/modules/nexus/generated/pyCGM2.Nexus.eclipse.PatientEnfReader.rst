@@ -20,6 +20,7 @@
       ~PatientEnfReader.getPath
       ~PatientEnfReader.getPatientInfos
       ~PatientEnfReader.getSection
+      ~PatientEnfReader.remove
       ~PatientEnfReader.save
       ~PatientEnfReader.set
    

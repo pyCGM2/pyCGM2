@@ -17,6 +17,7 @@
       ~ModelCalibrationFilter.__init__
       ~ModelCalibrationFilter.compute
       ~ModelCalibrationFilter.setBoolOption
+      ~ModelCalibrationFilter.setFrames
       ~ModelCalibrationFilter.setNoAnatomicalCalibration
       ~ModelCalibrationFilter.setOption
    

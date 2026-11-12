@@ -1,3 +1,4 @@
+"""Helpers to access normative spatio-temporal data (GaitRite normative dataset)."""
 import pyCGM2
 LOGGER = pyCGM2.LOGGER
 
@@ -27,6 +28,12 @@ import pandas as pd
 
 
 class NormativeStpHelper:
+    """Access to the pyCGM2 normative spatio-temporal parameter dataset.
+
+    The dataset (``stp/pyCGM2_GaitRite_normaldata.xlsx`` in the normative database
+    folder) provides, by gender, age range and pace, min/max values of
+    spatio-temporal parameters.
+    """
     def __init__(self):
         self.normativeDataPath = pyCGM2.NORMATIVE_DATABASE_PATH+"stp\\pyCGM2_GaitRite_normaldata.xlsx"
         self.m_df = pd.read_excel(self.normativeDataPath)
@@ -47,9 +54,26 @@ class NormativeStpHelper:
 
 
     def getCollumns(self):
+        """Return the column names of the normative dataset.
+
+        Returns:
+            list: Column labels.
+        """
         return self.m_df.columns.tolist()
 
     def getMinMax(self,label,age):
+            """Return the normative range of a spatio-temporal parameter for a given age.
+
+            Normal pace is considered.
+
+            Args:
+                label (str): pyCGM2 spatio-temporal parameter label (e.g. ``"speed"``, ``"cadence"``,
+                    ``"strideLength"``, ``"stancePhase"``...).
+                age (float): Age of the subject.
+
+            Returns:
+                Ranges ([min, max]) for male and female subjects, or None if the label is unknown.
+            """
 
 
             try:

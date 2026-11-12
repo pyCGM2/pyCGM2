@@ -29,8 +29,10 @@ project = 'pyCGM2-API'
 copyright = '2022, Fabien Leboeuf'
 author = 'Fabien Leboeuf'
 
-# The full version, including alpha/beta/rc tags
-release = '4.3.1-rc3'
+# The full version, including alpha/beta/rc tags (read from pyCGM2/__init__.py)
+import re
+with open(os.path.abspath('../../pyCGM2/__init__.py'), encoding="utf-8") as f:
+    release = re.search(r'__version__\s*=\s*["\']([^"\']+)["\']', f.read()).group(1)
 
 
 # -- General configuration ---------------------------------------------------
@@ -80,6 +82,11 @@ html_logo = '_static/pyCGM2-logo2.png'
 
 # 
 autosectionlabel_prefix_document = True
+
+# modules not available when building the documentation (proprietary or optional packages).
+# pyCGM2.Cycles.cycleUtils was removed but is still imported by pyCGM2.Mek.mek.mekPlot.
+autodoc_mock_imports = ["viconnexusapi", "ViconNexus", "moveck", "qtm", "companion",
+                        "pyCGM2.Cycles.cycleUtils"]
 
 # generate autosummary even if no references
 autosummary_generate = True

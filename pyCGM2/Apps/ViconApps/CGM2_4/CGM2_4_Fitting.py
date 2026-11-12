@@ -1,3 +1,4 @@
+"""Vicon Nexus operation: CGM2.4 fitting."""
 import os
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 import argparse
@@ -14,6 +15,12 @@ from pyCGM2.Lib.CGM import  cgm2_4
 from pyCGM2.Tools import btkTools
 
 def main(args=None):
+    """Run the application: CGM2.4 fitting of the motion trial from the trial loaded in Vicon Nexus.
+
+    Args:
+        args (argparse.Namespace, optional): Parsed command-line arguments. If None, arguments are
+            parsed from the command line.
+    """
     if args is None:
         parser = argparse.ArgumentParser(description='CGM2-4 Fitting')
         parser.add_argument('--proj', type=str, help='Referential to project joint moment. Choice : Distal, Proximal, Global')

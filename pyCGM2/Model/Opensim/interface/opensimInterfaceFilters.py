@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""Filters running OpenSim tools (scaling, inverse kinematics, inverse dynamics, static optimisation, analyses) through XML procedures."""
 from pyCGM2.Model.Opensim import opensimIO
 from pyCGM2.Tools import  btkTools,opensimTools
 import os

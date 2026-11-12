@@ -1,3 +1,4 @@
+"""C3dManager: organisation of acquisitions by computational objective."""
 import pyCGM2
 LOGGER = pyCGM2.LOGGER
 

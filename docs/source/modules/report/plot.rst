@@ -13,7 +13,7 @@ Functions
 
 .. autosummary::
     :toctree: generated
-    :template: functions.rst
+    :template: function.rst
 
     temporalPlot
     descriptivePlot
@@ -31,7 +31,7 @@ Componants
 
 .. autosummary::
     :toctree: generated
-    :template: functions.rst
+    :template: function.rst
 
     stpHorizontalHistogram
     addNormalActivationLayer

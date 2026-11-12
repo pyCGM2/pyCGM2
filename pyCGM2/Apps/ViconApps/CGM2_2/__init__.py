@@ -1,0 +1,1 @@
+"""Vicon Nexus operations (calibration and fitting) for the CGM 2.2."""

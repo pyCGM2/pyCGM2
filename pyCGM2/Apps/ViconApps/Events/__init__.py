@@ -1,0 +1,1 @@
+"""Vicon Nexus operations for automatic gait event detection."""

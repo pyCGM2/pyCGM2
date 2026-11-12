@@ -1,3 +1,4 @@
+"""Procedures configuring the OpenSense IMU inverse kinematics tool."""
 from typing import List, Tuple, Dict, Optional,Union
 
 from pyCGM2.Utils import files

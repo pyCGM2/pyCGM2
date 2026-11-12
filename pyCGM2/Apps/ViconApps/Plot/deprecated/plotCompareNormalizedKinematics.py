@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""Deprecated Vicon Nexus operation: comparison plot panel of normalised kinematics from nodes marked in Vicon Eclipse."""
 #APIDOC["Path"]=/Executable Apps/Vicon/Plot
 #APIDOC["Import"]=False
 #APIDOC["Draft"]=False
@@ -28,6 +29,12 @@ from pyCGM2.Nexus import  nexusTools
 from pyCGM2.Nexus import eclipse
 
 def main():
+    """Run the application: comparison plot panel of normalised kinematics from nodes marked in Vicon Eclipse.
+
+    Args:
+        args (argparse.Namespace, optional): Parsed command-line arguments. If None, arguments are
+            parsed from the command line.
+    """
 
     plt.close("all")
 

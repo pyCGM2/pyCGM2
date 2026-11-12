@@ -128,7 +128,6 @@ if MOVECK_AVAILABLE:
 
             
             # if variableName=="LRECFEM":
-            #                 import ipdb; ipdb.set_trace()
             #                 pos,burstDuration=normalActivation.getNormalBurstActivity_fromCycles(normalActivationLabel,cycleIt.firstFrame,cycleIt.begin, cycleIt.m_contraFO, cycleIt.end, cycleIt.appf)
 
 
@@ -390,7 +389,6 @@ if MOVECK_AVAILABLE:
             settings = mekLib.readYamlAttribute(ds,f"Session 2/Analysis 1","flow-userSettings")
             age = settings["VisitInfo"]["Age"]
 
-            import ipdb; ipdb.set_trace()
 
             normativeStpHelper = normativeDataHelpers.NormativeStpHelper()
 
@@ -442,7 +440,6 @@ if MOVECK_AVAILABLE:
         
 
             onsets, durations,signal = normalActivation.getNormalGaitEmgActivities(lfs,lfo, normalActivityLabel, time=time)
-            import ipdb; ipdb.set_trace()
         
 
             print(onsets)
@@ -469,7 +466,6 @@ if MOVECK_AVAILABLE:
             cycleValues2 ,attrs = mekLib.gatherCycles(group,"LRECFEM")
 
 
-            import ipdb; ipdb.set_trace()
             denominator = np.array([it.max()  for it in cycleValues1]).mean()
 
             cycleValues1 = cycleValues1 / denominator
@@ -539,7 +535,6 @@ if MOVECK_AVAILABLE:
             print(gpsOverall)
         #     {'mean': array([5.63951725]), 'std': array([1.17288645]), 'median': array([5.07650152]), 'values': array([4.87285455, 4.17551561, 4.6721065 , 4.48255292, 4.86252503,
         #    5.28014849, 7.28559112, 6.50077662, 6.89219175, 7.37090989])}
-            import ipdb; ipdb.set_trace()
 
 
         def test_plot_reaction(self):

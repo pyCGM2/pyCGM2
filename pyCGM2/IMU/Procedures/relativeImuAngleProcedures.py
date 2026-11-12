@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""Procedures computing relative angles between two IMUs."""
 import numpy as np
 from  pyCGM2.Math import euler
 from pyCGM2.IMU import imu

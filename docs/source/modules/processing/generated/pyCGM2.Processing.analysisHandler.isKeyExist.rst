@@ -1,6 +1,7 @@
-﻿pyCGM2.Processing.analysisHandler.isKeyExist
-============================================
+﻿isKeyExist
+================================================================
 
 .. currentmodule:: pyCGM2.Processing.analysisHandler
 
 .. autofunction:: isKeyExist
+

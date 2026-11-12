@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""*flow* procedure collecting session details from Vicon Eclipse files."""
 import os
 from pyCGM2.Nexus import eclipse
 from pyCGM2.Nexus import vskTools
@@ -9,11 +10,20 @@ from pyCGM2.flow.procedures import flowProcedures
 
 
 class EclipseFlowProcedure(flowProcedures.AbstractFlowProcedure):
-    """    """
+    """Procedure collecting session details (subject parameters, calibration and fitting trials, conditions, MVC) from the vsk and Eclipse enf files."""
     def __init__(self):
         super(EclipseFlowProcedure, self).__init__()
  
     def run(self,data_path, modelVersion):
+        """Collect the session details.
+
+        Args:
+            data_path (str): Session folder.
+            modelVersion (str): CGM version.
+
+        Returns:
+            dict: Data used to render the flow user settings.
+        """
 
         # modelVersion = modelVersion.replace(".","")
         

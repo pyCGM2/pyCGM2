@@ -1,3 +1,4 @@
+"""Base class of the OpenSim XML procedures."""
 from typing import List, Tuple, Dict, Optional,Union,Any
 
 class OpensimInterfaceXmlProcedure(object):

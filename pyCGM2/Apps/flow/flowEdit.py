@@ -1,4 +1,5 @@
 # coding: utf-8
+"""*flow* command creating the user settings file of a session."""
 import os
 from pyCGM2.Utils import files
 import warnings
@@ -24,6 +25,12 @@ from argparse import Namespace
 
 
 def main(args=None):
+    """Run the application: create the flow user settings file of a session.
+
+    Args:
+        args (argparse.Namespace, optional): Parsed command-line arguments. If None, arguments are
+            parsed from the command line.
+    """
     
     # from argparse import Namespace
     # args2 = Namespace(
@@ -35,7 +42,6 @@ def main(args=None):
     #     data_path="C:\\blabab\\"
     # )
 
-    # import ipdb; ipdb.set_trace()
 
     if args is None:
         parser = argparse.ArgumentParser(description='Edit flow report from Eclipse')
@@ -50,8 +56,11 @@ def main(args=None):
                             action='store_true', help='display the flow file after edition')
 
         parser.add_argument('-dp', '--data_path', type=str,
-                            default=None) 
-        
+                            default=None)
+        parser.add_argument('-t', '--template', type=str,
+                            help='path of the flow template (cgm#i-settings.tpl). Default: PYCGM2_FLOW_TEMPLATE environment variable, then %%APPDATA%%/pyCGM2/templates',
+                            default=None)
+
     
         args = parser.parse_args()
 
@@ -64,6 +73,10 @@ def main(args=None):
     displayFileFlag = args.display
     suffix = args.suffix
     data_path = args.data_path
+    template = getattr(args, "template", None)
+
+    # fail before any user interaction if the template is not available
+    template = flowFilters.findFlowTemplate(template)
 
     if data_path is None:
         nexusCon = nexus.NexusConnection()
@@ -91,6 +104,7 @@ def main(args=None):
                                         procedure=eclipseFlowProcedure.EclipseFlowProcedure(),
                                         emgSettings = emgSettings
                                         )
+    fef.setTemplate(template)
 
     suffix = "-"+suffix if suffix != "" else ""
 

@@ -1,3 +1,4 @@
+"""Vicon Nexus operation: CGM2.2 calibration."""
 import os
 import traceback
 import argparse
@@ -22,6 +23,12 @@ from pyCGM2.Lib.CGM.musculoskeletal import  cgm2_2 as cgm2_2exp
 from pyCGM2.Tools import btkTools
 
 def main(args=None):
+    """Run the application: CGM2.2 calibration of the static trial from the trial loaded in Vicon Nexus.
+
+    Args:
+        args (argparse.Namespace, optional): Parsed command-line arguments. If None, arguments are
+            parsed from the command line.
+    """
     if args is None:
 
         parser = argparse.ArgumentParser(description='CGM2.2 Calibration')

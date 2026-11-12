@@ -9,6 +9,11 @@ from ViconNexus import *
 
 
 def GetDeviceInfo(vicon):
+  """Print the information of the devices of the trial loaded in Vicon Nexus.
+
+  Args:
+      vicon (ViconNexus.ViconNexus): Nexus handle.
+  """
   (path, name) = vicon.GetTrialName()
 
   # list of devices

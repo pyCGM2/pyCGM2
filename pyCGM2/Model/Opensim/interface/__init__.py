@@ -1,0 +1,1 @@
+"""Interface between pyCGM2 and OpenSim tools."""

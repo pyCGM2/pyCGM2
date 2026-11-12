@@ -1,6 +1,7 @@
-﻿pyCGM2.Lib.analysis.automaticCPdeviations
-=========================================
+﻿automaticCPdeviations
+=============================================================
 
 .. currentmodule:: pyCGM2.Lib.analysis
 
 .. autofunction:: automaticCPdeviations
+

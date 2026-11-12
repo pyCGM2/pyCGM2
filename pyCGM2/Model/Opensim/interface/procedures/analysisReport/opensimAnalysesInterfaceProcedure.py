@@ -1,3 +1,4 @@
+"""Procedures configuring the OpenSim *Analyze* tool."""
 from typing import List, Tuple, Dict, Optional,Union,Any
 
 import os
@@ -317,6 +318,13 @@ class AnalysesXmlCgmDrivenModelProcedure(AnalysesXmlCgmProcedure):
         self.m_poseLabel+".mot"
 
     def forceMotFile(self,motfile):
+        """Use an existing motion (mot) file as reference pose.
+
+        The file is copied into the results directory and the time range is set to the whole file.
+
+        Args:
+            motfile (str): Motion filename located in the data folder.
+        """
         self.m_poseLabel = motfile[:-4]
 
         files.copyPaste(self.m_DATA_PATH+ motfile,self.m_DATA_PATH+self.m_resultsDir+"\\"+motfile)

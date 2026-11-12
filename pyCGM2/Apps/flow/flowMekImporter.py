@@ -1,4 +1,5 @@
 # coding: utf-8
+"""*flow* command importing the trials of a session into a *mek* data store."""
 import os
 from pyCGM2.Utils import files
 import warnings
@@ -37,6 +38,12 @@ except ImportError as e:
 
 
 def main(args=None):
+    """Run the application: import the trials of a session into a mek data store.
+
+    Args:
+        args (argparse.Namespace, optional): Parsed command-line arguments. If None, arguments are
+            parsed from the command line.
+    """
 
 
     if args is None:

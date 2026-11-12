@@ -1,3 +1,4 @@
+"""Procedures configuring the OpenSim inverse kinematics tool."""
 from typing import List, Tuple, Dict, Optional,Union,Any
 import os
 import pyCGM2; LOGGER = pyCGM2.LOGGER

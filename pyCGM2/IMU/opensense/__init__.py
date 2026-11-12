@@ -1,0 +1,1 @@
+"""Interface between pyCGM2 IMU data and OpenSim OpenSense."""

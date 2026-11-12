@@ -1,3 +1,4 @@
+"""Input/output of OpenSim files (storage, mot, trc)."""
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 import opensim
 
@@ -7,6 +8,13 @@ import pandas as pd
 pd.set_option("display.precision", 8)
 
 class ImuStorageFile(object):
+    """Writer of an OpenSim IMU orientation (quaternion) storage file.
+
+    Args:
+        DATA_PATH (str): Folder path.
+        filename (str): Filename.
+        freq (float): Sampling frequency.
+    """
     def __init__(self,DATA_PATH, filename, freq):
 
         self.m_DATA_PATH = DATA_PATH
@@ -24,11 +32,22 @@ class ImuStorageFile(object):
 
 
     def setData(self, imuName, quaternionArray):
+        """Set the quaternions of an IMU.
+
+        Args:
+            imuName (str): IMU name.
+            quaternionArray (np.ndarray): Quaternions (frames x 4).
+        """
         self.m_data[imuName] = quaternionArray
 
          
 
     def construct(self,static=False):
+        """Write the storage file.
+
+        Args:
+            static (bool, optional): Write only the first frame. Defaults to False.
+        """
         column_header = pd.DataFrame([f'time'] + [f"{name}_imu" for name in self.m_data]).T
         
         time = [0]
@@ -52,6 +71,12 @@ class ImuStorageFile(object):
 
 
 class OpensimDataFrame(object):
+    """OpenSim storage (sto/mot) file loaded as a pandas dataframe.
+
+    Args:
+        DATA_PATH (str): Folder path.
+        filename (str): Filename.
+    """
     def __init__(self, DATA_PATH, filename):
 
         self.m_DATA_PATH = DATA_PATH
@@ -101,14 +126,30 @@ class OpensimDataFrame(object):
         self.m_dataframe.insert(0, 'time', first_column)
 
     def getDataFrame(self):
+        """Return the dataframe.
+
+        Returns:
+            pd.DataFrame: The data.
+        """
         return self.m_dataframe
 
     def dataFrameToDict(self):
+        """Return the columns (except time) as a dictionary.
+
+        Returns:
+            dict: Column values by label.
+        """
 
         result = {col: self.m_dataframe[col].values for col in self.m_dataframe.columns if col != "time"}
         return result
 
     def save(self, outDir = None, filename=None):
+        """Save the dataframe as an OpenSim storage file, with the original header.
+
+        Args:
+            outDir (str, optional): Output folder. Defaults to the original folder.
+            filename (str, optional): Output filename. Defaults to the original filename.
+        """
 
         directory = self.m_DATA_PATH if outDir is None else  outDir
         filename = self.m_filename if filename is None else  filename
@@ -255,6 +296,11 @@ class TrcDataFrame(object):
         self._updateNumFrames(self.m_dataframe.shape[0])
 
     def getDataFrame(self):
+        """Return the dataframe.
+
+        Returns:
+            pd.DataFrame: The data.
+        """
         return self.m_dataframe
 
     def duplicateLastRow(self, dt=None):
@@ -307,13 +353,17 @@ class TrcDataFrame(object):
         self._lines[self._idx_meta_vals] = "\t".join(self._meta_vals) + "\n"
 
     def save(self, outDir=None, filename=None):
-        """
-        Write TRC back to disk.
-        - Header preserved as much as possible (original lines up to marker line).
-        - Marker names line is rewritten using the canonical TRC convention:
-              Frame# <tab> Time <tab> M1 <tab><tab><tab> M2 <tab><tab><tab> ...
-        - Data lines written as TAB-separated values.
+        """Write the TRC file back to disk.
+
+        - The header is preserved as much as possible (original lines up to the marker line).
+        - The marker names line is rewritten using the canonical TRC convention:
+          ``Frame# <tab> Time <tab> M1 <tab><tab><tab> M2 <tab><tab><tab> ...``
+        - Data lines are written as TAB-separated values.
         - NaN values are written as empty fields.
+
+        Args:
+            outDir (str, optional): Output folder. Defaults to the original folder.
+            filename (str, optional): Output filename. Defaults to the original filename.
         """
         directory = self.m_DATA_PATH if outDir is None else outDir
         filename = self.m_filename if filename is None else filename

@@ -1,6 +1,7 @@
-﻿pyCGM2.Model.CGM2.decorators.applyHJCDecorators
-===============================================
+﻿applyHJCDecorators
+===================================================================
 
 .. currentmodule:: pyCGM2.Model.CGM2.decorators
 
 .. autofunction:: applyHJCDecorators
+

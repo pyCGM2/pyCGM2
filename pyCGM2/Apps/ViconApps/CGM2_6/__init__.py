@@ -1,0 +1,1 @@
+"""Vicon Nexus operations for the CGM 2.6 knee functional calibrations (2DOF and SARA)."""

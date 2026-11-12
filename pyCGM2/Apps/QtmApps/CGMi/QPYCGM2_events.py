@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""QTM application detecting gait events."""
 
 import argparse
 import os
@@ -22,6 +23,12 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 
 
 def main(args=None):
+    """Run the application: detect gait events of the QTM session.
+
+    Args:
+        args (argparse.Namespace, optional): Parsed command-line arguments. If None, arguments are
+            parsed from the command line.
+    """
 
 
     if args is None:

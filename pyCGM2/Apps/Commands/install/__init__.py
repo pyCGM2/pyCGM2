@@ -1,0 +1,1 @@
+"""Commands installing pyCGM2 resources (e.g. Vicon Nexus SDK packages and pipeline files)."""

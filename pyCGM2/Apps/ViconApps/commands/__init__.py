@@ -1,0 +1,1 @@
+"""Vicon Nexus utility commands (e.g. device details)."""

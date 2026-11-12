@@ -73,6 +73,13 @@ class Cycle(object):
         self.enableFlag = flag
 
     def addDiscreteData(self,label,value,instant):
+        """Add a discrete value to the cycle (not implemented).
+
+        Args:
+            label (str): Label of the discrete value.
+            value (float): Value.
+            instant (int): Frame of the value.
+        """
         pass
 
     def getPointTimeSequenceData(self,pointLabel:str):
@@ -313,6 +320,11 @@ class Cycles():
 
 
     def setCycles(self,cycles):
+        """Set the list of cycles.
+
+        Args:
+            cycles (list): List of cycles.
+        """
         self.cycles = cycles
 
 

@@ -1,4 +1,5 @@
 # coding: utf-8
+"""*flow* command populating a *mek* data store (extraction, normalisation, scores...)."""
 import os
 from pyCGM2.Utils import files
 import warnings
@@ -40,6 +41,12 @@ except ImportError as e:
 import subprocess
 
 def main(args=None):
+    """Run the application: populate the mek data store of a session.
+
+    Args:
+        args (argparse.Namespace, optional): Parsed command-line arguments. If None, arguments are
+            parsed from the command line.
+    """
 
 
     if args is None:

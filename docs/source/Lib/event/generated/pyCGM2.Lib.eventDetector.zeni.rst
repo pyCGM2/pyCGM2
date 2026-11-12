@@ -1,6 +1,7 @@
-﻿pyCGM2.Lib.eventDetector.zeni
-=============================
+﻿zeni
+=================================================
 
 .. currentmodule:: pyCGM2.Lib.eventDetector
 
 .. autofunction:: zeni
+

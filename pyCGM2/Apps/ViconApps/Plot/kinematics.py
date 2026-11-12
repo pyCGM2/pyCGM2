@@ -1,3 +1,4 @@
+"""Vicon Nexus operations plotting kinematics."""
 import os
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 import matplotlib.pyplot as plt
@@ -20,6 +21,11 @@ from pyCGM2.Report import normativeDatasets
 
 
 def temporal(args):
+    """Plot temporal kinematics of the trial loaded in Vicon Nexus.
+
+    Args:
+        args (argparse.Namespace): Parsed command-line arguments.
+    """
 
     plt.close("all")
 
@@ -72,6 +78,11 @@ def temporal(args):
 
 
 def normalized(args):
+    """Plot time-normalised kinematics of the current trial, or of the trials marked in Vicon Eclipse.
+
+    Args:
+        args (argparse.Namespace): Parsed command-line arguments.
+    """
 
     plt.close("all")
 
@@ -189,6 +200,11 @@ def normalized(args):
 
 
 def normalizedComparison(args):
+    """Plot a comparison of time-normalised kinematics between trials marked in Vicon Eclipse.
+
+    Args:
+        args (argparse.Namespace): Parsed command-line arguments.
+    """
 
     plt.close("all")
 

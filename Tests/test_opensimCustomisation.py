@@ -1,7 +1,6 @@
 # pytest -s --disable-pytest-warnings  test_opensimCustomisation.py::Test_opensimcustom::test_cgm23
 
 
-import ipdb
 import os
 import matplotlib.pyplot as plt
 
@@ -81,7 +80,6 @@ class Test_opensimcustom:
         modelFilters.ModelCalibrationFilter(scp,acqStatic,model,
                         markerDiameter=markerDiameter).compute()
 
-        import ipdb; ipdb.set_trace()
         #---------------------------------
         # PERSONALISATION
         
@@ -170,4 +168,3 @@ class Test_opensimcustom:
         # muscles = scaledOsim.getMuscles()    
         # rf = muscles.get("rect_fem_r")
         # print(rf.getLength(states))
-        # ipdb.set_trace()

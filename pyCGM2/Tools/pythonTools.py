@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""Generic Python tools (ordered dictionary...)."""
 
 class ordict(dict):
     """ordered dictionary"""

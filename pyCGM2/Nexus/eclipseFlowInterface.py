@@ -1,4 +1,5 @@
 # coding: utf-8
+"""Functions extracting session details (static, motion, EMG and MVC trials, conditions) from Eclipse enf files for the *flow* pipeline."""
 import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
 warnings.filterwarnings("ignore", category=RuntimeWarning)
@@ -17,6 +18,14 @@ import re
 
 
 def findStaticTrials(path):
+    """Find the static trials of a session folder from their Eclipse trial enf files (``TrialType`` field).
+
+    Args:
+        path (str): Session folder.
+
+    Returns:
+        list: Trial enf filenames.
+    """
     enfs = eclipse.getEnfFiles(path,enums.EclipseType.Trial)
 
     detected = list()
@@ -35,6 +44,14 @@ def findStaticTrials(path):
     return detected
 
 def findMotionTrials(path):
+    """Find the motion trials of a session folder from their Eclipse trial enf files (``TrialType`` field).
+
+    Args:
+        path (str): Session folder.
+
+    Returns:
+        list: Trial enf filenames.
+    """
     enfs = eclipse.getEnfFiles(path,enums.EclipseType.Trial)
 
     detected = list()
@@ -52,6 +69,14 @@ def findMotionTrials(path):
     return detected
 
 def findEmgTrials(path):
+    """Find the EMG trials of a session folder from their Eclipse trial enf files (``TrialType`` field).
+
+    Args:
+        path (str): Session folder.
+
+    Returns:
+        list: Trial enf filenames.
+    """
     enfs = eclipse.getEnfFiles(path,enums.EclipseType.Trial)
 
     detected = list()
@@ -68,6 +93,14 @@ def findEmgTrials(path):
     return detected
 
 def findMVCTrials(path):
+    """Find the MVC trials of a session folder from their Eclipse trial enf files (``TrialType`` field).
+
+    Args:
+        path (str): Session folder.
+
+    Returns:
+        list: Trial enf filenames.
+    """
     enfs = eclipse.getEnfFiles(path,enums.EclipseType.Trial)
 
     detected = list()
@@ -85,6 +118,18 @@ def findMVCTrials(path):
 
 
 def staticDetails(path,enfs):
+    """Return the details of static trials.
+
+    Args:
+        path (str): Session folder.
+        enfs (list): Static trial enf filenames.
+
+    Returns:
+        list: ``[CalibID, c3d filename, LeftFlatFoot, RightFlatFoot]`` for each trial.
+
+    Raises:
+        Exception: If two consecutive trials share the same calibration ID.
+    """
 
     id_checking = None
     details = list()
@@ -111,6 +156,15 @@ def staticDetails(path,enfs):
 
 
 def FittingDetails(path,enfs):
+    """Return the details of motion (fitting) trials.
+
+    Args:
+        path (str): Session folder.
+        enfs (list): Motion trial enf filenames.
+
+    Returns:
+        list: ``[c3d filename, CalibID, force plate assignment, ConditionID]`` for each trial.
+    """
 
     details = list()
 
@@ -131,6 +185,15 @@ def FittingDetails(path,enfs):
 
 
 def EmgDetails(path,enfs):
+    """Return the details of EMG trials.
+
+    Args:
+        path (str): Session folder.
+        enfs (list): EMG trial enf filenames.
+
+    Returns:
+        list: ``[c3d filename, ConditionID]`` for each trial.
+    """
 
     details = list()
 
@@ -148,6 +211,19 @@ def EmgDetails(path,enfs):
     return details
 
 def getConditions(path,motionEnfs):
+    """Return the conditions of the shared motion trials, sorted by condition number.
+
+    Args:
+        path (str): Session folder.
+        motionEnfs (list): Motion trial enf filenames.
+
+    Returns:
+        List[dict]: Conditions (ConditionID, Context, Block, Task, Shoes, ProthesisOrthosis,
+        ExternalAid, PersonalAid, EmgRepresentativeTrial, EmgReferenceConditionID).
+
+    Raises:
+        Exception: If a ConditionID is missing.
+    """
 
     conditions = list()
 
@@ -190,6 +266,18 @@ def getConditions(path,motionEnfs):
     return sortConditions
 
 def MvcDetails(path,mvcEnfs):
+    """Return the MVC trials grouped by MVC ID.
+
+    Args:
+        path (str): Session folder.
+        mvcEnfs (list): MVC trial enf filenames.
+
+    Returns:
+        list: Groups of MVC descriptions (MvcID, Channels, assignConditions, trial).
+
+    Raises:
+        Exception: If an MVC trial has no MVC ID.
+    """
 
     mvcs = list()
 
@@ -274,6 +362,14 @@ def MvcDetails(path,mvcEnfs):
 
 
 def list_duplicates(seq):
+  """Return the duplicated items of a sequence.
+
+  Args:
+      seq (Iterable): Sequence.
+
+  Returns:
+      list: Items found more than once.
+  """
   seen = set()
   seen_add = seen.add
   # adds all elements it doesn't know yet to seen and all other to seen_twice
@@ -284,6 +380,13 @@ def list_duplicates(seq):
 
 
 def repareEnf(DATA_PATH):
+    """Rename malformed trial enf files of a folder into ``<name>.Trial.enf``.
+
+    An existing ``<name>.Trial.enf`` file is removed before renaming.
+
+    Args:
+        DATA_PATH (str): Folder path.
+    """
 
     enfs = files.getFiles(DATA_PATH,"enf")
 

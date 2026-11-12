@@ -1,3 +1,4 @@
+"""Vicon Nexus operation: rigid-body gap filling."""
 import argparse
 import copy
 import os
@@ -11,6 +12,12 @@ from pyCGM2.Tools import btkTools
 from pyCGM2.Model.Models import singleBody
 
 def main(args=None):
+    """Run the application: fill marker gaps with a rigid-body method from the trial loaded in Vicon Nexus.
+
+    Args:
+        args (argparse.Namespace, optional): Parsed command-line arguments. If None, arguments are
+            parsed from the command line.
+    """
 
     if args  is None:
         parser = argparse.ArgumentParser(description='rigid gap Labeling')

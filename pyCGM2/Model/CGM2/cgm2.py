@@ -1,3 +1,4 @@
+"""Implementation of the CGM2 models (CGM2.1 to CGM2.6), derived from the CGM1."""
 
 
 import numpy as np

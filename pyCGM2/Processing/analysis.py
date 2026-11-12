@@ -301,19 +301,32 @@ class Analysis():
 # --- BUILDERS-----
 
 class AbstractBuilder(object):
+    """Abstract builder of an Analysis instance.
+
+    Args:
+        cycles (pyCGM2.Processing.cycle.Cycles, optional): Cycles used for the computation.
+    """
     def __init__(self, cycles=None):
         self.m_cycles = cycles
 
     def computeSpatioTemporel(self):
+        """Compute spatio-temporal parameters (to be implemented by subclasses)."""
         pass
 
     def computeKinematics(self):
+        """Compute kinematics (to be implemented by subclasses)."""
         pass
 
     def computeKinetics(self, momentContribution=False):
+        """Compute kinetics (to be implemented by subclasses).
+
+        Args:
+            momentContribution (bool, optional): Compute moment contributions. Defaults to False.
+        """
         pass
 
     def computeEmgEnvelopes(self):
+        """Compute EMG envelopes (to be implemented by subclasses)."""
         pass
 
 
@@ -367,6 +380,7 @@ class AnalysisBuilder(AbstractBuilder):
 
 
     def computeSpatioTemporel(self):
+        """Compute spatio-temporal parameters (not used by this builder)."""
         pass
 
     def computeKinematics(self):

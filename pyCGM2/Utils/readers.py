@@ -1,3 +1,4 @@
+"""Readers of json, yaml and Excel files."""
 import json
 import os
 
@@ -11,10 +12,24 @@ LOGGER = pyCGM2.LOGGER
 from openpyxl import load_workbook
 
 class ExcelReader:
+    """Reader of cell values of an Excel workbook (computed values).
+
+    Args:
+        file_path (str): Path of the workbook.
+    """
     def __init__(self, file_path: str):
         self._workbook = load_workbook(filename=file_path, data_only=True)
     
     def get_cell_value(self, sheet_name: str, cell: str):
+        """Return the value of a cell.
+
+        Args:
+            sheet_name (str): Sheet name.
+            cell (str): Cell reference (e.g. ``"B2"``).
+
+        Returns:
+            The cell value.
+        """
         sheet = self._workbook[sheet_name]
         return sheet[cell].value
 

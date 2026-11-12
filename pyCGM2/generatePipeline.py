@@ -1,8 +1,20 @@
 # -*- coding: utf-8 -*-
+"""Helpers to generate Vicon Nexus pipeline files from templates."""
 import os
 import string
 
 def scanViconTemplatePipeline(sourcePath,desPath,pyCGM2nexusAppsPath):
+    """Copy Vicon Nexus pipeline templates, replacing the hard-coded Apps path.
+
+    Each file of ``sourcePath`` is read, the template Apps path is replaced by
+    ``pyCGM2nexusAppsPath`` and the result is written into ``desPath`` unless a
+    file with the same name already exists.
+
+    Args:
+        sourcePath (str): Folder containing the template pipeline files.
+        desPath (str): Destination folder.
+        pyCGM2nexusAppsPath (str): Path of the pyCGM2 Nexus Apps folder to insert in the pipelines.
+    """
 
     toreplace= "C:/Users/HLS501/Documents/Programming/API/pyCGM2/pyCGM2/Apps"
 

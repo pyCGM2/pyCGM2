@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""Implementation of the Conventional Gait Model 1 (CGM1.0 and CGM1.1)."""
 import numpy as np
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 import copy

@@ -1,0 +1,1 @@
+"""Decorators used across pyCGM2 (e.g. execution-time tracking)."""

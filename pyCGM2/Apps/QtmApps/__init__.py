@@ -1,0 +1,1 @@
+"""Applications running pyCGM2 from Qualisys Track Manager (QTM)."""

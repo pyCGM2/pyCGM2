@@ -1,3 +1,4 @@
+"""High-level functions detecting gait events (Zeni, O'Connor, IntellEvent...)."""
 from pyCGM2.Events import eventFilters
 from pyCGM2.Events import eventProcedures
 from pyCGM2.Signal import signal_processing
@@ -112,6 +113,18 @@ def oconnor(acqGait:btk.btkAcquisition,
 
 
 def intellEvent(acqGait:btk.btkAcquisition):
+    """Detect gait events with the IntellEvent deep-learning models.
+
+    The progression frame is detected first, then the embedded trained models
+    (``intellEventModels/version0`` in the pyCGM2 data folder) are used to detect
+    initial contacts and foot offs.
+
+    Args:
+        acqGait (btk.btkAcquisition): Gait acquisition.
+
+    Returns:
+        Tuple[btk.btkAcquisition, bool]: The acquisition with the detected events and the state of the detection.
+    """
     
     progressionAxis, forwardProgression, globalFrame = progression.detectProgressionFrame(acqGait, staticFlag=False)
     initialContactModelFile = pyCGM2.PYCGM2_APPDATA_PATH+"intellEventModels\\version0\\ic_intellevent.onnx"

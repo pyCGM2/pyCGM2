@@ -1,63 +1,73 @@
+{% set version = load_file_regex(load_file="pyCGM2/__init__.py", regex_pattern='__version__\s*=\s*"([^"]+)"').group(1) %}
+
 package:
   name: pycgm2
-  version: "4.4rc2"
+  version: {{ version }}
 
 source:
-  path: ..
+  # build from the committed state of the repository (untracked files such as
+  # pyCGM2/.env, users/ or Sandbox/ are not packaged)
+  git_url: ..
 
 build:
-  noarch: false
-  script: pip install .
-  string: py{{ python_version | replace(".", "") }}
+  number: 0
+  skip: true  # [not win]
+  script:
+    - {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
+    # pyCGM2 looks for its data in <site-packages>/Data (see MAIN_PYCGM2_PATH in pyCGM2/__init__.py)
+    - xcopy /E /I /Y "%SRC_DIR%\Data\normativeData" "%SP_DIR%\Data\normativeData"
+    - xcopy /E /I /Y "%SRC_DIR%\Data\intellEventModels" "%SP_DIR%\Data\intellEventModels"
+  entry_points:
+    - pyCGM2 = pyCGM2.Apps.Commands.rullThemAllCommands:main
+    - pyCGM2-setup_NexusPackages = pyCGM2.Apps.Commands.install.setup_pyCGM2_Nexus:main_installViconPackages
+    - pyCGM2-generate_pyCGM2_Nexus = pyCGM2.Apps.Commands.install.setup_pyCGM2_Nexus:main_install_pyCGM2_NexusFiles
 
 requirements:
-  build:
-    - python {{ python_version }}
+  host:
+    - python
     - pip
     - setuptools
+    - wheel
 
   run:
-    - python {{ python_version }}
-    - pip
-    - numpy >=1.25,<1.26 # [py == 310]
-    - numpy=1.20     # [py == 39]
-    - numpy=1.23     # [py == 311]
+    - python
+    - numpy >=1.25,<1.26  # [py == 310]
+    - numpy 1.23.*        # [py == 311]
     - btk
     - opensim
     - scipy
     - matplotlib-base
     - pandas
-    - pytest
-    - pytest-mpl
     - scikit-learn
     - seaborn
     - beautifulsoup4
+    - lxml
+    - pyyaml
     - yamlordereddictloader
     - openpyxl
-    - lxml
-    - myst-parser
-    - sphinx
-    - sphinx-argparse
-    - sphinxcontrib-mermaid
-    - pydata-sphinx-theme
     - jinja2
     - onnxruntime
+    - python-dotenv
+    - python-docx
+    - docxtpl
 
 test:
   imports:
     - pyCGM2
-  commands:
-    - python -c "import pyCGM2; print(pyCGM2.__version__)"
-  requires:
-    - pytest
-    - pytest-mpl
+    - pyCGM2.Lib.CGM.cgm2_3
+    - pyCGM2.Lib.analysis
+    - pyCGM2.Lib.eventDetector
+    - pyCGM2.Report.normativeDatasets
+  # run_test.py checks the embedded data and settings files
 
 about:
   home: https://github.com/pyCGM2/pyCGM2
+  dev_url: https://github.com/pyCGM2/pyCGM2
+  doc_url: https://pycgm2.github.io/pyCGM2/
   summary: "The python Conventional Gait Model Library"
   license: CC-BY-SA-4.0
   license_family: OTHER
-  maintainer: Fabien LEBOEUF <fabien.leboeuf@chu-nantes.com>
+  license_file: licence
 
 extra:
   recipe-maintainers:

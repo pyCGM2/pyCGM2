@@ -1,3 +1,4 @@
+"""Procedures configuring the OpenSense IMU placer tool."""
 from typing import List, Tuple, Dict, Optional,Union
 
 from pyCGM2.IMU import imu

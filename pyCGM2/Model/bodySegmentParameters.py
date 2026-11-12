@@ -1,3 +1,4 @@
+"""Body segment inertial parameters (mass, centre of mass, inertia) of the model segments."""
 
 
 import numpy as np

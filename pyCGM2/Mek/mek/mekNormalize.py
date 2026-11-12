@@ -1,3 +1,4 @@
+"""Time normalisation of extracted *mek* data over gait cycles."""
 import sys
 import numpy as np
 from scipy.interpolate import interp1d
@@ -10,6 +11,17 @@ import pyCGM2
 LOGGER = pyCGM2.LOGGER
 
 def normalize(values, attrs,eventStartTime, eventEndTime):
+    """Normalise a signal segment to 101 points between two instants.
+
+    Args:
+        values (np.ndarray): Signal values (frames x components).
+        attrs (dict): Dataset attributes with ``StartTime`` and ``SampleRate``.
+        eventStartTime (float): Start time of the segment.
+        eventEndTime (float): End time of the segment.
+
+    Returns:
+        np.ndarray: Normalised segment (101 x components).
+    """
     
     initial_time = attrs["StartTime"]
     fs = attrs["SampleRate"]
@@ -39,15 +51,18 @@ def normalize(values, attrs,eventStartTime, eventEndTime):
         try:
             f = interp1d(t_original, segment[:, i], kind='linear')
         except:
-            import ipdb; ipdb.set_trace()
+            raise
         segment_normalized[:, i] = f(t_normalized)
 
     return segment_normalized
 
 
 class mekNormalizeFilter(object):
-    """
+    """Filter normalising the extracted data into the ``Normalize`` group of a *mek* data store.
 
+    Args:
+        mekStorage: moveck data store.
+        group (str): Parent group of the ``Extraction`` and ``Normalize`` groups (None for root).
     """
 
     def __init__(self,mekStorage, group):
@@ -57,6 +72,15 @@ class mekNormalizeFilter(object):
 
 
     def run(self,scheme,cropToForcePlateGroups=[]):
+        """Normalise each target over the gait cycles built from the extracted events.
+
+        Args:
+            scheme (dict): Extraction scheme. Each key is a group name associated with
+                ``[pathfilenames, targets]``, where ``targets`` are strings formatted as
+                ``"label:eventContext"`` or ``"label:eventContext=variableName"``.
+            cropToForcePlateGroups (list, optional): Group names for which only cycles
+                with force plate contact are kept. Defaults to [].
+        """
         
         if self.m_group is None:
             extractGrp = self.m_storage.retrieve_group("Extraction")

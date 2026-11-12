@@ -1,3 +1,4 @@
+"""Vicon Nexus operations plotting EMG."""
 import os
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 import argparse
@@ -10,6 +11,11 @@ from pyCGM2.Nexus import eclipse
 from pyCGM2.Lib import analysis
 
 def temporal(args):
+    """Plot temporal EMG of the trial loaded in Vicon Nexus.
+
+    Args:
+        args (argparse.Namespace): Parsed command-line arguments.
+    """
 
     try:
         from viconnexusapi import ViconNexus
@@ -70,6 +76,11 @@ def temporal(args):
         return 0
 
 def normalized(args):
+    """Plot time-normalised EMG of the current trial, or of the trials marked in Vicon Eclipse.
+
+    Args:
+        args (argparse.Namespace): Parsed command-line arguments.
+    """
 
     try:
         from viconnexusapi import ViconNexus
@@ -189,6 +200,11 @@ def normalized(args):
 
 
 def normalizedComparison(args):
+    """Plot a comparison of time-normalised EMG between trials marked in Vicon Eclipse.
+
+    Args:
+        args (argparse.Namespace): Parsed command-line arguments.
+    """
 
     plt.close("all")
 

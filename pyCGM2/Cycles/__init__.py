@@ -1,3 +1,4 @@
+"""Gait cycle definitions built from foot strike and foot off events."""
 import numpy as np
 from typing import List, Tuple, Dict, Optional, Union, Callable, Sequence
 
@@ -10,20 +11,33 @@ def build_cycles_fromEvents(
         contra_fo: ArrayLike = None,
         check_order_for_complete: bool = True,
     ) -> List[Dict[str, object]]:
-    """
-    Returns a list of dicts with mandatory keys:
-      - start
-      - end
-      - type : "cycle" | "partial_gaitCycle" | "complete_gaitCycle"
+    """Build gait cycles from foot strike and foot off events.
 
-    Optional keys (added only if present in window):
-      - footOff
-      - controlateral_footStrike
-      - controlateral_footOff
+    Each cycle is a dictionary with the mandatory keys:
 
-    If check_order_for_complete=True, complete cycles must satisfy:
-      start < controlateral_footOff < controlateral_footStrike < footOff < end
-    otherwise they are downgraded to "partial_gaitCycle" (kept, but not 'complete').
+    - ``start``
+    - ``end``
+    - ``type``: ``"cycle"``, ``"partial_gaitCycle"`` or ``"complete_gaitCycle"``
+
+    and the optional keys (added only if present in the cycle window):
+
+    - ``footOff``
+    - ``controlateral_footStrike``
+    - ``controlateral_footOff``
+
+    If ``check_order_for_complete`` is True, complete cycles must satisfy
+    ``start < controlateral_footOff < controlateral_footStrike < footOff < end``;
+    otherwise they are downgraded to ``"partial_gaitCycle"`` (kept, but not complete).
+
+    Args:
+        ipsi_fs (ArrayLike): Ipsilateral foot strike times.
+        ipsi_fo (ArrayLike, optional): Ipsilateral foot off times.
+        contra_fs (ArrayLike, optional): Contralateral foot strike times.
+        contra_fo (ArrayLike, optional): Contralateral foot off times.
+        check_order_for_complete (bool, optional): Check the event order of complete cycles. Defaults to True.
+
+    Returns:
+        List[Dict[str, object]]: The cycles.
     """
     def _as_float_array(x: ArrayLike) -> np.ndarray:
         if x is None:

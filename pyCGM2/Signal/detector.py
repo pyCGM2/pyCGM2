@@ -1,3 +1,4 @@
+"""Detection of events in signals (thresholds, ...)."""
 
 
 import numpy as np
@@ -10,6 +11,23 @@ from typing import Optional
 
 
 def detectStart_fromThreshold(values,reference, type = "lower",epsilon=0.05,firstFrame=0,nppf=1):
+    """Detect the first frame where a signal crosses a threshold relative to a reference.
+
+    Args:
+        values (np.ndarray): Signal.
+        reference (float): Reference value.
+        type (str, optional): ``"lower"`` (values < (1 - epsilon) * reference) or ``"greater"``
+            (values > (1 + epsilon) * reference). Defaults to ``"lower"``.
+        epsilon (float, optional): Relative tolerance. Defaults to 0.05.
+        firstFrame (int, optional): Frame offset. Defaults to 0.
+        nppf (int, optional): Number of samples per frame. Defaults to 1.
+
+    Returns:
+        int: Detected frame.
+
+    Raises:
+        Exception: If ``type`` is unknown.
+    """
 
     if type == "lower":
         inds = np.where(values < (1-epsilon)*reference)

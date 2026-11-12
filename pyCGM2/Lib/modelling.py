@@ -1,3 +1,4 @@
+"""High-level functions building generic models."""
 import btk
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 from typing import List, Tuple, Dict, Optional,Union
@@ -16,6 +17,21 @@ def createSingleSegment(acq:btk.btkAcquisition,
                         calibration_markers:List[str],
                         tracking_markers:List[str],
                         calibFramesOfInterest:Optional[List[str]]=None):
+        """Create and calibrate a single rigid segment model from markers.
+
+        The technical frame of the segment, named ``Body``, is defined from the first
+        three calibration markers (sequence XYZ), with the fourth one as origin.
+
+        Args:
+            acq (btk.btkAcquisition): Acquisition used for the calibration.
+            calibration_markers (List[str]): Calibration markers (at least four).
+            tracking_markers (List[str]): Tracking markers.
+            calibFramesOfInterest (Optional[List[int]], optional): First and last frames used for
+                the calibration. Defaults to None (all frames).
+
+        Returns:
+            pyCGM2.Model.model.Segment: The calibrated segment.
+        """
 
         segModel=model.Model()
         segModel.addSegment("Body",0,enums.SegmentSide.Central,

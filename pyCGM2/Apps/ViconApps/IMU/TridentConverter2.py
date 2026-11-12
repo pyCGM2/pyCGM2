@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""Vicon Nexus operation converting Blue Trident angle-axis outputs into quaternions."""
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 
 # vicon nexus
@@ -25,6 +26,12 @@ from pyCGM2.Nexus import nexusTools
 
 
 def convertIMU(vicon,args):
+    """Convert the Global Angle outputs of Blue Trident devices into quaternions.
+
+    Args:
+        vicon (ViconNexus.ViconNexus): Nexus handle.
+        args (argparse.Namespace): Parsed arguments (``TridentNames``: device names).
+    """
     filePath, trialName = vicon.GetTrialName()
 
     d = {}
@@ -145,6 +152,7 @@ def convertIMU(vicon,args):
 
 
 def main():
+    """Run the conversion on the trial loaded in Vicon Nexus."""
 
     parser = argparse.ArgumentParser(description='This script converts angle axis outputs from Blue Trident into Quaternions')
 
@@ -192,7 +200,6 @@ def main():
 
         for it in btk.Iterate(acq.GetAnalogs()):
             print(it.GetLabel())
-        import ipdb; ipdb.set_trace()
 
 
         convertIMU(NEXUS,args)

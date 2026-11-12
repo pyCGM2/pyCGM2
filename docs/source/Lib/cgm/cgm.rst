@@ -13,7 +13,7 @@ CGM1
 
 .. autosummary::
    :toctree: generated
-   :template: functions.rst
+   :template: function.rst
    
    calibrate
    fitting
@@ -26,7 +26,7 @@ CGM1.1
 
 .. autosummary::
    :toctree: generated
-   :template: functions.rst
+   :template: function.rst
    
    calibrate
    fitting
@@ -39,7 +39,7 @@ CGM2.1
 
 .. autosummary::
    :toctree: generated
-   :template: functions.rst
+   :template: function.rst
    
    calibrate
    fitting
@@ -52,7 +52,7 @@ CGM2.2
 
 .. autosummary::
    :toctree: generated
-   :template: functions.rst
+   :template: function.rst
    
    calibrate
    fitting
@@ -64,7 +64,7 @@ musculoskeletal CGM2.2
 
 .. autosummary::
    :toctree: generated
-   :template: functions.rst
+   :template: function.rst
    
    calibrate
    fitting
@@ -77,7 +77,7 @@ CGM2.3
 
 .. autosummary::
    :toctree: generated
-   :template: functions.rst
+   :template: function.rst
    
    calibrate
    fitting
@@ -89,7 +89,7 @@ musculoskeletal CGM2.3
 
 .. autosummary::
    :toctree: generated
-   :template: functions.rst
+   :template: function.rst
    
    calibrate
    fitting
@@ -102,7 +102,7 @@ CGM2.4
 
 .. autosummary::
    :toctree: generated
-   :template: functions.rst
+   :template: function.rst
    
    calibrate
    fitting
@@ -115,7 +115,7 @@ CGM2.5
 
 .. autosummary::
    :toctree: generated
-   :template: functions.rst
+   :template: function.rst
    
    calibrate
    fitting
@@ -128,7 +128,20 @@ knee calibration
 
 .. autosummary::
    :toctree: generated
-   :template: functions.rst
+   :template: function.rst
    
    calibration2Dof
-   sara   
+   sara
+
+
+Knee calibration helpers
+------------------------
+
+.. currentmodule:: pyCGM2.Lib.CGM.kneeCalibration
+
+.. autosummary::
+   :toctree: generated
+   :template: function.rst
+
+   detectSide
+

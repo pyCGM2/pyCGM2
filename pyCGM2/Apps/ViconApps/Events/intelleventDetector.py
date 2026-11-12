@@ -1,3 +1,4 @@
+"""Vicon Nexus operation: IntellEvent gait event detection."""
 
 from pyCGM2.Lib import eventDetector
 
@@ -7,6 +8,12 @@ LOGGER = pyCGM2.LOGGER
 
 
 def main(args=None):
+    """Run the application: detect gait events with IntellEvent from the trial loaded in Vicon Nexus.
+
+    Args:
+        args (argparse.Namespace, optional): Parsed command-line arguments. If None, arguments are
+            parsed from the command line.
+    """
 
     if args  is None:
         parser = argparse.ArgumentParser(description='IntellEvent kinematic-based gait event Detector')

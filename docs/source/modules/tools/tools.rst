@@ -18,14 +18,11 @@ btkTools functions
 
    GetAnalogNames
    GetMarkerNames
-   _getSectionFromMd
    applyOnValidFrames
    applyRotation
    applyTranslators
    applyValidFramesOnOutput
    automaticKineticDetection
-   btkAnalogToKtkTimeseries
-   btkPointToKtkTimeseries
    buildTrials
    calculateAngleFrom3points
    changeSubjectName
@@ -98,3 +95,57 @@ opensim tools functions
    smartGetValues
    sto2pointValues
    transformMarker_ToOsimReferencial
+
+
+Additional btkTools functions
+-----------------------------
+
+.. currentmodule:: pyCGM2.Tools.btkTools
+
+.. autosummary::
+   :toctree: generated
+   :template: function.rst
+
+   alignExternalData
+   barycentricPoint
+   clearEventsOutside
+   getEventsAsList
+   printEvents
+   printPoints
+
+Additional opensim tools functions
+----------------------------------
+
+.. currentmodule:: pyCGM2.Tools.opensimTools
+
+.. autosummary::
+   :toctree: generated
+   :template: function.rst
+
+   calculateSegmentLength
+   constructMarkerSetXml
+   rotationMatrix_labToOsim
+
+Python tools
+--------------------
+
+.. currentmodule:: pyCGM2.Tools.pythonTools
+
+.. autosummary::
+   :toctree: generated
+   :template: class.rst
+
+   ordict
+
+UI tools
+--------------------
+
+.. currentmodule:: pyCGM2.Tools.uiTools
+
+.. autosummary::
+   :toctree: generated
+   :template: function.rst
+
+   uiGetDir
+   uiGetFiles
+

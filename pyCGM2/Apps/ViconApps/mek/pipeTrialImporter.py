@@ -1,4 +1,5 @@
 # coding: utf-8
+"""Vicon Nexus operation importing a trial into an h5 file with the Pipe tool."""
 
 import os
 import warnings
@@ -28,6 +29,12 @@ pipelineName = f"pycgm2.preparation.transform-c3d-to-device-to-h5"
 
 
 def main(args=None):
+    """Run the application: save the trial into an h5 file with the Pipe tool from the trial loaded in Vicon Nexus.
+
+    Args:
+        args (argparse.Namespace, optional): Parsed command-line arguments. If None, arguments are
+            parsed from the command line.
+    """
 
 
     if args  is None:

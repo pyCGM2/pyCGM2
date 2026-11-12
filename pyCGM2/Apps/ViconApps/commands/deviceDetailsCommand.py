@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""Vicon Nexus command displaying the details of the devices."""
 import argparse
 import os
 import pandas as pd
@@ -13,6 +14,12 @@ from pyCGM2.Tools import btkTools
 
 
 def main(args=None):
+    """Run the application: display the details of the devices from the trial loaded in Vicon Nexus.
+
+    Args:
+        args (argparse.Namespace, optional): Parsed command-line arguments. If None, arguments are
+            parsed from the command line.
+    """
     if args is None:
         parser = argparse.ArgumentParser(prog='pyCGM2-Nexus-Device')
         args = parser.parse_args()

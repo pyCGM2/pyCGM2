@@ -1,0 +1,1 @@
+"""Procedures configuring the OpenSim static optimisation tool."""

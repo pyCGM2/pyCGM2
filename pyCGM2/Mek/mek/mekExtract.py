@@ -1,3 +1,4 @@
+"""Extraction of c3d data (events, points, analogs) into a *mek* data store."""
 import sys
 import pyCGM2
 LOGGER = pyCGM2.LOGGER
@@ -6,8 +7,11 @@ from pyCGM2.Lib.Processing import spatioTemp
 from pyCGM2.Utils import files
 
 class mekExtractFilter(object):
-    """
+    """Filter extracting c3d data into the ``Extraction`` group of a *mek* data store.
 
+    Args:
+        mekStorage: moveck data store.
+        group (str, optional): Parent group of the ``Extraction`` group. Defaults to None (root).
     """
 
     def __init__(self,mekStorage,group=None):
@@ -16,6 +20,13 @@ class mekExtractFilter(object):
 
 
     def run(self,scheme):
+        """Extract events (foot strike, foot off, force plate events) and target signals of each c3d file.
+
+        Args:
+            scheme (dict): Extraction scheme. Each key is a group name associated with
+                ``[pathfilenames, targets]``, where ``targets`` are strings formatted as
+                ``"label:eventContext"`` or ``"label:eventContext=variableName"``.
+        """
         
 
         if self.m_group is None:

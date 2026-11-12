@@ -51,9 +51,11 @@ if __name__ == "__main__":
         ),
         url="https://github.com/pyCGM2/pyCGM2",
         keywords="python CGM Vicon PluginGait CGM Gait biomechanics",
-        packages=find_packages(),
+        packages=find_packages(include=["pyCGM2", "pyCGM2.*"]),
         include_package_data=True,
-        license="CC-BY-SA",
+        zip_safe=False,
+        license="CC-BY-SA-4.0",
+        python_requires=">=3.9,<3.12",
         install_requires=reqs,
         classifiers=[
             "Programming Language :: Python",

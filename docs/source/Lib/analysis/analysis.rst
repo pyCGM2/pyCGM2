@@ -8,7 +8,7 @@ pyCGM2.Lib.analysis module
 
 .. autosummary::
    :toctree: generated
-   :template: functions.rst
+   :template: function.rst
    
    makeAnalysis
    exportAnalysis

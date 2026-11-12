@@ -1,3 +1,4 @@
+"""Commands installing the Vicon Nexus SDK packages and the pyCGM2 Nexus files."""
 import os
 import sys
 import subprocess
@@ -17,6 +18,11 @@ NEXUS_PUBLIC_DOCUMENT_VST_PATH = NEXUS_PUBLIC_PATH + "ModelTemplates\\"
 NEXUS_PUBLIC_DOCUMENT_PIPELINE_PATH = NEXUS_PUBLIC_PATH+"Configurations\\Pipelines\\"
 
 def find_latest_nexus_sdk():
+    """Find the SDK folder of the latest installed version of Vicon Nexus.
+
+    Returns:
+        Optional[pathlib.Path]: SDK folder, or None if Nexus is not found.
+    """
 
     program_files = os.environ.get("ProgramFiles", r"C:\Program Files")
     vicon_dir = Path(program_files) / "Vicon"
@@ -43,6 +49,11 @@ def find_latest_nexus_sdk():
         return None
 
 def install_vicon_packages(sdk_path):
+    """Install (pip editable mode) the Vicon python packages (viconnexusapi, viconnexusutils) of an SDK folder.
+
+    Args:
+        sdk_path (pathlib.Path): SDK folder.
+    """
 
     print(f"[pyCGM2] Detection of the Vicon SDK : {sdk_path}")
 
@@ -60,6 +71,7 @@ def install_vicon_packages(sdk_path):
 
 
 def main_installViconPackages():
+    """Entry point installing the Vicon python packages of the latest Nexus SDK."""
     # Partie VICON
     sdk_path = find_latest_nexus_sdk()
     if sdk_path:
@@ -68,6 +80,14 @@ def main_installViconPackages():
         print("[pyCGM2] No Nexus SDK detected. Please install Vicon Nexus.")
 
 def get_install_path(pkg):
+    """Return the parent folder of the installation folder of a package.
+
+    Args:
+        pkg (module): Imported package.
+
+    Returns:
+        str: Parent folder.
+    """
     pkg_path = os.path.abspath(pkg.__file__)
     install_dir = os.path.dirname(pkg_path)
     parent_dir = os.path.dirname(install_dir)
@@ -75,6 +95,7 @@ def get_install_path(pkg):
 
 
 def main_install_pyCGM2_NexusFiles():
+    """Entry point copying the pyCGM2 Nexus files (pipelines, launchers) into ``%APPDATA%/pyCGM2`` for the current conda environment."""
     
     __version__ = pyCGM2.__version__
     pyversion = f"{sys.version_info.major}.{sys.version_info.minor}"

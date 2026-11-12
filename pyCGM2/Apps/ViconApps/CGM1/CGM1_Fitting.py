@@ -1,3 +1,4 @@
+"""Vicon Nexus operation: CGM1.0 fitting."""
 
 import warnings
 import argparse
@@ -12,6 +13,12 @@ LOGGER = pyCGM2.LOGGER
 warnings.filterwarnings("ignore")
 
 def main(args = None):
+    """Run the application: CGM1.0 fitting of the motion trial from the trial loaded in Vicon Nexus.
+
+    Args:
+        args (argparse.Namespace, optional): Parsed command-line arguments. If None, arguments are
+            parsed from the command line.
+    """
 
     if args is None:
         parser = argparse.ArgumentParser(description='CGM1 Fitting')

@@ -1,3 +1,4 @@
+"""Procedures computing gait scores (e.g. GPS)."""
 import numpy as np
 from pyCGM2.Math import numeric
 import pyCGM2
@@ -8,6 +9,7 @@ from pyCGM2.Report.normativeDatasets import NormativeData
 from typing import List, Tuple, Dict, Optional,Union,Any
 
 class ScoreProcedure(object):
+    """Abstract class of score procedures."""
     def __init__(self):
         pass
 

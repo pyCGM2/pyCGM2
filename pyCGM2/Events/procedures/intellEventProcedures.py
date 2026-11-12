@@ -75,6 +75,15 @@ class IntellEventProcedure(eventProcedures.EventProcedure):
         self.m_model_file_fo = None
 
     def setModels(self,trainedModelInitialContactFile, trainedModelFootOffFile):
+        """Set the trained models used for the event detection.
+
+        Args:
+            trainedModelInitialContactFile (str): Path of the trained model detecting initial contacts.
+            trainedModelFootOffFile (str): Path of the trained model detecting foot offs.
+
+        Raises:
+            FileNotFoundError: If one of the model files does not exist.
+        """
 
         if os.path.isfile(trainedModelInitialContactFile):          
             self.m_model_file_fc = trainedModelInitialContactFile

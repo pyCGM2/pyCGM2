@@ -27,3 +27,7 @@ dependencies:
   - pydata-sphinx-theme
   - onnxruntime
   - jinja2
+  - python-dotenv
+  - pyyaml
+  - python-docx
+  - docxtpl

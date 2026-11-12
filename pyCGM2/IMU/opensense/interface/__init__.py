@@ -1,0 +1,1 @@
+"""Filters interfacing pyCGM2 with OpenSim OpenSense tools."""

@@ -506,6 +506,7 @@ class MainParser:
 
 
     def Settings(self):
+        """Add the ``SETTINGS`` sub-commands (settings edition) to the parser."""
         settings_parser = self.subparsers.add_parser("SETTINGS", help= "PyCGM2 Settings commands")
         settings_subparsers = settings_parser.add_subparsers(help='', dest="SETTINGS")
         
@@ -643,6 +644,7 @@ class MainParser:
 
 
     def Flow(self):
+        """Add the ``FLOW`` sub-commands (edit, prepare, import, populate, report) to the parser."""
         flow_parser = self.subparsers.add_parser("FLOW", help= "PyCGM2 Flow commands")
         flow_subparsers = flow_parser.add_subparsers(help='', dest="FLOW")
         
@@ -659,6 +661,9 @@ class MainParser:
         parser_flowEdit.add_argument('-d', '--display',
                             action='store_true', help='distplay the flow file after edition')
         parser_flowEdit.add_argument('-dp', '--data_path', type=str,
+                            default=None)
+        parser_flowEdit.add_argument('-t', '--template', type=str,
+                            help='path of the flow template (cgm#i-settings.tpl). Default: PYCGM2_FLOW_TEMPLATE environment variable, then %%APPDATA%%/pyCGM2/templates',
                             default=None)
 
 
@@ -891,6 +896,7 @@ def get_main_parser():
     return my_parser.get_parser()
 
 def main():
+    """Entry point of the ``pyCGM2`` command-line interface."""
     my_class = MainParser()
     my_class.run(debug=False) 
 

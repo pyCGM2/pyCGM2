@@ -1,8 +1,18 @@
+"""Visualisation helpers."""
 import numpy as np
 
 from pyCGM2.Tools import btkTools
 
 def displayFrame(acq, frameInstance, labels = ["O","X","Y","Z"], offset= 100):
+    """Append the origin and axes of a frame as constant points to an acquisition.
+
+    Args:
+        acq (btk.btkAcquisition): Acquisition.
+        frameInstance (pyCGM2.Model.frame.Frame): Frame.
+        labels (list, optional): Labels of the origin and of the X, Y and Z axis points.
+            Defaults to ``["O", "X", "Y", "Z"]``.
+        offset (float, optional): Length of the axes. Defaults to 100.
+    """
 
     R = frameInstance.getRotation()
     t = frameInstance.getTranslation()

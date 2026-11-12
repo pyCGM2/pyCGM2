@@ -1,6 +1,7 @@
-﻿pyCGM2.Lib.emg.normalizedEMG
-============================
+﻿normalizedEMG
+================================================
 
 .. currentmodule:: pyCGM2.Lib.emg
 
 .. autofunction:: normalizedEMG
+

@@ -1,3 +1,4 @@
+"""Vicon Nexus operations plotting kinetics."""
 import os
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 import matplotlib.pyplot as plt
@@ -16,6 +17,11 @@ from pyCGM2.Report import normativeDatasets
 from pyCGM2.ForcePlates import forceplates
 
 def temporal(args):
+    """Plot temporal kinetics of the trial loaded in Vicon Nexus.
+
+    Args:
+        args (argparse.Namespace): Parsed command-line arguments.
+    """
 
     try:
         from viconnexusapi import ViconNexus
@@ -61,6 +67,11 @@ def temporal(args):
 
 
 def normalized(args):
+    """Plot time-normalised kinetics of the current trial, or of the trials marked in Vicon Eclipse.
+
+    Args:
+        args (argparse.Namespace): Parsed command-line arguments.
+    """
 
 
     plt.close("all")
@@ -176,6 +187,11 @@ def normalized(args):
 
 
 def normalizedComparison(args):
+    """Plot a comparison of time-normalised kinetics between trials marked in Vicon Eclipse.
+
+    Args:
+        args (argparse.Namespace): Parsed command-line arguments.
+    """
 
 
     plt.close("all")

@@ -1,9 +1,19 @@
+"""Operations applied on *mek* data stores."""
 
 
 from pyCGM2.Lib.Processing import spatioTemp
 
 
 def compute_spatio_temporal_parametersOperation(group, path, modelledFilenames):
+    """Compute the spatio-temporal parameters of c3d files and store them in a group.
+
+    Values are written in ``Preparation/SpatioTemporalParameters/<trial>/<context><parameter>/Cycle<i>``.
+
+    Args:
+        group: moveck group.
+        path (str): Folder of the c3d files.
+        modelledFilenames (List[str]): c3d filenames.
+    """
 
     stpData = spatioTemp.computeSpatioTemporalParameters(path, modelledFilenames)
 

@@ -1,0 +1,1 @@
+"""Signal processing utilities (filtering, detection of changes and peaks, anomalies)."""

@@ -51,7 +51,7 @@ functions
 
 .. autosummary::
     :toctree: generated
-    :template: functions.rst
+    :template: function.rst
    
     spatioTemporelParameter_descriptiveStats
     point_descriptiveStats

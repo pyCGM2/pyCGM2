@@ -15,6 +15,16 @@ LOGGER = pyCGM2.LOGGER
 from typing import List, Tuple, Dict, Optional,Union
 
 def getC3d_enfTrialMetadata(data_path, c3dFilename):
+        """Return the metadata of the Eclipse trial enf file associated with a c3d file.
+
+        Args:
+            data_path (str): Folder path.
+            c3dFilename (str): c3d filename (with or without extension).
+
+        Returns:
+            Tuple[str, Optional[dict]]: The c3d name without extension and the trial metadata
+            (None if no enf file is found).
+        """
 
        
         c3dName = c3dFilename.replace(".c3d","") if c3dFilename.endswith(".c3d") else c3dFilename

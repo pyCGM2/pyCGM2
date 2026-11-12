@@ -1,6 +1,7 @@
-﻿pyCGM2.Lib.plot.plotTemporalKinetic
-===================================
+﻿plotTemporalKinetic
+=======================================================
 
 .. currentmodule:: pyCGM2.Lib.plot
 
 .. autofunction:: plotTemporalKinetic
+

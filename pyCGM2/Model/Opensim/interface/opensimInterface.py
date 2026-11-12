@@ -1,3 +1,4 @@
+"""Interface between a pyCGM2 model and an OpenSim model (markers, joint centres...)."""
 from pyCGM2.Utils import prettyfier
 from pyCGM2.Utils import files
 from bs4 import BeautifulSoup

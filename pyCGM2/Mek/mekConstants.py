@@ -1,3 +1,4 @@
+"""Constants (CGM output labels per side) used by the *mek* modules."""
 CGM_KINEMATICS_ANGLES ={
                         'Left': ["LHipAngles","LKneeAngles","LAnkleAngles","LFootProgressAngles","LPelvisAngles",
                                 "LForeFootAngles",

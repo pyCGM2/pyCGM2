@@ -1,0 +1,1 @@
+"""Detection of the progression frame of a trial."""

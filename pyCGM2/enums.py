@@ -1,3 +1,4 @@
+"""Enumerations used across pyCGM2 (segment sides, data types, plot types, ...)."""
 
 from enum import Enum
 

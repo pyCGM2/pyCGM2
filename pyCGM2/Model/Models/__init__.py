@@ -1,0 +1,1 @@
+"""Generic models other than the CGM (e.g. single rigid body)."""

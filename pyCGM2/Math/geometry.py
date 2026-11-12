@@ -1,3 +1,4 @@
+"""Geometric utilities (angles, projections, planes...)."""
 import numpy as np
 from typing import List, Tuple, Dict, Optional,Union
 

@@ -1,6 +1,7 @@
-﻿pyCGM2.Lib.analysis.makeAnalysis
-================================
+﻿makeAnalysis
+====================================================
 
 .. currentmodule:: pyCGM2.Lib.analysis
 
 .. autofunction:: makeAnalysis
+

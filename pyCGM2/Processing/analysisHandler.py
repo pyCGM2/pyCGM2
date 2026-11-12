@@ -1,3 +1,4 @@
+"""Functions handling Analysis instances (phases, normalisation...)."""
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 import copy
 
@@ -154,6 +155,15 @@ def getAnalysisSection(analysisInstance,label,context):
         raise Exception ("[pyCGM2] label [%s] - context [%s] doesn t find in the analysis instance"%(label,context))
 
 def normalizedMuscleLength_withPose(analysisInstance, referenceDataframe):
+    """Add muscle lengths normalised by a reference pose to an Analysis instance.
+
+    New entries, suffixed ``_PoseNormalized``, are added to ``muscleGeometryStats``
+    (existing normalised entries are replaced).
+
+    Args:
+        analysisInstance (pyCGM2.Processing.analysis.Analysis): Analysis instance.
+        referenceDataframe (pd.DataFrame): Muscle lengths of the reference pose (one column per muscle).
+    """
     # remove previous normalized versions
     keys_to_remove = [key for key in analysisInstance.muscleGeometryStats.data if "_PoseNormalized" in key[0]]
     for key in keys_to_remove:

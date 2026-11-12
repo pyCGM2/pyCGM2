@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""Deprecated Vicon Nexus operation reporting anomalies."""
 
 
 from pyCGM2.Anomaly import anomalyFilters

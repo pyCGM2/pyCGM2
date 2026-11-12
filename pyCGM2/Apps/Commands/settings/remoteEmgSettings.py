@@ -1,3 +1,4 @@
+"""Command editing the EMG settings of a patient folder."""
 import os
 import argparse
 import pyCGM2
@@ -11,6 +12,12 @@ from pyCGM2.Nexus import nexus
 
 
 def main(args=None):
+    """Run the application: edit the EMG settings of the patient folder (from the trial loaded in Nexus or a selected folder).
+
+    Args:
+        args (argparse.Namespace, optional): Parsed command-line arguments. If None, arguments are
+            parsed from the command line.
+    """
 
     if args is None:
         parser = argparse.ArgumentParser(prog='pyCGM2-Remote EMG Settings")')

@@ -1,3 +1,4 @@
+"""Inertial measurement unit (IMU) data structure."""
 from scipy.interpolate import interp1d
 import numpy as np
 import matplotlib.pyplot as plt
@@ -174,7 +175,14 @@ class Imu(object):
             return self.m_motion[index]
 
     def getMotionValues(self,type = "rotationMatrix" ) -> np.ndarray:
-        """
+        """Return the orientation of the IMU over time.
+
+        Args:
+            type (str, optional): Representation of the orientation: ``"rotationMatrix"`` (9 columns),
+                ``"quaternion"`` (4 columns) or ``"angleAxis"``. Defaults to ``"rotationMatrix"``.
+
+        Returns:
+            np.ndarray: Orientation values (one row per frame).
         """
 
         frameNumber = len(self.m_motion)

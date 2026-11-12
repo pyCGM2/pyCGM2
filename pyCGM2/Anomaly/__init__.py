@@ -1,0 +1,1 @@
+"""Detection and correction of anomalies in motion-capture data (marker trajectories, events, anthropometry)."""

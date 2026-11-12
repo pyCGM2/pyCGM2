@@ -1,6 +1,7 @@
-﻿pyCGM2.Lib.analysis.exportAnalysis
-==================================
+﻿exportAnalysis
+======================================================
 
 .. currentmodule:: pyCGM2.Lib.analysis
 
 .. autofunction:: exportAnalysis
+

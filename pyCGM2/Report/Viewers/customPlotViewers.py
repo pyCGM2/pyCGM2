@@ -54,6 +54,11 @@ class SaggitalGagePlotViewer(plotViewers.PlotViewer):
         self.m_concretePlotFunction = None
 
     def setConcretePlotFunction(self, concreteplotFunction):
+        """Set the concrete plot function (not used by this viewer).
+
+        Args:
+            concreteplotFunction (Callable): Plot function.
+        """
         pass
 
     def __setLayer(self):

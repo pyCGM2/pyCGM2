@@ -1,3 +1,4 @@
+"""Vicon Nexus operation: Kalman gap filling."""
 import argparse
 from pyCGM2.Gap import gapFillingProcedures
 from pyCGM2.Gap import gapFilters
@@ -6,6 +7,12 @@ LOGGER = pyCGM2.LOGGER
 
 
 def main(args=None):
+    """Run the application: fill marker gaps with the Kalman method from the trial loaded in Vicon Nexus.
+
+    Args:
+        args (argparse.Namespace, optional): Parsed command-line arguments. If None, arguments are
+            parsed from the command line.
+    """
     if args  is None:
         parser = argparse.ArgumentParser(description='Kalman Gap filling')
         parser.add_argument('--markers', nargs='*', help='list of markers',required=False)

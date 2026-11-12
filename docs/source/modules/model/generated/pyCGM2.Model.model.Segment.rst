@@ -27,6 +27,7 @@
       ~Segment.getComTrajectory
       ~Segment.getComVelocity
       ~Segment.getExistFrames
+      ~Segment.getMotionValues
       ~Segment.getReferential
       ~Segment.isExternalDeviceWrenchsConnected
       ~Segment.removeTrackingMarker

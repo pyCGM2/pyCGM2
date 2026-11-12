@@ -1,3 +1,4 @@
+"""Generic utilities (time ranges, string handling, frame conversion...)."""
 import pyCGM2
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 import re
@@ -200,18 +201,16 @@ def getNumberFromStr(input_string:str):
 
 
 def is_valid_session_name(name: str) -> bool:
-    """
-    Vérifie que le nom est strictement du type 'Session <entier>'.
+    """Check that a name strictly follows the ``Session <integer>`` pattern.
 
-    Exemples valides :
-        Session 1
-        Session 12
+    Valid examples: ``Session 1``, ``Session 12``.
+    Invalid examples: ``Session_1``, ``Session1``, ``Session 1 passage1``, ``Session A``.
 
-    Exemples invalides :
-        Session_1
-        Session1
-        Session 1 passage1
-        Session A
+    Args:
+        name (str): Name to check.
+
+    Returns:
+        bool: True if the name is valid.
     """
     pattern = r"^Session [0-9]+$"
     return re.fullmatch(pattern, name) is not None

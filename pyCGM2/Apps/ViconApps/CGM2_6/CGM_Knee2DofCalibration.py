@@ -1,3 +1,4 @@
+"""Vicon Nexus operation: 2DOF knee functional calibration."""
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 import argparse
 
@@ -9,6 +10,12 @@ from pyCGM2.Model import  modelFilters
 from pyCGM2.Lib.CGM import  kneeCalibration
 
 def main(args=None):
+    """Run the application: 2DOF knee functional calibration from the trial loaded in Vicon Nexus.
+
+    Args:
+        args (argparse.Namespace, optional): Parsed command-line arguments. If None, arguments are
+            parsed from the command line.
+    """
     if args is None:
 
         parser = argparse.ArgumentParser(description='2Dof Knee Calibration')

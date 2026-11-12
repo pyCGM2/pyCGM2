@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""High-level functions building, exporting and analysing pyCGM2 Analysis instances."""
 
 from pyCGM2.Utils import files
 from pyCGM2.Processing.JointPatterns import jointPatternFilters

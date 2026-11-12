@@ -9,7 +9,7 @@ pyCGM2.Lib.plot module
 
 .. autosummary::
    :toctree: generated
-   :template: functions.rst
+   :template: function.rst
    
    compareEmgEnvelops
    compareKinematic
@@ -31,4 +31,20 @@ pyCGM2.Lib.plot module
    plot_DescriptiveMuscleLength
    plot_MAP
    plot_spatioTemporal
-   
+
+
+Additional plot functions
+-------------------------
+
+.. currentmodule:: pyCGM2.Lib.plot
+
+.. autosummary::
+   :toctree: generated
+   :template: function.rst
+
+   plotTemporalReaction
+   compareReaction
+   compareMapScores
+   plot_ConsistencyGRF
+   plot_ConsistencyMuscleLength
+

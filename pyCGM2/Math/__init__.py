@@ -1,0 +1,1 @@
+"""Mathematical utilities (geometry, derivation, Euler angles, normalisation, numerics)."""

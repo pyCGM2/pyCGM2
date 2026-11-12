@@ -1,3 +1,4 @@
+"""Vicon Nexus operation: CGM2.3 fitting."""
 import os
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 import argparse
@@ -16,6 +17,12 @@ from pyCGM2.Lib.CGM import  cgm2_3
 from pyCGM2.Lib.CGM.musculoskeletal import  cgm2_3 as cgm2_3exp
 
 def main(args=None):
+    """Run the application: CGM2.3 fitting of the motion trial from the trial loaded in Vicon Nexus.
+
+    Args:
+        args (argparse.Namespace, optional): Parsed command-line arguments. If None, arguments are
+            parsed from the command line.
+    """
     if args is None:
 
         parser = argparse.ArgumentParser(description='CGM2-3 Fitting')

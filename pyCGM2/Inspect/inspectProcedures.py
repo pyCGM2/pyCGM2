@@ -18,6 +18,15 @@ from pyCGM2.Signal import detect_changes
 
 
 class GaitEventQualityProcedure(object):
+    """Check the sequence of gait events (no two consecutive identical events per context).
+
+    Attributes ``state`` (bool) and ``exceptionMode`` (bool) are used by
+    :class:`pyCGM2.Inspect.inspectFilters.QualityFilter`.
+
+    Args:
+        acq (btk.btkAcquisition): Acquisition to check.
+        title (str, optional): Title of the test. Defaults to 'Gait events'.
+    """
     def __init__(self,acq, title = None):
 
         self.acq = acq
@@ -27,6 +36,7 @@ class GaitEventQualityProcedure(object):
         self.title = "Gait events" if title is None else title
 
     def check(self):
+        """Check that foot strike and foot off events alternate, for each context and overall."""
 
         events = self.acq.GetEvents()
 
@@ -98,6 +108,15 @@ class GaitEventQualityProcedure(object):
 
 
 class AnthropometricDataQualityProcedure(object):
+    """Check the anthropometric parameters required by the CGM.
+
+    Attributes ``state`` (bool) and ``exceptionMode`` (bool) are used by
+    :class:`pyCGM2.Inspect.inspectFilters.QualityFilter`.
+
+    Args:
+        mp (dict): Anthropometric parameters.
+        title (str, optional): Title of the test. Defaults to 'CGM anthropometric parameters'.
+    """
     def __init__(self,mp,title=None):
         self.mp = mp
         self.state = True
@@ -139,6 +158,16 @@ class AnthropometricDataQualityProcedure(object):
             self.state = False
 
 class MarkerPresenceQualityProcedure(object):
+    """Check the presence of markers in an acquisition.
+
+    Attributes ``state`` (bool) and ``exceptionMode`` (bool) are used by
+    :class:`pyCGM2.Inspect.inspectFilters.QualityFilter`.
+
+    Args:
+        acq (btk.btkAcquisition): Acquisition to check.
+        title (str, optional): Title of the test. Defaults to 'Marker presence'.
+        markers (list, optional): Markers to check. Defaults to all markers of the acquisition.
+    """
 
     def __init__(self,acq,markers=None,title=None):
         self.acq = acq
@@ -151,6 +180,7 @@ class MarkerPresenceQualityProcedure(object):
         self.markersIn = []
 
     def check(self):
+        """Check that every marker exists in the acquisition; present markers are stored in ``markersIn``."""
 
         frameNumber = self.acq.GetPointFrameNumber()
 
@@ -168,6 +198,16 @@ class MarkerPresenceQualityProcedure(object):
             self.state = False
 
 class GapQualityProcedure(object):
+    """Check gaps in marker trajectories.
+
+    Attributes ``state`` (bool) and ``exceptionMode`` (bool) are used by
+    :class:`pyCGM2.Inspect.inspectFilters.QualityFilter`.
+
+    Args:
+        acq (btk.btkAcquisition): Acquisition to check.
+        title (str, optional): Title of the test. Defaults to 'Gap'.
+        markers (list, optional): Markers to check. Defaults to all markers of the acquisition.
+    """
 
     def __init__(self,acq,markers=None,title=None):
         self.acq = acq
@@ -179,6 +219,7 @@ class GapQualityProcedure(object):
         self.title = "Gap" if title is None else title
 
     def check(self):
+        """Detect and log the gaps (frames with a negative residual) of each marker trajectory."""
 
         frameNumber = self.acq.GetPointFrameNumber()
 
@@ -212,6 +253,17 @@ class GapQualityProcedure(object):
 
 
 class SwappingMarkerQualityProcedure(object):
+    """Detect potential marker swapping from abrupt changes of marker trajectories.
+
+    Attributes ``state`` (bool) and ``exceptionMode`` (bool) are used by
+    :class:`pyCGM2.Inspect.inspectFilters.QualityFilter`.
+
+    Args:
+        acq (btk.btkAcquisition): Acquisition to check.
+        title (str, optional): Title of the test. Defaults to 'Swapping marker'.
+        markers (list, optional): Markers to check. Defaults to all markers of the acquisition.
+        plot (bool, optional): Plot the cusum detection. Defaults to False.
+    """
     def __init__(self,acq,markers=None,title=None,plot=False):
         self.acq = acq
         self.markers = markers if markers is not None else btkTools.GetMarkerNames(acq)
@@ -224,6 +276,7 @@ class SwappingMarkerQualityProcedure(object):
 
 
     def check(self):
+        """Detect abrupt changes of each marker trajectory with a cusum algorithm, using the distance to the nearest marker as threshold."""
 
         ff = self.acq.GetFirstFrame()
         frameNumber = self.acq.GetPointFrameNumber()
@@ -247,9 +300,17 @@ class SwappingMarkerQualityProcedure(object):
 
 
 class MarkerPositionQualityProcedure(object):
-    """
-    TODO :
-    - check medial markers if exist
+    """Check the location of lateral markers relative to the pelvis (left markers on the left side, right markers on the right side).
+
+    TODO: check medial markers if exist.
+
+    Attributes ``state`` (bool) and ``exceptionMode`` (bool) are used by
+    :class:`pyCGM2.Inspect.inspectFilters.QualityFilter`.
+
+    Args:
+        acq (btk.btkAcquisition): Acquisition to check.
+        title (str, optional): Title of the test. Defaults to 'Marker position'.
+        markers (list, optional): Markers to check. Defaults to all markers of the acquisition.
     """
 
 
@@ -262,6 +323,7 @@ class MarkerPositionQualityProcedure(object):
         self.title = "Marker position" if title is None else title
 
     def check(self):
+        """Check, frame by frame, the side of each marker in a pelvis-based coordinate system built from the ASIS and PSIS markers."""
 
         frameNumber = self.acq.GetPointFrameNumber()
 
@@ -355,6 +417,15 @@ class MarkerPositionQualityProcedure(object):
 
 
 class ForcePlateQualityProcedure(object):
+    """Check force plate data (not implemented yet).
+
+    Attributes ``state`` (bool) and ``exceptionMode`` (bool) are used by
+    :class:`pyCGM2.Inspect.inspectFilters.QualityFilter`.
+
+    Args:
+        acq (btk.btkAcquisition): Acquisition to check.
+        title (str, optional): Title of the test. Defaults to 'Force Plate'.
+    """
 
     def __init__(self,acq,title=None):
         self.acq = acq
@@ -364,10 +435,21 @@ class ForcePlateQualityProcedure(object):
         self.title = "Force Plate" if title is None else title
 
     def check(self):
+        """Check force plate data (not implemented yet; TODO saturation and foot assignment)."""
         # TODO :  - saturation and foot asignment
         pass
 
 class EMGQualityProcedure(object):
+    """Check EMG data (not implemented yet).
+
+    Attributes ``state`` (bool) and ``exceptionMode`` (bool) are used by
+    :class:`pyCGM2.Inspect.inspectFilters.QualityFilter`.
+
+    Args:
+        acq (btk.btkAcquisition): Acquisition to check.
+        title (str, optional): Title of the test. Defaults to 'EMG'.
+        analogLabels (list): Labels of the EMG channels.
+    """
     def __init__(self,acq, analogLabels,title=None):
         self.acq = acq
         self.exceptionMode = False
@@ -376,5 +458,6 @@ class EMGQualityProcedure(object):
 
         self.title = "EMG" if title is None else title
     def check(self):
+        """Check EMG data (not implemented yet)."""
         # TODO :  - saturation and foot asignment
         pass

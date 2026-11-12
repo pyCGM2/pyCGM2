@@ -25,11 +25,25 @@ from typing import List, Tuple, Dict, Optional,Union,Any
 FRAMES_HEADER = ["Frame0"]+['Frame' + '{:03}'.format(i) for i in range(1,101)]
 
 def isColumnNameExist( dataframe, name):
+    """Log (debug) if a column name already exists in a dataframe.
+
+    Args:
+        dataframe (pd.DataFrame): Dataframe.
+        name (str): Column name.
+    """
     if name in dataframe.columns.values:
         LOGGER.logger.debug("column name :[%s] already in the dataFrame",name)
 
 # ---- Spatio temporal parameters -----
 def build_df_descriptiveCycle1_1(analysis_outputStats):
+    """Build a dataframe of descriptive statistics (mean, std, median) of single-value parameters (e.g. spatio-temporal parameters).
+
+    Args:
+        analysis_outputStats (dict): Statistics of an Analysis attribute, keyed by ``(label, context)``.
+
+    Returns:
+        pd.DataFrame: Left and right contexts concatenated.
+    """
 
     df_collection_L={"mean" : [], "std" : [], "median" : []}
     df_collection_R={"mean" : [], "std" : [], "median" : []}
@@ -90,6 +104,14 @@ def build_df_descriptiveCycle1_1(analysis_outputStats):
 
 
 def build_df_cycles1_1(analysis_outputStats):
+    """Build a dataframe of the cycle values of single-value parameters (e.g. spatio-temporal parameters).
+
+    Args:
+        analysis_outputStats (dict): Statistics of an Analysis attribute, keyed by ``(label, context)``.
+
+    Returns:
+        pd.DataFrame: Left and right contexts concatenated.
+    """
 
     df_collection_L=[]
     df_collection_R=[]
@@ -141,6 +163,15 @@ def build_df_cycles1_1(analysis_outputStats):
 
 # ---- for Scores -----
 def build_df_descriptiveCycle1_1_overall(analysis_outputStats,columnName):
+    """Build a dataframe of overall descriptive statistics (mean, std, median) of a single-value score.
+
+    Args:
+        analysis_outputStats (dict): Statistics with ``mean``, ``std`` and ``median`` keys.
+        columnName (str): Name of the value column.
+
+    Returns:
+        pd.DataFrame: Statistics with ``EventContext`` set to ``overall``.
+    """
 
     df_collection=[]
 
@@ -169,6 +200,15 @@ def build_df_descriptiveCycle1_1_overall(analysis_outputStats,columnName):
 
 
 def build_df_descriptiveCycle1_1_onlyContext(analysis_outputStats,columnName):
+    """Build a dataframe of descriptive statistics (mean, std, median) of a single-value score by context.
+
+    Args:
+        analysis_outputStats (dict): Statistics keyed by context.
+        columnName (str): Name of the value column.
+
+    Returns:
+        pd.DataFrame: Left and right contexts concatenated.
+    """
 
 
     # "data" section
@@ -233,6 +273,15 @@ def build_df_descriptiveCycle1_1_onlyContext(analysis_outputStats,columnName):
 
 
 def build_df_cycles1_1_onlyContext(analysis_outputStats, columnName):
+    """Build a dataframe of the cycle values of a single-value score by context.
+
+    Args:
+        analysis_outputStats (dict): Statistics keyed by context.
+        columnName (str): Name of the value column.
+
+    Returns:
+        pd.DataFrame: Left and right contexts concatenated.
+    """
 
     # "data" section
     df_collection_L=[]
@@ -280,6 +329,15 @@ def build_df_cycles1_1_onlyContext(analysis_outputStats, columnName):
 
 
 def buid_df_descriptiveCycle1_3(analysis_outputStats,columnName):
+    """Build a dataframe of descriptive statistics (mean, std, median) of three-component values (e.g. GVS).
+
+    Args:
+        analysis_outputStats (dict): Statistics of an Analysis attribute, keyed by ``(label, context)``.
+        columnName (str): Name of the value column.
+
+    Returns:
+        pd.DataFrame: Left and right contexts concatenated.
+    """
 
 
     # "data" section
@@ -357,6 +415,15 @@ def buid_df_descriptiveCycle1_3(analysis_outputStats,columnName):
 
 
 def build_df_cycles1_3(analysis_outputStats, columnName):
+    """Build a dataframe of the cycle values of three-component values (e.g. GVS).
+
+    Args:
+        analysis_outputStats (dict): Statistics of an Analysis attribute, keyed by ``(label, context)``.
+        columnName (str): Name of the value column.
+
+    Returns:
+        pd.DataFrame: Left and right contexts concatenated.
+    """
 
     # "data" section
     df_collection_L=[]
@@ -413,6 +480,14 @@ def build_df_cycles1_3(analysis_outputStats, columnName):
 
 # ---- for 101-frames data -----
 def build_df_descriptiveCycle101_3(analysis_outputStats):
+    """Build a dataframe of descriptive statistics (mean, std, median) of time-normalised (101 frames) three-component outputs (e.g. kinematics).
+
+    Args:
+        analysis_outputStats: Analysis attribute (e.g. ``kinematicStats``) with a ``data`` dictionary keyed by ``(label, context)``.
+
+    Returns:
+        pd.DataFrame: Left and right contexts concatenated.
+    """
 
 
     # "data" section
@@ -500,6 +575,14 @@ def build_df_descriptiveCycle101_3(analysis_outputStats):
 
 
 def build_df_cycles101_3(analysis_outputStats):
+    """Build a dataframe of the cycles of time-normalised (101 frames) three-component outputs.
+
+    Args:
+        analysis_outputStats: Analysis attribute (e.g. ``kinematicStats``) with a ``data`` dictionary keyed by ``(label, context)``.
+
+    Returns:
+        pd.DataFrame: Left and right contexts concatenated.
+    """
 
     # "data" section
     df_collection_L=[]
@@ -607,6 +690,14 @@ def build_df_cycles101_3(analysis_outputStats):
     return DF
 
 def build_df_descriptiveCycle101_1(analysis_outputStats):
+    """Build a dataframe of descriptive statistics (mean, std, median) of time-normalised (101 frames) single-component outputs (e.g. EMG).
+
+    Args:
+        analysis_outputStats: Analysis attribute (e.g. ``kinematicStats``) with a ``data`` dictionary keyed by ``(label, context)``.
+
+    Returns:
+        pd.DataFrame: Left and right contexts concatenated.
+    """
 
 
     # "data" section
@@ -688,6 +779,14 @@ def build_df_descriptiveCycle101_1(analysis_outputStats):
 
 
 def build_df_cycles101_1(analysis_outputStats):
+    """Build a dataframe of the cycles of time-normalised (101 frames) single-component outputs.
+
+    Args:
+        analysis_outputStats: Analysis attribute (e.g. ``kinematicStats``) with a ``data`` dictionary keyed by ``(label, context)``.
+
+    Returns:
+        pd.DataFrame: Left and right contexts concatenated.
+    """
 
     # "data" section
     df_collection_L=[]
@@ -794,6 +893,15 @@ def build_df_cycles101_1(analysis_outputStats):
 
 
 def renameEmgInAnalysis(analysisInstance,emgSettings):
+    """Rename EMG channels of an Analysis instance with their muscle names.
+
+    The analysis is modified in place: new keys are built by replacing the channel label
+    with the muscle label defined in the EMG settings.
+
+    Args:
+        analysisInstance (pyCGM2.Processing.analysis.Analysis): Analysis instance.
+        emgSettings (dict): EMG settings (``CHANNELS`` section with ``Muscle`` and ``Context``).
+    """
 
     emgChannels = []
     emgContexts = []

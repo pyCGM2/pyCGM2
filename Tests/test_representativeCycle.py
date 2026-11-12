@@ -36,4 +36,3 @@ class Test_lowLevel:
 
         filt = representativeFilters.RepresentativeCycleFilter(analysisInstance, procedure)
         representativeIndex = filt.run()
-        import ipdb; ipdb.set_trace()

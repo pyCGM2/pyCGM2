@@ -122,3 +122,5 @@ build_artifacts
 *.h5
 
 commandExample
+# flow template, distributed separately (see pyCGM2.flow.flowFilters.findFlowTemplate)
+pyCGM2/Settings/templates/cgm#i-settings.tpl

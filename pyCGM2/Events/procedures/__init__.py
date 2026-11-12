@@ -1,0 +1,1 @@
+"""Gait event detection procedures (e.g. machine-learning based detectors)."""

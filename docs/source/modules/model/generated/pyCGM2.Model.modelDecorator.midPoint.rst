@@ -1,6 +1,7 @@
-﻿pyCGM2.Model.modelDecorator.midPoint
-====================================
+﻿midPoint
+========================================================
 
 .. currentmodule:: pyCGM2.Model.modelDecorator
 
 .. autofunction:: midPoint
+

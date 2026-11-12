@@ -1,3 +1,4 @@
+"""Management of the input arguments of the CGM Vicon Nexus operations."""
 import numpy as np
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 from pyCGM2 import enums

@@ -13,6 +13,7 @@ from pyCGM2.Math import numeric
 from pyCGM2.Mek.lib import mekLib
 
 class ScoreProcedure(object):
+    """Abstract class of score procedures."""
     def __init__(self):
         pass
 

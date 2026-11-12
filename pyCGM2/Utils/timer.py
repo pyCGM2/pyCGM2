@@ -1,11 +1,18 @@
+"""Simple tic-toc timer."""
 import time
 
 
 class Timer(object):
-    """ A quick tic-toc timer
+    """A quick tic-toc timer, used as a context manager.
 
-        def usage1():
-        print 'Verbose mode'
+    Args:
+        name (str, optional): Name printed with the elapsed time.
+        verbose (bool, optional): Print the elapsed time on exit. Defaults to True.
+
+    Example:
+
+    .. code-block:: python
+
         with Timer('Usage 1'):
             # do stuff
             for _ in range(1000000):

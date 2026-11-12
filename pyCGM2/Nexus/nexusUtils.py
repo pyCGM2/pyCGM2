@@ -1,3 +1,4 @@
+"""Utilities interacting with Vicon Nexus (subject parameters, ...)."""
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 try:
     from viconnexusapi import ViconNexus

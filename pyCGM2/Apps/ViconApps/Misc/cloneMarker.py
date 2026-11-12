@@ -1,3 +1,4 @@
+"""Vicon Nexus operation cloning a marker."""
 import argparse
 from pyCGM2.Nexus import nexusFilters
 from pyCGM2.Nexus import nexusTools
@@ -11,6 +12,12 @@ LOGGER = pyCGM2.LOGGER
 
 
 def main(args=None):
+    """Run the application: clone a marker from the trial loaded in Vicon Nexus.
+
+    Args:
+        args (argparse.Namespace, optional): Parsed command-line arguments. If None, arguments are
+            parsed from the command line.
+    """
     
     # if args  is None:
     parser = argparse.ArgumentParser(description='clone marker script')

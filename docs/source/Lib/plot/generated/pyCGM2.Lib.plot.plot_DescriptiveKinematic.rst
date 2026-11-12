@@ -1,6 +1,7 @@
-﻿pyCGM2.Lib.plot.plot\_DescriptiveKinematic
-==========================================
+﻿plot_DescriptiveKinematic
+=============================================================
 
 .. currentmodule:: pyCGM2.Lib.plot
 
 .. autofunction:: plot_DescriptiveKinematic
+

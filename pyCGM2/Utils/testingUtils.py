@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""Helpers used by the test suite (assertions and comparison plots)."""
 from __future__ import unicode_literals
 import numpy as np
 import scipy as sp
@@ -11,11 +12,29 @@ from pyCGM2.Utils import utils
 #---------TESTS----------
 
 def test_offset(value,acq,viconLabel, decimal=3):
+    """Assert that a value equals a Vicon offset (degrees) stored in the PROCESSING metadata.
+
+    Args:
+        value (float): Value to test.
+        acq (btk.btkAcquisition): Acquisition.
+        viconLabel (str): Metadata label.
+        decimal (int, optional): Decimal precision. Defaults to 3.
+    """
     np.testing.assert_almost_equal(value,
     np.rad2deg(acq.GetMetaData().FindChild("PROCESSING").value().FindChild(viconLabel).value().GetInfo().ToDouble()[0]) , decimal = decimal)
 
 
 def test_point(acq,RefLabel,LabelToTest,decimal = 3,init=-1,end=-1):
+    """Assert that two points of an acquisition are almost equal.
+
+    Args:
+        acq (btk.btkAcquisition): Acquisition.
+        RefLabel (str): Reference point label.
+        LabelToTest (str): Tested point label.
+        decimal (int, optional): Decimal precision. Defaults to 3.
+        init (int, optional): First frame. Defaults to -1 (first frame of the acquisition).
+        end (int, optional): Last frame. Defaults to -1 (last frame of the acquisition).
+    """
     init = 0  if init == -1 else  init - acq.GetFirstFrame()
     end = acq.GetLastFrame()- acq.GetFirstFrame()  if end == -1 else  end - acq.GetFirstFrame()
 
@@ -23,6 +42,16 @@ def test_point(acq,RefLabel,LabelToTest,decimal = 3,init=-1,end=-1):
 
 
 def test_point_rms(acq,RefLabel,LabelToTest,threshold,init=-1,end=-1):
+    """Assert that the rms difference between two points of an acquisition is below a threshold.
+
+    Args:
+        acq (btk.btkAcquisition): Acquisition.
+        RefLabel (str): Reference point label.
+        LabelToTest (str): Tested point label.
+        threshold (float | array_like): Threshold of each component.
+        init (int, optional): First frame. Defaults to -1 (first frame of the acquisition).
+        end (int, optional): Last frame. Defaults to -1 (last frame of the acquisition).
+    """
     init = 0  if init == -1 else  init - acq.GetFirstFrame()
     end = acq.GetLastFrame()- acq.GetFirstFrame()  if end == -1 else  end - acq.GetFirstFrame()
 
@@ -32,6 +61,14 @@ def test_point_rms(acq,RefLabel,LabelToTest,threshold,init=-1,end=-1):
 
 
 def test_point_compareToRef(acqRef,acqToTest, labelToTest,decimal = 3):
+    """Assert that a point is almost equal in two acquisitions.
+
+    Args:
+        acqRef (btk.btkAcquisition): Reference acquisition.
+        acqToTest (btk.btkAcquisition): Tested acquisition.
+        labelToTest (str): Point label.
+        decimal (int, optional): Decimal precision. Defaults to 3.
+    """
 
     ref = acqRef.GetPoint(labelToTest).GetValues()
     values = acqToTest.GetPoint(labelToTest).GetValues()
@@ -40,6 +77,14 @@ def test_point_compareToRef(acqRef,acqToTest, labelToTest,decimal = 3):
 
 
 def test_point_rms_compareToRef(acqRef,acqToTest,labelToTest,threshold):
+    """Assert that the rms difference of a point between two acquisitions is below a threshold.
+
+    Args:
+        acqRef (btk.btkAcquisition): Reference acquisition.
+        acqToTest (btk.btkAcquisition): Tested acquisition.
+        labelToTest (str): Point label.
+        threshold (float | array_like): Threshold of each component.
+    """
 
     ref = acqRef.GetPoint(labelToTest).GetValues()
     values = acqToTest.GetPoint(labelToTest).GetValues()
@@ -52,12 +97,30 @@ def test_point_rms_compareToRef(acqRef,acqToTest,labelToTest,threshold):
 
 #---------DISPLAY----------
 def print_offset(value,acq,viconLabel, decimal=3):
+    """Log a value and the corresponding Vicon offset (degrees) stored in the PROCESSING metadata.
+
+    Args:
+        value (float): Value.
+        acq (btk.btkAcquisition): Acquisition.
+        viconLabel (str): Metadata label.
+        decimal (int, optional): Not used. Defaults to 3.
+    """
     LOGGER.logger.info(" offset [%s] => %f ( my value) = %f ( reference)"%(viconLabel,
                             value,
                             np.rad2deg(acq.GetMetaData().FindChild("PROCESSING").value().FindChild(viconLabel).value().GetInfo().ToDouble()[0])))
 
 
 def plotComparisonOfPoint(acq,label,suffix,title=None,init=-1,end=-1):
+    """Plot the three components of a point and of its suffixed version.
+
+    Args:
+        acq (btk.btkAcquisition): Acquisition.
+        label (str): Point label.
+        suffix (str): Suffix of the compared point (``label_suffix``).
+        title (str, optional): Figure title.
+        init (int, optional): First frame. Defaults to -1 (first frame of the acquisition).
+        end (int, optional): Last frame. Defaults to -1 (last frame of the acquisition).
+    """
     init = 0  if init == -1 else  init - acq.GetFirstFrame()
     end = acq.GetLastFrame()- acq.GetFirstFrame()  if end == -1 else  end - acq.GetFirstFrame()
 
@@ -82,6 +145,12 @@ def plotComparisonOfPoint(acq,label,suffix,title=None,init=-1,end=-1):
     plt.show()
 
 def plotValuesComparison(values0,values1):
+    """Plot the three components of two arrays.
+
+    Args:
+        values0 (np.ndarray): First array (frames x 3).
+        values1 (np.ndarray): Second array (frames x 3).
+    """
 
     fig = plt.figure(figsize=(10,4), dpi=100,facecolor="white")
     plt.subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=0.5, hspace=0.5)
@@ -102,6 +171,20 @@ def plotValuesComparison(values0,values1):
     plt.show()
 
 def plotComparison_MomentPanel(acq,suffix1,suffix2,side,title=None,init=-1,end=-1):
+    """Plot the joint moments of a side for two output suffixes.
+
+    Args:
+        acq (btk.btkAcquisition): Acquisition.
+        suffix1 (str): First suffix (None for no suffix).
+        suffix2 (str): Second suffix (None for no suffix).
+        side (str): ``"Left"`` or ``"Right"``.
+        title (str, optional): Figure title.
+        init (int, optional): First frame. Defaults to -1 (first frame of the acquisition).
+        end (int, optional): Last frame. Defaults to -1 (last frame of the acquisition).
+
+    Raises:
+        Exception: If ``side`` is neither Left nor Right.
+    """
 
 
     if side=="Left":
@@ -169,6 +252,20 @@ def plotComparison_MomentPanel(acq,suffix1,suffix2,side,title=None,init=-1,end=-
 
 
 def plotComparison_ForcePanel(acq,suffix1,suffix2,side,title=None,init=-1,end=-1):
+    """Plot the joint forces of a side for two output suffixes.
+
+    Args:
+        acq (btk.btkAcquisition): Acquisition.
+        suffix1 (str): First suffix (None for no suffix).
+        suffix2 (str): Second suffix (None for no suffix).
+        side (str): ``"Left"`` or ``"Right"``.
+        title (str, optional): Figure title.
+        init (int, optional): First frame. Defaults to -1 (first frame of the acquisition).
+        end (int, optional): Last frame. Defaults to -1 (last frame of the acquisition).
+
+    Raises:
+        Exception: If ``side`` is neither Left nor Right.
+    """
 
     if side=="Left":
         sideLetter = "L"

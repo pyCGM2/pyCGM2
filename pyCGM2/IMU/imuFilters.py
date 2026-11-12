@@ -1,3 +1,4 @@
+"""Filters processing IMU data (reading, motion, relative angles)."""
 
 from pyCGM2.IMU.Procedures.imuMotionProcedure import ImuMotionProcedure
 from pyCGM2.IMU.Procedures.relativeImuAngleProcedures import RelativeImuAnglesProcedure

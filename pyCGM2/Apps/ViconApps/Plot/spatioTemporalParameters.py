@@ -1,3 +1,4 @@
+"""Vicon Nexus operations plotting spatio-temporal parameters."""
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 
 import warnings
@@ -18,6 +19,11 @@ from pyCGM2.Lib import plot
 
 
 def horizontalHistogram(args):
+    """Plot the spatio-temporal parameters as an horizontal histogram.
+
+    Args:
+        args (argparse.Namespace): Parsed command-line arguments.
+    """
 
 
     plt.close("all")

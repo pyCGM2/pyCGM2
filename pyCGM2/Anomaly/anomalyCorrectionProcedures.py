@@ -1,3 +1,4 @@
+"""Procedures correcting anomalies detected in motion-capture data."""
 from scipy.cluster.hierarchy import dendrogram
 from sklearn.cluster import AgglomerativeClustering
 import numpy as np
@@ -9,6 +10,13 @@ LOGGER = pyCGM2.LOGGER
 from typing import List, Tuple, Dict, Optional, Union
 
 def plot_dendrogram(model, **kwargs):
+    """Plot the dendrogram of a fitted agglomerative clustering model.
+
+    Args:
+        model (sklearn.cluster.AgglomerativeClustering): Fitted model (``distance_threshold`` set,
+            so that ``distances_`` is available).
+        **kwargs: Keyword arguments passed to :func:`scipy.cluster.hierarchy.dendrogram`.
+    """
     # Create linkage matrix and then plot the dendrogram
 
     # create the counts of samples under each node

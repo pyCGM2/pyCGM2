@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""Deprecated Vicon Nexus operation: plot the time-normalised EMG panel of the current trial or of the trials marked in Vicon Eclipse."""
 #APIDOC["Path"]=/Executable Apps/Vicon/EMG
 #APIDOC["Import"]=False
 #APIDOC["Draft"]=False
@@ -22,6 +23,12 @@ from viconnexusapi import ViconNexus
 
 
 def main():
+    """Run the application: plot the time-normalised EMG panel of the current trial or of the trials marked in Vicon Eclipse.
+
+    Args:
+        args (argparse.Namespace, optional): Parsed command-line arguments. If None, arguments are
+            parsed from the command line.
+    """
 
     parser = argparse.ArgumentParser(description='plot time normalized EMG panel from the current trial or marked trials of Vicon Eclipse ')
     parser.add_argument('-bpf', '--BandpassFrequencies', nargs='+',help='bandpass filter')

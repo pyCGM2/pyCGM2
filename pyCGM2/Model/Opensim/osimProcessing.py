@@ -166,6 +166,12 @@ def setGlobalTransormation_lab_osim(axis,forwardProgression):
 
 
 class opensimModel(object):
+    """Wrapper of an OpenSim model associated with a pyCGM2 model.
+
+    Args:
+        osimFile (str): Path of the osim file.
+        cgmModel (pyCGM2.Model.model.Model): Calibrated pyCGM2 model.
+    """
 
 
     def __init__(self,osimFile,cgmModel,):
@@ -184,10 +190,25 @@ class opensimModel(object):
 
 
     def addMarkerSet(self,markersetFile):
+        """Replace the marker set of the model.
+
+        Args:
+            markersetFile (str): Path of the marker set file.
+        """
         markerSet= opensim.MarkerSet(markersetFile)
         self.m_model.updateMarkerSet(markerSet)
 
     def setOsimJoinCentres(self,R_OSIM_CGM, jointLabelInOsim, parentSegmentLabel,childSegmentLabel, nodeLabel, toMeter = 1000.0):
+        """Set the location of an OpenSim joint from a joint centre of the pyCGM2 model.
+
+        Args:
+            R_OSIM_CGM (dict): Rotation matrices from pyCGM2 to OpenSim segment frames, by segment label.
+            jointLabelInOsim (str): Joint name in the OpenSim model.
+            parentSegmentLabel (str): Parent segment label in the pyCGM2 model.
+            childSegmentLabel (str): Child segment label in the pyCGM2 model.
+            nodeLabel (str): Label of the joint-centre node.
+            toMeter (float, optional): Conversion factor to metres. Defaults to 1000.0.
+        """
 
         locationInParent =  self.m_cgmModel.getSegment(parentSegmentLabel).anatomicalFrame.static.getNode_byLabel(nodeLabel).m_local # TODO : verifier que node exist
         locationInChild =  self.m_cgmModel.getSegment(childSegmentLabel).anatomicalFrame.static.getNode_byLabel(nodeLabel).m_local # TODO : verifier que node exist
@@ -210,6 +231,15 @@ class opensimModel(object):
 
 
     def addmarkerFromModel(self, label, osimBodyName = "", modelSegmentLabel = "", rotation_osim_model=np.eye(3), toMeter=1000.0):
+        """Create an OpenSim marker from a node of the pyCGM2 model.
+
+        Args:
+            label (str): Node label.
+            osimBodyName (str, optional): OpenSim body name.
+            modelSegmentLabel (str, optional): pyCGM2 segment label.
+            rotation_osim_model (np.ndarray, optional): Rotation from pyCGM2 to OpenSim segment frame.
+            toMeter (float, optional): Conversion factor to metres. Defaults to 1000.0.
+        """
 
         if (osimBodyName != ""  and  modelSegmentLabel != "") :
             localPos = np.dot(rotation_osim_model,
@@ -227,12 +257,21 @@ class opensimModel(object):
 
 
     def createMarkerSet(self):
+        """Add the created markers to the marker set of the OpenSim model."""
 
         for i in range(0,len(self.m_markers)):
             self.m_model.getMarkerSet().set(i,self.m_markers[i]) # FIXME  : this line cause a memory issue : it would be better to use add_maker but i have an error with const double[3] when i specified the offset
 
 
     def updateMarkerInMarkerSet(self, label, modelSegmentLabel = "", rotation_osim_model=np.eye(3), toMeter=1000.0):
+       """Update the location of a marker of the marker set from the pyCGM2 model.
+
+       Args:
+           label (str): Marker label.
+           modelSegmentLabel (str, optional): pyCGM2 segment label.
+           rotation_osim_model (np.ndarray, optional): Rotation from pyCGM2 to OpenSim segment frame.
+           toMeter (float, optional): Conversion factor to metres. Defaults to 1000.0.
+       """
 
        #if label =="LTOE": pdb.set_trace()
        markers = opensim.ArrayStr()
@@ -256,6 +295,12 @@ class opensimModel(object):
 
 
 class opensimKinematicFitting(object):
+    """Wrapper of the OpenSim inverse kinematics tool.
+
+    Args:
+        osimModel (opensim.Model): OpenSim model.
+        ikToolFiles (str): Path of the inverse kinematics setup file.
+    """
 
     def __init__(self,osimModel,ikToolFiles):
         self.m_model = osimModel
@@ -279,17 +324,33 @@ class opensimKinematicFitting(object):
         # opensim.PropertyHelper().setValueString(path,pr)
 
     def addIkMarkerTask(self,label,weight=100):
+        """Create a marker task.
+
+        Args:
+            label (str): Marker label.
+            weight (float, optional): Weight. Defaults to 100.
+        """
         markerTask = opensim.IKMarkerTask()
         markerTask.setName(label)
         markerTask.setWeight(weight)
         self.m_ikMarkers.append(markerTask)
 
     def createIKTaskSet(self):
+        """Add the created marker tasks to the task set of the tool."""
         for i in range(0,len(self.m_ikMarkers)):
             self.m_ikTool.getIKTaskSet().set(int(i),self.m_ikMarkers[i]) #FIXME memory issue
 
 
     def config(self, R_LAB_OSIM,acq, acqFileName):
+        """Configure the tool for an acquisition.
+
+        The acquisition is transformed into the OpenSim global frame and exported as a trc file.
+
+        Args:
+            R_LAB_OSIM (np.ndarray): Rotation from the laboratory to the OpenSim global frame.
+            acq (btk.btkAcquisition): Motion acquisition.
+            acqFileName (str): Path of the c3d file.
+        """
 
         # steps 1 : motion data processing
         globalTransformationLabToOsim(acq,R_LAB_OSIM) # global Transformation lab to OSIM
@@ -316,6 +377,15 @@ class opensimKinematicFitting(object):
 
 
     def updateIKTask(self,label,weight):
+        """Update the weight of a marker task (a zero weight disables the task).
+
+        Args:
+            label (str): Marker label.
+            weight (float): Weight.
+
+        Raises:
+            Exception: If the task does not exist.
+        """
         ts =self.m_ikTool.getIKTaskSet()
         index = ts.getIndex(label)
         if index !=-1 :
@@ -328,6 +398,7 @@ class opensimKinematicFitting(object):
             raise Exception("[[pyCGM2]] the label (%s) doesn t exist "%(label))
 
     def run(self):
+        """Run the inverse kinematics."""
 
         # self.m_ikTool.printToXML(os.getcwd()+"\\IK_SETUP-pyCGM2.xml")
         self.m_ikTool.run()

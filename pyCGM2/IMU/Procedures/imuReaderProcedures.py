@@ -1,3 +1,4 @@
+"""Procedures reading IMU data from csv or c3d files."""
 import pandas as pd
 import numpy as np
 import btk

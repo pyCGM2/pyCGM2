@@ -44,6 +44,17 @@ def _setPointData(ftr, framecount, ff, values):
 
 
 def getTrialName(NEXUS):
+    """Return the folder and the name of the trial loaded in Nexus.
+
+    Args:
+        NEXUS (ViconNexus.ViconNexus): Nexus handle.
+
+    Returns:
+        Tuple[str, str]: Data path and trial name without extension.
+
+    Raises:
+        Exception: If no trial is loaded.
+    """
 
     DATA_PATH, reconstructFilenameLabelledNoExt = NEXUS.GetTrialName()
     if reconstructFilenameLabelledNoExt!="":

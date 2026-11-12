@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""OpenSim tools (marker sets, coordinate transformations, segment lengths...)."""
 import pyCGM2
 LOGGER = pyCGM2.LOGGER
 
@@ -326,6 +327,16 @@ def export_CgmToMot(acq:btk.btkAcquisition,datapath:str,filename:str,osimModelIn
 
 
 def constructMarkerSetXml(markersetFile, updates,output_file=None):
+    """Update the location of markers in an OpenSim marker set file.
+
+    Args:
+        markersetFile (str): Path of the marker set file.
+        updates (dict): New location (string ``"x y z"``) of each marker.
+        output_file (str, optional): Output file. If None, the updated content is not written.
+
+    Returns:
+        bs4.BeautifulSoup: The updated XML document.
+    """
 
     soup = BeautifulSoup(open(markersetFile), "xml")
     
@@ -351,6 +362,18 @@ def constructMarkerSetXml(markersetFile, updates,output_file=None):
     return soup
 
 def calculateSegmentLength(model, jointLabel1, jointLabel2):
+        """Calculate the distance between two joint centres of an OpenSim model in the default pose.
+
+        Joint locations are expressed in the ground frame from the parent frame of each joint.
+
+        Args:
+            model (opensim.Model): OpenSim model.
+            jointLabel1 (str | list): Joint name, or a list of two joint names whose locations are averaged.
+            jointLabel2 (str): Joint name.
+
+        Returns:
+            float: Segment length.
+        """
         
         state= model.initSystem()
 

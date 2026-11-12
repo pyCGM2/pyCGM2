@@ -1,0 +1,1 @@
+"""Command-line applications and pipelines built on top of pyCGM2 (Vicon Nexus, QTM, flow and utility commands)."""

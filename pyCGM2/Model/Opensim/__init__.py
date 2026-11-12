@@ -1,0 +1,1 @@
+"""OpenSim-related processing of pyCGM2 models."""

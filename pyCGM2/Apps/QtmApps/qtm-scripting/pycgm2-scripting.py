@@ -1,3 +1,4 @@
+"""QTM scripting module adding a pyCGM2 menu to QTM."""
 import qtm
 
 import os
@@ -7,15 +8,27 @@ import json
 menu_id = qtm.gui.insert_menu_submenu(None, "pyCGM2 menu")
 
 def setDataPath(path):
+    """Set the working directory.
+
+    Args:
+        path (str): Data folder.
+    """
     os.chdir(path)
 
 def setTrialName(trialname):
+    """Set the current trial name.
+
+    Args:
+        trialname (str): Trial name.
+    """
     globals()["TrialName"] = trialname
 
 def getDataPath():
+    """Print the working directory."""
     print(os.getcwd())
 
 def getTrialName():
+    """Print the current trial name."""
     print(globals()["TrialName"])
 
 

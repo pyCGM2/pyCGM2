@@ -1,3 +1,10 @@
+"""pyCGM2 - Python implementation of the Conventional Gait Model.
+
+Importing the package defines the global ``LOGGER`` and the main constants
+(installation paths, settings folder, EMG channels, normative database path,
+OpenSim and test-data paths). Some optional paths are read from a ``.env``
+file located in the package folder.
+"""
 import sys
 import glob
 import re

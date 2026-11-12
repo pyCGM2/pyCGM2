@@ -1,3 +1,4 @@
+"""High-level functions generating pdf gait reports."""
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages

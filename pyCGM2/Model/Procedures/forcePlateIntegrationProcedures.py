@@ -1,3 +1,4 @@
+"""Procedures integrating force plate data (e.g. for gait)."""
 
 import pyCGM2
 import numpy as np

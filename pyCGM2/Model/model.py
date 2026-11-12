@@ -1,3 +1,4 @@
+"""Core classes of a biomechanical model: Model, Segment, Joint, Referential and clinical descriptors."""
 import numpy as np
 import copy
 import pyCGM2; LOGGER = pyCGM2.LOGGER
@@ -531,7 +532,16 @@ class Segment(object):
         return values
     
     def getMotionValues(self,type = "rotationMatrix" , referentialLabel=None) -> np.ndarray:
-        """
+        """Return the orientation of a referential of the segment over time.
+
+        Args:
+            type (str, optional): Representation of the orientation: ``"rotationMatrix"`` (9 columns),
+                ``"quaternion"`` (4 columns) or ``"angleAxis"``. Defaults to ``"rotationMatrix"``.
+            referentialLabel (str, optional): Label of the technical referential. Defaults to None
+                (anatomical frame).
+
+        Returns:
+            np.ndarray: Orientation values (one row per frame).
         """
 
         if referentialLabel is not None:

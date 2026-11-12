@@ -1,3 +1,4 @@
+"""Filters running OpenSim OpenSense tools (IMU placer, IMU inverse kinematics)."""
 
 import pyCGM2
 LOGGER = pyCGM2.LOGGER

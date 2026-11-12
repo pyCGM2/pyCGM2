@@ -73,6 +73,13 @@ class Cycle(object):
         self.enableFlag = flag
 
     def addDiscreteData(self,label,value,instant):
+        """Add a discrete value to the cycle (not implemented).
+
+        Args:
+            label (str): Label of the discrete value.
+            value (float): Value.
+            instant (int): Frame of the value.
+        """
         pass
 
     def getPointTimeSequenceData(self,pointLabel:str):
@@ -362,21 +369,51 @@ class Cycles():
 
 
     def setSpatioTemporalCycles(self,spatioTemporalCycles_instance):
+        """Set the cycles used for spatio-temporal computation.
+
+        Args:
+            spatioTemporalCycles_instance (list): List of cycles.
+        """
         self.spatioTemporalCycles = spatioTemporalCycles_instance
 
     def setKinematicCycles(self,kinematicCycles_instance):
+        """Set the cycles used for kinematic computation.
+
+        Args:
+            kinematicCycles_instance (list): List of cycles.
+        """
         self.kinematicCycles = kinematicCycles_instance
 
     def setKineticCycles(self,kineticCycles_instance):
+        """Set the cycles used for kinetic computation.
+
+        Args:
+            kineticCycles_instance (list): List of cycles.
+        """
         self.kineticCycles = kineticCycles_instance
 
     def setEmgCycles(self,emgCycles_instance):
+        """Set the cycles used for emg computation.
+
+        Args:
+            emgCycles_instance (list): List of cycles.
+        """
         self.emgCycles = emgCycles_instance
 
     def setMuscleGeometryCycles(self,muscleGeometryCycles_instance):
+        """Set the cycles used for muscleGeometry computation.
+
+        Args:
+            muscleGeometryCycles_instance (list): List of cycles.
+        """
         self.muscleGeometryCycles = muscleGeometryCycles_instance
 
     def setMuscleDynamicCycles(self,muscleDynamicCycles_instance):
+        """Set the cycles used for muscleDynamic computation.
+
+        Args:
+            muscleDynamicCycles_instance (list): List of cycles.
+        """
         self.muscleDynamicCycles = muscleDynamicCycles_instance
 
 # --- BUILDER

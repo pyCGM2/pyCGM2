@@ -71,6 +71,14 @@ class Vsk(object):
         self.m_soup = soup
 
     def getLocapMarkerPositions(self):
+        """Return the local positions of the markers from the vsk parameters.
+
+        Positions are read from the ``TargetLocalPointToWorldPoint`` elements, whose coordinates
+        refer to vsk parameters.
+
+        Returns:
+            Dict[str, np.ndarray]: Local position of each marker.
+        """
         # 1. Récupérer les valeurs des paramètres
         params = {}
         for p in self.m_soup.find_all("Parameter"):

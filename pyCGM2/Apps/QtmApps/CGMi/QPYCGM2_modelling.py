@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""QTM application running the CGM calibration and fitting."""
 
 import argparse
 import os
@@ -21,6 +22,12 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 
 
 def main(args=None):
+    """Run the application: run the CGM modelling of the QTM session.
+
+    Args:
+        args (argparse.Namespace, optional): Parsed command-line arguments. If None, arguments are
+            parsed from the command line.
+    """
 
     if args is None:
         parser = argparse.ArgumentParser(description='QTM CGM Modelling')

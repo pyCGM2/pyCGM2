@@ -1,3 +1,4 @@
+"""Procedures correcting the motion of a model (e.g. thigh misalignment)."""
 import pyCGM2
 import numpy as np
 import copy

@@ -1,6 +1,7 @@
-﻿pyCGM2.Report.plotUtils.colorContext
-====================================
+﻿colorContext
+========================================================
 
 .. currentmodule:: pyCGM2.Report.plotUtils
 
 .. autofunction:: colorContext
+

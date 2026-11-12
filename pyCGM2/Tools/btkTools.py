@@ -1858,6 +1858,14 @@ def markersToArray(acq:btk.btkAcquisition,markers:Optional[List[str]]=None,gathe
 
 
 def barycentricPoint(acq:btk.btkAcquisition,label:str, targetPointLabels:List[str],desc:Optional[str]="" ):
+    """Append the barycentre of several points to an acquisition.
+
+    Args:
+        acq (btk.btkAcquisition): Acquisition.
+        label (str): Label of the new point.
+        targetPointLabels (List[str]): Labels of the points.
+        desc (str, optional): Description of the new point. Defaults to "".
+    """
 
     values = np.zeros((acq.GetPointFrameNumber(),3))
     for target in targetPointLabels:

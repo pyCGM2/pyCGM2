@@ -1,3 +1,4 @@
+"""File utilities (reading/writing json, yaml, settings, c3d file lists, folders...)."""
 import pickle
 import json
 import os

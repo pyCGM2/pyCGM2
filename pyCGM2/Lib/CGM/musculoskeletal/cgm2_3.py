@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""High-level calibration and fitting functions of the CGM 2.3 with musculoskeletal (OpenSim) processing."""
 
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 

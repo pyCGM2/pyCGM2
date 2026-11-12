@@ -1416,7 +1416,6 @@ class Test_Generic_DrivenPose:
         muscles = scaledOsim.getMuscles()    
         rf = muscles.get("rect_fem_r")
         print(rf.getLength(states))
-        ipdb.set_trace()
 
 class Test_checking:
 
@@ -1424,5 +1423,3 @@ class Test_checking:
         modelVersion = "CGM2.3"
         osimInterface = opensimInterface.osimInterface(pyCGM2.OPENSIM_PREBUILD_MODEL_PATH + "interface\\"+modelVersion.replace(".","")+"\\", "pycgm2-gait2392_simbody.osim")
         muscleDict = osimInterface.getMuscles_bySide(addToName="[MuscleLength]")
-
-        import ipdb; ipdb.set_trace()

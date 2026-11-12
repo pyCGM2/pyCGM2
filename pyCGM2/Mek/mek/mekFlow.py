@@ -1,3 +1,4 @@
+"""Functions linking *mek* data stores with *flow* session settings."""
 # import yaml
 import pyCGM2
 LOGGER = pyCGM2.LOGGER
@@ -9,6 +10,16 @@ from pyCGM2.flow import settingsHandler
 
 
 def build_session_conditions_dataframe(ds):
+    """Build a dataframe of the conditions of all sessions of a data store.
+
+    The flow user settings stored in each ``Session*/Analysis 1`` group are used.
+
+    Args:
+        ds: moveck data store.
+
+    Returns:
+        pd.DataFrame: Conditions with an additional ``Session`` column.
+    """
 
     session_dfs = []
 

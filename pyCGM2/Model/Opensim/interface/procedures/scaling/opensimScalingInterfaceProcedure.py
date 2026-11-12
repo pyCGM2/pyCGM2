@@ -1,3 +1,4 @@
+"""Procedures configuring the OpenSim scaling tool."""
 from typing import List, Tuple, Dict, Optional,Union,Any
 
 from pyCGM2.Utils import files

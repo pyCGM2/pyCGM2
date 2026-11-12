@@ -1,0 +1,1 @@
+"""Entry points of the generic ``pyCGM2`` command-line interface."""

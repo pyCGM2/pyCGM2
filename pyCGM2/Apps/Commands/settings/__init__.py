@@ -1,0 +1,1 @@
+"""Commands generating or editing pyCGM2 settings files."""

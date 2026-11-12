@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""Vicon Nexus operation converting Blue Trident angle-axis outputs into quaternions."""
 
 
 
@@ -31,6 +32,11 @@ parser.add_argument('--Radians', action = 'store_true', help = 'If this flag is 
 args = parser.parse_args()
 
 def convertIMU(vicon):
+    """Convert the Global Angle outputs of the Blue Trident devices into quaternions.
+
+    Args:
+        vicon (ViconNexus.ViconNexus): Nexus handle.
+    """
     filePath, trialName = vicon.GetTrialName()
 
     d = {}
@@ -54,7 +60,6 @@ def convertIMU(vicon):
         eulerZXYList = []
 
         for tup in zipped:
-            import ipdb; ipdb.set_trace()
             rotList.append(RotationMatrixFromAngleAxis(tup))
             a = RotationMatrixFromAngleAxis(tup)
 

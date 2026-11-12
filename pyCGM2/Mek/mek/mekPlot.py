@@ -1,4 +1,4 @@
-import ipdb
+"""Plot procedures and filter for *mek* data stores."""
 import numpy as np
 import matplotlib.pyplot as plt
 from pyCGM2.Mek.lib import mekLib
@@ -10,11 +10,17 @@ from pyCGM2.Cycles import cycleUtils
 from pyCGM2.EMG import normalActivation
 
 class AbstractMekPlotProcedure:
+    """Abstract class of *mek* plot procedures."""
     def __init__(self):
         pass
 
 
 class mekPlotTemporalEmgLayoutProcedure(AbstractMekPlotProcedure):
+    """Plot temporal EMG signals of several groups according to a layout.
+
+    Args:
+        layout (dict, optional): Layout of the figure (``rows``, ``cols``, ``sup_title``, ``plots``...).
+    """
 
     def __init__(self,layout=None):
         super(mekPlotTemporalEmgLayoutProcedure, self).__init__()
@@ -22,9 +28,15 @@ class mekPlotTemporalEmgLayoutProcedure(AbstractMekPlotProcedure):
         self.m_legends = None
 
     def setData(self,groups):
+        """Set the data to plot.
+
+        Args:
+            groups (list): moveck groups to plot.
+        """
         self.m_groups = groups
 
     def plot(self):
+        """Build the figure."""
 
         if self.m_layout is not None:
     
@@ -129,6 +141,12 @@ class mekPlotTemporalEmgLayoutProcedure(AbstractMekPlotProcedure):
 
 
 class mekPlotSingleGroupLayoutProcedure(AbstractMekPlotProcedure):
+    """Plot normalised cycles of a single group according to a layout.
+
+    Args:
+        layout (dict, optional): Layout of the figure (``rows``, ``cols``, ``sup_title``, ``plots``...).
+        consistency (bool, optional): Plot all cycles instead of mean and standard deviation. Defaults to False.
+    """
 
     def __init__(self,layout=None, consistency=False):
         super(mekPlotSingleGroupLayoutProcedure, self).__init__()
@@ -139,6 +157,11 @@ class mekPlotSingleGroupLayoutProcedure(AbstractMekPlotProcedure):
         self.m_groups = None
 
     def filterEventContext(self, eventContext=None):
+        """Keep only the curves of an event context in the layout.
+
+        Args:
+            eventContext (str, optional): ``"Left"`` or ``"Right"``. Defaults to None (all curves).
+        """
         def remove_curves(config, eventContextToRemove):
             for plot in config.get("plots", []):
                 curves = plot.get("curves", [])
@@ -153,10 +176,16 @@ class mekPlotSingleGroupLayoutProcedure(AbstractMekPlotProcedure):
 
 
     def setData(self,group):
+            """Set the data to plot.
+
+            Args:
+                group: moveck group to plot.
+            """
             self.m_group = group
 
 
     def plot(self):
+        """Build the figure."""
 
         if self.m_layout is not None:
     
@@ -383,7 +412,6 @@ class mekPlotSingleGroupLayoutProcedure(AbstractMekPlotProcedure):
 #                                 data = valuesByGroup[j][:, :, axis].mean(axis=0)
 #                                 std = valuesByGroup[j][:, :, axis].std(axis=0)
 
-#                                 import ipdb; ipdb.set_trace()
 
 #                                 if len(valuesByGroup)==1:                            
 #                                     if curve.get('eventContext') == "Left": color = 'red'
@@ -397,7 +425,6 @@ class mekPlotSingleGroupLayoutProcedure(AbstractMekPlotProcedure):
 #                                 else:
 #                                     legend_label = legend_label0
 
-#                                 # import ipdb; ipdb.set_trace()
 #                                 if legend_label not in legend_used:
 #                                         ax.plot(data, label=legend_label, color=color)
 #                                         legend_used.append(legend_label)
@@ -425,11 +452,17 @@ class mekPlotSingleGroupLayoutProcedure(AbstractMekPlotProcedure):
 
 
 class mekPlotFilter:
+    """Filter running a *mek* plot procedure.
+
+    Args:
+        procedure (AbstractMekPlotProcedure, optional): Plot procedure.
+    """
     def __init__(self,procedure=None):
 
         self.m_procedure = procedure
 
     def run(self):
+        """Plot and show the figure."""
         if self.m_procedure is not None:
             self.m_procedure.plot()
             plt.show()

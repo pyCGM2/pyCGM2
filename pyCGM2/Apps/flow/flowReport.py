@@ -1,3 +1,4 @@
+"""*flow* command generating the Word report of a session."""
 
 import os
 import warnings
@@ -25,7 +26,15 @@ TEMPLATE_PATH = pyCGM2.PYCGM2_SETTINGS_FOLDER+"templates\\"
 import time
 
 def wait_until_closed(path, timeout=300):
-    """Attend que le fichier soit libérable (Word fermé)."""
+    """Wait until a file can be opened exclusively (e.g. the document is closed in Word).
+
+    Args:
+        path (str): File path.
+        timeout (float, optional): Maximum waiting time in seconds. Defaults to 300.
+
+    Returns:
+        bool: True if the file is released, False if the timeout is reached.
+    """
     start = time.time()
     while time.time() - start < timeout:
         try:
@@ -38,6 +47,12 @@ def wait_until_closed(path, timeout=300):
 
 
 def main(args=None):
+    """Run the application: generate the Word report of a session.
+
+    Args:
+        args (argparse.Namespace, optional): Parsed command-line arguments. If None, arguments are
+            parsed from the command line.
+    """
 
     if args is None:
         parser = argparse.ArgumentParser(description='Process flow report from Eclipse')

@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""High-level function detecting the progression frame."""
 from pyCGM2.Tools import btkTools
 from pyCGM2.Processing.ProgressionFrame import progressionFrameFilters, progressionFrameProcedures 
 import pyCGM2

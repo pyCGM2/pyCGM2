@@ -23,6 +23,7 @@
       ~TrialEnfReader.getSection
       ~TrialEnfReader.getTrialInfos
       ~TrialEnfReader.isC3dExist
+      ~TrialEnfReader.remove
       ~TrialEnfReader.save
       ~TrialEnfReader.set
       ~TrialEnfReader.setForcePlates

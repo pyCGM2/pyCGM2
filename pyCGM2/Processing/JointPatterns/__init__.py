@@ -1,0 +1,1 @@
+"""Detection of joint patterns from rule-based tables."""

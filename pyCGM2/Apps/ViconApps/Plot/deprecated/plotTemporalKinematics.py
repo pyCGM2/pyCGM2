@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""Deprecated Vicon Nexus operation: plot temporal kinematics."""
 #APIDOC["Path"]=/Executable Apps/Vicon/Plot
 #APIDOC["Import"]=False
 #APIDOC["Draft"]=False
@@ -23,6 +24,12 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 
 
 def main():
+    """Run the application: plot temporal kinematics.
+
+    Args:
+        args (argparse.Namespace, optional): Parsed command-line arguments. If None, arguments are
+            parsed from the command line.
+    """
 
     plt.close("all")
 

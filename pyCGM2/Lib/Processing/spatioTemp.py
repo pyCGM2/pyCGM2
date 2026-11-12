@@ -1,8 +1,18 @@
+"""High-level function computing spatio-temporal parameters."""
 
 from pyCGM2.Cycles import cycleBuilders, cycleFilter
 from pyCGM2.Tools import btkTools
 
 def computeSpatioTemporalParameters(datapath, filenames):
+    """Compute the spatio-temporal parameters of each gait cycle of c3d files.
+
+    Args:
+        datapath (str): Folder path.
+        filenames (List[str]): c3d filenames.
+
+    Returns:
+        dict: Parameters organised as ``out[filename][context][label]`` (list of values, one per cycle).
+    """
 
     out = {}
 

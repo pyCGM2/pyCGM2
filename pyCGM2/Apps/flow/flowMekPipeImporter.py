@@ -1,4 +1,5 @@
 # coding: utf-8
+"""*flow* command importing the trials of a session into a *mek* data store with the Pipe tool."""
 import os
 from pyCGM2.Utils import files
 import warnings
@@ -38,6 +39,12 @@ pipelineName = f"pycgm2.preparation.transform-c3d-to-device-to-h5"
 
 
 def main(args=None):
+    """Run the application: import the trials of a session with the Pipe tool.
+
+    Args:
+        args (argparse.Namespace, optional): Parsed command-line arguments. If None, arguments are
+            parsed from the command line.
+    """
 
 
     if args is None:

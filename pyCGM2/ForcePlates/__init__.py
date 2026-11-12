@@ -1,0 +1,1 @@
+"""Force plate handling: reading, corner/origin management and foot-contact assignment."""

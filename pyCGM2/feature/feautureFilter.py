@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""Skeleton of pyCGM2 filters (template for new features)."""
 class VeryBasicFilter(object):
     """ very basic skeleton of a filter 
     
@@ -16,6 +17,11 @@ class VeryBasicFilter(object):
 
 
     def run(self):
+        """Run the filter.
+
+        Returns:
+            The computed output.
+        """
         out = self.m_arg1 + self.m_arg1
         return out
     
@@ -39,5 +45,10 @@ class procedureFilter(object):
 
 
     def run(self):
+        """Run the procedure with the filter arguments.
+
+        Returns:
+            The output of the procedure.
+        """
         out = self.m_procedure.run(self.m_arg1,self.m_arg2)
         return out

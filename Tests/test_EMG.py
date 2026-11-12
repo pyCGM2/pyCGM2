@@ -32,7 +32,6 @@ class Test_normalActivation:
 
 
         leftcycles = Cycles.build_cycles_fromEvents(lfs, lfo, rfs, rfo)
-        import ipdb; ipdb.set_trace()
         onsets, durations, signal =normalActivation.getNormalGaitEmgActivities(lfs, lfo, "RECFEM")
 
 
@@ -104,7 +103,6 @@ class Test_EMG:
 
         # plt.plot(emgAnalysisInstance.emgStats.data['Voltage.EMG7_Rectify_Env', 'Left']["mean"])
         # plt.show()
-        # import ipdb; ipdb.set_trace()
 
     def test_Coactivation_unithan(self):
 

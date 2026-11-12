@@ -82,9 +82,19 @@ class GeneralCalibrationProcedure(object):
 
 
     def getDefinition(self):
+        """Return the technical coordinate system definitions.
+
+        Returns:
+            dict: Definitions by segment and referential label.
+        """
         return self.definition
 
     def getAnatomicalDefinition(self):
+        """Return the anatomical coordinate system definitions.
+
+        Returns:
+            dict: Definitions by segment.
+        """
         return self.anatomicalDefinition
 
 class StaticCalibrationProcedure(object):
@@ -104,13 +114,24 @@ class StaticCalibrationProcedure(object):
         self.definition=self.model.calibrationProcedure()
 
     def getDefinitions(self):
+        """Return the technical coordinate system definitions.
+
+        Returns:
+            dict: Technical definitions.
+        """
         return self.definition[0]
 
     def getAnatomicalDefinitions(self):
+        """Return the anatomical coordinate system definitions.
+
+        Returns:
+            dict: Anatomical definitions.
+        """
         return self.anatomicalDefinition[1]
 
 # ---- inverse dynamic procedure
 class InverseDynamicProcedure(object):
+    """Abstract class of inverse dynamics procedures."""
     def __init__(self):
         pass
 

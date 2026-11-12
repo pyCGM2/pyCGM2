@@ -1,3 +1,4 @@
+"""Management of EMG settings (``emg.settings`` file)."""
 
 from pyCGM2.Utils import files
 import os

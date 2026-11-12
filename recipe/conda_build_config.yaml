@@ -1,5 +1,4 @@
-python_version:
-  - 3.9
+python:
+  # Python 3.9 is not built: some modules use the `X | None` annotation syntax (Python >= 3.10)
   - 3.10
   - 3.11
-

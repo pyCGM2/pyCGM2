@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""Processing of several Analysis instances (e.g. normative data generation)."""
 import numpy as np
 
 from pyCGM2.Utils import files
@@ -6,6 +7,17 @@ from pyCGM2.Utils import files
 
 
 class NormativeDataGeneratorFilter(object):
+    """Filter generating normative data from several Analysis instances.
+
+    Args:
+        name (str): Name of the normative dataset.
+        modality (str): Modality (e.g. walking condition).
+        analyses (list): Analysis instances.
+        kinematicLabelsDict (dict, optional): Kinematic labels by context (``Left``, ``Right``).
+        kineticLabelsDict (dict, optional): Kinetic labels by context.
+        pointlabelSuffix (str, optional): Suffix of the point labels.
+        metadata (dict, optional): Metadata of the dataset.
+    """
     def __init__(self,
                 name,modality,
                 analyses,
@@ -27,16 +39,32 @@ class NormativeDataGeneratorFilter(object):
         self.__allCycles = None
 
     def getNormativeData(self):
+        """Return the normative data.
+
+        Returns:
+            dict: Normative data (``{name: {modality: data}, "metadata": metadata}``).
+        """
         return self.__normativeData
 
     def getNormativeCorridor(self):
+        """Return the normative corridor (mean - sd, mean + sd) of each label and axis.
+
+        Returns:
+            dict: Corridors by label and axis.
+        """
         return self.__normalCorridor
 
     def getAllTraces(self):
+        """Return all cycles gathered by label.
+
+        Returns:
+            dict: Cycles by label.
+        """
         return self.__allCycles
 
 
     def generate(self):
+        """Gather the cycles of all analyses and compute the normative data and corridors."""
 
         cyclesBySide={}
         # cycles : ncycle of array(101,3)
@@ -119,6 +147,15 @@ class NormativeDataGeneratorFilter(object):
                                     "metadata": self.m_metadata }
 
     def save(self,DATA_PATH,filename):
+        """Save the normative data as a json file.
+
+        Args:
+            DATA_PATH (str): Folder path.
+            filename (str): Filename.
+
+        Raises:
+            Exception: If the normative data have not been generated.
+        """
         if self.__normativeData is not None:
             files.saveJson(DATA_PATH, filename, self.__normativeData)
         else:

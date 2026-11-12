@@ -1,4 +1,5 @@
 # coding: utf-8
+"""Vicon Nexus operation importing a trial into a *mek* data store."""
 import os
 from pyCGM2.Mek.mek import mekOperations, mekTransform
 from pyCGM2.Utils import files
@@ -27,6 +28,12 @@ except ImportError as e:
 
 
 def main(args=None):
+    """Run the application: import the trial into a mek data store from the trial loaded in Vicon Nexus.
+
+    Args:
+        args (argparse.Namespace, optional): Parsed command-line arguments. If None, arguments are
+            parsed from the command line.
+    """
 
     if args is None:
         parser = argparse.ArgumentParser(description='Import a trial from Vicon Nexus into a mek storage')

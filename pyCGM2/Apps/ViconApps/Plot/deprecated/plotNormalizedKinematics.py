@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""Deprecated Vicon Nexus operation: plot the time-normalised kinematic panel of the current trial or of the trials marked in Vicon Eclipse."""
 #APIDOC["Path"]=/Executable Apps/Vicon/Plot
 #APIDOC["Import"]=False
 #APIDOC["Draft"]=False
@@ -28,6 +29,12 @@ from pyCGM2.Nexus import nexusTools
 from pyCGM2.Nexus import eclipse
 
 def main():
+    """Run the application: plot the time-normalised kinematic panel of the current trial or of the trials marked in Vicon Eclipse.
+
+    Args:
+        args (argparse.Namespace, optional): Parsed command-line arguments. If None, arguments are
+            parsed from the command line.
+    """
 
 
 

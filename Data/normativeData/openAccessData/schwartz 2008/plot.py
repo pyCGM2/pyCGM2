@@ -3,7 +3,6 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-import ipdb
 
 
 def plotCurve(ax, x,mean,sd, ofo,ofs,ifs):

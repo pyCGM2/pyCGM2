@@ -1,3 +1,4 @@
+"""Vicon Nexus operations plotting gait scores."""
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 import matplotlib.pyplot as plt
 import warnings
@@ -17,6 +18,11 @@ from pyCGM2.Report import normativeDatasets
 
 
 def map(args):
+    """Plot the Movement Analysis Profile (MAP) of the current trial, or of the trials marked in Vicon Eclipse.
+
+    Args:
+        args (argparse.Namespace): Parsed command-line arguments.
+    """
 
 
     plt.close("all")

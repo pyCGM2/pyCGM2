@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""High-level calibration and fitting functions of the CGM 1.0."""
 import os
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 

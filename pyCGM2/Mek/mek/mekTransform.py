@@ -1,3 +1,4 @@
+"""Transformations of *mek* data (e.g. OpenSim processing). Requires the optional moveck package."""
 import pyCGM2
 LOGGER = pyCGM2.LOGGER
 from pyCGM2.Model.Opensim.interface import opensimInterface

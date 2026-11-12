@@ -76,4 +76,16 @@ numeric
    
    rms
    skewMatrix
-   
+
+
+Additional derivation functions
+-------------------------------
+
+.. currentmodule:: pyCGM2.Math.derivation
+
+.. autosummary::
+   :toctree: generated
+   :template: function.rst
+
+   secondOrderFiniteDifference
+

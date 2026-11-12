@@ -1,6 +1,7 @@
-﻿pyCGM2.Model.bodySegmentParameters.updateFromcustomMp
-=====================================================
+﻿updateFromcustomMp
+=========================================================================
 
 .. currentmodule:: pyCGM2.Model.bodySegmentParameters
 
 .. autofunction:: updateFromcustomMp
+

@@ -27,3 +27,9 @@ This is the API Reference for pyCGM2.
     Tools <tools/tools>
     Utils <utils/utils>
     Enums <enums/enums>
+    Cycles <cycles/cycles>
+    Gap <gap/gap>
+    Mek <mek/mek>
+    Flow <flow/flow>
+    Inspect (obsolete) <inspect/inspect>
+    Core utilities <core/core>

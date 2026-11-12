@@ -1,3 +1,4 @@
+"""Vicon Nexus operation handling EMG settings remotely."""
 import argparse
 from pyCGM2.Nexus import nexusFilters
 from pyCGM2.Nexus import nexusTools
@@ -14,6 +15,12 @@ LOGGER = pyCGM2.LOGGER
 
 
 def main(args=None):
+    """Run the application: remote EMG processing from the trial loaded in Vicon Nexus.
+
+    Args:
+        args (argparse.Namespace, optional): Parsed command-line arguments. If None, arguments are
+            parsed from the command line.
+    """
     
     # if args  is None:
     parser = argparse.ArgumentParser(description='remote EMG')
@@ -90,7 +97,6 @@ def main(args=None):
         plt.show()
 
 
-        import ipdb; ipdb.set_trace()
     else:
         return 0
 

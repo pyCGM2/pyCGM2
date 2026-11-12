@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""High-level functions of knee functional calibration (2DOF, SARA)."""
 #APIDOC["Path"]=/Functions/CGM
 #APIDOC["Draft"]=False
 #--end--
@@ -22,6 +23,18 @@ from typing import List, Tuple, Dict, Optional,Union
 import btk
 
 def detectSide(acq:btk.btkAcquisition,left_markerLabel:str,right_markerLabel:str):
+    """Detect the side of the knee functional calibration.
+
+    The side whose marker reaches the highest vertical position is selected.
+
+    Args:
+        acq (btk.btkAcquisition): Calibration acquisition.
+        left_markerLabel (str): Left marker label.
+        right_markerLabel (str): Right marker label.
+
+    Returns:
+        str: ``"Left"`` or ``"Right"``.
+    """
 
     flag,vff,vlf = btkTools.findValidFrames(acq,[left_markerLabel,right_markerLabel])
 

@@ -11,6 +11,20 @@ Zeni kinematic-based method
 
 .. autosummary::
    :toctree: generated
-   :template: functions.rst
+   :template: function.rst
    
    zeni
+
+
+Other detectors
+--------------------
+
+.. currentmodule:: pyCGM2.Lib.eventDetector
+
+.. autosummary::
+   :toctree: generated
+   :template: function.rst
+
+   oconnor
+   intellEvent
+

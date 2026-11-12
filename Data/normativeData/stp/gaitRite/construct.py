@@ -62,5 +62,3 @@ def clean_units(col: str) -> str:
 df.columns = [clean_units(col) for col in df.columns]
 
 df.to_excel(pyCGM2.NORMATIVE_DATABASE_PATH+"stp\\pyCGM2_normaldata.xlsx", index=False)
-
-import ipdb; ipdb.set_trace()

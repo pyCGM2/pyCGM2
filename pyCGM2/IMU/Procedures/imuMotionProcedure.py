@@ -1,3 +1,4 @@
+"""Procedures constructing the motion (orientation) of an IMU."""
 import numpy as np
 from pyCGM2.Model import frame
 from pyCGM2.IMU import imu

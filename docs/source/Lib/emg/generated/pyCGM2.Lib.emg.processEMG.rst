@@ -1,6 +1,7 @@
-﻿pyCGM2.Lib.emg.processEMG
-=========================
+﻿processEMG
+=============================================
 
 .. currentmodule:: pyCGM2.Lib.emg
 
 .. autofunction:: processEMG
+

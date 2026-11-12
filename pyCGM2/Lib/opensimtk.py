@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""High-level functions preparing data for OpenSim."""
 from pyCGM2.ForcePlates import forceplates
 from pyCGM2.Lib.Processing import progression
 from pyCGM2.Tools import btkTools

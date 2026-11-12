@@ -1,0 +1,1 @@
+"""Procedures configuring the OpenSim scaling tool."""

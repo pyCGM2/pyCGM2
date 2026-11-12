@@ -1,3 +1,4 @@
+"""Plot viewers of ground reaction forces."""
 import numpy as np
 import pyCGM2; LOGGER = pyCGM2.LOGGER
 

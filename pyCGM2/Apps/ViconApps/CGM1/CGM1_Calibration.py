@@ -1,3 +1,4 @@
+"""Vicon Nexus operation: CGM1.0 calibration."""
 import warnings
 import argparse
 from pyCGM2.Lib.CGM import cgm1
@@ -12,6 +13,12 @@ warnings.filterwarnings("ignore")
 
 
 def main(args=None):
+    """Run the application: CGM1.0 calibration of the static trial from the trial loaded in Vicon Nexus.
+
+    Args:
+        args (argparse.Namespace, optional): Parsed command-line arguments. If None, arguments are
+            parsed from the command line.
+    """
 
     if args is None:
         parser = argparse.ArgumentParser(description='CGM1 Calibration')

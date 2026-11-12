@@ -46,7 +46,6 @@ class Test_gap:
 
         filledAcq = gff.getFilledAcq()
         filledMarkers = gff.getFilledMarkers()
-        import ipdb; ipdb.set_trace()
         btkTools.smartWriter(acq,"verif.c3d")
 
         # filledAcq = gff.getFilledAcq()

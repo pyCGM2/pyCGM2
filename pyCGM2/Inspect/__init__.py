@@ -1,0 +1,1 @@
+"""Obsolete data-quality inspection module; use :mod:`pyCGM2.Anomaly` and :mod:`pyCGM2.Inspector` instead."""

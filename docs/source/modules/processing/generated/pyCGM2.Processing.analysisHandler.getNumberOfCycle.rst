@@ -1,6 +1,7 @@
-﻿pyCGM2.Processing.analysisHandler.getNumberOfCycle
-==================================================
+﻿getNumberOfCycle
+======================================================================
 
 .. currentmodule:: pyCGM2.Processing.analysisHandler
 
 .. autofunction:: getNumberOfCycle
+

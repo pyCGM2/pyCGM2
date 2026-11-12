@@ -66,6 +66,12 @@ class GeneralOpensimFittingProcedure(object):
         self.ikTags={}
 
     def setIkTags(self,markerLabel,weight):
+        """Set the weight of a marker in the inverse kinematics.
+
+        Args:
+            markerLabel (str): Marker label.
+            weight (float): Weight.
+        """
         # TODO : remove this method ( check if used before)
         self.ikTags[markerLabel]=weight
 
@@ -111,10 +117,10 @@ class CgmOpensimFittingProcedure(object):
     """ Model-embedded Procedure for fitting an opensim model """
 
     def __init__(self,model):
-        """
-            Args:
-           model (Model): instance of Model
+        """Initialise the procedure.
 
+        Args:
+            model (Model): Instance of Model.
         """
         self.model=model
         self.ikTags={}#
@@ -143,6 +149,7 @@ class CgmOpensimFittingProcedure(object):
 # ---- FILTERS -----
 
 class opensimCalibrationFilter(object):
+    """Filter calibrating (scaling) an OpenSim model from a calibrated pyCGM2 model."""
 
     def __init__(self,osimFile,model,procedure,dataDir):
         """
@@ -214,6 +221,7 @@ class opensimCalibrationFilter(object):
 
 
 class opensimFittingFilter(object):
+    """Filter running the OpenSim inverse kinematics of a calibrated OpenSim model."""
     def __init__(self,ikToolFile,calibratedOsim, ikTagProcedure,dataDir,acqMotion, accuracy = 1e-8 ):
         """
             Args:
@@ -241,15 +249,32 @@ class opensimFittingFilter(object):
         self.updateConfig()
 
     def setAccuracy(self,value):
+        """Set the accuracy of the inverse kinematics.
+
+        Args:
+            value (float): Accuracy.
+        """
         self.accuracy = value
         self.m_ikSoup.accuracy.string = str(value)
 
         self.updateConfig()
 
     def setResultsDirectory(self,path):
+        """Set the results directory of the inverse kinematics tool.
+
+        Args:
+            path (str): Directory path.
+        """
         self.m_ikSoup.results_directory.string = path.replace("\\","/")
 
     def setTimeRange(self,acq,beginFrame=None,lastFrame=None):
+        """Set the time range of the inverse kinematics.
+
+        Args:
+            acq (btk.btkAcquisition): Motion acquisition.
+            beginFrame (int, optional): First frame. Defaults to None (first frame of the acquisition).
+            lastFrame (int, optional): Last frame. Defaults to None (last frame of the acquisition).
+        """
         ff = acq.GetFirstFrame()
         freq = acq.GetPointFrequency()
         beginTime = 0.0 if beginFrame is None else (beginFrame-ff)/freq
@@ -261,6 +286,7 @@ class opensimFittingFilter(object):
         self.updateConfig()
 
     def updateConfig(self):
+        """Write the updated inverse kinematics setup file and reload the kinematic fitter."""
         newIkFile = self.opensimOutputDir + self.m_ikToolFile[self.m_ikToolFile.rfind("\\")+1:]
         with open(newIkFile, "w") as f:
             f.write(self.m_ikSoup.prettify())

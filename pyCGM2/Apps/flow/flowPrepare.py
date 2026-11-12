@@ -1,4 +1,5 @@
 # coding: utf-8
+"""*flow* command preparing the trials of a session."""
 import os
 from pyCGM2.Utils import files
 import warnings
@@ -24,6 +25,12 @@ import argparse
 from argparse import Namespace
 
 def main(args=None):
+    """Run the application: prepare the trials of a session from the flow user settings.
+
+    Args:
+        args (argparse.Namespace, optional): Parsed command-line arguments. If None, arguments are
+            parsed from the command line.
+    """
 
     if args is None:
         parser = argparse.ArgumentParser(description='Process flow report from Eclipse')

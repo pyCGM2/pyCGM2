@@ -176,30 +176,29 @@ class Burke2016KalmanGapFillingProcedure(GapFillingProcedure):
 
 
 class Gloersen2016GapFillingProcedure(GapFillingProcedure):
-    """
-    A gap filling procedure based on the intercorrelation method as described by Gløersen and Federolf (2016).
+    """A gap filling procedure based on the intercorrelation method as described by Gløersen and Federolf (2016).
 
-    This procedure fills gaps in marker position data by exploiting intercorrelations between marker coordinates, 
+    This procedure fills gaps in marker position data by exploiting intercorrelations between marker coordinates,
     suitable for cases where multiple markers have missing data simultaneously.
 
     References:
         - Federolf PA. 2013. A novel approach to solve the 'missing marker problem' in marker-based motion analysis that exploits the segment coordination patterns in multi-limb motion data. PLoS ONE 8(10): e78689.
         - Gløersen Ø, Federolf P. 2016. Predicting missing marker trajectories in human motion data using marker intercorrelations. PLoS ONE 11(3): e0152616.
 
-
     Args:
-        **kwargs: Additional keyword arguments to configure the procedure, including:
-            - method (str): Specifies the reconstruction strategy for gaps in multiple markers. 
-              Options are 'R1' or 'R2'. Default is 'R2'.
-            - weight_scale (float): The parameter 'sigma' used in weighting calculations. It influences the 
+        **kwargs: Additional keyword arguments to configure the procedure:
+
+            - method (str): Reconstruction strategy for gaps in multiple markers, ``'R1'`` or ``'R2'``.
+              Default is ``'R2'``.
+            - weight_scale (float): Parameter 'sigma' used in weighting calculations. It influences the
               impact of distance on weight assignments. Default is 200.
-            - mm_weight (float): The weighting factor for markers with missing data. Higher values give 
+            - mm_weight (float): Weighting factor for markers with missing data. Higher values give
               more weight to these markers during the gap filling process. Default is 0.02.
-            - distal_threshold (float): The threshold used in 'R2' method for determining distal markers. 
-              It represents the cut-off distance for distal marker relative to average Euclidean distances. 
+            - distal_threshold (float): Threshold used by the ``'R2'`` method to determine distal markers.
+              It represents the cut-off distance for distal markers relative to average Euclidean distances.
               Default is 0.5.
-            - min_cum_sv (float): The minimum cumulative sum of the eigenvalues of normalized singular 
-              values used in PCA. This determines the number of principal component vectors included 
+            - min_cum_sv (float): Minimum cumulative sum of the eigenvalues of normalized singular
+              values used in PCA. It determines the number of principal component vectors included
               in the analysis. Default is 0.99.
     """
 
